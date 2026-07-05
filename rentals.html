@@ -2,59 +2,58 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <title>വാടക ഉപകരണങ്ങൾ</title>
 </head>
-<body class="bg-slate-50 p-4">
-    <div class="max-w-md mx-auto bg-white p-6 rounded-3xl shadow-sm border">
-        <h1 id="staffName" class="text-xl font-bold mb-4">എൻട്രികൾ</h1>
+<body class="bg-slate-50 p-4 font-sans">
+    <div class="max-w-md mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-slate-800">വാടക ഉപകരണങ്ങൾ</h1>
+            <a href="index.html" class="text-sm text-slate-500 underline">ഡാഷ്ബോർഡ്</a>
+        </div>
         
-        <!-- Entry Form -->
-        <div class="space-y-3 mb-6">
-            <input type="date" id="entryDate" class="w-full p-3 border rounded-xl">
-            <input type="number" id="wage" placeholder="കൂലി" class="w-full p-3 border rounded-xl">
-            <input type="number" id="paid" placeholder="നൽകിയത്" class="w-full p-3 border rounded-xl">
-            <button onclick="saveEntry()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">സേവ് ചെയ്യുക</button>
+        <!-- Add Rental Item -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6 space-y-3">
+            <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-3 border rounded-xl outline-none">
+            <input type="number" id="rentPrice" placeholder="വാടക നിരക്ക് (₹)" class="w-full p-3 border rounded-xl outline-none">
+            <button onclick="addRental()" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
         </div>
 
-        <div id="historyList" class="space-y-3"></div>
-        <div class="mt-6 text-center"><a href="staff.html" class="text-slate-500 underline">തിരികെ</a></div>
+        <div id="rentalsList" class="space-y-3"></div>
     </div>
 
     <script>
-        document.getElementById('entryDate').valueAsDate = new Date();
-        const urlParams = new URLSearchParams(window.location.search);
-        const staffIndex = urlParams.get('index');
-        let staff = JSON.parse(localStorage.getItem('staff') || '[]');
+        let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
 
-        function saveEntry() {
-            if(!staff[staffIndex].entries) staff[staffIndex].entries = [];
-            staff[staffIndex].entries.push({
-                date: document.getElementById('entryDate').value,
-                wage: document.getElementById('wage').value,
-                paid: document.getElementById('paid').value
-            });
-            localStorage.setItem('staff', JSON.stringify(staff));
+        function addRental() {
+            let name = document.getElementById('itemName').value;
+            let price = document.getElementById('rentPrice').value;
+            if(!name || !price) return;
+            
+            rentals.push({ name, price, date: new Date().toLocaleDateString() });
+            localStorage.setItem('rentals', JSON.stringify(rentals));
             location.reload();
         }
 
-        function deleteEntry(eIndex) {
-            staff[staffIndex].entries.splice(eIndex, 1);
-            localStorage.setItem('staff', JSON.stringify(staff));
+        function deleteRental(index) {
+            rentals.splice(index, 1);
+            localStorage.setItem('rentals', JSON.stringify(rentals));
             location.reload();
         }
 
-        function displayEntries() {
-            let entries = staff[staffIndex].entries || [];
-            document.getElementById('historyList').innerHTML = entries.map((e, i) => `
-                <div class='p-3 border rounded-xl flex justify-between items-center bg-slate-50'>
+        function displayRentals() {
+            let container = document.getElementById('rentalsList');
+            container.innerHTML = rentals.map((r, i) => `
+                <div class='bg-white p-4 border border-slate-100 rounded-2xl flex justify-between items-center shadow-sm'>
                     <div>
-                        <div class="text-xs text-gray-500">${e.date}</div>
-                        <div class="font-bold">കൂലി: ₹${e.wage} | നൽകിയത്: ₹${e.paid}</div>
+                        <div class="text-sm font-bold text-slate-800">${r.name}</div>
+                        <div class="text-xs text-slate-500">വാടക: ₹${r.price} | തീയതി: ${r.date}</div>
                     </div>
-                    <button onclick="deleteEntry(${i})" class="text-red-500 text-xs font-bold">Delete</button>
+                    <button onclick="deleteRental(${i})" class="text-red-500 text-xs font-bold bg-red-50 px-3 py-1 rounded-lg">Delete</button>
                 </div>`).join('');
         }
-        displayEntries();
+        displayRentals();
     </script>
 </body>
 </html>
