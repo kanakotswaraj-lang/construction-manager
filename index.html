@@ -1,33 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="ml">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <title>സൈറ്റ് മാനേജർ</title>
 </head>
-<body class="bg-slate-50 p-4">
+<body class="bg-slate-100 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-bold mb-6 text-center">സൈറ്റ് മാനേജർ</h1>
+        <h1 class="text-2xl font-bold mb-6 text-slate-800 text-center">സൈറ്റ് മാനേജർ</h1>
         
-        <!-- Summary Box -->
-        <div class="bg-slate-800 text-white p-6 rounded-2xl mb-6 shadow-lg">
-            <div class="text-sm opacity-80">ആകെ ബാധ്യത (Balance)</div>
-            <div id="totalBalance" class="text-3xl font-bold mb-4">₹0</div>
-            <div class="flex justify-between text-sm">
-                <span>കൂലി: <span id="sumWage">₹0</span></span>
-                <span>നൽകിയത്: <span id="sumPaid">₹0</span></span>
+        <!-- Dashboard Card -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mb-6">
+            <h2 class="text-gray-500 text-sm font-medium">ആകെ ബാധ്യത</h2>
+            <div id="totalBalance" class="text-4xl font-extrabold text-slate-900 mt-1">₹0</div>
+            
+            <div class="grid grid-cols-2 gap-4 mt-6">
+                <div class="bg-blue-50 p-4 rounded-2xl">
+                    <div class="text-blue-600 text-xs font-bold">ആകെ കൂലി</div>
+                    <div id="sumwage" class="text-lg font-bold text-slate-800">₹0</div>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-2xl">
+                    <div class="text-orange-600 text-xs font-bold">നൽകിയത്</div>
+                    <div id="sumPaid" class="text-lg font-bold text-slate-800">₹0</div>
+                </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-4">
-            <a href="staff.html" class="p-4 bg-blue-500 text-white rounded-xl text-center font-bold">ജീവനക്കാർ</a>
-            <a href="rentals.html" class="p-4 bg-emerald-500 text-white rounded-xl text-center font-bold">വാടക ഉപകരണങ്ങൾ</a>
-            <a href="cash.html" class="p-4 bg-orange-500 text-white rounded-xl text-center font-bold">സൈറ്റ് കണക്ക്</a>
+        <!-- Navigation -->
+        <div class="grid grid-cols-1 gap-3">
+            <a href="staff.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center hover:bg-slate-50">ജീവനക്കാർ</a>
+            <a href="rentals.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center hover:bg-slate-50">വാടക ഉപകരണങ്ങൾ</a>
+            <a href="cash.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center hover:bg-slate-50">സൈറ്റ് കണക്ക്</a>
         </div>
     </div>
 
     <script>
+        // ഡാറ്റ ലോഡ് ചെയ്ത് കണക്കുകൂട്ടുന്നു
         let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
         let totalWage = 0, totalPaid = 0;
-        
         staffList.forEach(s => {
             if(s.entries) {
                 s.entries.forEach(e => {
@@ -36,8 +47,7 @@
                 });
             }
         });
-        
-        document.getElementById('sumWage').innerText = '₹' + totalWage;
+        document.getElementById('sumwage').innerText = '₹' + totalWage;
         document.getElementById('sumPaid').innerText = '₹' + totalPaid;
         document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
     </script>
