@@ -3,14 +3,43 @@
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 p-6">
+<body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold mb-6 text-center">സൈറ്റ് മാനേജർ</h1>
+        
+        <!-- Summary Box -->
+        <div class="bg-slate-800 text-white p-6 rounded-2xl mb-6 shadow-lg">
+            <div class="text-sm opacity-80">ആകെ ബാധ്യത (Balance)</div>
+            <div id="totalBalance" class="text-3xl font-bold mb-4">₹0</div>
+            <div class="flex justify-between text-sm">
+                <span>കൂലി: <span id="sumWage">₹0</span></span>
+                <span>നൽകിയത്: <span id="sumPaid">₹0</span></span>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 gap-4">
-            <a href="staff.html" class="p-6 bg-blue-500 text-white rounded-xl shadow text-center font-bold">ജീവനക്കാർ</a>
-            <a href="rentals.html" class="p-6 bg-emerald-500 text-white rounded-xl shadow text-center font-bold">വാടക ഉപകരണങ്ങൾ</a>
-            <a href="cash.html" class="p-6 bg-orange-500 text-white rounded-xl shadow text-center font-bold">സൈറ്റ് കണക്ക് (Cash Ledger)</a>
+            <a href="staff.html" class="p-4 bg-blue-500 text-white rounded-xl text-center font-bold">ജീവനക്കാർ</a>
+            <a href="rentals.html" class="p-4 bg-emerald-500 text-white rounded-xl text-center font-bold">വാടക ഉപകരണങ്ങൾ</a>
+            <a href="cash.html" class="p-4 bg-orange-500 text-white rounded-xl text-center font-bold">സൈറ്റ് കണക്ക്</a>
         </div>
     </div>
+
+    <script>
+        let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
+        let totalWage = 0, totalPaid = 0;
+        
+        staffList.forEach(s => {
+            if(s.entries) {
+                s.entries.forEach(e => {
+                    totalWage += parseFloat(e.wage || 0);
+                    totalPaid += parseFloat(e.paid || 0);
+                });
+            }
+        });
+        
+        document.getElementById('sumWage').innerText = '₹' + totalWage;
+        document.getElementById('sumPaid').innerText = '₹' + totalPaid;
+        document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
+    </script>
 </body>
 </html>
