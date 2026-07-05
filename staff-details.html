@@ -10,7 +10,7 @@
         <!-- Add New Staff -->
         <div class="flex gap-2 mb-4">
             <input type="text" id="newStaffName" placeholder="പേര്" class="w-full p-3 border rounded-lg">
-            <button onclick="addStaff()" class="bg-blue-500 text-white px-4 rounded-lg font-bold">+</button>
+            <button onclick="addStaff()" class="bg-blue-500 text-white px-4 rounded-lg font-bold">ചേർക്കുക</button>
         </div>
 
         <input type="text" id="searchInput" onkeyup="filterStaff()" placeholder="തിരയുക..." class="w-full p-3 border rounded-lg mb-4">
@@ -35,6 +35,14 @@
             staff.splice(index, 1);
             localStorage.setItem('staff', JSON.stringify(staff));
             location.reload();
+        }
+
+        function filterStaff() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let items = document.querySelectorAll('.staff-item');
+            items.forEach(item => {
+                item.style.display = item.innerText.toLowerCase().includes(input) ? '' : 'none';
+            });
         }
 
         function displayStaff() {
