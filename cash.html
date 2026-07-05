@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="bg-slate-50 p-4">
+    <div class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow">
+        <h1 class="text-xl font-bold mb-4">സൈറ്റ് കണക്ക് (Cash Ledger)</h1>
+        
+        <div class="space-y-3 mb-6">
+            <input type="text" id="desc" placeholder="വിവരണം (ഉദാ: സിമന്റ് വാങ്ങിയത്)" class="w-full p-3 border rounded-lg">
+            <input type="number" id="amount" placeholder="തുക" class="w-full p-3 border rounded-lg">
+            <select id="type" class="w-full p-3 border rounded-lg">
+                <option value="income">വരവ്</option>
+                <option value="expense">ചെലവ്</option>
+            </select>
+            <button onclick="saveCash()" class="w-full bg-orange-500 text-white p-3 rounded-lg font-bold">എൻട്രി ചേർക്കുക</button>
+        </div>
+
+        <div id="cashList" class="space-y-2"></div>
+
+        <div class="mt-8 text-center">
+            <a href="index.html" class="text-blue-500 underline">തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
+        </div>
+    </div>
+
+    <script>
+        function saveCash() {
+            const desc = document.getElementById('desc').value;
+            const amount = document.getElementById('amount').value;
+            const type = document.getElementById('type').value;
+            if(desc && amount) {
+                let logs = JSON.parse(localStorage.getItem('cashLogs') || '[]');
+                logs.push({ desc, amount, type });
+                localStorage.setItem('cashLogs', JSON.stringify(logs));
+                location.reload();
+            }
+        }
+
+        function displayCash() {
+            let logs = JSON.parse(localStorage.getItem('cashLogs') || '[]');
+            let container = document.getElementById('cashList');
+            container.innerHTML = logs.map(l => `
+                <div class='p-3 border rounded flex justify-between ${l.type === 'income' ? 'bg-green-50' : 'bg-red-50'}'>
+                    <span>${l.desc}</span>
+                    <span class="font-bold">${l.type === 'income' ? '+' : '-'}₹${l.amount}</span>
+                </div>`).join('');
+        }
+        displayCash();
+    </script>
+</body>
+</html>
