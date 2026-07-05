@@ -1,23 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="ml">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <title>ജീവനക്കാർ</title>
 </head>
-<body class="bg-slate-50 p-4">
+<body class="bg-slate-100 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <h1 class="text-xl font-bold mb-4">ജീവനക്കാർ</h1>
+        <h1 class="text-2xl font-bold mb-6 text-slate-800 text-center">ജീവനക്കാർ</h1>
         
-        <!-- Search Bar -->
-        <input type="text" id="searchInput" onkeyup="filterStaff()" placeholder="ജീവനക്കാരെ തിരയുക..." class="w-full p-3 border rounded-lg mb-4">
-        
-        <div id="staffList" class="space-y-2"></div>
+        <!-- Add Staff -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border mb-6 flex gap-2">
+            <input type="text" id="newStaffName" placeholder="പേര്" class="w-full p-2 outline-none">
+            <button onclick="addStaff()" class="bg-slate-900 text-white px-6 py-2 rounded-xl font-bold">+</button>
+        </div>
 
-        <div class="mt-8">
-            <a href="index.html" class="block text-center text-blue-500 underline">തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
+        <input type="text" id="searchInput" onkeyup="filterStaff()" placeholder="തിരയുക..." class="w-full p-4 rounded-2xl shadow-sm border mb-4 outline-none">
+        
+        <div id="staffList" class="space-y-3"></div>
+
+        <div class="mt-8 text-center">
+            <a href="index.html" class="text-slate-500 underline">തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
         </div>
     </div>
 
     <script>
+        function addStaff() {
+            let name = document.getElementById('newStaffName').value;
+            if(!name) return;
+            let staff = JSON.parse(localStorage.getItem('staff') || '[]');
+            staff.push({ name: name, entries: [] });
+            localStorage.setItem('staff', JSON.stringify(staff));
+            location.reload();
+        }
+
         function deleteStaff(index) {
             let staff = JSON.parse(localStorage.getItem('staff') || '[]');
             staff.splice(index, 1);
@@ -27,8 +44,7 @@
 
         function filterStaff() {
             let input = document.getElementById('searchInput').value.toLowerCase();
-            let items = document.querySelectorAll('.staff-item');
-            items.forEach(item => {
+            document.querySelectorAll('.staff-item').forEach(item => {
                 item.style.display = item.innerText.toLowerCase().includes(input) ? '' : 'none';
             });
         }
@@ -37,9 +53,9 @@
             let staff = JSON.parse(localStorage.getItem('staff') || '[]');
             let container = document.getElementById('staffList');
             container.innerHTML = staff.map((s, index) => `
-                <div class='staff-item p-3 border rounded flex justify-between bg-white items-center'>
-                    <span>${s.name}</span>
-                    <button onclick="deleteStaff(${index})" class="bg-red-500 text-white px-3 py-1 rounded text-sm">Delete</button>
+                <div class='staff-item bg-white p-4 rounded-2xl shadow-sm border flex justify-between items-center'>
+                    <a href="staff-details.html?index=${index}" class="font-bold text-slate-800">${s.name}</a>
+                    <button onclick="deleteStaff(${index})" class="text-red-500 bg-red-50 px-3 py-1 rounded-lg text-sm">Delete</button>
                 </div>`).join('');
         }
         displayStaff();
