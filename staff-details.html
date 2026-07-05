@@ -4,61 +4,49 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 p-4">
-    <div class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow">
-        <h1 class="text-xl font-bold mb-4" id="staffNameDisplay">എൻട്രികൾ</h1>
+    <div class="max-w-md mx-auto">
+        <h1 class="text-xl font-bold mb-4">ജീവനക്കാർ</h1>
         
-        <div class="space-y-3 mb-6">
-            <input type="date" id="entryDate" class="w-full p-3 border rounded-lg">
-            <input type="number" id="wage" placeholder="കൂലി" class="w-full p-3 border rounded-lg">
-            <input type="number" id="paid" placeholder="നൽകിയത്" class="w-full p-3 border rounded-lg">
-            <button onclick="saveEntry()" class="w-full bg-blue-500 text-white p-3 rounded-lg font-bold">എൻട്രി ചേർക്കുക</button>
+        <!-- Add New Staff -->
+        <div class="flex gap-2 mb-4">
+            <input type="text" id="newStaffName" placeholder="പേര്" class="w-full p-3 border rounded-lg">
+            <button onclick="addStaff()" class="bg-blue-500 text-white px-4 rounded-lg font-bold">+</button>
         </div>
 
-        <div id="historyList" class="space-y-2"></div>
-        <div class="mt-8 text-center">
-            <a href="staff.html" class="text-blue-500 underline">ജീവനക്കാരുടെ ലിസ്റ്റിലേക്ക്</a>
-        </div>
+        <input type="text" id="searchInput" onkeyup="filterStaff()" placeholder="തിരയുക..." class="w-full p-3 border rounded-lg mb-4">
+        
+        <div id="staffList" class="space-y-2"></div>
+
+        <div class="mt-8 text-center"><a href="index.html" class="text-blue-500 underline">ഡാഷ്ബോർഡിലേക്ക്</a></div>
     </div>
 
     <script>
-        document.getElementById('entryDate').valueAsDate = new Date();
-        const urlParams = new URLSearchParams(window.location.search);
-        const staffIndex = urlParams.get('index');
-
-        function saveEntry() {
+        function addStaff() {
+            let name = document.getElementById('newStaffName').value;
+            if(!name) return;
             let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-            if(!staff[staffIndex].entries) staff[staffIndex].entries = [];
-            
-            staff[staffIndex].entries.push({
-                date: document.getElementById('entryDate').value,
-                wage: document.getElementById('wage').value,
-                paid: document.getElementById('paid').value
-            });
+            staff.push({ name: name, entries: [] });
             localStorage.setItem('staff', JSON.stringify(staff));
             location.reload();
         }
 
-        function deleteEntry(eIndex) {
+        function deleteStaff(index) {
             let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-            staff[staffIndex].entries.splice(eIndex, 1);
+            staff.splice(index, 1);
             localStorage.setItem('staff', JSON.stringify(staff));
             location.reload();
         }
 
-        function displayEntries() {
+        function displayStaff() {
             let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-            let entries = staff[staffIndex].entries || [];
-            let container = document.getElementById('historyList');
-            container.innerHTML = entries.map((e, i) => `
-                <div class='p-3 border rounded flex justify-between bg-slate-50 items-center'>
-                    <div>
-                        <div class="text-xs text-gray-500">${e.date}</div>
-                        <div>കൂലി: ₹${e.wage} | നൽകിയത്: ₹${e.paid}</div>
-                    </div>
-                    <button onclick="deleteEntry(${i})" class="text-red-500 text-xs">Delete</button>
+            let container = document.getElementById('staffList');
+            container.innerHTML = staff.map((s, index) => `
+                <div class='staff-item p-3 border rounded flex justify-between bg-white items-center'>
+                    <a href="staff-details.html?index=${index}" class="flex-grow font-bold">${s.name}</a>
+                    <button onclick="deleteStaff(${index})" class="bg-red-500 text-white px-3 py-1 rounded text-sm">Delete</button>
                 </div>`).join('');
         }
-        displayEntries();
+        displayStaff();
     </script>
 </body>
 </html>
