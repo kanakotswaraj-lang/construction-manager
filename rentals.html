@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="bg-slate-50 p-4">
+    <div class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow">
+        <h1 class="text-xl font-bold mb-4">വാടക ഉപകരണങ്ങൾ</h1>
+        
+        <div class="space-y-3 mb-6">
+            <input type="text" id="itemName" placeholder="ഉപകരണം (ഉദാ: ഷീറ്റ്)" class="w-full p-3 border rounded-lg">
+            <input type="number" id="rentAmount" placeholder="ആകെ വാടക" class="w-full p-3 border rounded-lg">
+            <button onclick="saveRental()" class="w-full bg-emerald-500 text-white p-3 rounded-lg font-bold">ചേർക്കുക</button>
+        </div>
+
+        <div id="rentalList" class="space-y-2"></div>
+
+        <div class="mt-8 text-center">
+            <a href="index.html" class="text-blue-500 underline">തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
+        </div>
+    </div>
+
+    <script>
+        function saveRental() {
+            const name = document.getElementById('itemName').value;
+            const amount = document.getElementById('rentAmount').value;
+            if(name && amount) {
+                let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
+                rentals.push({ name, amount });
+                localStorage.setItem('rentals', JSON.stringify(rentals));
+                location.reload();
+            }
+        }
+
+        function displayRentals() {
+            let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
+            let container = document.getElementById('rentalList');
+            container.innerHTML = rentals.map((r, index) => `
+                <div class='p-3 border rounded flex justify-between bg-slate-50'>
+                    <span>${r.name}</span>
+                    <span class="font-bold">₹${r.amount}</span>
+                </div>`).join('');
+        }
+        displayRentals();
+    </script>
+</body>
+</html>
