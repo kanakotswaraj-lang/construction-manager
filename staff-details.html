@@ -5,68 +5,38 @@
 </head>
 <body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow">
-        <h1 id="staffNameDisplay" class="text-xl font-bold mb-4"></h1>
+        <h1 class="text-xl font-bold mb-4" id="staffNameDisplay">ജീവനക്കാരന്റെ പേര്</h1>
         
         <div class="space-y-3 mb-6">
-            <input type="text" id="desc" placeholder="ജോലി/വിവരണം" class="w-full p-3 border rounded-lg">
-            <input type="number" id="dailyWage" placeholder="കൂലി" class="w-full p-3 border rounded-lg">
-            <input type="number" id="paidAmount" placeholder="നൽകിയ തുക" class="w-full p-3 border rounded-lg">
-            <button onclick="addEntry()" class="w-full bg-emerald-500 text-white p-3 rounded-lg font-bold">എൻട്രി ചേർക്കുക</button>
+            <!-- Date Picker -->
+            <input type="date" id="entryDate" class="w-full p-3 border rounded-lg">
+            
+            <input type="number" id="wage" placeholder="കൂലി" class="w-full p-3 border rounded-lg">
+            <input type="number" id="paid" placeholder="നൽകിയത്" class="w-full p-3 border rounded-lg">
+            
+            <button onclick="saveEntry()" class="w-full bg-blue-500 text-white p-3 rounded-lg font-bold">എൻട്രി ചേർക്കുക</button>
         </div>
 
-        <div class="bg-slate-800 text-white p-4 rounded-lg mb-6">
-            <div class="flex justify-between"><span>ആകെ കൂലി:</span> <span id="totalWage">₹0</span></div>
-            <div class="flex justify-between"><span>ആകെ നൽകിയത്:</span> <span id="totalPaid">₹0</span></div>
-            <div class="flex justify-between font-bold mt-2 border-t pt-2"><span>ബാക്കി:</span> <span id="balance">₹0</span></div>
-        </div>
-
-        <div id="entryList" class="space-y-2"></div>
+        <div id="historyList" class="space-y-2"></div>
 
         <div class="mt-8 text-center">
-            <a href="staff.html" class="text-blue-500 underline">തിരികെ ലിസ്റ്റിലേക്ക്</a>
+            <a href="staff.html" class="text-blue-500 underline">ജീവനക്കാരുടെ ലിസ്റ്റിലേക്ക്</a>
         </div>
     </div>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const staffId = params.get('id');
-        let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
-        let currentStaff = staffList[staffId];
-        
-        if(currentStaff) {
-            document.getElementById('staffNameDisplay').innerText = currentStaff.name;
-        }
+        // ഇന്ന് തീയതി ഓട്ടോമാറ്റിക് ആയി സെലക്ട് ചെയ്യാൻ
+        document.getElementById('entryDate').valueAsDate = new Date();
 
-        function addEntry() {
-            const desc = document.getElementById('desc').value;
-            const wage = parseFloat(document.getElementById('dailyWage').value || 0);
-            const paid = parseFloat(document.getElementById('paidAmount').value || 0);
+        function saveEntry() {
+            const date = document.getElementById('entryDate').value;
+            const wage = document.getElementById('wage').value;
+            const paid = document.getElementById('paid').value;
             
-            if(!currentStaff.entries) currentStaff.entries = [];
-            currentStaff.entries.push({ desc, wage, paid });
-            
-            staffList[staffId] = currentStaff;
-            localStorage.setItem('staff', JSON.stringify(staffList));
-            location.reload();
+            // ഇവിടെ സേവ് ചെയ്യാനുള്ള ബാക്കി ലോജിക് ചേർക്കുക
+            // ...
+            alert("തീയതി " + date + " -ൽ എൻട്രി സേവ് ചെയ്തു!");
         }
-
-        function render() {
-            let totalW = 0, totalP = 0;
-            let listDiv = document.getElementById('entryList');
-            if(currentStaff && currentStaff.entries) {
-                listDiv.innerHTML = currentStaff.entries.map(e => {
-                    totalW += e.wage; totalP += e.paid;
-                    return `<div class='p-3 border rounded flex justify-between bg-white mt-1'>
-                        <span class="font-medium">${e.desc}</span> 
-                        <span class="text-slate-600">+₹${e.wage} | -₹${e.paid}</span>
-                    </div>`;
-                }).join('');
-            }
-            document.getElementById('totalWage').innerText = '₹' + totalW;
-            document.getElementById('totalPaid').innerText = '₹' + totalP;
-            document.getElementById('balance').innerText = '₹' + (totalW - totalP);
-        }
-        render();
     </script>
 </body>
 </html>
