@@ -56,8 +56,9 @@
             if(currentStaff && currentStaff.entries) {
                 listDiv.innerHTML = currentStaff.entries.map(e => {
                     totalW += e.wage; totalP += e.paid;
-                    return `<div class='p-3 border rounded flex justify-between'>
-                        <span>${e.desc}</span> <span>+₹${e.wage} | -₹${e.paid}</span>
+                    return `<div class='p-3 border rounded flex justify-between bg-white mt-1'>
+                        <span class="font-medium">${e.desc}</span> 
+                        <span class="text-slate-600">+₹${e.wage} | -₹${e.paid}</span>
                     </div>`;
                 }).join('');
             }
