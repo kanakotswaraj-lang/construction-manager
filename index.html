@@ -1,32 +1,15 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Construction Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 min-h-screen p-4">
-    <div class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
-        <h1 class="text-3xl font-extrabold mb-2 text-center text-slate-800">സൈറ്റ് മാനേജർ</h1>
-        <p class="text-center text-slate-500 mb-8">നിങ്ങളുടെ സൈറ്റിന്റെ നിയന്ത്രണം കൈപ്പിടിയിൽ</p>
-        
-        <!-- ഡാഷ്ബോർഡ് കാർഡുകൾ -->
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <div class="bg-indigo-600 p-4 rounded-xl text-white shadow-lg shadow-indigo-200">
-                <p class="text-xs opacity-80">ഇന്നത്തെ ചെലവ്</p>
-                <p class="text-xl font-bold">₹ 0</p>
-            </div>
-            <div class="bg-emerald-500 p-4 rounded-xl text-white shadow-lg shadow-emerald-200">
-                <p class="text-xs opacity-80">കൂലി നൽകാൻ</p>
-                <p class="text-xl font-bold">₹ 0</p>
-            </div>
-        </div>
-
-        <!-- മെനു ബട്ടണുകൾ -->
-        <div class="space-y-4">
-            <a href="staff.html" class="block w-full bg-slate-800 text-white py-4 rounded-xl text-center font-semibold hover:bg-slate-900 transition-all">ജീവനക്കാരുടെ വിഭാഗം</a>
-            <a href="transactions.html" class="block w-full bg-slate-200 text-slate-800 py-4 rounded-xl text-center font-semibold hover:bg-slate-300 transition-all">വരവ്-ചെലവ് കണക്കുകൾ</a>
+<body class="bg-slate-50 p-6">
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-bold mb-6 text-center">സൈറ്റ് മാനേജർ</h1>
+        <div class="grid grid-cols-1 gap-4">
+            <a href="staff.html" class="p-6 bg-blue-500 text-white rounded-xl shadow text-center font-bold">ജീവനക്കാർ</a>
+            <a href="rentals.html" class="p-6 bg-emerald-500 text-white rounded-xl shadow text-center font-bold">വാടക ഉപകരണങ്ങൾ</a>
+            <a href="cash.html" class="p-6 bg-orange-500 text-white rounded-xl shadow text-center font-bold">സൈറ്റ് കണക്ക് (Cash Ledger)</a>
         </div>
     </div>
 </body>
