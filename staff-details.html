@@ -5,38 +5,60 @@
 </head>
 <body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow">
-        <h1 class="text-xl font-bold mb-4" id="staffNameDisplay">ജീവനക്കാരന്റെ പേര്</h1>
+        <h1 class="text-xl font-bold mb-4" id="staffNameDisplay">എൻട്രികൾ</h1>
         
         <div class="space-y-3 mb-6">
-            <!-- Date Picker -->
             <input type="date" id="entryDate" class="w-full p-3 border rounded-lg">
-            
             <input type="number" id="wage" placeholder="കൂലി" class="w-full p-3 border rounded-lg">
             <input type="number" id="paid" placeholder="നൽകിയത്" class="w-full p-3 border rounded-lg">
-            
             <button onclick="saveEntry()" class="w-full bg-blue-500 text-white p-3 rounded-lg font-bold">എൻട്രി ചേർക്കുക</button>
         </div>
 
         <div id="historyList" class="space-y-2"></div>
-
         <div class="mt-8 text-center">
             <a href="staff.html" class="text-blue-500 underline">ജീവനക്കാരുടെ ലിസ്റ്റിലേക്ക്</a>
         </div>
     </div>
 
     <script>
-        // ഇന്ന് തീയതി ഓട്ടോമാറ്റിക് ആയി സെലക്ട് ചെയ്യാൻ
         document.getElementById('entryDate').valueAsDate = new Date();
+        const urlParams = new URLSearchParams(window.location.search);
+        const staffIndex = urlParams.get('index');
 
         function saveEntry() {
-            const date = document.getElementById('entryDate').value;
-            const wage = document.getElementById('wage').value;
-            const paid = document.getElementById('paid').value;
+            let staff = JSON.parse(localStorage.getItem('staff') || '[]');
+            if(!staff[staffIndex].entries) staff[staffIndex].entries = [];
             
-            // ഇവിടെ സേവ് ചെയ്യാനുള്ള ബാക്കി ലോജിക് ചേർക്കുക
-            // ...
-            alert("തീയതി " + date + " -ൽ എൻട്രി സേവ് ചെയ്തു!");
+            staff[staffIndex].entries.push({
+                date: document.getElementById('entryDate').value,
+                wage: document.getElementById('wage').value,
+                paid: document.getElementById('paid').value
+            });
+            localStorage.setItem('staff', JSON.stringify(staff));
+            location.reload();
         }
+
+        function deleteEntry(eIndex) {
+            let staff = JSON.parse(localStorage.getItem('staff') || '[]');
+            staff[staffIndex].entries.splice(eIndex, 1);
+            localStorage.setItem('staff', JSON.stringify(staff));
+            location.reload();
+        }
+
+        function displayEntries() {
+            let staff = JSON.parse(localStorage.getItem('staff') || '[]');
+            let entries = staff[staffIndex].entries || [];
+            let container = document.getElementById('historyList');
+            container.innerHTML = entries.map((e, i) => `
+                <div class='p-3 border rounded flex justify-between bg-slate-50 items-center'>
+                    <div>
+                        <div class="text-xs text-gray-500">${e.date}</div>
+                        <div>കൂലി: ₹${e.wage} | നൽകിയത്: ₹${e.paid}</div>
+                    </div>
+                    <button onclick="deleteEntry(${i})" class="text-red-500 text-xs">Delete</button>
+                </div>`).join('');
+        }
+        displayEntries();
     </script>
 </body>
 </html>
