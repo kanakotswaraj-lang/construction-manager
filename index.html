@@ -2,18 +2,30 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Construction Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-5">
-    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold mb-4 text-center">കൺസ്ട്രക്ഷൻ മാനേജർ</h1>
-        <p class="text-center text-gray-600">നിങ്ങളുടെ സൈറ്റ് കണക്കുകൾ ഇവിടെ രേഖപ്പെടുത്താം.</p>
+<body class="bg-slate-50 min-h-screen p-4">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
+        <h1 class="text-3xl font-extrabold mb-2 text-center text-slate-800">സൈറ്റ് മാനേജർ</h1>
+        <p class="text-center text-slate-500 mb-8">നിങ്ങളുടെ സൈറ്റിന്റെ നിയന്ത്രണം കൈപ്പിടിയിൽ</p>
         
-        <div class="mt-6">
-            <button class="w-full bg-blue-600 text-white py-2 rounded-lg mb-2">ജീവനക്കാരുടെ ലിസ്റ്റ്</button>
-            <button class="w-full bg-green-600 text-white py-2 rounded-lg">വരവ്-ചെലവ് കണക്കുകൾ</button>
+        <!-- ഡാഷ്ബോർഡ് കാർഡുകൾ -->
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="bg-indigo-600 p-4 rounded-xl text-white shadow-lg shadow-indigo-200">
+                <p class="text-xs opacity-80">ഇന്നത്തെ ചെലവ്</p>
+                <p class="text-xl font-bold">₹ 0</p>
+            </div>
+            <div class="bg-emerald-500 p-4 rounded-xl text-white shadow-lg shadow-emerald-200">
+                <p class="text-xs opacity-80">കൂലി നൽകാൻ</p>
+                <p class="text-xl font-bold">₹ 0</p>
+            </div>
+        </div>
+
+        <!-- മെനു ബട്ടണുകൾ -->
+        <div class="space-y-4">
+            <a href="staff.html" class="block w-full bg-slate-800 text-white py-4 rounded-xl text-center font-semibold hover:bg-slate-900 transition-all">ജീവനക്കാരുടെ വിഭാഗം</a>
+            <a href="transactions.html" class="block w-full bg-slate-200 text-slate-800 py-4 rounded-xl text-center font-semibold hover:bg-slate-300 transition-all">വരവ്-ചെലവ് കണക്കുകൾ</a>
         </div>
     </div>
 </body>
