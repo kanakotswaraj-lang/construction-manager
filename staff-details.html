@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 p-4">
+    <div class="max-w-md mx-auto">
+        <h1 class="text-xl font-bold mb-4">ജീവനക്കാരുടെ ലിസ്റ്റ്</h1>
+        
+        <div class="space-y-4">
+            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 rounded-lg border">
+            <input type="number" id="staffWage" placeholder="ആകെ കൂലി" class="w-full p-3 rounded-lg border">
+            <button onclick="saveStaff()" class="w-full bg-blue-500 text-white p-3 rounded-lg">ചേർക്കുക</button>
+        </div>
+
+        <div id="staffList" class="mt-6"></div>
+
+        <div class="mt-8 text-center">
+            <a href="index.html" class="text-blue-500 underline">തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
+        </div>
+    </div>
+
+    <script>
+        function saveStaff() {
+            const name = document.getElementById('staffName').value;
+            const wage = document.getElementById('staffWage').value;
+            if(name && wage) {
+                let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
+                staffList.push({ name: name, wage: wage });
+                localStorage.setItem('staff', JSON.stringify(staffList));
+                location.reload();
+            }
+        }
+
+        function displayStaff() {
+            let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
+            let container = document.getElementById('staffList');
+            container.innerHTML = staffList.map((s, index) => `
+                <div class='p-3 bg-white border rounded-lg mb-2 shadow-sm'>
+                    ${index + 1}. ${s.name} - ആകെ: ₹${s.wage}
+                </div>`).join('');
+        }
+        displayStaff();
+    </script>
+</body>
+</html>
