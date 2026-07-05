@@ -1,20 +1,57 @@
-<!-- staff.html-ലെ <input> ഭാഗം -->
-<div class="space-y-4">
-    <input type="text" id="staffName" placeholder="ജീവനക്കാരന്റെ പേര്" class="w-full p-4 bg-slate-100 rounded-xl">
-    <input type="number" id="staffWage" placeholder="കൂലി (രൂപ)" class="w-full p-4 bg-slate-100 rounded-xl">
-    <button onclick="saveStaff()" class="w-full bg-blue-500 text-white p-4 rounded-xl">ജീവനക്കാരനെ ചേർക്കുക</button>
+<div id="staffList" class="mt-6">
+    <!-- ലിസ്റ്റ് ഇവിടെ വരും -->
 </div>
 
 <script>
-    function saveStaff() {
-        const name = document.getElementById('staffName').value;
-        const wage = document.getElementById('staffWage').value;
-        if(name && wage) {
-            let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
-            staffList.push({ name: name, wage: wage });
-            localStorage.setItem('staff', JSON.stringify(staffList));
-            alert("ജീവനക്കാരനെ ചേർത്തു!");
-            location.reload();
-        }
+    function displayStaff() {
+        let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
+        let container = document.getElementById('staffList');
+        
+        container.innerHTML = staffList.map((s, index) => {
+            // ഉദാഹരണത്തിന്: നൽകിയ തുക 0 എന്ന് കരുതുന്നു, ഇത് പിന്നീട് മാറ്റാം
+            let paidAmount = 0; 
+            let balance = s.wage - paidAmount;
+            let status = balance < 0 ? `കൂടുതൽ വാങ്ങിയത്: ₹${Math.abs(balance)}` : `ബാക്കി: ₹${balance}`;
+            
+            return `
+            <div class='p-4 bg-white border rounded-xl mb-3 shadow-sm'>
+                <div class="flex justify-between font-bold">
+                    <span>${index + 1}. ${s.name}</span>
+                    <span>ആകെ കൂലി: ₹${s.wage}</span>
+                </div>
+                <div class="text-sm text-slate-600 mt-2">
+                    നൽകിയത്: ₹${paidAmount} | ${status}
+               <div id="staffList" class="mt-6">
+    <!-- ലിസ്റ്റ് ഇവിടെ വരും -->
+</div>
+
+<script>
+    function displayStaff() {
+        let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
+        let container = document.getElementById('staffList');
+        
+        container.innerHTML = staffList.map((s, index) => {
+            // ഉദാഹരണത്തിന്: നൽകിയ തുക 0 എന്ന് കരുതുന്നു, ഇത് പിന്നീട് മാറ്റാം
+            let paidAmount = 0; 
+            let balance = s.wage - paidAmount;
+            let status = balance < 0 ? `കൂടുതൽ വാങ്ങിയത്: ₹${Math.abs(balance)}` : `ബാക്കി: ₹${balance}`;
+            
+            return `
+            <div class='p-4 bg-white border rounded-xl mb-3 shadow-sm'>
+                <div class="flex justify-between font-bold">
+                    <span>${index + 1}. ${s.name}</span>
+                    <span>ആകെ കൂലി: ₹${s.wage}</span>
+                </div>
+                <div class="text-sm text-slate-600 mt-2">
+                    നൽകിയത്: ₹${paidAmount} | ${status}
+                </div>
+            </div>`;
+        }).join('');
     }
+    displayStaff();
+</script> </div>
+            </div>`;
+        }).join('');
+    }
+    displayStaff();
 </script>
