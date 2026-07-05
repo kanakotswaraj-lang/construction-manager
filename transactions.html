@@ -11,14 +11,27 @@
         <h1 class="text-2xl font-bold mb-6 text-center text-slate-800">വരവ്-ചെലവ് കണക്കുകൾ</h1>
         
         <div class="space-y-4">
-            <input type="text" placeholder="വിവരണം (ഉദാ: സിമന്റ്)" class="w-full p-4 bg-slate-100 rounded-xl outline-none border border-slate-200">
-            <input type="number" placeholder="തുക (രൂപ)" class="w-full p-4 bg-slate-100 rounded-xl outline-none border border-slate-200">
-            <button class="w-full bg-emerald-500 text-white py-4 rounded-xl font-semibold hover:bg-emerald-600 transition-all">കണക്ക് ചേർക്കുക</button>
+            <input type="text" id="description" placeholder="വിവരണം (ഉദാ: സിമന്റ്)" class="w-full p-4 bg-slate-100 rounded-xl outline-none border border-slate-200">
+            <input type="number" id="amount" placeholder="തുക (രൂപ)" class="w-full p-4 bg-slate-100 rounded-xl outline-none border border-slate-200">
+            <button onclick="saveTransaction()" class="w-full bg-emerald-500 text-white py-4 rounded-xl font-semibold hover:bg-emerald-600 transition-all">കണക്ക് ചേർക്കുക</button>
         </div>
 
         <div class="mt-8">
             <a href="index.html" class="block w-full text-center text-slate-500 hover:text-slate-800 underline">തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
         </div>
     </div>
+
+    <script>
+        function saveTransaction() {
+            const desc = document.getElementById('description').value;
+            const amt = document.getElementById('amount').value;
+            if(desc && amt) {
+                alert("വിവരം ലഭിച്ചു: " + desc + " - ₹" + amt);
+                // ഇവിടെയാണ് ഡാറ്റ സേവ് ചെയ്യാനുള്ള കോഡ് വരുന്നത്
+            } else {
+                alert("ദയവായി വിവരങ്ങളും തുകയും നൽകുക.");
+            }
+        }
+    </script>
 </body>
 </html>
