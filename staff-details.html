@@ -12,6 +12,18 @@
             <h1 id="staffName" class="text-2xl font-bold text-slate-800"></h1>
             <a href="staff.html" class="text-sm text-slate-500 underline">തിരികെ</a>
         </div>
+
+        <!-- Summary Section -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-blue-600 p-4 rounded-3xl text-white shadow-lg">
+                <div class="text-xs opacity-80">Total Balance</div>
+                <div id="totalBalance" class="text-xl font-bold">₹0</div>
+            </div>
+            <div class="bg-emerald-600 p-4 rounded-3xl text-white shadow-lg">
+                <div class="text-xs opacity-80">Weekly Paid</div>
+                <div id="weeklyPaid" class="text-xl font-bold">₹0</div>
+            </div>
+        </div>
         
         <!-- Entry Form -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6 space-y-3">
@@ -37,6 +49,26 @@
         let staff = JSON.parse(localStorage.getItem('staff') || '[]');
         
         document.getElementById('staffName').innerText = staff[staffIndex].name;
+
+        function updateSummary() {
+            let entries = staff[staffIndex].entries || [];
+            let totalWage = 0;
+            let totalPaid = 0;
+            let weekPaid = 0;
+            let sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+            entries.forEach(e => {
+                totalWage += Number(e.wage);
+                totalPaid += Number(e.paid);
+                if (new Date(e.date) >= sevenDaysAgo) {
+                    weekPaid += Number(e.paid);
+                }
+            });
+
+            document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
+            document.getElementById('weeklyPaid').innerText = '₹' + weekPaid;
+        }
 
         function saveEntry() {
             let entry = {
@@ -70,6 +102,7 @@
                     </div>
                     <button onclick="deleteEntry(${i})" class="text-red-500 text-xs font-bold bg-red-50 px-3 py-1 rounded-lg">Delete</button>
                 </div>`).join('');
+            updateSummary();
         }
         displayEntries();
     </script>
