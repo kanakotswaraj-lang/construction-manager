@@ -2,22 +2,28 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <title>ജീവനക്കാരന്റെ വിവരങ്ങൾ</title>
 </head>
-<body class="bg-slate-50 p-4">
-    <div class="max-w-md mx-auto bg-white p-6 rounded-3xl shadow-sm border">
-        <h1 id="staffName" class="text-xl font-bold mb-4">എൻട്രികൾ</h1>
+<body class="bg-slate-50 p-4 font-sans">
+    <div class="max-w-md mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 id="staffName" class="text-2xl font-bold text-slate-800"></h1>
+            <a href="staff.html" class="text-sm text-slate-500 underline">തിരികെ</a>
+        </div>
         
         <!-- Entry Form -->
-        <div class="space-y-3 mb-6">
-            <input type="date" id="entryDate" class="w-full p-3 border rounded-xl">
-            <input type="number" id="wage" placeholder="കൂലി" class="w-full p-3 border rounded-xl">
-            <input type="number" id="paid" placeholder="നൽകിയത്" class="w-full p-3 border rounded-xl">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6 space-y-4">
+            <input type="date" id="entryDate" class="w-full p-3 border rounded-xl outline-none">
+            <input type="number" id="wage" placeholder="കൂലി (₹)" class="w-full p-3 border rounded-xl outline-none">
+            <input type="number" id="paid" placeholder="നൽകിയത് (₹)" class="w-full p-3 border rounded-xl outline-none">
             <button onclick="saveEntry()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">സേവ് ചെയ്യുക</button>
         </div>
 
+        <!-- Entries List -->
         <div id="historyList" class="space-y-3"></div>
-        <div class="mt-6 text-center"><a href="staff.html" class="text-slate-500 underline">തിരികെ</a></div>
     </div>
 
     <script>
@@ -25,14 +31,18 @@
         const urlParams = new URLSearchParams(window.location.search);
         const staffIndex = urlParams.get('index');
         let staff = JSON.parse(localStorage.getItem('staff') || '[]');
+        
+        // ജീവനക്കാരന്റെ പേര് മുകളിൽ കാണിക്കുന്നു
+        document.getElementById('staffName').innerText = staff[staffIndex].name;
 
         function saveEntry() {
+            let wage = document.getElementById('wage').value;
+            let paid = document.getElementById('paid').value;
+            let date = document.getElementById('entryDate').value;
+            
             if(!staff[staffIndex].entries) staff[staffIndex].entries = [];
-            staff[staffIndex].entries.push({
-                date: document.getElementById('entryDate').value,
-                wage: document.getElementById('wage').value,
-                paid: document.getElementById('paid').value
-            });
+            staff[staffIndex].entries.push({ date, wage, paid });
+            
             localStorage.setItem('staff', JSON.stringify(staff));
             location.reload();
         }
@@ -46,12 +56,12 @@
         function displayEntries() {
             let entries = staff[staffIndex].entries || [];
             document.getElementById('historyList').innerHTML = entries.map((e, i) => `
-                <div class='p-3 border rounded-xl flex justify-between items-center bg-slate-50'>
+                <div class='bg-white p-4 border border-slate-100 rounded-2xl flex justify-between items-center shadow-sm'>
                     <div>
-                        <div class="text-xs text-gray-500">${e.date}</div>
-                        <div class="font-bold">കൂലി: ₹${e.wage} | നൽകിയത്: ₹${e.paid}</div>
+                        <div class="text-sm font-bold text-slate-800">${e.date}</div>
+                        <div class="text-xs text-slate-500">കൂലി: ₹${e.wage} | നൽകിയത്: ₹${e.paid}</div>
                     </div>
-                    <button onclick="deleteEntry(${i})" class="text-red-500 text-xs font-bold">Delete</button>
+                    <button onclick="deleteEntry(${i})" class="text-red-500 text-xs font-bold bg-red-50 px-3 py-1 rounded-lg">Delete</button>
                 </div>`).join('');
         }
         displayEntries();
