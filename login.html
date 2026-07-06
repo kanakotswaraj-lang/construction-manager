@@ -21,8 +21,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-
+        import import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, GoogleAuthProvider, signInWithPopup } from "[https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js](https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js)";
         const firebaseConfig = {
           apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
           authDomain: "mesthri-app.firebaseapp.com",
@@ -51,7 +50,16 @@
 
         window.verifyOTP = function() {
             const code = document.getElementById('otp').value;
-            window.confirmationResult.confirm(code).then((result) => {
+            window.confirmationResult.confirm(code).then((result) => {window.googleSignIn = function() {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+        .then((result) => {
+            alert("ഗൂഗിൾ ലോഗിൻ വിജയിച്ചു!");
+            window.location.href = "index.html";
+        }).catch((error) => {
+            alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
+        });
+}
                 alert("ലോഗിൻ വിജയിച്ചു!");
                 window.location.href = "index.html"; // ലോഗിൻ കഴിഞ്ഞാൽ ആപ്പിലേക്ക് പോകും
             }).catch((error) => { alert("OTP തെറ്റാണ്!"); });
