@@ -7,7 +7,10 @@
 <body>
     <h2>മേസ്തിരി ആപ്പിലേക്ക് സ്വാഗതം</h2>
     
-    <div <button onclick="googleSignIn()">ഗൂഗിൾ വഴി ലോഗിൻ ചെയ്യുക</button>id="login-form">
+    <div id="login-form">
+        <!-- ഗൂഗിൾ ലോഗിൻ ബട്ടൺ -->
+        <button onclick="googleSignIn()">ഗൂഗിൾ വഴി ലോഗിൻ ചെയ്യുക</button>
+        <br><br>
         <input type="text" id="phone" placeholder="ഫോൺ നമ്പർ (+91...)">
         <button onclick="sendOTP()">OTP അയക്കുക</button>
     </div>
@@ -21,7 +24,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, GoogleAuthProvider, signInWithPopup } from "[https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js](https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js)";
+        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        
         const firebaseConfig = {
           apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
           authDomain: "mesthri-app.firebaseapp.com",
@@ -35,6 +39,18 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         
+        // ഗൂഗിൾ ലോഗിൻ ഫങ്‌ഷൻ
+        window.googleSignIn = function() {
+            const provider = new GoogleAuthProvider();
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    alert("ഗൂഗിൾ ലോഗിൻ വിജയിച്ചു!");
+                    window.location.href = "index.html";
+                }).catch((error) => {
+                    alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
+                });
+        }
+
         window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' }, auth);
 
         window.sendOTP = function() {
@@ -50,18 +66,9 @@
 
         window.verifyOTP = function() {
             const code = document.getElementById('otp').value;
-            window.confirmationResult.confirm(code).then((result) => {window.googleSignIn = function() {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-        .then((result) => {
-            alert("ഗൂഗിൾ ലോഗിൻ വിജയിച്ചു!");
-            window.location.href = "index.html";
-        }).catch((error) => {
-            alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
-        });
-}
+            window.confirmationResult.confirm(code).then((result) => {
                 alert("ലോഗിൻ വിജയിച്ചു!");
-                window.location.href = "index.html"; // ലോഗിൻ കഴിഞ്ഞാൽ ആപ്പിലേക്ക് പോകും
+                window.location.href = "index.html";
             }).catch((error) => { alert("OTP തെറ്റാണ്!"); });
         }
     </script>
