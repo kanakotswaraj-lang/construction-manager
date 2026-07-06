@@ -3,24 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>ലോഗിൻ - മേസ്തിരി ആപ്പ്</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; }
-        input { padding: 10px; margin: 10px; width: 250px; }
-        button { padding: 10px 20px; cursor: pointer; }
-    </style>
 </head>
 <body>
     <h2>മേസ്തിരി ആപ്പിലേക്ക് സ്വാഗതം</h2>
     <input type="text" id="phone" placeholder="ഫോൺ നമ്പർ (+91...)">
-    <br>
     <button onclick="sendOTP()">OTP അയക്കുക</button>
     <div id="recaptcha-container"></div>
 
-    <script>
-        function sendOTP() {
+    <!-- Firebase SDK-കൾ ഇവിടെ ചേർത്താൽ മാത്രമേ ലോഗിൻ പ്രവർത്തിക്കൂ -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+          authDomain: "mesthri-app.firebaseapp.com",
+          projectId: "mesthri-app",
+          storageBucket: "mesthri-app.firebasestorage.app",
+          messagingSenderId: "1060617901864",
+          appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+          measurementId: "G-J9Y5TW9D7T"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.sendOTP = function() {
             const phoneNumber = document.getElementById('phone').value;
             alert(phoneNumber + " എന്ന നമ്പറിലേക്ക് OTP അയക്കാൻ തയ്യാറെടുക്കുന്നു...");
-            // ഇവിടെയാണ് നമ്മൾ പിന്നീട് Firebase കോഡ് ചേർക്കുക
+            // അടുത്ത ഘട്ടത്തിൽ ഇവിടെയാണ് നമ്മൾ Firebase OTP ലോജിക് ചേർക്കുക
         }
     </script>
 </body>
