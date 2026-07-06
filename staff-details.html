@@ -2,109 +2,46 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>ജീവനക്കാരന്റെ വിവരങ്ങൾ</title>
 </head>
-<body class="bg-slate-50 p-4 font-sans">
+<body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto">
-        <div class="flex justify-between items-center mb-6">
-            <h1 id="staffName" class="text-2xl font-bold text-slate-800"></h1>
-            <a href="staff.html" class="text-sm text-slate-500 underline">തിരികെ</a>
+        <h1 id="staffName" class="text-2xl font-bold mb-1"></h1>
+        <p id="staffPhone" class="text-slate-500 mb-4"></p>
+
+        <!-- Attendance -->
+        <div class="bg-white p-4 rounded-xl border mb-4">
+            <button onclick="markAttendance('Present')" class="bg-emerald-500 text-white px-4 py-2 rounded font-bold mr-2">വന്നു</button>
+            <button onclick="markAttendance('Absent')" class="bg-red-500 text-white px-4 py-2 rounded font-bold">അവധി</button>
         </div>
 
-        <!-- Summary Section -->
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="bg-blue-600 p-4 rounded-3xl text-white shadow-lg">
-                <div class="text-xs opacity-80">Total Balance</div>
-                <div id="totalBalance" class="text-xl font-bold">₹0</div>
-            </div>
-            <div class="bg-emerald-600 p-4 rounded-3xl text-white shadow-lg">
-                <div class="text-xs opacity-80">Weekly Paid</div>
-                <div id="weeklyPaid" class="text-xl font-bold">₹0</div>
-            </div>
-        </div>
-        
-        <!-- Entry Form -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6 space-y-3">
-            <input type="date" id="entryDate" class="w-full p-3 border rounded-xl outline-none">
-            <input type="text" id="work" placeholder="പണിയുടെ വിവരണം" class="w-full p-3 border rounded-xl outline-none">
-            <input type="number" id="wage" placeholder="കൂലി (₹)" class="w-full p-3 border rounded-xl outline-none">
-            <input type="number" id="paid" placeholder="നൽകിയത് (₹)" class="w-full p-3 border rounded-xl outline-none">
-            <select id="mode" class="w-full p-3 border rounded-xl outline-none bg-white">
-                <option value="Cash">Cash (പണം)</option>
-                <option value="Google Pay">Google Pay</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-            </select>
-            <button onclick="saveEntry()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">സേവ് ചെയ്യുക</button>
-        </div>
+        <!-- WhatsApp Button -->
+        <button onclick="sendWhatsApp()" class="w-full bg-green-600 text-white p-3 rounded-xl font-bold mb-4">വാട്ട്‌സ്ആപ്പിൽ മെസ്സേജ് അയക്കുക</button>
 
-        <div id="historyList" class="space-y-3"></div>
+        <div id="historyList" class="space-y-2"></div>
     </div>
 
     <script>
-        document.getElementById('entryDate').valueAsDate = new Date();
         const urlParams = new URLSearchParams(window.location.search);
-        const staffIndex = urlParams.get('index');
+        const index = urlParams.get('index');
         let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-        
-        document.getElementById('staffName').innerText = staff[staffIndex].name;
+        let s = staff[index];
 
-        function updateSummary() {
-            let entries = staff[staffIndex].entries || [];
-            let totalWage = 0;
-            let totalPaid = 0;
-            let weekPaid = 0;
-            let sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        document.getElementById('staffName').innerText = s.name;
+        document.getElementById('staffPhone').innerText = "ഫോൺ: " + (s.phone || "നൽകിയിട്ടില്ല");
 
-            entries.forEach(e => {
-                totalWage += Number(e.wage);
-                totalPaid += Number(e.paid);
-                if (new Date(e.date) >= sevenDaysAgo) {
-                    weekPaid += Number(e.paid);
-                }
-            });
-
-            document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
-            document.getElementById('weeklyPaid').innerText = '₹' + weekPaid;
-        }
-
-        function saveEntry() {
-            let entry = {
-                date: document.getElementById('entryDate').value,
-                work: document.getElementById('work').value,
-                wage: document.getElementById('wage').value,
-                paid: document.getElementById('paid').value,
-                mode: document.getElementById('mode').value
-            };
-            if(!staff[staffIndex].entries) staff[staffIndex].entries = [];
-            staff[staffIndex].entries.push(entry);
-            
+        function markAttendance(status) {
+            s.entries.push({ date: new Date().toLocaleDateString(), work: "ഹാജർ: " + status });
             localStorage.setItem('staff', JSON.stringify(staff));
             location.reload();
         }
 
-        function deleteEntry(eIndex) {
-            staff[staffIndex].entries.splice(eIndex, 1);
-            localStorage.setItem('staff', JSON.stringify(staff));
-            location.reload();
+        function sendWhatsApp() {
+            if(!s.phone) return alert("ഫോൺ നമ്പർ ഇല്ല!");
+            let msg = `ഹലോ ${s.name}, താങ്കളുടെ ഹാജർ വിവരങ്ങൾ പരിശോധിക്കുമല്ലോ.`;
+            window.open(`https://wa.me/91${s.phone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
-
-        function displayEntries() {
-            let entries = staff[staffIndex].entries || [];
-            document.getElementById('historyList').innerHTML = entries.map((e, i) => `
-                <div class='bg-white p-4 border border-slate-100 rounded-2xl flex justify-between items-center shadow-sm'>
-                    <div>
-                        <div class="text-[10px] text-slate-400 font-bold">${e.date} | <span class="text-emerald-600">${e.mode}</span></div>
-                        <div class="text-sm font-bold text-slate-800">${e.work}</div>
-                        <div class="text-xs text-slate-500">കൂലി: ₹${e.wage} | നൽകിയത്: ₹${e.paid}</div>
-                    </div>
-                    <button onclick="deleteEntry(${i})" class="text-red-500 text-xs font-bold bg-red-50 px-3 py-1 rounded-lg">Delete</button>
-                </div>`).join('');
-            updateSummary();
-        }
-        displayEntries();
     </script>
 </body>
 </html>
