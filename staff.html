@@ -4,60 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>ജീവനക്കാർ</title>
+    <title>മേസ്തിരി ആപ്പ്</title>
 </head>
-<body class="bg-slate-100 p-4 font-sans">
+<body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-bold mb-6 text-slate-800 text-center">ജീവനക്കാർ</h1>
+        <h1 class="text-2xl font-bold mb-4">തൊഴിലാളികൾ</h1>
         
         <!-- Add Staff -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm border mb-6 flex gap-2">
-            <input type="text" id="newStaffName" placeholder="പേര്" class="w-full p-2 outline-none">
-            <button onclick="addStaff()" class="bg-slate-900 text-white px-6 py-2 rounded-xl font-bold">+</button>
+        <div class="bg-white p-4 rounded-xl shadow border mb-4">
+            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-2 border rounded mb-2">
+            <input type="tel" id="staffPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-2 border rounded mb-2">
+            <button onclick="addStaff()" class="w-full bg-slate-900 text-white p-2 rounded font-bold">ആഡ് ചെയ്യുക</button>
         </div>
 
-        <input type="text" id="searchInput" onkeyup="filterStaff()" placeholder="തിരയുക..." class="w-full p-4 rounded-2xl shadow-sm border mb-4 outline-none">
-        
-        <div id="staffList" class="space-y-3"></div>
-
-        <div class="mt-8 text-center">
-            <a href="index.html" class="text-slate-500 underline">തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
+        <!-- Export/Import -->
+        <div class="flex gap-2 mb-4">
+            <button onclick="exportData()" class="flex-1 bg-blue-600 text-white p-2 rounded text-sm">ബാക്കപ്പ് (Export)</button>
+            <label class="flex-1 bg-emerald-600 text-white p-2 rounded text-sm text-center cursor-pointer">
+                തിരിച്ചെടുക്കുക (Import)
+                <input type="file" id="importFile" onchange="importData(event)" class="hidden">
+            </label>
         </div>
+
+        <!-- Staff List -->
+        <div id="staffList" class="space-y-2"></div>
     </div>
 
     <script>
         function addStaff() {
-            let name = document.getElementById('newStaffName').value;
-            if(!name) return;
+            let name = document.getElementById('staffName').value;
+            let phone = document.getElementById('staffPhone').value;
+            if(!name) return alert("പേര് നൽകുക");
+            
             let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-            staff.push({ name: name, entries: [] });
+            staff.push({ name: name, phone: phone, entries: [] });
             localStorage.setItem('staff', JSON.stringify(staff));
             location.reload();
-        }
-
-        function deleteStaff(index) {
-            let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-            staff.splice(index, 1);
-            localStorage.setItem('staff', JSON.stringify(staff));
-            location.reload();
-        }
-
-        function filterStaff() {
-            let input = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.staff-item').forEach(item => {
-                item.style.display = item.innerText.toLowerCase().includes(input) ? '' : 'none';
-            });
         }
 
         function displayStaff() {
             let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-            let container = document.getElementById('staffList');
-            container.innerHTML = staff.map((s, index) => `
-                <div class='staff-item bg-white p-4 rounded-2xl shadow-sm border flex justify-between items-center'>
-                    <a href="staff-details.html?index=${index}" class="font-bold text-slate-800">${s.name}</a>
-                    <button onclick="deleteStaff(${index})" class="text-red-500 bg-red-50 px-3 py-1 rounded-lg text-sm">Delete</button>
-                </div>`).join('');
+            let list = document.getElementById('staffList');
+            staff.forEach((s, index) => {
+                list.innerHTML += `<div class="bg-white p-4 rounded-xl border flex justify-between items-center">
+                    <span>${s.name}</span>
+                    <a href="staff-details.html?index=${index}" class="bg-slate-200 px-4 py-1 rounded">കണക്ക്</a>
+                </div>`;
+            });
         }
+
+        function exportData() {
+            let data = localStorage.getItem('staff');
+            if(!data) return alert("ഡാറ്റ ഇല്ല!");
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([data], {type: 'application/json'}));
+            a.download = 'backup.json';
+            a.click();
+        }
+
+        function importData(event) {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                localStorage.setItem('staff', e.target.result);
+                location.reload();
+            };
+            reader.readAsText(event.target.files[0]);
+        }
+
         displayStaff();
     </script>
 </body>
