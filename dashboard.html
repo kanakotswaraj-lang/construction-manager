@@ -21,7 +21,7 @@
     
     <!-- പുതിയ ലിങ്ക് ഇവിടെ ചേർക്കുക -->
     <a href="work-entry.html" style="text-decoration: none;">
-        <button style="background-color: #28a745; margin-bottom: 10px; width: 100%; padding: 12px; border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 16px;">പുതിയ ജോലി ചേർക്കുക</button>
+        <button style="background-color: #28a745; margin-bottom: 10px; width: 100%; padding: 12px; border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 16px;">
     </a>
 
  <div class="container">
@@ -97,7 +97,7 @@
                 window.location.href = "login.html";
             });
         }
-        <script>
+        
     const worksList = document.getElementById('worksList');
 
     // ഡാറ്റാബേസിൽ നിന്ന് ജോലികൾ എടുക്കുന്നു
@@ -111,8 +111,7 @@
             div.innerHTML = `<strong>ജോലി:</strong> ${work.name} <br> <strong>തുക:</strong> ₹${work.amount}`;
             worksList.appendChild(div);
         });
-    });
-</script>
+    }
     </script>
 </body>
 </html>
