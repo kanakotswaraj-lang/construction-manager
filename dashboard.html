@@ -1,1 +1,25 @@
-"welcome"
+<h1>സ്വാഗതം!</h1>
+<div id="user-info"></div>
+<button onclick="logout()">ലോഗ് ഔട്ട്</button>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<script>
+    // Firebase initialization (നേരത്തെ ചെയ്തതുപോലെ)
+    // ശ്രദ്ധിക്കുക: ഇവിടെയും Firebase Config നൽകണം
+    
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            document.getElementById("user-info").innerHTML = "ഹലോ, " + user.displayName;
+        } else {
+            window.location.href = "login.html"; // ലോഗിൻ ചെയ്തിട്ടില്ലെങ്കിൽ ലോഗിൻ പേജിലേക്ക് വിടുക
+        }
+    });
+
+    function logout() {
+        firebase.auth().signOut().then(() => {
+            window.location.href = "login.html";
+        });
+    }
+</script>
