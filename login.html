@@ -2,6 +2,7 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ലോഗിൻ - മേസ്തിരി ആപ്പ്</title>
     <style>
         body {
@@ -13,35 +14,42 @@
             min-height: 100vh;
             background-color: #f0f2f5;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
         }
-        #login-form, #otp-form {
+        #login-form {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 400px;
             text-align: center;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 8px;
-            background-color: #1877f2;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
+            border: 1px solid #e1e1e1;
         }
         input {
             width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 14px;
+            margin-top: 15px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
             box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 12px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #logout-btn {
+            background-color: #ff4d4d;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -50,26 +58,27 @@
     <h2>മേസ്തിരി ആപ്പിലേക്ക് സ്വാഗതം</h2>
 
     <div id="login-form">
-        <!-- ഗൂഗിൾ ലോഗിൻ ബട്ടൺ -->
         <button onclick="googleSignIn()">ഗൂഗിൾ വഴി ലോഗിൻ ചെയ്യുക</button>
-        <br><br>
         <input type="text" id="phone" placeholder="ഫോൺ നമ്പർ (+91...)">
         <button onclick="sendOTP()">OTP അയക്കുക</button>
+        
+        <!-- ലോഗ് ഔട്ട് ബട്ടൺ -->
+        <button id="logout-btn" onclick="userSignOut()">ലോഗ് ഔട്ട് ചെയ്യുക</button>
     </div>
 
-    <div id="otp-form" style="display:none;">
-        <!-- OTP ഫോം ഇവിടെ വരും -->
-    </div>
     <script>
-    function googleSignIn() {
-        alert("ഗൂഗിൾ സൈൻ-ഇൻ ഉടൻ ലഭ്യമാകും!"); 
-        // ഇവിടെയാണ് നമ്മൾ പിന്നീട് ഗൂഗിൾ ഫയർബേസ് (Firebase) കോഡ് ചേർക്കുക
-    }
+        function googleSignIn() {
+            alert("ഗൂഗിൾ സൈൻ-ഇൻ ഉടൻ ലഭ്യമാകും!");
+        }
 
-    function sendOTP() {
-        alert("OTP അയക്കാനുള്ള സംവിധാനം ഉടൻ വരുന്നു!");
-    }
-</script>
+        function sendOTP() {
+            alert("OTP അയക്കാനുള്ള സംവിധാനം ഉടൻ വരുന്നു!");
+        }
+
+        function userSignOut() {
+            alert("നിങ്ങൾ വിജയകരമായി ലോഗ് ഔട്ട് ആയി!");
+        }
+    </script>
 
 </body>
 </html>
