@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>പുതിയ ജോലി ചേർക്കുക</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .form-container { width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>പുതിയ ജോലി ചേർക്കുക</h2>
+        <input type="text" id="workName" placeholder="ജോലിയുടെ പേര് (ഉദാ: വീട് പണി)">
+        <input type="number" id="workAmount" placeholder="ആകെ തുക">
+        <button onclick="saveWork()">സേവ് ചെയ്യുക</button>
+        <br><br>
+        <a href="dashboard.html">ഡാഷ്‌ബോർഡിലേക്ക് തിരികെ പോകുക</a>
+    </div>
+
+    <!-- Firebase SDKs ചേർക്കുക -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            // നിങ്ങളുടെ പഴയ config ഇവിടെ നൽകുക
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function saveWork() {
+            const name = document.getElementById("workName").value;
+            const amount = document.getElementById("workAmount").value;
+
+            db.collection("works").add({
+                name: name,
+                amount: amount,
+                date: new Date()
+            })
+            .then(() => {
+                alert("വിവരങ്ങൾ സേവ് ചെയ്തു!");
+                window.location.href = "dashboard.html";
+            })
+            .catch((error) => {
+                alert("തെറ്റ് സംഭവിച്ചു: " + error.message);
+            });
+        }
+    </script>
+</body>
+</html>
