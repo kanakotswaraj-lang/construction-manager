@@ -2,13 +2,24 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ഡാഷ്‌ബോർഡ്</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h1 { color: #333; font-size: 24px; }
+        #user-info { margin: 20px 0; font-size: 18px; color: #555; }
+        button { background-color: #ff4757; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; width: 100%; }
+        button:hover { background-color: #ff6b81; }
+    </style>
 </head>
 <body>
 
-    <h1>മേസ്തിരി ആപ്പ് ഡാഷ്‌ബോർഡ്</h1>
-    <div id="user-info"></div>
-    <button onclick="logout()">ലോഗ് ഔട്ട് ചെയ്യുക</button>
+    <div class="container">
+        <h1>മേസ്തിരി ആപ്പ്</h1>
+        <div id="user-info"></div>
+        <button onclick="logout()">ലോഗ് ഔട്ട് ചെയ്യുക</button>
+    </div>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -29,7 +40,7 @@
 
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                document.getElementById("user-info").innerHTML = "ഹലോ, " + user.displayName;
+                document.getElementById("user-info").innerHTML = "സ്വാഗതം, <strong>" + user.displayName + "</strong>";
             } else {
                 window.location.href = "login.html";
             }
