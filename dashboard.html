@@ -1,36 +1,45 @@
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <title>ഡാഷ്‌ബോർഡ്</title>
+</head>
+<body>
 
-<script>
-    // 1. ഇവിടെ നിങ്ങളുടെ Firebase Config നൽകുക
-    const firebaseConfig = {
-      apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-      authDomain: "mesthri-app.firebaseapp.com",
-      projectId: "mesthri-app",
-      storageBucket: "mesthri-app.firebasestorage.app",
-      messagingSenderId: "1060617901864",
-      appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-      measurementId: "G-J9Y5TW9D7T"
-    };
+    <h1>മേസ്തിരി ആപ്പ് ഡാഷ്‌ബോർഡ്</h1>
+    <div id="user-info"></div>
+    <button onclick="logout()">ലോഗ് ഔട്ട് ചെയ്യുക</button>
 
-    // 2. Firebase Initialize ചെയ്യുക
-    firebase.initializeApp(firebaseConfig);
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
-    // 3. Auth state പരിശോധിക്കുക
-    firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            document.getElementById("user-info").innerHTML = "ഹലോ, " + user.displayName;
-        } else {
-            window.location.href = "login.html";
-        }
-    });
+    <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+          authDomain: "mesthri-app.firebaseapp.com",
+          projectId: "mesthri-app",
+          storageBucket: "mesthri-app.firebasestorage.app",
+          messagingSenderId: "1060617901864",
+          appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+          measurementId: "G-J9Y5TW9D7T"
+        };
 
-    // 4. ലോഗ് ഔട്ട് ഫംഗ്‌ഷൻ
-    function logout() {
-        firebase.auth().signOut().then(() => {
-            window.location.href = "login.html";
-        }).catch((error) => {
-            alert("ലോഗ് ഔട്ട് പരാജയപ്പെട്ടു");
+        firebase.initializeApp(firebaseConfig);
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById("user-info").innerHTML = "ഹലോ, " + user.displayName;
+            } else {
+                window.location.href = "login.html";
+            }
         });
-    }
-</script>
+
+        function logout() {
+            firebase.auth().signOut().then(() => {
+                window.location.href = "login.html";
+            });
+        }
+    </script>
+</body>
+</html>
