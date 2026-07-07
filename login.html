@@ -4,81 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ലോഗിൻ - മേസ്തിരി ആപ്പ്</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 15px;
-        }
-        #login-form {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid #e1e1e1;
-        }
-        input {
-            width: 100%;
-            padding: 14px;
-            margin-top: 15px;
-            border: 1px solid #ccc;
-            border-radius: 12px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            margin-top: 15px;
-            border: none;
-            border-radius: 12px;
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        #logout-btn {
-            background-color: #ff4d4d;
-            margin-top: 10px;
-        }
-    </style>
+    <!-- CSS ഇവിടെയുണ്ട് -->
 </head>
 <body>
-
-    <h2>മേസ്തിരി ആപ്പിലേക്ക് സ്വാഗതം</h2>
-
-    <div id="login-form">
-        <button onclick="googleSignIn()">ഗൂഗിൾ വഴി ലോഗിൻ ചെയ്യുക</button>
-        <input type="text" id="phone" placeholder="ഫോൺ നമ്പർ (+91...)">
-        <button onclick="sendOTP()">OTP അയക്കുക</button>
-        
-        <!-- ലോഗ് ഔട്ട് ബട്ടൺ -->
-        <button id="logout-btn" onclick="userSignOut()">ലോഗ് ഔട്ട് ചെയ്യുക</button>
-    </div>
+    <!-- നിങ്ങളുടെ ലോഗിൻ ബട്ടണുകൾ ഇവിടെയുണ്ട് -->
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
     <script>
+        // Firebase Config
+        const firebaseConfig = {
+          apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+          authDomain: "mesthri-app.firebaseapp.com",
+          projectId: "mesthri-app",
+          storageBucket: "mesthri-app.firebasestorage.app",
+          messagingSenderId: "1060617901864",
+          appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+          measurementId: "G-J9Y5TW9D7T"
+        };
+
+        // Firebase Initialize
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        // ഗൂഗിൾ ലോഗിൻ ഫംഗ്‌ഷൻ
         function googleSignIn() {
-            alert("ഗൂഗിൾ സൈൻ-ഇൻ ഉടൻ ലഭ്യമാകും!");
+            auth.signInWithPopup(provider)
+            .then((result) => {
+                alert("സ്വാഗതം, " + result.user.displayName + "!");
+                window.location.href = "dashboard.html"; 
+            })
+            .catch((error) => {
+                alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
+                console.log(error);
+            });
         }
 
-        function sendOTP() {
-            alert("OTP അയക്കാനുള്ള സംവിധാനം ഉടൻ വരുന്നു!");
-        }
-
+        // ലോഗ് ഔട്ട് ഫംഗ്‌ഷൻ
         function userSignOut() {
-            alert("നിങ്ങൾ വിജയകരമായി ലോഗ് ഔട്ട് ആയി!");
+            auth.signOut().then(() => {
+                alert("നിങ്ങൾ വിജയകരമായി ലോഗ് ഔട്ട് ആയി!");
+            });
         }
     </script>
-
 </body>
 </html>
