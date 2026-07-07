@@ -24,8 +24,48 @@
         <button style="background-color: #28a745; margin-bottom: 10px; width: 100%; padding: 12px; border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 16px;">പുതിയ ജോലി ചേർക്കുക</button>
     </a>
 
+ <div class="container">
+    <h1>മേസ്തിരി ആപ്പ്</h1>
+    <div id="user-info"></div>
+    <a href="work-entry.html"><button>പുതിയ ജോലി ചേർക്കുക</button></a>
+    
+    <h3>ജോലികളുടെ ലിസ്റ്റ്</h3>
+    <div id="worksList"></div> <!-- ഇവിടെയാണ് ജോലികൾ വരുന്നത് -->
+    <style>
+    /* നിലവിലുള്ള സ്റ്റൈലിനോടൊപ്പം ഇതും ചേർക്കുക */
+    .container {
+        max-width: 400px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        text-align: center;
+        font-family: sans-serif;
+    }
+    button {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #28a745;
+        color: white;
+    }
+    #worksList {
+        text-align: left;
+        margin-top: 15px;
+    }
+    .work-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+</style>
     <button onclick="logout()">ലോഗ് ഔട്ട് ചെയ്യുക</button>
-</div>
+</div>   
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -57,6 +97,22 @@
                 window.location.href = "login.html";
             });
         }
+        <script>
+    const worksList = document.getElementById('worksList');
+
+    // ഡാറ്റാബേസിൽ നിന്ന് ജോലികൾ എടുക്കുന്നു
+    db.collection("works").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            const work = doc.data();
+            const div = document.createElement("div");
+            div.style.border = "1px solid #ccc";
+            div.style.padding = "10px";
+            div.style.margin = "10px 0";
+            div.innerHTML = `<strong>ജോലി:</strong> ${work.name} <br> <strong>തുക:</strong> ₹${work.amount}`;
+            worksList.appendChild(div);
+        });
+    });
+</script>
     </script>
 </body>
 </html>
