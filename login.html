@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ലോഗിൻ - മേസ്തിരി ആപ്പ്</title>
-    <!-- CSS ഇവിടെയുണ്ട് -->
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: #f0f2f5; margin: 0; }
+        button { padding: 15px 30px; margin: 10px; cursor: pointer; border-radius: 10px; border: none; background: #007bff; color: white; }
+    </style>
 </head>
 <body>
-    <!-- നിങ്ങളുടെ ലോഗിൻ ബട്ടണുകൾ ഇവിടെയുണ്ട് -->
-    
+
+    <h2>മേസ്തിരി ആപ്പിലേക്ക് സ്വാഗതം</h2>
+    <button onclick="googleSignIn()">ഗൂഗിൾ വഴി ലോഗിൻ ചെയ്യുക</button>
+    <button onclick="userSignOut()" style="background: red;">ലോഗ് ഔട്ട് ചെയ്യുക</button>
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
           apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
           authDomain: "mesthri-app.firebaseapp.com",
@@ -25,25 +30,21 @@
           measurementId: "G-J9Y5TW9D7T"
         };
 
-        // Firebase Initialize
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        // ഗൂഗിൾ ലോഗിൻ ഫംഗ്‌ഷൻ
         function googleSignIn() {
             auth.signInWithPopup(provider)
             .then((result) => {
                 alert("സ്വാഗതം, " + result.user.displayName + "!");
-                window.location.href = "dashboard.html"; 
+                window.location.href = "dashboard.html";
             })
             .catch((error) => {
                 alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
-                console.log(error);
             });
         }
 
-        // ലോഗ് ഔട്ട് ഫംഗ്‌ഷൻ
         function userSignOut() {
             auth.signOut().then(() => {
                 alert("നിങ്ങൾ വിജയകരമായി ലോഗ് ഔട്ട് ആയി!");
