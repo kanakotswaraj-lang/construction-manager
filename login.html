@@ -45,16 +45,16 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyiX_beM0iZZ0XltA",
+const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
             projectId: "mesthri-app",
-            storageBucket: "mesthri-app.appspot.com",
+            storageBucket: "mesthri-app.firebasestorage.app",
             messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bb0d352218"
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
         };
-
+      
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
