@@ -1,55 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>മേസ്തിരി ആപ്പ്</title>
-    <style>
-        .container { max-width: 400px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; text-align: center; font-family: sans-serif; }
-        button { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 5px; cursor: pointer; background-color: #28a745; color: white; }
-        .work-box { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px; background-color: #f9f9f9; text-align: left; }
-    </style>
-</head>
-<body>
+<script type="module">
+    // Firebase SDK-കൾ ഇമ്പോർട്ട് ചെയ്യുന്നു
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-<div class="container">
-    <h1>മേസ്തിരി ആപ്പ്</h1>
-    <div id="user-info"></div>
-    
-    <a href="work-entry.html" style="text-decoration: none;">
-        <button>പുതിയ ജോലി ചേർക്കുക</button>
-    </a>
-    
-    <h3>ജോലികളുടെ ലിസ്റ്റ്</h3>
-    <div id="worksList"></div>
-    
-    <button onclick="logout()">ലോഗ് ഔട്ട് ചെയ്യുക</button>
-</div>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyiX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.appspot.com",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36bb0d352218"
+    };
 
-<!-- സ്ക്രിപ്റ്റ് ഭാഗം -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    // Firebase ഇനിഷ്യലൈസ്
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-<script>
-    // ഇവിടെ നിങ്ങളുടെ firebaseConfig ഇടുക
-    // db = firebase.firestore();
-    
     // ലോഗിൻ ചെക്കിംഗ്
-    firebase.auth().onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
         if (user) {
             document.getElementById("user-info").innerHTML = "സ്വാഗതം, <strong>" + user.displayName + "</strong>";
+            loadWorks();
         } else {
             window.location.href = "login.html";
         }
     });
 
-    // ലോഗ് ഔട്ട്
-    function logout() {
-        firebase.auth().signOut().then(() => { window.location.href = "login.html"; });
-    }
-
-    // വർക്ക് ലിസ്റ്റ്
-    const worksList = document.getElementById('worksList');
-    db.collection("works").get().then((querySnapshot) => {
+    // ജോലികൾ ലോഡ് ചെയ്യാനുള്ള ഫംഗ്ഷൻ
+    async function loadWorks() {
+        const worksList = document.getElementById('worksList');
+        const querySnapshot = await getDocs(collection(db, "works"));
         worksList.innerHTML = "";
         querySnapshot.forEach((doc) => {
             const work = doc.data();
@@ -58,8 +40,10 @@
             div.innerHTML = `<strong>ജോലി:</strong> ${work.name} <br> <strong>തുക:</strong> ₹${work.amount}`;
             worksList.appendChild(div);
         });
-    });
-</script>
+    }
 
-</body>
-</html>
+    // ലോഗ് ഔട്ട് (ഇത് വിൻഡോയിൽ ലഭ്യമാക്കാൻ)
+    window.logout = function() {
+        signOut(auth).then(() => { window.location.href = "login.html"; });
+    };
+</script>
