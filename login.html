@@ -3,41 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>ലോഗിൻ - മെസ്ത്രി ആപ്പ്</title>
-    <!-- Firebase SDK-കൾ -->
+    <!-- 1. ആദ്യം Firebase-ന്റെ പ്രധാന ലൈബ്രറികൾ ലോഡ് ചെയ്യുക -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 </head>
 <body>
 
     <h2>മെസ്ത്രി ആപ്പിലേക്ക് സ്വാഗതം</h2>
-    
-    <!-- ലോഗിൻ ബട്ടൺ -->
     <button onclick="googleLogin()">ഗൂഗിൾ വഴി ലോഗിൻ ചെയ്യുക</button>
 
-  <script>
-    // ... firebaseConfig-ന് ശേഷം ...
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const provider = new firebase.auth.GoogleAuthProvider();
+    <script>
+        // 2. ആദ്യം കോൺഫിഗറേഷൻ ഡിഫൈൻ ചെയ്യുക
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyiX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.appspot.com",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bb0d352218"
+        };
 
-    // ഉപയോക്താവ് ലോഗിൻ ചെയ്തിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുന്നു
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            // ലോഗിൻ ചെയ്തിട്ടുണ്ടെങ്കിൽ ഡാഷ്ബോർഡിലേക്ക് അയക്കുക
-            window.location.href = "dashboard.html";
+        // 3. ശേഷം മാത്രം ബാക്കി കാര്യങ്ങൾ
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        function googleLogin() {
+            auth.signInWithPopup(provider)
+            .then((result) => {
+                window.location.href = "dashboard.html";
+            })
+            .catch((error) => {
+                alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
+            });
         }
-    });
-
-    // ലോഗിൻ ഫംഗ്ഷൻ
-    function googleLogin() {
-        auth.signInWithPopup(provider)
-        .then((result) => {
-            window.location.href = "dashboard.html";
-        })
-        .catch((error) => {
-            alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
-        });
-    }
-</script>
+    </script>
 </body>
 </html>
