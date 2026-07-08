@@ -46,7 +46,7 @@
 
    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAuth, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+   import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -64,19 +64,16 @@
 
     // ലോഗിൻ ബട്ടൺ പ്രവർത്തിപ്പിക്കാനുള്ള കോഡ്
     document.getElementById("loginBtn").addEventListener("click", () => {
-        signInWithRedirect(auth, provider);
-    });
-
-    // ലോഗിൻ ഫലം പരിശോധിക്കാനുള്ള കോഡ്
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result) {
-          window.location.replace("dashboard.html");
-        }
-      }).catch((error) => {
-        console.error("ലോഗിൻ പിശക്:", error);
+    signInWithPopup(auth, provider)
+    .then((result) => {
+        // ലോഗിൻ വിജയിച്ചാൽ നേരെ ഡാഷ്‌ബോർഡിലേക്ക്
+        window.location.replace("dashboard.html");
+    })
+    .catch((error) => {
+        console.error("ലോഗിൻ പരാജയപ്പെട്ടു:", error);
         alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
-      });
+    });
+});
 </script>
 </body>
 </html>
