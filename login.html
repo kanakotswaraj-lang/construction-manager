@@ -64,19 +64,16 @@
         const provider = new GoogleAuthProvider();
 
         // ലോഗിൻ ബട്ടൺ പ്രവർത്തിപ്പിക്കാനുള്ള കോഡ്
-        document.getElementById("loginBtn").addEventListener("click", () => {
-            signInWithRedirect(auth, provider);
-        });
-
-        // ലോഗിൻ ഫലം പരിശോധിക്കാനുള്ള കോഡ്
-        getRedirectResult(auth)
-          .then((result) => {
-            if (result) {
-              window.location.replace("dashboard.html");
-            }
-          }).catch((error) => {
-            alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
-          });
+       document.getElementById("loginBtn").addEventListener("click", () => {
+    signInWithPopup(auth, provider)
+    .then((result) => {
+        window.location.replace("dashboard.html");
+    })
+    .catch((error) => {
+        console.error("ലോഗിൻ പിശക്:", error); // ഇത് കൺസോളിൽ എറർ കാണിച്ചുതരും
+        alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
+    });
+});
     </script>
 </body>
 </html>
