@@ -2,54 +2,42 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ലോഗിൻ - മേസ്തിരി ആപ്പ്</title>
-    <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: #f0f2f5; margin: 0; }
-        button { padding: 15px 30px; margin: 10px; cursor: pointer; border-radius: 10px; border: none; background: #007bff; color: white; }
-    </style>
+    <title>ലോഗിൻ - മെസ്ത്രി ആപ്പ്</title>
+    <!-- Firebase SDK-കൾ -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 </head>
 <body>
 
-    <h2>മേസ്തിരി ആപ്പിലേക്ക് സ്വാഗതം</h2>
-    <button onclick="googleSignIn()">ഗൂഗിൾ വഴി ലോഗിൻ ചെയ്യുക</button>
-    <button onclick="userSignOut()" style="background: red;">ലോഗ് ഔട്ട് ചെയ്യുക</button>
+    <h2>മെസ്ത്രി ആപ്പിലേക്ക് സ്വാഗതം</h2>
+    
+    <!-- ലോഗിൻ ബട്ടൺ -->
+    <button onclick="googleLogin()">ഗൂഗിൾ വഴി ലോഗിൻ ചെയ്യുക</button>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script>
+    // ... firebaseConfig-ന് ശേഷം ...
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
 
-    <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-          authDomain: "mesthri-app.firebaseapp.com",
-          projectId: "mesthri-app",
-          storageBucket: "mesthri-app.firebasestorage.app",
-          messagingSenderId: "1060617901864",
-          appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-          measurementId: "G-J9Y5TW9D7T"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const provider = new firebase.auth.GoogleAuthProvider();
-
-        function googleSignIn() {
-            auth.signInWithPopup(provider)
-            .then((result) => {
-                alert("സ്വാഗതം, " + result.user.displayName + "!");
-                window.location.href = "dashboard.html";
-            })
-            .catch((error) => {
-                alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
-            });
+    // ഉപയോക്താവ് ലോഗിൻ ചെയ്തിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുന്നു
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // ലോഗിൻ ചെയ്തിട്ടുണ്ടെങ്കിൽ ഡാഷ്ബോർഡിലേക്ക് അയക്കുക
+            window.location.href = "dashboard.html";
         }
+    });
 
-        function userSignOut() {
-            auth.signOut().then(() => {
-                alert("നിങ്ങൾ വിജയകരമായി ലോഗ് ഔട്ട് ആയി!");
-            });
-        }
-    </script>
+    // ലോഗിൻ ഫംഗ്ഷൻ
+    function googleLogin() {
+        auth.signInWithPopup(provider)
+        .then((result) => {
+            window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+            alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
+        });
+    }
+</script>
 </body>
 </html>
