@@ -22,6 +22,12 @@
         പുതിയ വരവ്/ചെലവ് ചേർക്കുക
     </a>
 
+    <!-- മൊത്തം തുകയുടെ ബോക്സ് പട്ടികയ്ക്ക് മുകളിൽ -->
+    <div class="bg-blue-600 text-white p-6 rounded-2xl mb-6 text-center shadow-lg">
+        <p class="text-sm opacity-80">മൊത്തം ചെലവ്</p>
+        <h2 id="total-amount" class="text-3xl font-bold">₹0</h2>
+    </div>
+
     <h3 class="text-lg font-bold mb-4">കണക്കുകളുടെ പട്ടിക</h3>
     <div id="worksList" class="space-y-2"></div>
 </div>
@@ -44,7 +50,6 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // ലോഗിൻ പരിശോധന
     onAuthStateChanged(auth, (user) => {
         if (user) {
             document.getElementById("user-info").innerText = "ഹലോ, " + user.displayName;
@@ -54,27 +59,35 @@
         }
     });
 
-    // ലോഗ് ഔട്ട് ഫംഗ്‌ഷൻ
     window.logout = () => {
         signOut(auth).then(() => { window.location.href = "login.html"; });
     };
 
-    // കണക്കുകൾ ലോഡ് ചെയ്യാനുള്ള ഫംഗ്‌ഷൻ
     async function loadTransactions() {
         const q = query(collection(db, "transactions"), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
         const listDiv = document.getElementById("worksList");
+        const totalElement = document.getElementById("total-amount");
+        
         listDiv.innerHTML = "";
+        let total = 0;
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
+            const amount = Number(data.amount);
+            total += amount;
+
             listDiv.innerHTML += `
-                <div class="bg-white p-4 rounded-lg shadow-sm border">
-                    <p class="font-bold text-gray-800">${data.description}</p>
-                    <p class="text-sm text-gray-600">${data.type}: ₹${data.amount}</p>
+                <div class="bg-white p-4 rounded-lg shadow-sm border flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-gray-800">${data.description}</p>
+                        <p class="text-sm text-gray-600">${data.type}</p>
+                    </div>
+                    <p class="font-bold text-red-600">₹${amount}</p>
                 </div>
             `;
         });
+        totalElement.innerText = "₹" + total;
     }
 </script>
 </body>
