@@ -1,49 +1,74 @@
-<script type="module">
-    // Firebase SDK-കൾ ഇമ്പോർട്ട് ചെയ്യുന്നു
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <title>ഡാഷ്‌ബോർഡ് - മെസ്ത്രി ആപ്പ്</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f7f6; }
+        .work-box { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        button { padding: 10px; background-color: #ff4d4d; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAJw47JuihhalCFvFAyiX_beM0iZZ0XltA",
-        authDomain: "mesthri-app.firebaseapp.com",
-        projectId: "mesthri-app",
-        storageBucket: "mesthri-app.appspot.com",
-        messagingSenderId: "1060617901864",
-        appId: "1:1060617901864:web:5ffb9378cf36bb0d352218"
-    };
+    <!-- ഉപയോക്താവിന്റെ വിവരങ്ങൾ -->
+    <div id="user-info">ലോഗിൻ ചെയ്യുന്നു...</div>
+    <br>
+    <button onclick="logout()">ലോഗ് ഔട്ട് ചെയ്യുക</button>
 
-    // Firebase ഇനിഷ്യലൈസ്
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+    <hr>
+    <h3>ജോലികളുടെ പട്ടിക</h3>
+    <!-- ജോലികൾ ലോഡ് ആകുന്ന സ്ഥലം -->
+    <div id="worksList"></div>
 
-    // ലോഗിൻ ചെക്കിംഗ്
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            document.getElementById("user-info").innerHTML = "സ്വാഗതം, <strong>" + user.displayName + "</strong>";
-            loadWorks();
-        } else {
-            window.location.href = "login.html";
-        }
-    });
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-    // ജോലികൾ ലോഡ് ചെയ്യാനുള്ള ഫംഗ്ഷൻ
-    async function loadWorks() {
-        const worksList = document.getElementById('worksList');
-        const querySnapshot = await getDocs(collection(db, "works"));
-        worksList.innerHTML = "";
-        querySnapshot.forEach((doc) => {
-            const work = doc.data();
-            const div = document.createElement("div");
-            div.className = "work-box";
-            div.innerHTML = `<strong>ജോലി:</strong> ${work.name} <br> <strong>തുക:</strong> ₹${work.amount}`;
-            worksList.appendChild(div);
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.appspot.com",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // 1. ലോഗിൻ പരിശോധന
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById("user-info").innerHTML = "സ്വാഗതം, <strong>" + user.displayName + "</strong>";
+                loadWorks();
+            } else {
+                window.location.replace("login.html");
+            }
         });
-    }
 
-    // ലോഗ് ഔട്ട് (ഇത് വിൻഡോയിൽ ലഭ്യമാക്കാൻ)
-    window.logout = function() {
-        signOut(auth).then(() => { window.location.href = "login.html"; });
-    };
-</script>
+        // 2. ജോലികൾ ലോഡ് ചെയ്യാനുള്ള ഫംഗ്‌ഷൻ
+        async function loadWorks() {
+            const worksList = document.getElementById('worksList');
+            const querySnapshot = await getDocs(collection(db, "works"));
+            worksList.innerHTML = "";
+            querySnapshot.forEach((doc) => {
+                const work = doc.data();
+                const div = document.createElement("div");
+                div.className = "work-box";
+                div.innerHTML = `<strong>ജോലി:</strong> ${work.name} <br> <strong>തുക:</strong> ₹${work.amount}`;
+                worksList.appendChild(div);
+            });
+        }
+
+        // 3. ലോഗ് ഔട്ട് ഫംഗ്‌ഷൻ
+        window.logout = function() {
+            signOut(auth).then(() => {
+                window.location.replace("login.html");
+            });
+        };
+    </script>
+</body>
+</html>
