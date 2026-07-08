@@ -3,20 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>ലോഗിൻ - മെസ്ത്രി ആപ്പ്</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f7f6;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #357ae8;
+        }
+    </style>
 </head>
 <body>
 
-    <h2>മെസ്ത്രി ആപ്പിലേക്ക് സ്വാഗതം</h2>
-    <button id="loginBtn">ഗൂഗിൾ വഴി ലോഗിൻ ചെയ്യുക</button>
+    <div class="login-box">
+        <h2>മെസ്ത്രി ആപ്പിലേക്ക് സ്വാഗതം</h2>
+        <button id="loginBtn">ഗൂഗിൾ വഴി ലോഗിൻ ചെയ്യുക</button>
+    </div>
 
     <script type="module">
-        // Firebase-ൽ നിന്ന് ആവശ്യമായ ഫംഗ്ഷനുകൾ ഇമ്പോർട്ട് ചെയ്യുക
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-        // കോൺഫിഗറേഷൻ
-        const firebaseConfig = {apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-           
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyiX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
             projectId: "mesthri-app",
             storageBucket: "mesthri-app.appspot.com",
@@ -24,16 +55,14 @@
             appId: "1:1060617901864:web:5ffb9378cf36bb0d352218"
         };
 
-        // Firebase Initialize
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
         document.getElementById("loginBtn").addEventListener("click", () => {
             signInWithPopup(auth, provider)
-            .then((result) => {
-                window.location.href = "dashboard.html";
+            .then(() => {
+                window.location.replace("dashboard.html");
             })
             .catch((error) => {
                 alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
