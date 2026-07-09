@@ -46,7 +46,37 @@
                     // ലോഗിൻ പരാജയപ്പെട്ടാൽ
                     alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
                 });
-        };
+        };<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        // നിങ്ങളുടെ കോഡ് ഇവിടെ തുടരുക...
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ലോഗിൻ ഫംഗ്‌ഷനെ വിൻഡോയിലേക്ക് മാറ്റുന്നു (ഇത് വളരെ പ്രധാനമാണ്)
+    window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+    window.auth = auth;
+</script>
+
+<script>
+    // ഇത് HTML ബട്ടണിന് മനസ്സിലാകും
+    function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        window.signInWithEmailAndPassword(window.auth, email, password)
+            .then(() => {
+                window.location.href = "index.html";
+            })
+            .catch((error) => {
+                alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
+            });
+    }
+</script>
     </script>
 </body>
 </html>
