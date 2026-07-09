@@ -5,14 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ഡാഷ്‌ബോർഡ് - മെസ്ത്രി ആപ്പ്</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 20px; }
-        .main-container { max-width: 500px; margin: auto; }
-    </style>
 </head>
-<body>
+<body class="bg-gray-100 p-4">
 
-<div class="main-container">
+<div class="max-w-md mx-auto">
     <div id="user-info" class="mb-4">ലോഗിൻ ചെയ്യുന്നു...</div>
     <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg">ലോഗ് ഔട്ട് ചെയ്യുക</button>
     
@@ -22,16 +18,18 @@
         പുതിയ വരവ്/ചെലവ് ചേർക്കുക
     </a>
 
-    <!-- മൊത്തം തുകയുടെ ബോക്സ് പട്ടികയ്ക്ക് മുകളിൽ -->
-   <div class="grid grid-cols-2 gap-4 mb-6">
-    <div class="bg-green-600 text-white p-4 rounded-2xl text-center shadow-lg">
-        <p class="text-xs opacity-80">ആകെ വരവ്</p>
-        <h2 id="total-income" class="text-xl font-bold">₹0</h2>
+    <!-- മൊത്തം തുക -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-green-600 text-white p-4 rounded-2xl text-center shadow-lg">
+            <p class="text-xs opacity-80">ആകെ വരവ്</p>
+            <h2 id="total-income" class="text-xl font-bold">₹0</h2>
+        </div>
+        <div class="bg-red-600 text-white p-4 rounded-2xl text-center shadow-lg">
+            <p class="text-xs opacity-80">ആകെ ചെലവ്</p>
+            <h2 id="total-expense" class="text-xl font-bold">₹0</h2>
+        </div>
     </div>
-   <div class="bg-red-600 text-white p-4 rounded-2xl text-center shadow-lg">
-    <p class="text-xs opacity-80">ആകെ ചെലവ്</p>
-    <h2 id="total-expense" class="text-xl font-bold">₹0</h2>
-</div>
+
     <h3 class="text-lg font-bold mb-4">കണക്കുകളുടെ പട്ടിക</h3>
     <div id="worksList" class="space-y-2"></div>
 </div>
@@ -41,109 +39,31 @@
     import { getFirestore, collection, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-        authDomain: "mesthri-app.firebaseapp.com",
-        projectId: "mesthri-app",
-        storageBucket: "mesthri-app.appspot.com",
-        messagingSenderId: "1060617901864",
-        appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-    };
+    // നിങ്ങളുടെ Firebase കോൺഫിഗറേഷൻ ഇവിടെയുണ്ടാവണം
+    // const app = initializeApp({...}); 
+    // const db = getFirestore(app);
+    // const auth = getAuth(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            document.getElementById("user-info").innerText = "ഹലോ, " + user.displayName;
-            loadTransactions();
-        } else {
-            window.location.href = "login.html";
-        }
-    });
-
-    window.logout = () => {
-        signOut(auth).then(() => { window.location.href = "login.html"; });
-    };
-
-  async function loadTransactions() {
-    const q = query(collection(db, "transactions"), orderBy("timestamp", "desc"));
-    const querySnapshot = await getDocs(q);
-    const listDiv = document.getElementById("worksList");
+    // ഇവിടെ നിങ്ങളുടെ loadTransactions ഫംഗ്‌ഷനും ലോഗൗട്ട് ഫംഗ്‌ഷനും ചേർക്കുക
     
-    // പുതിയ ID-കൾ ഇവിടെ കൃത്യമായി നൽകുക
-    const incomeElement = document.getElementById("total-income");
-    const expenseElement = document.getElementById("total-expense");
-    
-    listDiv.innerHTML = "";
-    let totalIncome = 0;
-    let totalExpense = 0;
-querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const amount = Number(data.amount);
-        
-        // തീയതി കാണിക്കാൻ (Firestore-ൽ timestamp ഉണ്ടെങ്കിൽ)
-        const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ml-IN') : 'N/A';
-
-        if (data.type === "വരവ്") {
-            totalIncome += amount;
-        } else {
-            totalExpense += amount;
-        }
-
-        listDiv.innerHTML += `
-            <div class="bg-white p-4 rounded-lg shadow-sm border mb-2 flex justify-between items-center">
-                <div>
-                    <p class="font-bold text-gray-800">${data.description}</p>
-                    <p class="text-xs text-gray-500">${date}</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <p class="font-bold ${data.type === 'വരവ്' ? 'text-green-600' : 'text-red-600'}">₹${amount}</p>
-                    <button onclick="editTransaction('${doc.id}', '${data.description}', ${amount})" class="text-blue-500 px-2 font-bold">✎</button>
-                    <button onclick="deleteTransaction('${doc.id}')" class="text-red-500 px-2 font-bold">X</button>
-                </div>
-            </div>
-        `;
-    });
-  
-
-        listDiv.innerHTML += `
-            <div class="bg-white p-4 rounded-lg shadow-sm border flex justify-between items-center">
-                <div>
-                    <p class="font-bold text-gray-800">${data.description}</p>
-                    <p class="text-sm text-gray-600">${data.type}</p>
-                </div>
-                <p class="font-bold ${data.type === 'വരവ്' ? 'text-green-600' : 'text-red-600'}">
-                    ₹${amount}
-                </p>
-            </div>
-        `;
-    });
-
-    incomeElement.innerText = "₹" + totalIncome;
-    expenseElement.innerText = "₹" + totalExpense;
-}
-<script>
     window.deleteTransaction = async (id) => {
-    if (confirm("ഈ എൻട്രി നീക്കം ചെയ്യണോ?")) {
-        await deleteDoc(doc(db, "transactions", id));
-        loadTransactions();
-    }
-};
+        if (confirm("ഈ എൻട്രി നീക്കം ചെയ്യണോ?")) {
+            await deleteDoc(doc(db, "transactions", id));
+            loadTransactions();
+        }
+    };
 
-window.editTransaction = async (id, currentDesc, currentAmount) => {
-    const newDesc = prompt("വിവരണം മാറ്റുക:", currentDesc);
-    const newAmount = prompt("തുക മാറ്റുക:", currentAmount);
-
-    if (newDesc !== null && newAmount !== null) {
-        await updateDoc(doc(db, "transactions", id), {
-            description: newDesc,
-            amount: Number(newAmount)
-        });
-        loadTransactions();
-    }
-};
+    window.editTransaction = async (id, currentDesc, currentAmount) => {
+        const newDesc = prompt("വിവരണം മാറ്റുക:", currentDesc);
+        const newAmount = prompt("തുക മാറ്റുക:", currentAmount);
+        if (newDesc !== null && newAmount !== null) {
+            await updateDoc(doc(db, "transactions", id), {
+                description: newDesc,
+                amount: Number(newAmount)
+            });
+            loadTransactions();
+        }
+    };
 </script>
 </body>
 </html>
