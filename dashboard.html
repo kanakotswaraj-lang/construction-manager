@@ -38,7 +38,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -79,16 +79,34 @@
     listDiv.innerHTML = "";
     let totalIncome = 0;
     let totalExpense = 0;
-
-    querySnapshot.forEach((doc) => {
+querySnapshot.forEach((doc) => {
         const data = doc.data();
         const amount = Number(data.amount);
         
+        // തീയതി കാണിക്കാൻ (Firestore-ൽ timestamp ഉണ്ടെങ്കിൽ)
+        const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ml-IN') : 'N/A';
+
         if (data.type === "വരവ്") {
             totalIncome += amount;
         } else {
             totalExpense += amount;
         }
+
+        listDiv.innerHTML += `
+            <div class="bg-white p-4 rounded-lg shadow-sm border mb-2 flex justify-between items-center">
+                <div>
+                    <p class="font-bold text-gray-800">${data.description}</p>
+                    <p class="text-xs text-gray-500">${date}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <p class="font-bold ${data.type === 'വരവ്' ? 'text-green-600' : 'text-red-600'}">₹${amount}</p>
+                    <button onclick="editTransaction('${doc.id}', '${data.description}', ${amount})" class="text-blue-500 px-2 font-bold">✎</button>
+                    <button onclick="deleteTransaction('${doc.id}')" class="text-red-500 px-2 font-bold">X</button>
+                </div>
+            </div>
+        `;
+    });
+  
 
         listDiv.innerHTML += `
             <div class="bg-white p-4 rounded-lg shadow-sm border flex justify-between items-center">
@@ -106,6 +124,26 @@
     incomeElement.innerText = "₹" + totalIncome;
     expenseElement.innerText = "₹" + totalExpense;
 }
+<script>
+    window.deleteTransaction = async (id) => {
+    if (confirm("ഈ എൻട്രി നീക്കം ചെയ്യണോ?")) {
+        await deleteDoc(doc(db, "transactions", id));
+        loadTransactions();
+    }
+};
+
+window.editTransaction = async (id, currentDesc, currentAmount) => {
+    const newDesc = prompt("വിവരണം മാറ്റുക:", currentDesc);
+    const newAmount = prompt("തുക മാറ്റുക:", currentAmount);
+
+    if (newDesc !== null && newAmount !== null) {
+        await updateDoc(doc(db, "transactions", id), {
+            description: newDesc,
+            amount: Number(newAmount)
+        });
+        loadTransactions();
+    }
+};
 </script>
 </body>
 </html>
