@@ -8,21 +8,20 @@
 </head>
 <body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <!-- പേരും നമ്പറും എഡിറ്റ് ചെയ്യാനുള്ള സംവിധാനം -->
+        <!-- പേരും നമ്പറും -->
         <div class="mb-4">
             <h1 id="staffName" class="text-2xl font-bold text-slate-800"></h1>
             <p id="staffPhone" class="text-slate-500"></p>
-            <button onclick="editStaff()" class="text-sm text-blue-600 underline mt-1">പേരും നമ്പറും തിരുത്താൻ</button>
         </div>
 
-        <!-- അറ്റൻഡൻസ് ബട്ടൺ -->
+        <!-- അറ്റൻഡൻസ് -->
         <div class="bg-white p-4 rounded-xl border mb-4 text-center">
             <h2 class="text-sm font-bold text-slate-600 mb-2">ഇന്നത്തെ ഹാജർ</h2>
             <button onclick="markAttendance('Present')" class="bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold mr-2">വന്നു</button>
             <button onclick="markAttendance('Absent')" class="bg-red-500 text-white px-6 py-2 rounded-xl font-bold">അവധി</button>
         </div>
 
-        <!-- പണിയുടെ വിവരങ്ങൾ എൻട്രി ചെയ്യാൻ -->
+        <!-- എൻട്രി ഫോം -->
         <div class="bg-white p-6 rounded-xl border mb-6 space-y-3">
             <input type="date" id="entryDate" class="w-full p-3 border rounded-xl outline-none">
             <input type="text" id="work" placeholder="പണിയുടെ വിവരണം" class="w-full p-3 border rounded-xl outline-none">
@@ -31,76 +30,89 @@
             <button onclick="saveEntry()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">സേവ് ചെയ്യുക</button>
         </div>
 
-        <!-- വാട്ട്‌സ്ആപ്പ് മെസ്സേജ് ബട്ടൺ -->
-        <button onclick="sendWhatsApp()" class="w-full bg-green-600 text-white p-4 rounded-xl font-bold mb-6">വാട്ട്‌സ്ആപ്പിൽ കണക്ക് അയക്കുക 📱</button>
+        <!-- പഴയ കണക്കുകൾ -->
+        <div class="bg-white p-4 rounded-xl border mb-6">
+            <h3 class="font-bold text-slate-700 mb-4">പഴയ പണികളുടെ വിവരങ്ങൾ</h3>
+            <div id="entriesList" class="space-y-2"></div>
+            <div class="mt-4 pt-4 border-t font-bold text-slate-800 text-right">
+                മൊത്തം ബാലൻസ്: <span id="totalBalance" class="text-blue-600">₹0</span>
+            </div>
+        </div>
 
-        <div id="historyList" class="space-y-3"></div>
+        <button onclick="sendWhatsApp()" class="w-full bg-green-600 text-white p-4 rounded-xl font-bold mb-6">വാട്ട്‌സ്ആപ്പിൽ കണക്ക് അയക്കുക 📱</button>
     </div>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const index = urlParams.get('index');
-        let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-        let s = staff[index];
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        // പേരും നമ്പറും കാണിക്കാൻ
-        document.getElementById('staffName').innerText = s.name;
-        document.getElementById('staffPhone').innerText = "Ph: " + (s.phone || "നമ്പർ ലഭ്യമല്ല");
-        document.getElementById('entryDate').valueAsDate = new Date();
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.appspot.com",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+    };
 
-        // പേരും നമ്പറും എഡിറ്റ് ചെയ്യാൻ
-        function editStaff() {
-            let newName = prompt("പുതിയ പേര്:", s.name);
-            let newPhone = prompt("പുതിയ ഫോൺ നമ്പർ:", s.phone);
-            if (newName !== null && newPhone !== null) {
-                s.name = newName;
-                s.phone = newPhone;
-                localStorage.setItem('staff', JSON.stringify(staff));
-                location.reload();
-            }
-        }
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        // ഹാജർ മാർക്ക് ചെയ്യാൻ
-        function markAttendance(status) {
-            s.entries.push({ date: document.getElementById('entryDate').value, work: "ഹാജർ: " + status, wage: 0, paid: 0 });
-            localStorage.setItem('staff', JSON.stringify(staff));
-            location.reload();
-        }
+    const urlParams = new URLSearchParams(window.location.search);
+    const staffId = urlParams.get('id');
 
-        // കണക്ക് സേവ് ചെയ്യാൻ
-        function saveEntry() {
-            let entry = {
-                date: document.getElementById('entryDate').value,
-                work: document.getElementById('work').value,
-                wage: document.getElementById('wage').value || 0,
-                paid: document.getElementById('paid').value || 0
-            };
-            s.entries.push(entry);
-            localStorage.setItem('staff', JSON.stringify(staff));
-            location.reload();
-        }
+    window.saveEntry = async () => {
+        const date = document.getElementById("entryDate").value;
+        const work = document.getElementById("work").value;
+        const wage = document.getElementById("wage").value;
+        const paid = document.getElementById("paid").value;
 
-        // വാട്ട്‌സ്ആപ്പ് മെസ്സേജ്
-        function sendWhatsApp() {
-            if(!s.phone) return alert("നമ്പർ ചേർത്തിട്ടില്ല!");
-            
-            let totalWage = 0, totalPaid = 0, presentDays = 0;
-            s.entries.forEach(e => {
-                totalWage += parseFloat(e.wage);
-                totalPaid += parseFloat(e.paid);
-                if(e.work && e.work.includes("ഹാജർ: Present")) presentDays++;
+        if (date && wage) {
+            await addDoc(collection(db, "staff_entries"), {
+                staffId: staffId,
+                date: date,
+                work: work,
+                wage: Number(wage),
+                paid: Number(paid),
+                timestamp: new Date()
             });
-
-            let msg = `ഹലോ ${s.name}, ഇതുവരെയുള്ള കണക്ക്:
--------------------------
-ജോലി ചെയ്ത ദിവസങ്ങൾ: ${presentDays}
-ആകെ കൂലി: ₹${totalWage}
-നൽകിയത്: ₹${totalPaid}
-ഇനി ലഭിക്കാനുള്ളത്: ₹${totalWage - totalPaid}
--------------------------
-കണക്ക് പരിശോധിക്കുമല്ലോ.`;
-            window.open(`https://wa.me/91${s.phone}?text=${encodeURIComponent(msg)}`, '_blank');
+            alert("വിവരങ്ങൾ സേവ് ചെയ്തു!");
+            location.reload();
         }
-    </script>
+    };
+
+    async function loadEntries() {
+        const q = query(collection(db, "staff_entries"), where("staffId", "==", staffId), orderBy("date", "desc"));
+        const querySnapshot = await getDocs(q);
+        const listDiv = document.getElementById("entriesList");
+        let totalBalance = 0;
+
+        listDiv.innerHTML = "";
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const balanceForEntry = data.wage - data.paid;
+            totalBalance += balanceForEntry;
+
+            listDiv.innerHTML += `
+                <div class="flex justify-between p-2 border-b text-sm">
+                    <span>${data.date} - ${data.work}</span>
+                    <span class="font-bold text-slate-700">₹${balanceForEntry}</span>
+                </div>
+            `;
+        });
+        document.getElementById("totalBalance").innerText = "₹" + totalBalance;
+    }
+
+    window.markAttendance = async (status) => {
+        await addDoc(collection(db, "attendance"), {
+            staffId: staffId,
+            date: new Date().toISOString().split('T')[0],
+            status: status
+        });
+        alert("ഹാജർ മാർക്ക് ചെയ്തു: " + status);
+    };
+
+    loadEntries();
+</script>
 </body>
 </html>
