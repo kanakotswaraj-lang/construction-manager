@@ -8,29 +8,24 @@
 </head>
 <body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <!-- പേരും നമ്പറും -->
         <div class="mb-4">
             <h1 id="staffName" class="text-2xl font-bold text-slate-800"></h1>
-            <p id="staffPhone" class="text-slate-500"></p>
         </div>
 
-        <!-- അറ്റൻഡൻസ് -->
         <div class="bg-white p-4 rounded-xl border mb-4 text-center">
             <h2 class="text-sm font-bold text-slate-600 mb-2">ഇന്നത്തെ ഹാജർ</h2>
             <button onclick="markAttendance('Present')" class="bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold mr-2">വന്നു</button>
             <button onclick="markAttendance('Absent')" class="bg-red-500 text-white px-6 py-2 rounded-xl font-bold">അവധി</button>
         </div>
 
-        <!-- എൻട്രി ഫോം -->
         <div class="bg-white p-6 rounded-xl border mb-6 space-y-3">
-            <input type="date" id="entryDate" class="w-full p-3 border rounded-xl outline-none">
-            <input type="text" id="work" placeholder="പണിയുടെ വിവരണം" class="w-full p-3 border rounded-xl outline-none">
-            <input type="number" id="wage" placeholder="കൂലി (₹)" class="w-full p-3 border rounded-xl outline-none">
-            <input type="number" id="paid" placeholder="നൽകിയത് (₹)" class="w-full p-3 border rounded-xl outline-none">
+            <input type="date" id="entryDate" class="w-full p-3 border rounded-xl outline-none text-slate-800">
+            <input type="text" id="work" placeholder="പണിയുടെ വിവരണം" class="w-full p-3 border rounded-xl outline-none text-slate-800">
+            <input type="number" id="wage" placeholder="കൂലി (₹)" class="w-full p-3 border rounded-xl outline-none text-slate-800">
+            <input type="number" id="paid" placeholder="നൽകിയത് (₹)" class="w-full p-3 border rounded-xl outline-none text-slate-800">
             <button onclick="saveEntry()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">സേവ് ചെയ്യുക</button>
         </div>
 
-        <!-- പഴയ കണക്കുകൾ -->
         <div class="bg-white p-4 rounded-xl border mb-6">
             <h3 class="font-bold text-slate-700 mb-4">പഴയ പണികളുടെ വിവരങ്ങൾ</h3>
             <div id="entriesList" class="space-y-2"></div>
@@ -38,8 +33,6 @@
                 മൊത്തം ബാലൻസ്: <span id="totalBalance" class="text-blue-600">₹0</span>
             </div>
         </div>
-
-        <button onclick="sendWhatsApp()" class="w-full bg-green-600 text-white p-4 rounded-xl font-bold mb-6">വാട്ട്‌സ്ആപ്പിൽ കണക്ക് അയക്കുക 📱</button>
     </div>
 
 <script type="module">
@@ -82,6 +75,7 @@
     };
 
     async function loadEntries() {
+        if (!staffId) return;
         const q = query(collection(db, "staff_entries"), where("staffId", "==", staffId), orderBy("date", "desc"));
         const querySnapshot = await getDocs(q);
         const listDiv = document.getElementById("entriesList");
