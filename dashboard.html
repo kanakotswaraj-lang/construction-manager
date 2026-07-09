@@ -29,7 +29,15 @@
             <h2 id="total-expense" class="text-xl font-bold">₹0</h2>
         </div>
     </div>
-
+<!-- സെർച്ച് & ഫിൽറ്റർ -->
+<div class="mb-4 flex gap-2">
+    <input type="text" id="searchInput" placeholder="പേര് വെച്ച് തിരയുക..." class="p-2 border rounded-lg w-full">
+    <select id="categoryFilter" class="p-2 border rounded-lg">
+        <option value="എല്ലാം">എല്ലാം</option>
+        <option value="സാധനങ്ങൾ">സാധനങ്ങൾ</option>
+        <option value="കൂലി">കൂലി</option>
+    </select>
+</div>
     <h3 class="text-lg font-bold mb-4">കണക്കുകളുടെ പട്ടിക</h3>
     <div id="worksList" class="space-y-2"></div>
 </div>
@@ -39,7 +47,7 @@
     import { getFirestore, collection, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-   const firebaseConfig = {
+    const firebaseConfig = {
         apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
         authDomain: "mesthri-app.firebaseapp.com",
         projectId: "mesthri-app",
@@ -53,11 +61,12 @@
     const auth = getAuth(app);
 
     async function loadTransactions() {
-        const q = query(collection(db, "transactions"), orderBy("timestamp", "desc"));
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
         const listDiv = document.getElementById("worksList");
         const incomeElement = document.getElementById("total-income");
         const expenseElement = document.getElementById("total-expense");
+        const searchInput = document.getElementById("searchInput").value.toLowerCase();
+        const categoryFilter = document.getElementById("categoryFilter").value;
 
         listDiv.innerHTML = "";
         let totalIncome = 0;
@@ -65,33 +74,36 @@
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            const amount = Number(data.amount);
-            const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ml-IN') : 'N/A';
+            const category = data.category || "മറ്റ് ചെലവുകൾ";
+            const matchesSearch = data.description.toLowerCase().includes(searchInput);
+            const matchesCategory = (categoryFilter === "എല്ലാം" || category === categoryFilter);
 
-            if (data.type === "വരവ്") {
-                totalIncome += amount;
-            } else {
-                totalExpense += amount;
+            if (matchesSearch && matchesCategory) {
+                const amount = Number(data.amount);
+                if (data.type === "വരവ്") totalIncome += amount;
+                else totalExpense += amount;
+
+                listDiv.innerHTML += `
+                    <div class="bg-white p-4 rounded-lg shadow-sm border mb-2 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-gray-800">${data.description} <span class="text-[10px] bg-gray-200 px-1 rounded">${category}</span></p>
+                            <p class="text-xs text-gray-500">${data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ml-IN') : 'N/A'}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <p class="font-bold ${data.type === 'വരവ്' ? 'text-green-600' : 'text-red-600'}">₹${amount}</p>
+                            <button onclick="editTransaction('${doc.id}', '${data.description}', ${amount})" class="text-blue-500 px-2 font-bold">✎</button>
+                            <button onclick="deleteTransaction('${doc.id}')" class="text-red-500 px-2 font-bold">X</button>
+                        </div>
+                    </div>
+                `;
             }
-
-            listDiv.innerHTML += `
-                <div class="bg-white p-4 rounded-lg shadow-sm border mb-2 flex justify-between items-center">
-                    <div>
-                        <p class="font-bold text-gray-800">${data.description}</p>
-                        <p class="text-xs text-gray-500">${date}</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <p class="font-bold ${data.type === 'വരവ്' ? 'text-green-600' : 'text-red-600'}">₹${amount}</p>
-                        <button onclick="editTransaction('${doc.id}', '${data.description}', ${amount})" class="text-blue-500 px-2 font-bold">✎</button>
-                        <button onclick="deleteTransaction('${doc.id}')" class="text-red-500 px-2 font-bold">X</button>
-                    </div>
-                </div>
-            `;
         });
-
         incomeElement.innerText = "₹" + totalIncome;
         expenseElement.innerText = "₹" + totalExpense;
     }
+
+    document.getElementById("searchInput").addEventListener("input", loadTransactions);
+    document.getElementById("categoryFilter").addEventListener("change", loadTransactions);
 
     window.deleteTransaction = async (id) => {
         if (confirm("ഈ എൻട്രി നീക്കം ചെയ്യണോ?")) {
@@ -100,36 +112,22 @@
         }
     };
 
-   window.editTransaction = async (id, currentDesc, currentAmount) => {
-    const newDesc = prompt("വിവരണം മാറ്റുക:", currentDesc);
-    const newAmount = prompt("തുക മാറ്റുക:", currentAmount);
-    
-    // തീയതി മാറ്റാൻ പുതിയൊരു പ്രോംപ്റ്റ്
-    const dateInput = prompt("തീയതി മാറ്റുക (DD-MM-YYYY രീതിയിൽ):", new Date().toISOString().split('T')[0]);
-
-    if (newDesc !== null && newAmount !== null && dateInput !== null) {
-        // തീയതിയെ Firestore ടൈംസ്റ്റാമ്പ് ഫോർമാറ്റിലേക്ക് മാറ്റുന്നു
-        const newDate = new Date(dateInput);
-        
-        await updateDoc(doc(db, "transactions", id), {
-            description: newDesc,
-            amount: Number(newAmount),
-            timestamp: newDate // തീയതി അപ്‌ഡേറ്റ് ചെയ്യുന്നു
-        });
-        loadTransactions();
-    }
-};
-    window.logout = () => {
-        signOut(auth).then(() => { window.location.href = "login.html"; });
+    window.editTransaction = async (id, currentDesc, currentAmount) => {
+        const newDesc = prompt("വിവരണം മാറ്റുക:", currentDesc);
+        const newAmount = prompt("തുക മാറ്റുക:", currentAmount);
+        if (newDesc !== null && newAmount !== null) {
+            await updateDoc(doc(db, "transactions", id), { description: newDesc, amount: Number(newAmount) });
+            loadTransactions();
+        }
     };
+
+    window.logout = () => { signOut(auth).then(() => { window.location.href = "login.html"; }); };
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
             document.getElementById("user-info").innerText = "ലോഗിൻ ചെയ്തു: " + user.email;
             loadTransactions();
-        } else {
-            window.location.href = "login.html";
-        }
+        } else { window.location.href = "login.html"; }
     });
 </script>
 </body>
