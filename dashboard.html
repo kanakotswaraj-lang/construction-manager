@@ -9,7 +9,7 @@
 <body class="bg-gray-100 p-4">
 
 <div class="max-w-md mx-auto">
-    <div id="user-info" class="mb-4">ലോഗിൻ ചെയ്യുന്നു...</div>
+    <div id="user-info" class="mb-4">ലോഗിൻ പരിശോധിക്കുന്നു...</div>
     <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg">ലോഗ് ഔട്ട് ചെയ്യുക</button>
     
     <hr class="my-6">
@@ -39,13 +39,60 @@
     import { getFirestore, collection, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-    // നിങ്ങളുടെ Firebase കോൺഫിഗറേഷൻ ഇവിടെയുണ്ടാവണം
-    // const app = initializeApp({...}); 
-    // const db = getFirestore(app);
-    // const auth = getAuth(app);
+   const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.appspot.com",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+    };
 
-    // ഇവിടെ നിങ്ങളുടെ loadTransactions ഫംഗ്‌ഷനും ലോഗൗട്ട് ഫംഗ്‌ഷനും ചേർക്കുക
-    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    async function loadTransactions() {
+        const q = query(collection(db, "transactions"), orderBy("timestamp", "desc"));
+        const querySnapshot = await getDocs(q);
+        const listDiv = document.getElementById("worksList");
+        const incomeElement = document.getElementById("total-income");
+        const expenseElement = document.getElementById("total-expense");
+
+        listDiv.innerHTML = "";
+        let totalIncome = 0;
+        let totalExpense = 0;
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const amount = Number(data.amount);
+            const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ml-IN') : 'N/A';
+
+            if (data.type === "വരവ്") {
+                totalIncome += amount;
+            } else {
+                totalExpense += amount;
+            }
+
+            listDiv.innerHTML += `
+                <div class="bg-white p-4 rounded-lg shadow-sm border mb-2 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-gray-800">${data.description}</p>
+                        <p class="text-xs text-gray-500">${date}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p class="font-bold ${data.type === 'വരവ്' ? 'text-green-600' : 'text-red-600'}">₹${amount}</p>
+                        <button onclick="editTransaction('${doc.id}', '${data.description}', ${amount})" class="text-blue-500 px-2 font-bold">✎</button>
+                        <button onclick="deleteTransaction('${doc.id}')" class="text-red-500 px-2 font-bold">X</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        incomeElement.innerText = "₹" + totalIncome;
+        expenseElement.innerText = "₹" + totalExpense;
+    }
+
     window.deleteTransaction = async (id) => {
         if (confirm("ഈ എൻട്രി നീക്കം ചെയ്യണോ?")) {
             await deleteDoc(doc(db, "transactions", id));
@@ -53,17 +100,37 @@
         }
     };
 
-    window.editTransaction = async (id, currentDesc, currentAmount) => {
-        const newDesc = prompt("വിവരണം മാറ്റുക:", currentDesc);
-        const newAmount = prompt("തുക മാറ്റുക:", currentAmount);
-        if (newDesc !== null && newAmount !== null) {
-            await updateDoc(doc(db, "transactions", id), {
-                description: newDesc,
-                amount: Number(newAmount)
-            });
-            loadTransactions();
-        }
+   window.editTransaction = async (id, currentDesc, currentAmount) => {
+    const newDesc = prompt("വിവരണം മാറ്റുക:", currentDesc);
+    const newAmount = prompt("തുക മാറ്റുക:", currentAmount);
+    
+    // തീയതി മാറ്റാൻ പുതിയൊരു പ്രോംപ്റ്റ്
+    const dateInput = prompt("തീയതി മാറ്റുക (DD-MM-YYYY രീതിയിൽ):", new Date().toISOString().split('T')[0]);
+
+    if (newDesc !== null && newAmount !== null && dateInput !== null) {
+        // തീയതിയെ Firestore ടൈംസ്റ്റാമ്പ് ഫോർമാറ്റിലേക്ക് മാറ്റുന്നു
+        const newDate = new Date(dateInput);
+        
+        await updateDoc(doc(db, "transactions", id), {
+            description: newDesc,
+            amount: Number(newAmount),
+            timestamp: newDate // തീയതി അപ്‌ഡേറ്റ് ചെയ്യുന്നു
+        });
+        loadTransactions();
+    }
+};
+    window.logout = () => {
+        signOut(auth).then(() => { window.location.href = "login.html"; });
     };
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            document.getElementById("user-info").innerText = "ലോഗിൻ ചെയ്തു: " + user.email;
+            loadTransactions();
+        } else {
+            window.location.href = "login.html";
+        }
+    });
 </script>
 </body>
 </html>
