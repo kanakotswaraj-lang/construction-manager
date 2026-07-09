@@ -14,28 +14,39 @@
         <button onclick="login()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ലോഗിൻ ചെയ്യുക</button>
     </div>
 
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
+        };
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-    authDomain: "mesthri-app.firebaseapp.com",
-    projectId: "mesthri-app",
-    storageBucket: "mesthri-app.firebasestorage.app",
-    messagingSenderId: "1060617901864",
-    appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-    measurementId: "G-J9Y5TW9D7T"
-  };
+        // Firebase Initialize ചെയ്യുക
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+        // ലോഗിൻ ഫംഗ്‌ഷൻ വിൻഡോയിൽ സെറ്റ് ചെയ്യുന്നു
+        window.login = function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    // ലോഗിൻ വിജയിച്ചാൽ
+                    window.location.href = "index.html"; 
+                })
+                .catch((error) => {
+                    // ലോഗിൻ പരാജയപ്പെട്ടാൽ
+                    alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
+                });
+        };
+    </script>
 </body>
 </html>
