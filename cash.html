@@ -2,78 +2,40 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
     <title>സൈറ്റ് കണക്ക്</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 p-4 font-sans">
+<body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-slate-800">സൈറ്റ് കണക്ക്</h1>
-            <a href="index.html" class="text-sm text-slate-500 underline">ഡാഷ്ബോർഡ്</a>
+        <h1 class="text-2xl font-bold mb-6">സൈറ്റ് കണക്ക്</h1>
+        <div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
+            <input type="text" id="desc" placeholder="വിശദാംശങ്ങൾ" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="amount" placeholder="തുക" class="w-full p-3 border rounded-xl mb-3">
+            <div class="flex gap-2">
+                <button onclick="addCash('income')" class="flex-1 bg-green-600 text-white p-3 rounded-xl font-bold">വരവ്</button>
+                <button onclick="addCash('expense')" class="flex-1 bg-red-600 text-white p-3 rounded-xl font-bold">ചെലവ്</button>
+            </div>
         </div>
-        
-        <!-- Cash Entry Form -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6 space-y-3">
-            <input type="date" id="entryDate" class="w-full p-3 border rounded-xl outline-none">
-            <input type="text" id="paidBy" placeholder="പണം കൊടുത്തയാൾ" class="w-full p-3 border rounded-xl outline-none">
-            <input type="text" id="receivedBy" placeholder="പണം വാങ്ങിയയാൾ" class="w-full p-3 border rounded-xl outline-none">
-            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-3 border rounded-xl outline-none">
-            
-            <!-- Payment Mode -->
-            <select id="paymentMode" class="w-full p-3 border rounded-xl outline-none bg-white">
-                <option value="Cash">Cash (പണം)</option>
-                <option value="Google Pay">Google Pay</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-            </select>
-
-            <input type="text" id="note" placeholder="കുറിപ്പുകൾ" class="w-full p-3 border rounded-xl outline-none">
-            <button onclick="addEntry()" class="w-full bg-emerald-600 text-white p-3 rounded-xl font-bold">രേഖപ്പെടുത്തുക</button>
-        </div>
-
-        <div id="cashList" class="space-y-3"></div>
+        <div id="cashList" class="space-y-2"></div>
     </div>
-
     <script>
-        document.getElementById('entryDate').valueAsDate = new Date();
-        let cashData = JSON.parse(localStorage.getItem('cash') || '[]');
-
-        function addEntry() {
-            let data = {
-                date: document.getElementById('entryDate').value,
-                paidBy: document.getElementById('paidBy').value,
-                receivedBy: document.getElementById('receivedBy').value,
-                amount: document.getElementById('amount').value,
-                mode: document.getElementById('paymentMode').value,
-                note: document.getElementById('note').value
-            };
-            if(!data.amount) return;
-            
-            cashData.push(data);
-            localStorage.setItem('cash', JSON.stringify(cashData));
+        let cashList = JSON.parse(localStorage.getItem('cash') || '[]');
+        function addCash(type) {
+            let desc = document.getElementById('desc').value;
+            let amount = document.getElementById('amount').value;
+            if(!desc || !amount) return;
+            cashList.push({desc, amount: parseInt(amount), type, date: new Date().toLocaleDateString()});
+            localStorage.setItem('cash', JSON.stringify(cashList));
             location.reload();
         }
-
-        function deleteEntry(index) {
-            cashData.splice(index, 1);
-            localStorage.setItem('cash', JSON.stringify(cashData));
-            location.reload();
-        }
-
-        function displayEntries() {
-            let container = document.getElementById('cashList');
-            container.innerHTML = cashData.map((c, i) => `
-                <div class='bg-white p-4 border border-slate-100 rounded-2xl flex justify-between items-center shadow-sm'>
-                    <div>
-                        <div class="text-xs text-gray-400">${c.date} | <span class="font-bold text-emerald-600">${c.mode}</span></div>
-                        <div class="font-bold text-slate-800 text-lg">₹${c.amount}</div>
-                        <div class="text-xs text-slate-600">${c.paidBy} ➔ ${c.receivedBy}</div>
-                        <div class="text-[10px] text-blue-600 mt-1 italic">${c.note}</div>
-                    </div>
-                    <button onclick="deleteEntry(${i})" class="text-red-500 text-xs font-bold bg-red-50 px-3 py-1 rounded-lg">Delete</button>
-                </div>`).join('');
-        }
-        displayEntries();
+        document.getElementById('cashList').innerHTML = cashList.map((c, i) => `
+            <div class="bg-white p-3 rounded-xl flex justify-between">
+                <span>${c.desc} (${c.date})</span>
+                <span class="font-bold ${c.type === 'income' ? 'text-green-600' : 'text-red-600'}">
+                    ${c.type === 'income' ? '+' : '-'} ₹${c.amount}
+                </span>
+            </div>
+        `).join('');
     </script>
 </body>
 </html>
