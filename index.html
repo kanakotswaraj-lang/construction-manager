@@ -29,7 +29,8 @@
         <div class="grid grid-cols-1 gap-3">
             <a href="staff.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">ജീവനക്കാർ</a>
             <a href="rentals.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">വാടക ഉപകരണങ്ങൾ</a>
-        </div>
+       <a href="cash.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">സൈറ്റ് കണക്ക്</a>
+ </div>
     </div>
 
     <script>
@@ -56,6 +57,17 @@
             document.getElementById('sumPaid').innerText = '₹' + totalPaid;
             document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
         }
+        <script>
+    function updateDashboard() {
+        // ... (മുമ്പത്തെ കോഡ്)
+        let cashList = JSON.parse(localStorage.getItem('cash') || '[]');
+        cashList.forEach(c => {
+            if(c.type === 'income') totalWage += parseFloat(c.amount || 0);
+            if(c.type === 'expense') totalPaid += parseFloat(c.amount || 0);
+        });
+        // ... (ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക)
+    }
+</script>
         updateDashboard();
     </script>
 </body>
