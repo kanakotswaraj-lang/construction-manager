@@ -17,53 +17,7 @@
         </div>
 
         <div id="staffList"></div>
-<script>
-    function addStaff() {
-        let name = document.getElementById('staffName').value;
-        let phone = document.getElementById('staffPhone').value;
-        if (name === '' || phone === '') {
-            alert("പേരും ഫോൺ നമ്പറും നൽകുക!");
-            return;
-        }
 
-        let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-        staff.push({name: name, phone: phone});
-        localStorage.setItem('staff', JSON.stringify(staff));
-
-        document.getElementById('staffName').value = '';
-        document.getElementById('staffPhone').value = '';
-        displayStaff();
-    }
-
-    function displayStaff() {
-        let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-        let list = document.getElementById('staffList');
-        list.innerHTML = staff.map(s => 
-            `<div class="bg-white p-2 border-b">${s.name} - ${s.phone}</div>`
-        ).join('');
-    }
-
-    // പേജ് ലോഡ് ആകുമ്പോൾ തന്നെ നിലവിലുള്ള ഡാറ്റ കാണിക്കാൻ
-    displayStaff();
-
-    function exportData() {
-        let data = localStorage.getItem('staff');
-        if(!data) return alert("ഡാറ്റ ലഭ്യമല്ല!");
-        let a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([data], {type: 'application/json'}));
-        a.download = 'backup.json';
-        a.click();
-    }
-
-    function importData(event) {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-            localStorage.setItem('staff', e.target.result);
-            location.reload();
-        };
-        reader.readAsText(event.target.files[0]);
-    }
-</script>
         <!-- Export/Import -->
         <div class="flex gap-2 mb-4">
             <button onclick="exportData()" class="flex-1 bg-blue-600 text-white p-2 rounded text-sm">ഡാറ്റ എക്‌സ്‌പോർട്ട് (Export)</button>
@@ -72,6 +26,9 @@
                 <input type="file" id="importFile" onchange="importData(event)" class="hidden">
             </label>
         </div>
+
+        <!-- Clear Button -->
+        <button onclick="clearAllData()" class="w-full bg-red-500 text-white p-2 rounded mt-4">എല്ലാ ഡാറ്റയും ഡിലീറ്റ് ചെയ്യുക (Clear All)</button>
     </div>
 
     <script>
@@ -113,12 +70,13 @@
             reader.readAsText(event.target.files[0]);
         }
 
+        function clearAllData() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // പേജ് ലോഡ് ആകുമ്പോൾ ലിസ്റ്റ് കാണിക്കാൻ
         displayStaff();
     </script>
-    <button onclick="localStorage.clear(); location.reload();" class="bg-red-500 text-white p-2 rounded mt-4">
-    എല്ലാ ഡാറ്റയും ഡിലീറ്റ് ചെയ്യുക (Clear All)
-</button>
-
-
 </body>
 </html>
