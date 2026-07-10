@@ -57,18 +57,45 @@
             document.getElementById('sumPaid').innerText = '₹' + totalPaid;
             document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
         }
-        <script>
+        
+<script>
     function updateDashboard() {
-        // ... (മുമ്പത്തെ കോഡ്)
-        let cashList = JSON.parse(localStorage.getItem('cash') || '[]');
-        cashList.forEach(c => {
-            if(c.type === 'income') totalWage += parseFloat(c.amount || 0);
-            if(c.type === 'expense') totalPaid += parseFloat(c.amount || 0);
+        let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
+        let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
+        let cashList = JSON.parse(localStorage.getItem('cash') || '[]'); // സൈറ്റ് കണക്ക് ഡാറ്റ എടുത്തു
+        
+        let totalWage = 0, totalPaid = 0;
+
+        // 1. ജീവനക്കാരുടെ കണക്ക്
+        staffList.forEach(s => {
+            s.history?.forEach(e => {
+                if(e.type === 'taken') totalWage += parseFloat(e.amount || 0);
+                if(e.type === 'given') totalPaid += parseFloat(e.amount || 0);
+            });
         });
-        // ... (ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക)
+
+        // 2. വാടക ഉപകരണങ്ങളുടെ കണക്ക്
+        rentals.forEach(r => {
+            r.history?.forEach(e => {
+                if(e.type === 'taken') totalWage += parseFloat(e.amount || 0);
+                if(e.type === 'given') totalPaid += parseFloat(e.amount || 0);
+            });
+        });
+
+        // 3. സൈറ്റ് കണക്ക് (വരവ്/ചെലവ്)
+        cashList.forEach(c => {
+            if(c.type === 'income') totalWage += parseFloat(c.amount || 0); // വരവ് ആകെ വരവിനോട് കൂട്ടുന്നു
+            if(c.type === 'expense') totalPaid += parseFloat(c.amount || 0); // ചെലവ് നൽകിയതിനോട് കൂട്ടുന്നു
+        });
+
+        // കണക്ക് ഡിസ്‌പ്ലേ ചെയ്യുക
+        document.getElementById('sumwage').innerText = '₹' + totalWage;
+        document.getElementById('sumPaid').innerText = '₹' + totalPaid;
+        document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
     }
+    updateDashboard();
 </script>
-        updateDashboard();
+
     </script>
 </body>
 </html>
