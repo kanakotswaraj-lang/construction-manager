@@ -14,69 +14,38 @@
         <button onclick="login()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ലോഗിൻ ചെയ്യുക</button>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.firebasestorage.app",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-            measurementId: "G-J9Y5TW9D7T"
-        };
-
-        // Firebase Initialize ചെയ്യുക
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // ലോഗിൻ ഫംഗ്‌ഷൻ വിൻഡോയിൽ സെറ്റ് ചെയ്യുന്നു
-        window.login = function() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    // ലോഗിൻ വിജയിച്ചാൽ
-                    window.location.href = "index.html"; 
-                })
-                .catch((error) => {
-                    // ലോഗിൻ പരാജയപ്പെട്ടാൽ
-                    alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
-                });
-        };<script type="module">
+ <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 
     const firebaseConfig = {
-        // നിങ്ങളുടെ കോഡ് ഇവിടെ തുടരുക...
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.firebasestorage.app",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+        measurementId: "G-J9Y5TW9D7T"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // ലോഗിൻ ഫംഗ്‌ഷനെ വിൻഡോയിലേക്ക് മാറ്റുന്നു (ഇത് വളരെ പ്രധാനമാണ്)
-    window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-    window.auth = auth;
-</script>
-
-<script>
-    // ഇത് HTML ബട്ടണിന് മനസ്സിലാകും
-    function login() {
+    // ലോഗിൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ വർക്ക് ആകുന്ന രീതിയിൽ ഇവിടെ തന്നെ കൊടുക്കുന്നു
+    window.login = function() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         
-        window.signInWithEmailAndPassword(window.auth, email, password)
+        signInWithEmailAndPassword(auth, email, password)
             .then(() => {
                 window.location.href = "index.html";
             })
             .catch((error) => {
                 alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
             });
-    }
-</script>
-    </script>
+    };
+</script>  
+  
+ 
 </body>
 </html>
