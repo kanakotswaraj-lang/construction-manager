@@ -34,22 +34,27 @@
             <a href="cash.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center hover:bg-slate-50">സൈറ്റ് കണക്ക്</a>
         </div>
     </div>
+<script>
+    // ഡാറ്റ ലോഡ് ചെയ്യുന്നു
+    let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
+    let totalWage = 0, totalPaid = 0;
 
-    <script>
-        // ഡാറ്റ ലോഡ് ചെയ്ത് കണക്കുകൂട്ടുന്നു
-        let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
-        let totalWage = 0, totalPaid = 0;
-        staffList.forEach(s => {
-            if(s.entries) {
-                s.entries.forEach(e => {
-                    totalWage += parseFloat(e.wage || 0);
-                    totalPaid += parseFloat(e.paid || 0);
-                });
-            }
-        });
-        document.getElementById('sumwage').innerText = '₹' + totalWage;
-        document.getElementById('sumPaid').innerText = '₹' + totalPaid;
-        document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
-    </script>
+    staffList.forEach(s => {
+        // history അറേ ഉണ്ടെങ്കിൽ മാത്രം ലൂപ്പ് ചെയ്യുക
+        if(s.history) {
+            s.history.forEach(e => {
+                // given = നൽകിയത്, taken = വാങ്ങിയത് (അതനുസരിച്ച് മാറുക)
+                if(e.type === 'given') totalPaid += parseFloat(e.amount || 0);
+                if(e.type === 'taken') totalWage += parseFloat(e.amount || 0);
+            });
+        }
+    });
+
+    document.getElementById('sumwage').innerText = '₹' + totalWage;
+    document.getElementById('sumPaid').innerText = '₹' + totalPaid;
+    document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
+</script>
+
+    
 </body>
 </html>
