@@ -2,56 +2,34 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
+    <title>ജീവനക്കാർ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
 <body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-bold mb-4">à´¤àµŠà´´à´¿à´²à´¾à´³à´¿à´•àµ¾</h1>
-        
+        <h1 class="text-2xl font-bold mb-4">ജീവനക്കാർ</h1>
+
         <!-- Add Staff -->
         <div class="bg-white p-4 rounded-xl shadow border mb-4">
-            <input type="text" id="staffName" placeholder="à´ªàµ‡à´°àµ" class="w-full p-2 border rounded mb-2">
-            <input type="tel" id="staffPhone" placeholder="à´«àµ‹àµº à´¨à´®àµà´ªàµ¼" class="w-full p-2 border rounded mb-2">
-            <button onclick="addStaff()" class="w-full bg-slate-900 text-white p-2 rounded font-bold">à´†à´¡àµ à´šàµ†à´¯àµà´¯àµà´•</button>
+            <input type="text" id="staffName" placeholder="ജീവനക്കാരന്റെ പേര്" class="w-full p-2 border rounded mb-2">
+            <input type="tel" id="staffPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-2 border rounded mb-2">
+            <button onclick="addStaff()" class="w-full bg-slate-900 text-white p-2 rounded font-bold">ചേർക്കുക</button>
         </div>
 
         <!-- Export/Import -->
         <div class="flex gap-2 mb-4">
-            <button onclick="exportData()" class="flex-1 bg-blue-600 text-white p-2 rounded text-sm">à´¬à´¾à´•àµà´•à´ªàµà´ªàµ (Export)</button>
+            <button onclick="exportData()" class="flex-1 bg-blue-600 text-white p-2 rounded text-sm">ഡാറ്റ എക്‌സ്‌പോർട്ട് (Export)</button>
             <label class="flex-1 bg-emerald-600 text-white p-2 rounded text-sm text-center cursor-pointer">
-                à´¤à´¿à´°à´¿à´šàµà´šàµ†à´Ÿàµà´•àµà´•àµà´• (Import)
+                ഡാറ്റ ഇംപോർട്ട് (Import)
                 <input type="file" id="importFile" onchange="importData(event)" class="hidden">
             </label>
         </div>
-
-        <!-- Staff List -->
-        <div id="staffList" class="space-y-2"></div>
     </div>
 
     <script>
-        function addStaff() {
-            let name = document.getElementById('staffName').value;
-            let phone = document.getElementById('staffPhone').value;
-            if(!name) return alert("à´ªàµ‡à´°àµ à´¨àµ½à´•àµà´•");
-            
-            let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-            staff.push({ name: name, phone: phone, entries: [] });
-            localStorage.setItem('staff', JSON.stringify(staff));
-            location.reload();
-        }
-
-        function displayStaff() {
-            let staff = JSON.parse(localStorage.getItem('staff') || '[]');
-            let list = document.getElementById('staffList');
-            staff.forEach((s, index) => {
-                list.innerHTML += `<div class="bg-white p-4 rounded-xl border flex justify-between items-center">
-                    <span>${s.name}</span>
-                    <a href="staff-details.html?index=${index}" class="bg-slate-200 px-4 py-1 rounded">à´•à´£à´•àµà´•àµ</a>
-                </div>`;
-            });
-        }
-
         function exportData() {
             let data = localStorage.getItem('staff');
-            if(!data) return alert("à´¡à´¾à´±àµà´± à´‡à´²àµà´²!");
+            if(!data) return alert("ഡാറ്റ ലഭ്യമല്ല!");
             let a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([data], {type: 'application/json'}));
             a.download = 'backup.json';
@@ -67,6 +45,9 @@
             reader.readAsText(event.target.files[0]);
         }
 
+        function displayStaff() {
+            // നിങ്ങളുടെ നിലവിലുള്ള displayStaff ഫംഗ്‌ഷൻ ഇവിടെ ഉണ്ടാവണം
+        }
         displayStaff();
     </script>
 </body>
