@@ -2,7 +2,6 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>വാടക ഉപകരണങ്ങൾ</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -21,18 +20,27 @@
 
     <script>
         let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
+        
         function addRental() {
+            // ഐഡികൾ ശരിയാണെന്ന് ഉറപ്പുവരുത്തുക
             let tool = document.getElementById('toolName').value;
-            rentals.push({tool, qty: document.getElementById('qty').value, renter: document.getElementById('renter').value, phone: document.getElementById('phone').value, date: new Date().toLocaleDateString(), history: []});
-            saveAndDisplay();
-        }
-        function saveAndDisplay() {
+            let qty = document.getElementById('qty').value;
+            let renter = document.getElementById('renter').value;
+            let phone = document.getElementById('phone').value;
+
+            if(!tool || !renter) return alert("വിവരങ്ങൾ നൽകുക!");
+
+            rentals.push({tool, qty, renter, phone, date: new Date().toLocaleDateString(), history: []});
             localStorage.setItem('rentals', JSON.stringify(rentals));
+            location.reload();
+        }
+
+        function saveAndDisplay() {
             let list = document.getElementById('rentalList');
             list.innerHTML = rentals.map((r, i) => `
                 <div class="bg-white p-4 rounded-xl border">
-                    <p class="font-bold">${r.tool} (${r.qty} എണ്ണം) - ${r.date}</p>
-                    <p class="text-sm text-gray-500">${r.renter} (${r.phone})</p>
+                    <p class="font-bold">${r.tool || ''} (${r.qty || '0'} എണ്ണം) - ${r.date || ''}</p>
+                    <p class="text-sm text-gray-500">${r.renter || ''} (${r.phone || ''})</p>
                     <div class="flex gap-2 mt-2">
                         <button onclick="addEntry(${i}, 'taken')" class="bg-blue-100 p-2 rounded text-xs">വാടക കണക്ക്</button>
                         <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs">തുക വാങ്ങി</button>
@@ -40,10 +48,13 @@
                 </div>
             `).join('');
         }
+        
         function addEntry(i, type) {
             let amount = prompt("തുക നൽകുക:");
             if(amount) {
+                if(!rentals[i].history) rentals[i].history = [];
                 rentals[i].history.push({type, amount: parseInt(amount), date: new Date().toLocaleDateString()});
+                localStorage.setItem('rentals', JSON.stringify(rentals));
                 saveAndDisplay();
             }
         }
