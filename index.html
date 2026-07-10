@@ -6,18 +6,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title>സൈറ്റ് മാനേജർ</title>
 </head>
-<body class="bg-slate-100 p-4 font-sans">
+<body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold mb-6 text-slate-800 text-center">സൈറ്റ് മാനേജർ</h1>
         
-        <!-- Dashboard Card -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mb-6">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
             <h2 class="text-gray-500 text-sm font-medium">ആകെ ബാധ്യത</h2>
             <div id="totalBalance" class="text-4xl font-extrabold text-slate-900 mt-1">₹0</div>
             
             <div class="grid grid-cols-2 gap-4 mt-6">
                 <div class="bg-blue-50 p-4 rounded-2xl">
-                    <div class="text-blue-600 text-xs font-bold">ആകെ കൂലി</div>
+                    <div class="text-blue-600 text-xs font-bold">ആകെ വരവ്/കൂലി</div>
                     <div id="sumwage" class="text-lg font-bold text-slate-800">₹0</div>
                 </div>
                 <div class="bg-orange-50 p-4 rounded-2xl">
@@ -27,34 +26,37 @@
             </div>
         </div>
 
-        <!-- Navigation -->
         <div class="grid grid-cols-1 gap-3">
-            <a href="staff.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center hover:bg-slate-50">ജീവനക്കാർ</a>
-            <a href="rentals.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center hover:bg-slate-50">വാടക ഉപകരണങ്ങൾ</a>
-            <a href="cash.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center hover:bg-slate-50">സൈറ്റ് കണക്ക്</a>
+            <a href="staff.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">ജീവനക്കാർ</a>
+            <a href="rentals.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">വാടക ഉപകരണങ്ങൾ</a>
         </div>
     </div>
-<script>
-    // ഡാറ്റ ലോഡ് ചെയ്യുന്നു
-    let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
-    let totalWage = 0, totalPaid = 0;
 
-    staffList.forEach(s => {
-        // history അറേ ഉണ്ടെങ്കിൽ മാത്രം ലൂപ്പ് ചെയ്യുക
-        if(s.history) {
-            s.history.forEach(e => {
-                // given = നൽകിയത്, taken = വാങ്ങിയത് (അതനുസരിച്ച് മാറുക)
-                if(e.type === 'given') totalPaid += parseFloat(e.amount || 0);
-                if(e.type === 'taken') totalWage += parseFloat(e.amount || 0);
+    <script>
+        function updateDashboard() {
+            let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
+            let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
+            let totalWage = 0, totalPaid = 0;
+
+            staffList.forEach(s => {
+                s.history?.forEach(e => {
+                    if(e.type === 'taken') totalWage += parseFloat(e.amount || 0);
+                    if(e.type === 'given') totalPaid += parseFloat(e.amount || 0);
+                });
             });
+
+            rentals.forEach(r => {
+                r.history?.forEach(e => {
+                    if(e.type === 'taken') totalWage += parseFloat(e.amount || 0);
+                    if(e.type === 'given') totalPaid += parseFloat(e.amount || 0);
+                });
+            });
+
+            document.getElementById('sumwage').innerText = '₹' + totalWage;
+            document.getElementById('sumPaid').innerText = '₹' + totalPaid;
+            document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
         }
-    });
-
-    document.getElementById('sumwage').innerText = '₹' + totalWage;
-    document.getElementById('sumPaid').innerText = '₹' + totalPaid;
-    document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
-</script>
-
-    
+        updateDashboard();
+    </script>
 </body>
 </html>
