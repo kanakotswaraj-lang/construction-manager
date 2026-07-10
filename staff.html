@@ -16,6 +16,8 @@
             <button onclick="addStaff()" class="w-full bg-slate-900 text-white p-2 rounded font-bold">ചേർക്കുക</button>
         </div>
 
+        <div id="staffList"></div>
+
         <!-- Export/Import -->
         <div class="flex gap-2 mb-4">
             <button onclick="exportData()" class="flex-1 bg-blue-600 text-white p-2 rounded text-sm">ഡാറ്റ എക്‌സ്‌പോർട്ട് (Export)</button>
@@ -27,6 +29,26 @@
     </div>
 
     <script>
+        function addStaff() {
+            let name = document.getElementById('staffName').value;
+            let phone = document.getElementById('staffPhone').value;
+            if(!name || !phone) return alert("പേരും ഫോൺ നമ്പറും നൽകുക!");
+
+            let staff = JSON.parse(localStorage.getItem('staff') || '[]');
+            staff.push({name, phone});
+            localStorage.setItem('staff', JSON.stringify(staff));
+            
+            document.getElementById('staffName').value = '';
+            document.getElementById('staffPhone').value = '';
+            displayStaff();
+        }
+
+        function displayStaff() {
+            let staff = JSON.parse(localStorage.getItem('staff') || '[]');
+            let list = document.getElementById('staffList');
+            list.innerHTML = staff.map(s => `<div class="bg-white p-2 border-b">${s.name} - ${s.phone}</div>`).join('');
+        }
+
         function exportData() {
             let data = localStorage.getItem('staff');
             if(!data) return alert("ഡാറ്റ ലഭ്യമല്ല!");
@@ -45,9 +67,6 @@
             reader.readAsText(event.target.files[0]);
         }
 
-        function displayStaff() {
-            // നിങ്ങളുടെ നിലവിലുള്ള displayStaff ഫംഗ്‌ഷൻ ഇവിടെ ഉണ്ടാവണം
-        }
         displayStaff();
     </script>
 </body>
