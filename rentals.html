@@ -3,73 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
     <title>വാടക ഉപകരണങ്ങൾ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 p-4 font-sans">
+<body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-slate-800">വാടക ഉപകരണങ്ങൾ</h1>
-            <a href="index.html" class="text-sm text-slate-500 underline">ഡാഷ്ബോർഡ്</a>
-        </div>
-        
-        <!-- Add Rental Item -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6 space-y-3">
-            <input type="date" id="rentalDate" class="w-full p-3 border rounded-xl outline-none">
-            <input type="text" id="shopName" placeholder="സ്ഥാപനത്തിന്റെ പേര്" class="w-full p-3 border rounded-xl outline-none">
-            <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-3 border rounded-xl outline-none">
-            <input type="number" id="rentPrice" placeholder="വാടക നിരക്ക് (₹)" class="w-full p-3 border rounded-xl outline-none">
-            
-            <select id="paymentMode" class="w-full p-3 border rounded-xl outline-none bg-white">
-                <option value="Cash">Cash (പണം)</option>
-                <option value="Google Pay">Google Pay</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-            </select>
+        <h1 class="text-3xl font-bold mb-6 text-slate-800">വാടക ഉപകരണങ്ങൾ</h1>
 
-            <button onclick="addRental()" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold">രേഖപ്പെടുത്തുക</button>
+        <div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
+            <input type="text" id="toolName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 border rounded-xl mb-3">
+            <input type="text" id="renterName" placeholder="എടുത്ത ആളുടെ പേര്" class="w-full p-4 border rounded-xl mb-3">
+            <input type="tel" id="renterPhone" placeholder="ഫോൺ നമ്പർ (91xxxxxx)" class="w-full p-4 border rounded-xl mb-3">
+            <button onclick="addRental()" class="w-full bg-slate-900 text-white p-4 rounded-xl font-bold">ചേർക്കുക</button>
         </div>
 
-        <div id="rentalsList" class="space-y-3"></div>
+        <div id="rentalList" class="space-y-4"></div>
     </div>
 
     <script>
-        document.getElementById('rentalDate').valueAsDate = new Date();
         let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
 
         function addRental() {
-            let data = {
-                date: document.getElementById('rentalDate').value,
-                shop: document.getElementById('shopName').value,
-                item: document.getElementById('itemName').value,
-                price: document.getElementById('rentPrice').value,
-                mode: document.getElementById('paymentMode').value
-            };
-            if(!data.item || !data.price) return;
-            
-            rentals.push(data);
-            localStorage.setItem('rentals', JSON.stringify(rentals));
-            location.reload();
+            let toolName = document.getElementById('toolName').value;
+            let renterName = document.getElementById('renterName').value;
+            let renterPhone = document.getElementById('renterPhone').value;
+            if(!toolName || !renterName) return alert("വിവരങ്ങൾ നൽകുക!");
+            rentals.push({toolName, renterName, renterPhone, history: []});
+            saveAndDisplay();
         }
 
-        function deleteRental(index) {
-            rentals.splice(index, 1);
+        function saveAndDisplay() {
             localStorage.setItem('rentals', JSON.stringify(rentals));
-            location.reload();
-        }
-
-        function displayRentals() {
-            let container = document.getElementById('rentalsList');
-            container.innerHTML = rentals.map((r, i) => `
-                <div class='bg-white p-4 border border-slate-100 rounded-2xl flex justify-between items-center shadow-sm'>
-                    <div>
-                        <div class="text-[10px] text-slate-400 font-bold">${r.date} | <span class="text-blue-600">${r.mode}</span></div>
-                        <div class="text-sm font-bold text-slate-800">${r.item} (${r.shop})</div>
-                        <div class="text-sm text-slate-600">വാടക: ₹${r.price}</div>
+            let list = document.getElementById('rentalList');
+            list.innerHTML = rentals.map((r, i) => {
+                let totalGiven = r.history.filter(h => h.type === 'given').reduce((s, h) => s + h.amount, 0);
+                let totalTaken = r.history.filter(h => h.type === 'taken').reduce((s, h) => s + h.amount, 0);
+                
+                return `
+                <div class="bg-white p-4 rounded-xl shadow-sm border">
+                    <div class="flex justify-between">
+                        <p class="font-bold text-lg">${r.toolName}</p>
+                        <button onclick="editRental(${i})" class="text-blue-500 text-xs">എഡിറ്റ്</button>
                     </div>
-                    <button onclick="deleteRental(${i})" class="text-red-500 text-xs font-bold bg-red-50 px-3 py-1 rounded-lg">Delete</button>
-                </div>`).join('');
+                    <p class="text-sm text-slate-600">${r.renterName} (${r.renterPhone})</p>
+                    <div class="flex justify-between my-2 text-sm">
+                        <span class="text-green-600">നൽകിയത്: ₹${totalGiven}</span>
+                        <span class="text-red-600">വാങ്ങാനുള്ളത്: ₹${totalTaken}</span>
+                    </div>
+                    <div class="mt-3 flex gap-2">
+                        <button onclick="addEntry(${i}, 'given')" class="bg-green-100 text-green-700 px-3 py-1 rounded text-xs">തുക വാങ്ങി</button>
+                        <button onclick="addEntry(${i}, 'taken')" class="bg-red-100 text-red-700 px-3 py-1 rounded text-xs">വാടക</button>
+                        <a href="https://wa.me/${r.renterPhone}" target="_blank" class="bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs">WhatsApp</a>
+                        <button onclick="deleteRental(${i})" class="text-red-500 text-xs">നീക്കം</button>
+                    </div>
+                </div>`;
+            }).join('');
         }
-        displayRentals();
+
+        function addEntry(i, type) {
+            let amount = prompt("തുക നൽകുക:");
+            if(amount) {
+                let date = new Date().toLocaleDateString('ml-IN');
+                rentals[i].history.push({date, amount: parseInt(amount), type});
+                saveAndDisplay();
+            }
+        }
+
+        function editRental(i) {
+            let newName = prompt("പുതിയ പേര്:", rentals[i].renterName);
+            let newPhone = prompt("പുതിയ ഫോൺ നമ്പർ:", rentals[i].renterPhone);
+            if(newName) rentals[i].renterName = newName;
+            if(newPhone) rentals[i].renterPhone = newPhone;
+            saveAndDisplay();
+        }
+
+        function deleteRental(i) {
+            if(confirm('നീക്കം ചെയ്യണോ?')) { rentals.splice(i, 1); saveAndDisplay(); }
+        }
+
+        saveAndDisplay();
     </script>
 </body>
 </html>
