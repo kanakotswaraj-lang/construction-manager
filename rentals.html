@@ -1,85 +1,85 @@
 <!DOCTYPE html>
 <html lang="ml">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>വാടക ഉപകരണങ്ങൾ</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold mb-6">വാടക ഉപകരണങ്ങൾ</h1>
+        
         <div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
             <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="qty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
-            <input type="text" id="renter" placeholder="ആളുടെ പേര്" class="w-full p-3 border rounded-xl mb-2">
-            <input type="tel" id="phone" placeholder="നമ്പർ" class="w-full p-3 border rounded-xl mb-3">
-            <button onclick="addRental()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
+            <input type="text" id="toolQty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
+            <input type="text" id="personName" placeholder="ആളുടെ പേര്" class="w-full p-3 border rounded-xl mb-2">
+            <input type="text" id="personPhone" placeholder="നമ്പർ" class="w-full p-3 border rounded-xl mb-3">
+            <button onclick="addTool()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
         </div>
-        <div id="rentalList" class="space-y-4"></div>
+
+        <div id="toolList" class="space-y-4"></div>
     </div>
 
     <script>
-        let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
-        
-        function addRental() {
-            // ഐഡികൾ ശരിയാണെന്ന് ഉറപ്പുവരുത്തുക
-            let tool = document.getElementById('toolName').value;
-            let qty = document.getElementById('qty').value;
-            let renter = document.getElementById('renter').value;
-            let phone = document.getElementById('phone').value;
+        let tools = JSON.parse(localStorage.getItem('tools') || '[]');
 
-            if(!tool || !renter) return alert("വിവരങ്ങൾ നൽകുക!");
-
-            rentals.push({tool, qty, renter, phone, date: new Date().toLocaleDateString(), history: []});
-            localStorage.setItem('rentals', JSON.stringify(rentals));
+        function addTool() {
+            let name = document.getElementById('toolName').value;
+            let qty = document.getElementById('toolQty').value;
+            let person = document.getElementById('personName').value;
+            let phone = document.getElementById('personPhone').value;
+            if(!name || !qty || !person) return alert("വിവരങ്ങൾ നൽകുക!");
+            tools.push({name, qty, person, phone, history: []});
+            localStorage.setItem('tools', JSON.stringify(tools));
             location.reload();
         }
 
-       function saveAndDisplay() {
-    localStorage.setItem('rentals', JSON.stringify(rentals));
-    let list = document.getElementById('rentalList');
-    list.innerHTML = rentals.map((r, i) => `
-        <div class="bg-white p-4 rounded-xl border shadow-sm mb-3">
-            <div class="font-bold text-lg cursor-pointer" onclick="editRental(${i})">
-                ${r.tool || ''} (${r.qty || '0'} എണ്ണം)
-            </div>
-            <p class="text-xs text-gray-400">തീയതി: ${r.date || ''}</p>
-            <p class="text-sm text-gray-700 cursor-pointer" onclick="editRental(${i})">
-                ${r.renter || ''} (${r.phone || ''})
-            </p>
-            
-            <div class="flex gap-2 mt-3">
-                <button onclick="addEntry(${i}, 'taken')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
-                <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
-                <button onclick="deleteRental(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
-            </div>
-        </div>
-    `).join('');
-}
+        function addEntry(i, type) {
+            let amount = prompt("തുക നൽകുക:");
+            if(!amount) return;
+            tools[i].history.push({type, amount: parseInt(amount), date: new Date().toLocaleDateString()});
+            localStorage.setItem('tools', JSON.stringify(tools));
+            location.reload();
+        }
 
-function editRental(i) {
-    let newTool = prompt("ഉപകരണം:", rentals[i].tool);
-    let newQty = prompt("എണ്ണം:", rentals[i].qty);
-    let newRenter = prompt("ആളുടെ പേര്:", rentals[i].renter);
-    let newPhone = prompt("ഫോൺ നമ്പർ:", rentals[i].phone);
-    
-    if(newTool) rentals[i].tool = newTool;
-    if(newQty) rentals[i].qty = newQty;
-    if(newRenter) rentals[i].renter = newRenter;
-    if(newPhone) rentals[i].phone = newPhone;
-    
-    saveAndDisplay();
-}
+        function showDetails(i) {
+            let t = tools[i];
+            let details = (t.history || []).map(h => `${h.date}: ${h.type === 'rent' ? 'വാടക തുക: ' : 'നൽകിയത്: '} ₹${h.amount}`).join('\n');
+            alert(`ഉപകരണം: ${t.name}\nആൾ: ${t.person}\n\nചരിത്രം:\n${details || 'വിവരങ്ങളില്ല'}`);
+        }
 
-function deleteRental(i) {
-    if(confirm('ഇത് നീക്കം ചെയ്യണോ?')) {
-        rentals.splice(i, 1);
-        saveAndDisplay();
-    }
-}
-        saveAndDisplay();
+        function deleteTool(i) {
+            if(confirm('നീക്കം ചെയ്യണോ?')) {
+                tools.splice(i, 1);
+                localStorage.setItem('tools', JSON.stringify(tools));
+                location.reload();
+            }
+        }
+
+        let toolList = document.getElementById('toolList');
+        toolList.innerHTML = tools.map((t, i) => {
+            let history = t.history || [];
+            let totalRent = history.filter(h => h.type === 'rent').reduce((sum, h) => sum + h.amount, 0);
+            let paidAmount = history.filter(h => h.type === 'given').reduce((sum, h) => sum + h.amount, 0);
+            let balance = totalRent - paidAmount;
+
+            return `
+            <div class="bg-white p-4 rounded-xl border">
+                <div onclick="showDetails(${i})" class="cursor-pointer">
+                    <p class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</p>
+                    <p class="text-sm">${t.person} (${t.phone})</p>
+                    <p class="text-sm font-bold mt-1 ${balance > 0 ? 'text-red-600' : 'text-green-600'}">
+                        ബാലൻസ്: ₹${balance}
+                    </p>
+                </div>
+                <div class="flex gap-2 mt-3">
+                    <button onclick="addEntry(${i}, 'rent')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക ചേർക്കുക</button>
+                    <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
+                    <button onclick="deleteTool(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
+                </div>
+            </div>`;
+        }).join('');
     </script>
 </body>
 </html>
