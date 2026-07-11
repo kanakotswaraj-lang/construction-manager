@@ -37,29 +37,48 @@
             location.reload();
         }
 
-        function saveAndDisplay() {
-            let list = document.getElementById('rentalList');
-            list.innerHTML = rentals.map((r, i) => `
-                <div class="bg-white p-4 rounded-xl border">
-                    <p class="font-bold">${r.tool || ''} (${r.qty || '0'} എണ്ണം) - ${r.date || ''}</p>
-                    <p class="text-sm text-gray-500">${r.renter || ''} (${r.phone || ''})</p>
-                    <div class="flex gap-2 mt-2">
-                        <button onclick="addEntry(${i}, 'taken')" class="bg-blue-100 p-2 rounded text-xs">വാടക കണക്ക്</button>
-                        <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs">തുക വാങ്ങി</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function addEntry(i, type) {
-            let amount = prompt("തുക നൽകുക:");
-            if(amount) {
-                if(!rentals[i].history) rentals[i].history = [];
-                rentals[i].history.push({type, amount: parseInt(amount), date: new Date().toLocaleDateString()});
-                localStorage.setItem('rentals', JSON.stringify(rentals));
-                saveAndDisplay();
-            }
-        }
+       function saveAndDisplay() {
+    localStorage.setItem('rentals', JSON.stringify(rentals));
+    let list = document.getElementById('rentalList');
+    list.innerHTML = rentals.map((r, i) => `
+        <div class="bg-white p-4 rounded-xl border shadow-sm mb-3">
+            <div class="font-bold text-lg cursor-pointer" onclick="editRental(${i})">
+                ${r.tool || ''} (${r.qty || '0'} എണ്ണം)
+            </div>
+            <p class="text-xs text-gray-400">തീയതി: ${r.date || ''}</p>
+            <p class="text-sm text-gray-700 cursor-pointer" onclick="editRental(${i})">
+                ${r.renter || ''} (${r.phone || ''})
+            </p>
+            
+            <div class="flex gap-2 mt-3">
+                <button onclick="addEntry(${i}, 'taken')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
+                <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
+                <button onclick="deleteRental(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function editRental(i) {
+    let newTool = prompt("ഉപകരണം:", rentals[i].tool);
+    let newQty = prompt("എണ്ണം:", rentals[i].qty);
+    let newRenter = prompt("ആളുടെ പേര്:", rentals[i].renter);
+    let newPhone = prompt("ഫോൺ നമ്പർ:", rentals[i].phone);
+    
+    if(newTool) rentals[i].tool = newTool;
+    if(newQty) rentals[i].qty = newQty;
+    if(newRenter) rentals[i].renter = newRenter;
+    if(newPhone) rentals[i].phone = newPhone;
+    
+    saveAndDisplay();
+}
+
+function deleteRental(i) {
+    if(confirm('ഇത് നീക്കം ചെയ്യണോ?')) {
+        rentals.splice(i, 1);
+        saveAndDisplay();
+    }
+}
         saveAndDisplay();
     </script>
 </body>
