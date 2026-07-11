@@ -1,39 +1,74 @@
-<script>
-    function updateDashboard() {
-        let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
-        let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
-        let cashList = JSON.parse(localStorage.getItem('cash') || '[]'); 
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>സൈറ്റ് മാനേജർ</title>
+</head>
+<body class="bg-slate-50 p-4 font-sans">
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-bold mb-6 text-slate-800 text-center">സൈറ്റ് മാനേജർ</h1>
         
-        let totalWage = 0, totalPaid = 0;
+        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
+            <h2 class="text-gray-500 text-sm font-medium">ആകെ ബാധ്യത</h2>
+            <div id="totalBalance" class="text-4xl font-extrabold text-slate-900 mt-1">₹0</div>
+            
+            <div class="grid grid-cols-2 gap-4 mt-6">
+                <div class="bg-blue-50 p-4 rounded-2xl">
+                    <div class="text-blue-600 text-xs font-bold">ആകെ വരവ്/കൂലി</div>
+                    <div id="sumwage" class="text-lg font-bold text-slate-800">₹0</div>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-2xl">
+                    <div class="text-orange-600 text-xs font-bold">നൽകിയത്</div>
+                    <div id="sumPaid" class="text-lg font-bold text-slate-800">₹0</div>
+                </div>
+            </div>
+        </div>
 
-        // 1. ജീവനക്കാരുടെ കണക്ക്
-        staffList.forEach(s => {
-            s.history?.forEach(e => {
-                if(e.type === 'taken') totalWage += parseFloat(e.amount || 0);
-                if(e.type === 'given') totalPaid += parseFloat(e.amount || 0);
-            });
-        });
+        <div class="grid grid-cols-1 gap-3">
+            <a href="staff.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">ജീവനക്കാർ</a>
+            <a href="rentals.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">വാടക ഉപകരണങ്ങൾ</a>
+            <a href="cash.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">സൈറ്റ് കണക്ക്</a>
+        </div>
+    </div>
 
-        // 2. വാടക ഉപകരണങ്ങളുടെ കണക്ക്
-        rentals.forEach(r => {
-            r.history?.forEach(e => {
-                if(e.type === 'taken') totalWage += parseFloat(e.amount || 0);
-                if(e.type === 'given') totalPaid += parseFloat(e.amount || 0);
-            });
-        });
+    <script>
+        function updateDashboard() {
+            try {
+                let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
+                let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
+                let cashList = JSON.parse(localStorage.getItem('cash') || '[]');
+                
+                let totalWage = 0, totalPaid = 0;
 
-        // 3. സൈറ്റ് കണക്ക് (വരവ്/ചെലവ്)
-        cashList.forEach(c => {
-            if(c.type === 'income') totalWage += parseFloat(c.amount || 0); 
-            if(c.type === 'expense') totalPaid += parseFloat(c.amount || 0); 
-        });
+                staffList.forEach(s => {
+                    s.history?.forEach(e => {
+                        if(e.type === 'taken') totalWage += parseFloat(e.amount || 0);
+                        if(e.type === 'given') totalPaid += parseFloat(e.amount || 0);
+                    });
+                });
 
-        // ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുന്നു
-        document.getElementById('sumwage').innerText = '₹' + totalWage;
-        document.getElementById('sumPaid').innerText = '₹' + totalPaid;
-        document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
-    }
+                rentals.forEach(r => {
+                    r.history?.forEach(e => {
+                        if(e.type === 'taken') totalWage += parseFloat(e.amount || 0);
+                        if(e.type === 'given') totalPaid += parseFloat(e.amount || 0);
+                    });
+                });
 
-    // പേജ് ലോഡ് ചെയ്യുമ്പോൾ കണക്ക് അപ്‌ഡേറ്റ് ചെയ്യാൻ
-    updateDashboard();
-</script>
+                cashList.forEach(c => {
+                    if(c.type === 'income') totalWage += parseFloat(c.amount || 0);
+                    if(c.type === 'expense') totalPaid += parseFloat(c.amount || 0);
+                });
+
+                document.getElementById('sumwage').innerText = '₹' + totalWage;
+                document.getElementById('sumPaid').innerText = '₹' + totalPaid;
+                document.getElementById('totalBalance').innerText = '₹' + (totalWage - totalPaid);
+            } catch (e) {
+                console.error("Data error:", e);
+            }
+        }
+        updateDashboard();
+    </script>
+</body>
+</html>
