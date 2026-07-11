@@ -52,7 +52,33 @@
                 location.reload();
             }
         }
+  function getBalance(history) {
+        let taken = history.filter(h => h.type === 'taken').reduce((sum, h) => sum + h.amount, 0);
+        let given = history.filter(h => h.type === 'given').reduce((sum, h) => sum + h.amount, 0);
+        return given - taken; // ബാലൻസ് കണക്കാക്കുന്നു
+    }
 
+    // ലിസ്റ്റ് കാണിക്കുന്ന ഭാഗം ഇങ്ങനെ മാറ്റുക:
+    document.getElementById('staffList').innerHTML = staff.map((s, i) => {
+        let balance = getBalance(s.history);
+        return `
+            <div class="bg-white p-4 rounded-xl border">
+                <div onclick="showDetails(${i})" class="cursor-pointer">
+                    <p class="font-bold text-lg">${s.name}</p>
+                    <p class="text-gray-500 text-sm">${s.phone}</p>
+                    <p class="text-sm font-bold mt-1 ${balance >= 0 ? 'text-green-600' : 'text-red-600'}">
+                        ബാലൻസ്: ₹${balance}
+                    </p>
+                </div>
+                <div class="flex gap-2 mt-3">
+                    <button onclick="addEntry(${i}, 'taken')" class="bg-blue-100 p-2 rounded text-xs font-bold">കൂലി (വാങ്ങി)</button>
+                    <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">നൽകിയത്</button>
+                    <button onclick="deleteStaff(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+</script>
         document.getElementById('staffList').innerHTML = staff.map((s, i) => `
             <div class="bg-white p-4 rounded-xl border">
                 <div onclick="showDetails(${i})" class="cursor-pointer">
