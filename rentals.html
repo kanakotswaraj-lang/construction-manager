@@ -16,17 +16,14 @@
             <input type="number" id="toolRate" placeholder="ഒരെണ്ണത്തിനുള്ള വാടക" class="w-full p-3 border rounded-xl mb-2">
             <input type="text" id="personName" placeholder="ആളുടെ പേര്" class="w-full p-3 border rounded-xl mb-2">
             <input type="text" id="personPhone" placeholder="നമ്പർ" class="w-full p-3 border rounded-xl mb-3">
-            <button onclick="addTool()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
+            <button onclick="saveTool()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
         </div>
 
         <div id="toolList" class="space-y-4"></div>
     </div>
 
     <script>
-        let tools = JSON.parse(localStorage.getItem('tools') || '[]');
-
-        function addTool() {
-            // ഓരോ ഇൻപുട്ടിന്റെയും ID കൃത്യമായി ഇവിടെ നൽകിയിരിക്കുന്നു
+        function saveTool() {
             let name = document.getElementById('toolName').value;
             let qty = parseInt(document.getElementById('toolQty').value);
             let rate = parseInt(document.getElementById('toolRate').value);
@@ -34,23 +31,57 @@
             let phone = document.getElementById('personPhone').value;
             
             if(!name || !qty || !rate || !person) {
-                alert("എല്ലാ വിവരങ്ങളും കൃത്യമായി നൽകുക!");
+                alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
                 return;
             }
             
+            let tools = JSON.parse(localStorage.getItem('tools') || '[]');
             let totalRent = qty * rate;
-            let date = new Date().toLocaleDateString();
             
-            tools.push({name, qty, rate, totalRent, person, phone, date, history: []});
+            tools.push({
+                name: name,
+                qty: qty,
+                rate: rate,
+                totalRent: totalRent,
+                person: person,
+                phone: phone,
+                date: new Date().toLocaleDateString(),
+                history: []
+            });
+            
             localStorage.setItem('tools', JSON.stringify(tools));
+            location.reload();
+        }
+
+        // ലിസ്റ്റ് കാണിക്കാൻ
+        let tools = JSON.parse(localStorage.getItem('tools') || '[]');
+        let listContainer = document.getElementById('toolList');
+        
+        listContainer.innerHTML = tools.map((t, i) => {
+            let paid = (t.history || []).reduce((sum, h) => sum + (h.type === 'given' ? h.amount : 0), 0);
+            let bal = t.totalRent - paid;
             
-            // ഫോം ക്ലിയർ ചെയ്യുക
-            document.getElementById('toolName').value = '';
-            document.getElementById('toolQty').value = '';
-            document.getElementById('toolRate').value = '';
-            document.getElementById('personName').value = '';
-            document.getElementById('personPhone').value = '';
-            
+            return `
+            <div class="bg-white p-4 rounded-xl border">
+                <p class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</p>
+                <p class="text-xs text-gray-500">തീയതി: ${t.date || 'N/A'}</p>
+                <p class="text-sm">റേറ്റ്: ₹${t.rate} | ആകെ: ₹${t.totalRent}</p>
+                <p class="text-sm">ആൾ: ${t.person} (${t.phone})</p>
+                <p class="text-sm font-bold mt-1 ${bal > 0 ? 'text-red-600' : 'text-green-600'}">
+                    ബാലൻസ്: ₹${bal}
+                </p>
+                <div class="flex gap-2 mt-3">
+                    <button onclick="alert('ലഭ്യം')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
+                    <button onclick="alert('ലഭ്യം')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
+                    <button onclick="deleteT(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
+                </div>
+            </div>`;
+        }).join('');
+
+        function deleteT(i) {
+            let tools = JSON.parse(localStorage.getItem('tools') || '[]');
+            tools.splice(i, 1);
+            localStorage.setItem('tools', JSON.stringify(tools));
             location.reload();
         }
     </script>
