@@ -16,27 +16,25 @@
             <input type="number" id="toolRate" placeholder="ഒരെണ്ണത്തിനുള്ള വാടക" class="w-full p-3 border rounded-xl mb-2">
             <input type="text" id="personName" placeholder="ആളുടെ പേര്" class="w-full p-3 border rounded-xl mb-2">
             <input type="text" id="personPhone" placeholder="നമ്പർ" class="w-full p-3 border rounded-xl mb-3">
-            <button onclick="saveTool()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
+            <button onclick="addNewTool()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
         </div>
 
         <div id="toolList" class="space-y-4"></div>
     </div>
 
     <script>
-        // ഡാറ്റാബേസ് ക്ലിയർ ചെയ്യാൻ ഇത് ഉപയോഗിക്കാം (ഒരിക്കൽ മാത്രം)
-        
-        //
-        localStorage.removeItem('tools'); 
+        // കോഡ് പ്രവർത്തിക്കുന്നില്ലെങ്കിൽ താഴത്തെ വരിയിലെ // മാറ്റുക
+        // localStorage.removeItem('tools');
 
-        function saveTool() {
+        function addNewTool() {
             let name = document.getElementById('toolName').value;
             let qty = parseInt(document.getElementById('toolQty').value);
             let rate = parseInt(document.getElementById('toolRate').value);
             let person = document.getElementById('personName').value;
             let phone = document.getElementById('personPhone').value;
             
-            if(!name || isNaN(qty) || isNaN(rate) || !person) {
-                alert("എല്ലാ വിവരങ്ങളും ശരിയായി നൽകുക!");
+            if(!name || !qty || !rate || !person) {
+                alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
                 return;
             }
             
@@ -53,39 +51,38 @@
             location.reload();
         }
 
-        function addTransaction(i, type) {
-            let amount = prompt("തുക നൽകുക:");
-            if(amount) {
-                let tools = JSON.parse(localStorage.getItem('tools') || '[]');
-                tools[i].history.push({type, amount: parseInt(amount), date: new Date().toLocaleDateString()});
-                localStorage.setItem('tools', JSON.stringify(tools));
-                location.reload();
-            }
-        }
-
         let tools = JSON.parse(localStorage.getItem('tools') || '[]');
         let listContainer = document.getElementById('toolList');
         
         listContainer.innerHTML = tools.map((t, i) => {
             let paid = (t.history || []).reduce((sum, h) => sum + (h.type === 'given' ? h.amount : 0), 0);
-            let bal = (t.totalRent || (t.qty * t.rate)) - paid;
+            let bal = t.totalRent - paid;
             
             return `
             <div class="bg-white p-4 rounded-xl border">
-                <p class="font-bold text-lg">${t.name} (${t.qty || 0} എണ്ണം)</p>
-                <p class="text-xs text-gray-500">തീയതി: ${t.date || 'N/A'}</p>
-                <p class="text-sm">റേറ്റ്: ₹${t.rate || 0} | ആകെ: ₹${t.totalRent || (t.qty * t.rate)}</p>
-                <p class="text-sm">ആൾ: ${t.person} (${t.phone})</p>
+                <p class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</p>
+                <p class="text-xs text-gray-500">തീയതി: ${t.date}</p>
+                <p class="text-sm">റേറ്റ്: ₹${t.rate} | ആകെ: ₹${t.totalRent}</p>
                 <p class="text-sm font-bold mt-1 ${bal > 0 ? 'text-red-600' : 'text-green-600'}">
                     ബാലൻസ്: ₹${bal}
                 </p>
                 <div class="flex gap-2 mt-3">
-                    <button onclick="addTransaction(${i}, 'rent')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
-                    <button onclick="addTransaction(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
+                    <button onclick="addTrans(${i}, 'rent')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
+                    <button onclick="addTrans(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
                     <button onclick="deleteT(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
                 </div>
             </div>`;
         }).join('');
+
+        function addTrans(i, type) {
+            let val = prompt("തുക:");
+            if(val) {
+                let tools = JSON.parse(localStorage.getItem('tools') || '[]');
+                tools[i].history.push({type, amount: parseInt(val), date: new Date().toLocaleDateString()});
+                localStorage.setItem('tools', JSON.stringify(tools));
+                location.reload();
+            }
+        }
 
         function deleteT(i) {
             let tools = JSON.parse(localStorage.getItem('tools') || '[]');
