@@ -36,7 +36,7 @@
             
             tools.push({
                 name, qty, rate, person, phone,
-                startDate: new Date().toLocaleDateString(),
+                startDate: new Date().toISOString().split('T')[0],
                 returnDate: null,
                 paid: 0,
                 status: 'ഉപയോഗിക്കുന്നു'
@@ -46,10 +46,19 @@
         }
 
         function returnTool(i) {
-            tools[i].returnDate = new Date().toLocaleDateString();
+            tools[i].returnDate = new Date().toISOString().split('T')[0];
             tools[i].status = 'തിരികെ നൽകി';
             localStorage.setItem('tools', JSON.stringify(tools));
             location.reload();
+        }
+
+        function editPhone(i) {
+            let newPhone = prompt("പുതിയ നമ്പർ നൽകുക:", tools[i].phone);
+            if(newPhone) {
+                tools[i].phone = newPhone;
+                localStorage.setItem('tools', JSON.stringify(tools));
+                location.reload();
+            }
         }
 
         function addPayment(i) {
@@ -71,17 +80,20 @@
 
         let list = document.getElementById('toolList');
         list.innerHTML = tools.map((t, i) => {
-            let total = (t.qty * t.rate);
+            let days = t.returnDate ? 
+                Math.max(1, Math.ceil((new Date(t.returnDate) - new Date(t.startDate)) / (1000 * 60 * 60 * 24))) :
+                Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+            
+            let total = (t.qty * t.rate * days);
             let bal = total - t.paid;
             
             return `
             <div class="bg-white p-4 rounded-xl border">
                 <p class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</p>
-                <p class="text-sm">ആൾ: ${t.person}</p>
-                <p class="text-xs text-gray-500">എടുത്തത്: ${t.startDate}</p>
-                <p class="text-xs text-gray-500">തിരികെ നൽകിയത്: ${t.returnDate || 'ഇതുവരെ ഇല്ല'}</p>
+                <p class="text-sm">ആൾ: ${t.person} <button onclick="editPhone(${i})" class="text-blue-500 text-xs underline">(${t.phone})</button></p>
+                <p class="text-xs text-gray-500">ദിവസങ്ങൾ: ${days} | റേറ്റ്: ₹${t.rate}/ദിവസം</p>
                 <p class="text-sm font-bold mt-1 ${bal > 0 ? 'text-red-600' : 'text-green-600'}">
-                    ${bal > 0 ? 'ബാലൻസ്: ₹'+bal : 'അഡ്വാൻസ്: ₹'+Math.abs(bal)}
+                    ${bal > 0 ? 'നൽകാനുള്ളത്: ₹'+bal : 'അഡ്വാൻസ്: ₹'+Math.abs(bal)}
                 </p>
                 <div class="flex gap-2 mt-3">
                     ${t.status === 'ഉപയോഗിക്കുന്നു' ? `<button onclick="returnTool(${i})" class="bg-yellow-100 p-2 rounded text-xs font-bold">തിരികെ നൽകി</button>` : ''}
