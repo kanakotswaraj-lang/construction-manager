@@ -41,7 +41,7 @@
 
         function showDetails(i) {
             let s = staff[i];
-            let details = s.history.map(h => `${h.date}: ${h.type === 'taken' ? 'കൂലി വാങ്ങി' : 'നൽകിയത്'} ₹${h.amount}`).join('\n');
+            let details = s.history.map(h => `${h.date}: ${h.type === 'work' ? 'ജോലിക്കൂലി: ' : 'നൽകിയത്: '} ₹${h.amount}`).join('\n');
             alert(`പേര്: ${s.name}\nനമ്പർ: ${s.phone}\n\nചരിത്രം:\n${details || 'വിവരങ്ങളില്ല'}`);
         }
 
@@ -53,24 +53,26 @@
             }
         }
 
-        // ഇവിടെയാണ് ലിസ്റ്റ് റൻഡർ ചെയ്യുന്നത്
+        // ഇവിടെയാണ് പുതിയ കോഡ് ചേർക്കുന്നത്
         let listElement = document.getElementById('staffList');
         listElement.innerHTML = staff.map((s, i) => {
-            let taken = s.history.filter(h => h.type === 'taken').reduce((sum, h) => sum + h.amount, 0);
-            let given = s.history.filter(h => h.type === 'given').reduce((sum, h) => sum + h.amount, 0);
-            let balance = given - taken;
+            let history = s.history || [];
+            let workAmount = history.filter(h => h.type === 'work').reduce((sum, h) => sum + h.amount, 0);
+            let givenAmount = history.filter(h => h.type === 'given').reduce((sum, h) => sum + h.amount, 0);
+            let balance = workAmount - givenAmount;
             
             return `
-            <div class="bg-white p-4 rounded-xl border">
+            <div class="bg-white p-4 rounded-xl border mb-3">
                 <div onclick="showDetails(${i})" class="cursor-pointer">
                     <p class="font-bold text-lg">${s.name}</p>
                     <p class="text-gray-500 text-sm">${s.phone}</p>
-                    <p class="text-sm font-bold mt-1 ${balance >= 0 ? 'text-green-600' : 'text-red-600'}">
-                        ബാലൻസ്: ₹${balance}
+                    <p class="text-sm mt-1">ജോലിക്കൂലി: ₹${workAmount} | നൽകിയത്: ₹${givenAmount}</p>
+                    <p class="text-sm font-bold mt-1 ${balance > 0 ? 'text-red-600' : 'text-green-600'}">
+                        നൽകാനുള്ളത്: ₹${balance}
                     </p>
                 </div>
                 <div class="flex gap-2 mt-3">
-                    <button onclick="addEntry(${i}, 'taken')" class="bg-blue-100 p-2 rounded text-xs font-bold">കൂലി (വാങ്ങി)</button>
+                    <button onclick="addEntry(${i}, 'work')" class="bg-blue-100 p-2 rounded text-xs font-bold">ജോലി (തുക ചേർക്കുക)</button>
                     <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">നൽകിയത്</button>
                     <button onclick="deleteStaff(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
                 </div>
