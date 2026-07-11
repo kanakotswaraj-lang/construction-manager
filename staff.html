@@ -32,7 +32,7 @@
         }
 
         function addEntry(i, type) {
-            let amount = prompt("തുക നൽകുക:");
+            let amount = prompt(type === 'work' ? "ജോലിക്കൂലി തുക നൽകുക:" : "നൽകിയ തുക നൽകുക:");
             if(!amount) return;
             staff[i].history.push({type, amount: parseInt(amount), date: new Date().toLocaleDateString()});
             localStorage.setItem('staff', JSON.stringify(staff));
@@ -41,7 +41,7 @@
 
         function showDetails(i) {
             let s = staff[i];
-            let details = s.history.map(h => `${h.date}: ${h.type === 'work' ? 'ജോലിക്കൂലി: ' : 'നൽകിയത്: '} ₹${h.amount}`).join('\n');
+            let details = (s.history || []).map(h => `${h.date}: ${h.type === 'work' ? 'ജോലിക്കൂലി: ' : 'നൽകിയത്: '} ₹${h.amount}`).join('\n');
             alert(`പേര്: ${s.name}\nനമ്പർ: ${s.phone}\n\nചരിത്രം:\n${details || 'വിവരങ്ങളില്ല'}`);
         }
 
@@ -53,7 +53,6 @@
             }
         }
 
-        // ഇവിടെയാണ് പുതിയ കോഡ് ചേർക്കുന്നത്
         let listElement = document.getElementById('staffList');
         listElement.innerHTML = staff.map((s, i) => {
             let history = s.history || [];
@@ -66,13 +65,13 @@
                 <div onclick="showDetails(${i})" class="cursor-pointer">
                     <p class="font-bold text-lg">${s.name}</p>
                     <p class="text-gray-500 text-sm">${s.phone}</p>
-                    <p class="text-sm mt-1">ജോലിക്കൂലി: ₹${workAmount} | നൽകിയത്: ₹${givenAmount}</p>
+                    <p class="text-sm mt-1">ജോലി: ₹${workAmount} | നൽകിയത്: ₹${givenAmount}</p>
                     <p class="text-sm font-bold mt-1 ${balance > 0 ? 'text-red-600' : 'text-green-600'}">
                         നൽകാനുള്ളത്: ₹${balance}
                     </p>
                 </div>
                 <div class="flex gap-2 mt-3">
-                    <button onclick="addEntry(${i}, 'work')" class="bg-blue-100 p-2 rounded text-xs font-bold">ജോലി (തുക ചേർക്കുക)</button>
+                    <button onclick="addEntry(${i}, 'work')" class="bg-blue-100 p-2 rounded text-xs font-bold">ജോലി</button>
                     <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">നൽകിയത്</button>
                     <button onclick="deleteStaff(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
                 </div>
