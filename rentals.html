@@ -46,7 +46,6 @@
         }
 
         function returnTool(i) {
-            let tools = JSON.parse(localStorage.getItem('tools') || '[]');
             tools[i].returnDate = new Date().toLocaleDateString();
             tools[i].status = 'തിരികെ നൽകി';
             localStorage.setItem('tools', JSON.stringify(tools));
@@ -56,7 +55,6 @@
         function addPayment(i) {
             let amount = prompt("നൽകിയ തുക:");
             if(amount) {
-                let tools = JSON.parse(localStorage.getItem('tools') || '[]');
                 tools[i].paid += parseInt(amount);
                 localStorage.setItem('tools', JSON.stringify(tools));
                 location.reload();
@@ -65,7 +63,6 @@
 
         function deleteTool(i) {
             if(confirm('നീക്കം ചെയ്യണോ?')) {
-                let tools = JSON.parse(localStorage.getItem('tools') || '[]');
                 tools.splice(i, 1);
                 localStorage.setItem('tools', JSON.stringify(tools));
                 location.reload();
@@ -74,7 +71,7 @@
 
         let list = document.getElementById('toolList');
         list.innerHTML = tools.map((t, i) => {
-            let total = t.status === 'തിരികെ നൽകി' ? (t.qty * t.rate) : (t.qty * t.rate); // ലളിതമായ കണക്ക്
+            let total = (t.qty * t.rate);
             let bal = total - t.paid;
             
             return `
@@ -84,7 +81,7 @@
                 <p class="text-xs text-gray-500">എടുത്തത്: ${t.startDate}</p>
                 <p class="text-xs text-gray-500">തിരികെ നൽകിയത്: ${t.returnDate || 'ഇതുവരെ ഇല്ല'}</p>
                 <p class="text-sm font-bold mt-1 ${bal > 0 ? 'text-red-600' : 'text-green-600'}">
-                    ബാലൻസ്: ₹${bal}
+                    ${bal > 0 ? 'ബാലൻസ്: ₹'+bal : 'അഡ്വാൻസ്: ₹'+Math.abs(bal)}
                 </p>
                 <div class="flex gap-2 mt-3">
                     ${t.status === 'ഉപയോഗിക്കുന്നു' ? `<button onclick="returnTool(${i})" class="bg-yellow-100 p-2 rounded text-xs font-bold">തിരികെ നൽകി</button>` : ''}
