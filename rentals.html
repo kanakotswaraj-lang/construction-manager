@@ -58,28 +58,31 @@
                 location.reload();
             }
         }
+listElement.innerHTML = tools.map((t, i) => {
+    let paidAmount = (t.history || []).filter(h => h.type === 'given').reduce((sum, h) => sum + h.amount, 0);
+    let qty = t.qty || 0;
+    let rate = t.rate || 0;
+    let totalRent = t.totalRent || (qty * rate); // പഴയ ഡാറ്റയ്ക്കും ഇത് വർക്ക് ചെയ്യും
+    let balance = totalRent - paidAmount;
+    let date = t.date || "വിവരമില്ല";
 
-        let toolList = document.getElementById('toolList');
-        toolList.innerHTML = tools.map((t, i) => {
-            let paidAmount = t.history.filter(h => h.type === 'given').reduce((sum, h) => sum + h.amount, 0);
-            let balance = t.totalRent - paidAmount;
-
-            return `
-            <div class="bg-white p-4 rounded-xl border">
-                <p class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</p>
-                <p class="text-xs text-gray-500">തീയതി: ${t.date}</p>
-                <p class="text-sm">റേറ്റ്: ₹${t.rate} | ആകെ: ₹${t.totalRent}</p>
-                <p class="text-sm">${t.person} (${t.phone})</p>
-                <p class="text-sm font-bold mt-1 ${balance > 0 ? 'text-red-600' : 'text-green-600'}">
-                    ബാലൻസ്: ₹${balance}
-                </p>
-                <div class="flex gap-2 mt-3">
-                    <button onclick="addEntry(${i}, 'rent')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
-                    <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
-                    <button onclick="deleteTool(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
-                </div>
-            </div>`;
-        }).join('');
+    return `
+    <div class="bg-white p-4 rounded-xl border mb-3">
+        <p class="font-bold text-lg">${t.name} (${qty} എണ്ണം)</p>
+        <p class="text-xs text-gray-500">തീയതി: ${date}</p>
+        <p class="text-sm">റേറ്റ്: ₹${rate} | ആകെ: ₹${totalRent}</p>
+        <p class="text-sm">${t.person} (${t.phone})</p>
+        <p class="text-sm font-bold mt-1 ${balance > 0 ? 'text-red-600' : 'text-green-600'}">
+            ബാലൻസ്: ₹${balance}
+        </p>
+        <div class="flex gap-2 mt-3">
+            <button onclick="addEntry(${i}, 'rent')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
+            <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
+            <button onclick="deleteTool(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
+        </div>
+    </div>`;
+}).join('');
+        
     </script>
 </body>
 </html>
