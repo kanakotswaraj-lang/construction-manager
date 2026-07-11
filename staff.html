@@ -2,18 +2,20 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ജീവനക്കാർ</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold mb-6">ജീവനക്കാർ</h1>
+        
         <div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
-            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 border rounded-xl mb-2">
-            <input type="tel" id="staffPhone" placeholder="WhatsApp നമ്പർ" class="w-full p-3 border rounded-xl mb-3">
+            <input type="text" id="name" placeholder="പേര്" class="w-full p-3 border rounded-xl mb-2">
+            <input type="text" id="phone" placeholder="ഫോൺ" class="w-full p-3 border rounded-xl mb-3">
             <button onclick="addStaff()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
         </div>
+
         <div id="staffList" class="space-y-4"></div>
     </div>
 
@@ -21,52 +23,49 @@
         let staff = JSON.parse(localStorage.getItem('staff') || '[]');
 
         function addStaff() {
-            let name = document.getElementById('staffName').value;
-            let phone = document.getElementById('staffPhone').value;
-            if(!name) return;
+            let name = document.getElementById('name').value;
+            let phone = document.getElementById('phone').value;
+            if(!name || !phone) return alert("വിവരങ്ങൾ നൽകുക!");
             staff.push({name, phone, history: []});
-            saveAndDisplay();
-        }
-
-        function saveAndDisplay() {
             localStorage.setItem('staff', JSON.stringify(staff));
-            let list = document.getElementById('staffList');
-            list.innerHTML = staff.map((s, i) => `
-                <div class="bg-white p-4 rounded-xl border shadow-sm">
-                    <!-- എഡിറ്റ് ചെയ്യാൻ പേരും നമ്പറും ക്ലിക്ക് ചെയ്യാം -->
-                    <div class="flex justify-between font-bold text-lg cursor-pointer" onclick="editStaff(${i})">
-                        ${s.name} <span class="text-xs text-blue-500 font-normal underline">എഡിറ്റ്</span>
-                    </div>
-                    <p class="text-sm text-gray-500 cursor-pointer" onclick="editStaff(${i})">${s.phone}</p>
-                    
-                    <div class="flex gap-2 mt-3">
-                        <button onclick="addEntry(${i}, 'taken')" class="bg-blue-100 p-2 rounded text-xs font-bold">കൂലി (വാങ്ങി)</button>
-                        <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">നൽകിയത്</button>
-                        <button onclick="deleteStaff(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function editStaff(i) {
-            let newName = prompt("പുതിയ പേര്:", staff[i].name);
-            let newPhone = prompt("പുതിയ നമ്പർ:", staff[i].phone);
-            if(newName) staff[i].name = newName;
-            if(newPhone) staff[i].phone = newPhone;
-            saveAndDisplay();
+            location.reload();
         }
 
         function addEntry(i, type) {
             let amount = prompt("തുക നൽകുക:");
-            if(amount) {
-                staff[i].history.push({type, amount: parseInt(amount), date: new Date().toLocaleDateString()});
-                saveAndDisplay();
+            if(!amount) return;
+            staff[i].history.push({type, amount: parseInt(amount), date: new Date().toLocaleDateString()});
+            localStorage.setItem('staff', JSON.stringify(staff));
+            location.reload();
+        }
+
+        function showDetails(i) {
+            let s = staff[i];
+            let details = s.history.map(h => `${h.date}: ${h.type === 'taken' ? 'കൂലി വാങ്ങി' : 'നൽകിയത്'} ₹${h.amount}`).join('\n');
+            alert(`പേര്: ${s.name}\nനമ്പർ: ${s.phone}\n\nചരിത്രം:\n${details || 'വിവരങ്ങളില്ല'}`);
+        }
+
+        function deleteStaff(i) {
+            if(confirm('നീക്കം ചെയ്യണോ?')) {
+                staff.splice(i, 1);
+                localStorage.setItem('staff', JSON.stringify(staff));
+                location.reload();
             }
         }
 
-        function deleteStaff(i) { if(confirm('നീക്കം ചെയ്യണോ?')) { staff.splice(i, 1); saveAndDisplay(); } }
-        
-        saveAndDisplay();
+        document.getElementById('staffList').innerHTML = staff.map((s, i) => `
+            <div class="bg-white p-4 rounded-xl border">
+                <div onclick="showDetails(${i})" class="cursor-pointer">
+                    <p class="font-bold text-lg">${s.name}</p>
+                    <p class="text-gray-500 text-sm">${s.phone}</p>
+                </div>
+                <div class="flex gap-2 mt-3">
+                    <button onclick="addEntry(${i}, 'taken')" class="bg-blue-100 p-2 rounded text-xs font-bold">കൂലി (വാങ്ങി)</button>
+                    <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">നൽകിയത്</button>
+                    <button onclick="deleteStaff(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
+                </div>
+            </div>
+        `).join('');
     </script>
 </body>
 </html>
