@@ -23,6 +23,9 @@
     </div>
 
     <script>
+        // ഡാറ്റാബേസ് ക്ലിയർ ചെയ്യാൻ ഇത് ഉപയോഗിക്കാം (ഒരിക്കൽ മാത്രം)
+        // localStorage.removeItem('tools'); 
+
         function saveTool() {
             let name = document.getElementById('toolName').value;
             let qty = parseInt(document.getElementById('toolQty').value);
@@ -30,22 +33,17 @@
             let person = document.getElementById('personName').value;
             let phone = document.getElementById('personPhone').value;
             
-            if(!name || !qty || !rate || !person) {
-                alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
+            if(!name || isNaN(qty) || isNaN(rate) || !person) {
+                alert("എല്ലാ വിവരങ്ങളും ശരിയായി നൽകുക!");
                 return;
             }
             
             let tools = JSON.parse(localStorage.getItem('tools') || '[]');
-            let totalRent = qty * rate;
-            
             tools.push({
-                name: name,
-                qty: qty,
-                rate: rate,
-                totalRent: totalRent,
-                person: person,
-                phone: phone,
-                date: new Date().toLocaleDateString(),
+                name, qty, rate, 
+                totalRent: qty * rate, 
+                person, phone, 
+                date: new Date().toLocaleDateString(), 
                 history: []
             });
             
@@ -53,26 +51,35 @@
             location.reload();
         }
 
-        // ലിസ്റ്റ് കാണിക്കാൻ
+        function addTransaction(i, type) {
+            let amount = prompt("തുക നൽകുക:");
+            if(amount) {
+                let tools = JSON.parse(localStorage.getItem('tools') || '[]');
+                tools[i].history.push({type, amount: parseInt(amount), date: new Date().toLocaleDateString()});
+                localStorage.setItem('tools', JSON.stringify(tools));
+                location.reload();
+            }
+        }
+
         let tools = JSON.parse(localStorage.getItem('tools') || '[]');
         let listContainer = document.getElementById('toolList');
         
         listContainer.innerHTML = tools.map((t, i) => {
             let paid = (t.history || []).reduce((sum, h) => sum + (h.type === 'given' ? h.amount : 0), 0);
-            let bal = t.totalRent - paid;
+            let bal = (t.totalRent || (t.qty * t.rate)) - paid;
             
             return `
             <div class="bg-white p-4 rounded-xl border">
-                <p class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</p>
+                <p class="font-bold text-lg">${t.name} (${t.qty || 0} എണ്ണം)</p>
                 <p class="text-xs text-gray-500">തീയതി: ${t.date || 'N/A'}</p>
-                <p class="text-sm">റേറ്റ്: ₹${t.rate} | ആകെ: ₹${t.totalRent}</p>
+                <p class="text-sm">റേറ്റ്: ₹${t.rate || 0} | ആകെ: ₹${t.totalRent || (t.qty * t.rate)}</p>
                 <p class="text-sm">ആൾ: ${t.person} (${t.phone})</p>
                 <p class="text-sm font-bold mt-1 ${bal > 0 ? 'text-red-600' : 'text-green-600'}">
                     ബാലൻസ്: ₹${bal}
                 </p>
                 <div class="flex gap-2 mt-3">
-                    <button onclick="alert('ലഭ്യം')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
-                    <button onclick="alert('ലഭ്യം')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
+                    <button onclick="addTransaction(${i}, 'rent')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
+                    <button onclick="addTransaction(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
                     <button onclick="deleteT(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
                 </div>
             </div>`;
