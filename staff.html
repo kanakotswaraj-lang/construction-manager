@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
+    <title>ജീവനക്കാർ</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 p-4">
@@ -19,6 +19,7 @@
 
     <script>
         let staff = JSON.parse(localStorage.getItem('staff') || '[]');
+
         function addStaff() {
             let name = document.getElementById('staffName').value;
             let phone = document.getElementById('staffPhone').value;
@@ -26,20 +27,35 @@
             staff.push({name, phone, history: []});
             saveAndDisplay();
         }
+
         function saveAndDisplay() {
             localStorage.setItem('staff', JSON.stringify(staff));
             let list = document.getElementById('staffList');
             list.innerHTML = staff.map((s, i) => `
-                <div class="bg-white p-4 rounded-xl border">
-                    <div class="flex justify-between font-bold">${s.name} <button onclick="deleteStaff(${i})" class="text-red-500 text-xs">നീക്കം</button></div>
-                    <p class="text-sm text-gray-500">${s.phone}</p>
-                    <div class="flex gap-2 mt-2">
-                        <button onclick="addEntry(${i}, 'taken')" class="bg-blue-100 p-2 rounded text-xs">കൂലി (വാങ്ങി)</button>
-                        <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs">നൽകിയത്</button>
+                <div class="bg-white p-4 rounded-xl border shadow-sm">
+                    <!-- എഡിറ്റ് ചെയ്യാൻ പേരും നമ്പറും ക്ലിക്ക് ചെയ്യാം -->
+                    <div class="flex justify-between font-bold text-lg cursor-pointer" onclick="editStaff(${i})">
+                        ${s.name} <span class="text-xs text-blue-500 font-normal underline">എഡിറ്റ്</span>
+                    </div>
+                    <p class="text-sm text-gray-500 cursor-pointer" onclick="editStaff(${i})">${s.phone}</p>
+                    
+                    <div class="flex gap-2 mt-3">
+                        <button onclick="addEntry(${i}, 'taken')" class="bg-blue-100 p-2 rounded text-xs font-bold">കൂലി (വാങ്ങി)</button>
+                        <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">നൽകിയത്</button>
+                        <button onclick="deleteStaff(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
                     </div>
                 </div>
             `).join('');
         }
+
+        function editStaff(i) {
+            let newName = prompt("പുതിയ പേര്:", staff[i].name);
+            let newPhone = prompt("പുതിയ നമ്പർ:", staff[i].phone);
+            if(newName) staff[i].name = newName;
+            if(newPhone) staff[i].phone = newPhone;
+            saveAndDisplay();
+        }
+
         function addEntry(i, type) {
             let amount = prompt("തുക നൽകുക:");
             if(amount) {
@@ -47,7 +63,9 @@
                 saveAndDisplay();
             }
         }
+
         function deleteStaff(i) { if(confirm('നീക്കം ചെയ്യണോ?')) { staff.splice(i, 1); saveAndDisplay(); } }
+        
         saveAndDisplay();
     </script>
 </body>
