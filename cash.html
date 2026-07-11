@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="ml">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>സൈറ്റ് കണക്ക്</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold mb-6">സൈറ്റ് കണക്ക്</h1>
+        
+        <!-- ഇൻപുട്ട് ഫോം -->
         <div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
+            <input type="text" id="siteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3 border rounded-xl mb-2">
             <input type="text" id="desc" placeholder="വിശദാംശങ്ങൾ" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="amount" placeholder="തുക" class="w-full p-3 border rounded-xl mb-3">
             <div class="flex gap-2">
@@ -20,28 +20,34 @@
                 <button onclick="addCash('expense')" class="flex-1 bg-red-600 text-white p-3 rounded-xl font-bold">ചെലവ്</button>
             </div>
         </div>
+
+        <!-- ലിസ്റ്റ് വരുന്ന ഭാഗം -->
         <div id="cashList" class="space-y-2"></div>
-    </div><div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
-    <input type="text" id="desc" placeholder="വിശദാംശങ്ങൾ" class="w-full p-4 border rounded-xl mb-3">
-    <input type="number" id="amount" placeholder="തുക" class="w-full p-4 border rounded-xl mb-4">
-    <div class="grid grid-cols-2 gap-3">
-        <button onclick="addCash('income')" class="bg-green-600 text-white p-4 rounded-xl font-bold">വരവ്</button>
-        <button onclick="addCash('expense')" class="bg-red-600 text-white p-4 rounded-xl font-bold">ചെലവ്</button>
     </div>
-</div>
+
     <script>
         let cashList = JSON.parse(localStorage.getItem('cash') || '[]');
+        
         function addCash(type) {
+            let siteName = document.getElementById('siteName').value;
             let desc = document.getElementById('desc').value;
             let amount = document.getElementById('amount').value;
-            if(!desc || !amount) return;
-            cashList.push({desc, amount: parseInt(amount), type, date: new Date().toLocaleDateString()});
+            
+            if(!siteName || !desc || !amount) return alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
+            
+            cashList.push({siteName, desc, amount: parseInt(amount), type, date: new Date().toLocaleDateString()});
             localStorage.setItem('cash', JSON.stringify(cashList));
             location.reload();
         }
+
+        // ലിസ്റ്റ് കാണിക്കാൻ
         document.getElementById('cashList').innerHTML = cashList.map((c, i) => `
-            <div class="bg-white p-3 rounded-xl flex justify-between">
-                <span>${c.desc} (${c.date})</span>
+            <div class="bg-white p-4 rounded-xl border flex justify-between items-center">
+                <div>
+                    <p class="font-bold text-sm text-blue-600">${c.siteName}</p>
+                    <p class="font-bold">${c.desc}</p>
+                    <p class="text-xs text-gray-400">${c.date}</p>
+                </div>
                 <span class="font-bold ${c.type === 'income' ? 'text-green-600' : 'text-red-600'}">
                     ${c.type === 'income' ? '+' : '-'} ₹${c.amount}
                 </span>
