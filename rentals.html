@@ -13,83 +13,86 @@
         <div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
             <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="toolQty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="toolRate" placeholder="ഒരെണ്ണത്തിനുള്ള വാടക" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="toolRate" placeholder="ദിവസ വാടക (ഒരെണ്ണത്തിന്)" class="w-full p-3 border rounded-xl mb-2">
             <input type="text" id="personName" placeholder="ആളുടെ പേര്" class="w-full p-3 border rounded-xl mb-2">
             <input type="text" id="personPhone" placeholder="നമ്പർ" class="w-full p-3 border rounded-xl mb-3">
-            <button onclick="addNewTool()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
+            <button onclick="addTool()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
         </div>
 
         <div id="toolList" class="space-y-4"></div>
     </div>
 
     <script>
-        // കോഡ് പ്രവർത്തിക്കുന്നില്ലെങ്കിൽ താഴത്തെ വരിയിലെ // മാറ്റുക
-        // localStorage.removeItem('tools');
+        let tools = JSON.parse(localStorage.getItem('tools') || '[]');
 
-        function addNewTool() {
+        function addTool() {
             let name = document.getElementById('toolName').value;
             let qty = parseInt(document.getElementById('toolQty').value);
             let rate = parseInt(document.getElementById('toolRate').value);
             let person = document.getElementById('personName').value;
             let phone = document.getElementById('personPhone').value;
             
-            if(!name || !qty || !rate || !person) {
-                alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
-                return;
-            }
+            if(!name || !qty || !rate || !person) return alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
             
-            let tools = JSON.parse(localStorage.getItem('tools') || '[]');
             tools.push({
-                name, qty, rate, 
-                totalRent: qty * rate, 
-                person, phone, 
-                date: new Date().toLocaleDateString(), 
-                history: []
+                name, qty, rate, person, phone,
+                startDate: new Date().toLocaleDateString(),
+                returnDate: null,
+                paid: 0,
+                status: 'ഉപയോഗിക്കുന്നു'
             });
-            
             localStorage.setItem('tools', JSON.stringify(tools));
             location.reload();
         }
 
-        let tools = JSON.parse(localStorage.getItem('tools') || '[]');
-        let listContainer = document.getElementById('toolList');
-        
-        listContainer.innerHTML = tools.map((t, i) => {
-            let paid = (t.history || []).reduce((sum, h) => sum + (h.type === 'given' ? h.amount : 0), 0);
-            let bal = t.totalRent - paid;
-            
-            return `
-            <div class="bg-white p-4 rounded-xl border">
-                <p class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</p>
-                <p class="text-xs text-gray-500">തീയതി: ${t.date}</p>
-                <p class="text-sm">റേറ്റ്: ₹${t.rate} | ആകെ: ₹${t.totalRent}</p>
-                <p class="text-sm font-bold mt-1 ${bal > 0 ? 'text-red-600' : 'text-green-600'}">
-                    ബാലൻസ്: ₹${bal}
-                </p>
-                <div class="flex gap-2 mt-3">
-                    <button onclick="addTrans(${i}, 'rent')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
-                    <button onclick="addTrans(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
-                    <button onclick="deleteT(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
-                </div>
-            </div>`;
-        }).join('');
+        function returnTool(i) {
+            let tools = JSON.parse(localStorage.getItem('tools') || '[]');
+            tools[i].returnDate = new Date().toLocaleDateString();
+            tools[i].status = 'തിരികെ നൽകി';
+            localStorage.setItem('tools', JSON.stringify(tools));
+            location.reload();
+        }
 
-        function addTrans(i, type) {
-            let val = prompt("തുക:");
-            if(val) {
+        function addPayment(i) {
+            let amount = prompt("നൽകിയ തുക:");
+            if(amount) {
                 let tools = JSON.parse(localStorage.getItem('tools') || '[]');
-                tools[i].history.push({type, amount: parseInt(val), date: new Date().toLocaleDateString()});
+                tools[i].paid += parseInt(amount);
                 localStorage.setItem('tools', JSON.stringify(tools));
                 location.reload();
             }
         }
 
-        function deleteT(i) {
-            let tools = JSON.parse(localStorage.getItem('tools') || '[]');
-            tools.splice(i, 1);
-            localStorage.setItem('tools', JSON.stringify(tools));
-            location.reload();
+        function deleteTool(i) {
+            if(confirm('നീക്കം ചെയ്യണോ?')) {
+                let tools = JSON.parse(localStorage.getItem('tools') || '[]');
+                tools.splice(i, 1);
+                localStorage.setItem('tools', JSON.stringify(tools));
+                location.reload();
+            }
         }
+
+        let list = document.getElementById('toolList');
+        list.innerHTML = tools.map((t, i) => {
+            let total = t.status === 'തിരികെ നൽകി' ? (t.qty * t.rate) : (t.qty * t.rate); // ലളിതമായ കണക്ക്
+            let bal = total - t.paid;
+            
+            return `
+            <div class="bg-white p-4 rounded-xl border">
+                <p class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</p>
+                <p class="text-sm">ആൾ: ${t.person}</p>
+                <p class="text-xs text-gray-500">എടുത്തത്: ${t.startDate}</p>
+                <p class="text-xs text-gray-500">തിരികെ നൽകിയത്: ${t.returnDate || 'ഇതുവരെ ഇല്ല'}</p>
+                <p class="text-sm font-bold mt-1 ${bal > 0 ? 'text-red-600' : 'text-green-600'}">
+                    ബാലൻസ്: ₹${bal}
+                </p>
+                <div class="flex gap-2 mt-3">
+                    ${t.status === 'ഉപയോഗിക്കുന്നു' ? `<button onclick="returnTool(${i})" class="bg-yellow-100 p-2 rounded text-xs font-bold">തിരികെ നൽകി</button>` : ''}
+                    <button onclick="addPayment(${i})" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
+                    <button onclick="deleteTool(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
+                </div>
+            </div>`;
+        }).join('');
     </script>
 </body>
 </html>
