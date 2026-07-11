@@ -10,7 +10,6 @@
     <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold mb-6">വാടക ഉപകരണങ്ങൾ</h1>
         
-        <!-- Add Tool Form -->
         <div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
             <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="toolQty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
@@ -27,62 +26,33 @@
         let tools = JSON.parse(localStorage.getItem('tools') || '[]');
 
         function addTool() {
+            // ഓരോ ഇൻപുട്ടിന്റെയും ID കൃത്യമായി ഇവിടെ നൽകിയിരിക്കുന്നു
             let name = document.getElementById('toolName').value;
             let qty = parseInt(document.getElementById('toolQty').value);
             let rate = parseInt(document.getElementById('toolRate').value);
             let person = document.getElementById('personName').value;
             let phone = document.getElementById('personPhone').value;
             
-            if(!name || !qty || !rate || !person) return alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
+            if(!name || !qty || !rate || !person) {
+                alert("എല്ലാ വിവരങ്ങളും കൃത്യമായി നൽകുക!");
+                return;
+            }
             
-            let totalRent = qty * rate; // മൊത്തം തുക
+            let totalRent = qty * rate;
             let date = new Date().toLocaleDateString();
             
             tools.push({name, qty, rate, totalRent, person, phone, date, history: []});
             localStorage.setItem('tools', JSON.stringify(tools));
+            
+            // ഫോം ക്ലിയർ ചെയ്യുക
+            document.getElementById('toolName').value = '';
+            document.getElementById('toolQty').value = '';
+            document.getElementById('toolRate').value = '';
+            document.getElementById('personName').value = '';
+            document.getElementById('personPhone').value = '';
+            
             location.reload();
         }
-
-        function addEntry(i, type) {
-            let amount = prompt("തുക നൽകുക:");
-            if(!amount) return;
-            tools[i].history.push({type, amount: parseInt(amount), date: new Date().toLocaleDateString()});
-            localStorage.setItem('tools', JSON.stringify(tools));
-            location.reload();
-        }
-
-        function deleteTool(i) {
-            if(confirm('നീക്കം ചെയ്യണോ?')) {
-                tools.splice(i, 1);
-                localStorage.setItem('tools', JSON.stringify(tools));
-                location.reload();
-            }
-        }
-listElement.innerHTML = tools.map((t, i) => {
-    let paidAmount = (t.history || []).filter(h => h.type === 'given').reduce((sum, h) => sum + h.amount, 0);
-    let qty = t.qty || 0;
-    let rate = t.rate || 0;
-    let totalRent = t.totalRent || (qty * rate); // പഴയ ഡാറ്റയ്ക്കും ഇത് വർക്ക് ചെയ്യും
-    let balance = totalRent - paidAmount;
-    let date = t.date || "വിവരമില്ല";
-
-    return `
-    <div class="bg-white p-4 rounded-xl border mb-3">
-        <p class="font-bold text-lg">${t.name} (${qty} എണ്ണം)</p>
-        <p class="text-xs text-gray-500">തീയതി: ${date}</p>
-        <p class="text-sm">റേറ്റ്: ₹${rate} | ആകെ: ₹${totalRent}</p>
-        <p class="text-sm">${t.person} (${t.phone})</p>
-        <p class="text-sm font-bold mt-1 ${balance > 0 ? 'text-red-600' : 'text-green-600'}">
-            ബാലൻസ്: ₹${balance}
-        </p>
-        <div class="flex gap-2 mt-3">
-            <button onclick="addEntry(${i}, 'rent')" class="bg-blue-100 p-2 rounded text-xs font-bold">വാടക</button>
-            <button onclick="addEntry(${i}, 'given')" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
-            <button onclick="deleteTool(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
-        </div>
-    </div>`;
-}).join('');
-        
     </script>
 </body>
 </html>
