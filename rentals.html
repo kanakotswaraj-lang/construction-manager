@@ -3,105 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>വാടക ഉപകരണങ്ങൾ</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <title>വാടക ഉപകരണങ്ങൾ</title>
 </head>
-<body class="bg-slate-50 p-4">
+<body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-bold mb-6">വാടക ഉപകരണങ്ങൾ</h1>
+        <h1 class="text-xl font-bold mb-4 text-center">വാടക ഉപകരണങ്ങൾ</h1>
         
-        <div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
+        <!-- ഇൻപുട്ട് ഫോം -->
+        <div class="bg-white p-4 rounded-3xl shadow-sm border mb-6">
             <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="toolQty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="toolRate" placeholder="ദിവസ വാടക (ഒരെണ്ണത്തിന്)" class="w-full p-3 border rounded-xl mb-2">
-            <input type="text" id="personName" placeholder="ആളുടെ പേര്" class="w-full p-3 border rounded-xl mb-2">
-            <input type="text" id="personPhone" placeholder="നമ്പർ" class="w-full p-3 border rounded-xl mb-3">
-            <button onclick="addTool()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
+            <input type="number" id="qty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="rate" placeholder="ദിവസ വാടക (ഒരെണ്ണത്തിന്)" class="w-full p-3 border rounded-xl mb-2">
+            <input type="text" id="personName" placeholder="മേസ്ത്രിയുടെ പേര്" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (10 അക്കം)" class="w-full p-3 border rounded-xl mb-2">
+            <button onclick="addTool()" class="w-full bg-slate-900 text-white p-3 rounded-2xl font-bold">ചേർക്കുക</button>
         </div>
 
-        <div id="toolList" class="space-y-4"></div>
+        <!-- ലിസ്റ്റ് -->
+        <div id="toolList" class="grid grid-cols-1 gap-4"></div>
     </div>
 
     <script>
         let tools = JSON.parse(localStorage.getItem('tools') || '[]');
 
         function addTool() {
-            let name = document.getElementById('toolName').value;
-            let qty = parseInt(document.getElementById('toolQty').value);
-            let rate = parseInt(document.getElementById('toolRate').value);
-            let person = document.getElementById('personName').value;
-            let phone = document.getElementById('personPhone').value;
-            
-            if(!name || !qty || !rate || !person) return alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
-            
-            tools.push({
-                name, qty, rate, person, phone,
-                startDate: new Date().toISOString().split('T')[0],
-                returnDate: null,
+            let tool = {
+                name: document.getElementById('toolName').value,
+                qty: document.getElementById('qty').value,
+                rate: document.getElementById('rate').value,
+                person: document.getElementById('personName').value,
+                phone: document.getElementById('phone').value,
+                startDate: new Date().toISOString(),
                 paid: 0,
                 status: 'ഉപയോഗിക്കുന്നു'
-            });
+            };
+            tools.push(tool);
             localStorage.setItem('tools', JSON.stringify(tools));
             location.reload();
         }
 
-        function returnTool(i) {
-            tools[i].returnDate = new Date().toISOString().split('T')[0];
-            tools[i].status = 'തിരികെ നൽകി';
-            localStorage.setItem('tools', JSON.stringify(tools));
-            location.reload();
-        }
-
-        function editPhone(i) {
-            let newPhone = prompt("പുതിയ നമ്പർ നൽകുക:", tools[i].phone);
-            if(newPhone) {
-                tools[i].phone = newPhone;
-                localStorage.setItem('tools', JSON.stringify(tools));
-                location.reload();
-            }
-        }
-
-        function addPayment(i) {
-            let amount = prompt("നൽകിയ തുക:");
-            if(amount) {
-                tools[i].paid += parseInt(amount);
-                localStorage.setItem('tools', JSON.stringify(tools));
-                location.reload();
-            }
-        }
-
-        function deleteTool(i) {
-            if(confirm('നീക്കം ചെയ്യണോ?')) {
-                tools.splice(i, 1);
-                localStorage.setItem('tools', JSON.stringify(tools));
-                location.reload();
-            }
-        }
-
-        let list = document.getElementById('toolList');
-        list.innerHTML = tools.map((t, i) => {
-            let days = t.returnDate ? 
-                Math.max(1, Math.ceil((new Date(t.returnDate) - new Date(t.startDate)) / (1000 * 60 * 60 * 24))) :
-                Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
-            
+        // വാട്‌സാപ്പ് മെസ്സേജ് അയക്കുന്ന ഫങ്ഷൻ
+        function sendWhatsApp(i) {
+            let t = tools[i];
+            let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
             let total = (t.qty * t.rate * days);
             let bal = total - t.paid;
+
+            let msg = `നമസ്കാരം, ${t.name}-ന്റെ വാടക കണക്ക്:%0A` +
+                      `ഉപകരണം: ${t.name}%0A` +
+                      `എണ്ണം: ${t.qty}%0A` +
+                      `ദിവസങ്ങൾ: ${days}%0A` +
+                      `ആകെ വാടക: ₹${total}%0A` +
+                      `നൽകിയ തുക: ₹${t.paid}%0A` +
+                      `ഇനി നൽകാനുള്ളത്: ₹${bal}%0A` +
+                      `സൈറ്റ് മാനേജർ ആപ്പിൽ നിന്ന്.`;
             
-            return `
-            <div class="bg-white p-4 rounded-xl border">
-                <p class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</p>
-                <p class="text-sm">ആൾ: ${t.person} <button onclick="editPhone(${i})" class="text-blue-500 text-xs underline">(${t.phone})</button></p>
-                <p class="text-xs text-gray-500">ദിവസങ്ങൾ: ${days} | റേറ്റ്: ₹${t.rate}/ദിവസം</p>
-                <p class="text-sm font-bold mt-1 ${bal > 0 ? 'text-red-600' : 'text-green-600'}">
-                    ${bal > 0 ? 'നൽകാനുള്ളത്: ₹'+bal : 'അഡ്വാൻസ്: ₹'+Math.abs(bal)}
-                </p>
-                <div class="flex gap-2 mt-3">
-                    ${t.status === 'ഉപയോഗിക്കുന്നു' ? `<button onclick="returnTool(${i})" class="bg-yellow-100 p-2 rounded text-xs font-bold">തിരികെ നൽകി</button>` : ''}
-                    <button onclick="addPayment(${i})" class="bg-green-100 p-2 rounded text-xs font-bold">തുക വാങ്ങി</button>
-                    <button onclick="deleteTool(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
-                </div>
-            </div>`;
-        }).join('');
+            let phone = '91' + t.phone; 
+            window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+        }
+
+        // ലിസ്റ്റ് കാണിക്കുന്ന ഭാഗം
+        let list = document.getElementById('toolList');
+        tools.forEach((t, i) => {
+            let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+            let total = (t.qty * t.rate * days);
+            
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-3xl shadow-sm border">
+                    <h3 class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</h3>
+                    <p class="text-sm">മേസ്ത്രി: ${t.person}</p>
+                    <p class="text-sm font-bold text-red-600">നൽകാനുള്ളത്: ₹${total - t.paid}</p>
+                    <div class="flex gap-2 mt-3">
+                        <button onclick="sendWhatsApp(${i})" class="bg-green-600 text-white p-2 rounded text-xs font-bold">WhatsApp</button>
+                        <button onclick="deleteTool(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
+                    </div>
+                </div>`;
+        });
+
+        function deleteTool(i) {
+            tools.splice(i, 1);
+            localStorage.setItem('tools', JSON.stringify(tools));
+            location.reload();
+        }
     </script>
 </body>
 </html>
