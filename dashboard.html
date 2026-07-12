@@ -62,7 +62,15 @@
 
     async function loadTransactions() {
         const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
-        const rentalSnapshot = await getDocs(collection(db, "rentals")); //
+      const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
+const rentalsSnapshot = await getDocs(collection(db, "rentals")); 
+
+// ബാക്കി പഴയപോലെ:
+rentalsSnapshot.forEach((doc) => {
+    const r = doc.data();
+    // ... കണക്കുകൂട്ടൽ ...
+    totalExpense += totalRental;
+}); 
     
 const rentalSnapshot = await getDocs(collection(db, "rentals"));
 rentalSnapshot.forEach((doc) => {
