@@ -8,30 +8,43 @@
 </head>
 <body class="bg-slate-50 p-4">
     <div class="max-w-md mx-auto">
-        <!-- തിരികെ പോകാനുള്ള ലിങ്ക് -->
         <a href="index.html" class="text-sm text-slate-600 mb-2 inline-block">← ഡാഷ്‌ബോർഡ്</a>
         <h1 class="text-2xl font-bold mb-6">ജീവനക്കാർ</h1>
         
         <div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
             <input type="text" id="name" placeholder="പേര്" class="w-full p-3 border rounded-xl mb-2">
             <input type="text" id="phone" placeholder="ഫോൺ" class="w-full p-3 border rounded-xl mb-3">
-            <button onclick="addStaff()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
+            <button onclick="addStaff()" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
+        </div>
+
+        <!-- സെർച്ച് ബാർ -->
+        <div class="mb-4">
+            <input type="text" id="search" placeholder="പേര് തിരയുക..." onkeyup="filterStaff()" class="w-full p-3 border rounded-xl shadow-sm">
         </div>
 
         <div id="staffList" class="space-y-4"></div>
     </div>
 
-    <script type="module">
+    <script>
         let staff = JSON.parse(localStorage.getItem('staff') || '[]');
 
         function addStaff() {
             let name = document.getElementById('name').value;
             let phone = document.getElementById('phone').value;
-            if(!name || !phone) return alert("വി വിവരങ്ങൾ നൽകുക!");
+            if(!name || !phone) return alert("വിവരങ്ങൾ നൽകുക!");
             staff.push({name, phone, history: []});
             localStorage.setItem('staff', JSON.stringify(staff));
             location.reload();
-  
+        } // ഇവിടെയാണ് ആ ബ്രേസ് ചേർത്തിരിക്കുന്നത്
+
+        function filterStaff() {
+            let query = document.getElementById('search').value.toLowerCase();
+            let items = document.querySelectorAll('.staff-card');
+            items.forEach(item => {
+                let name = item.getAttribute('data-name').toLowerCase();
+                item.style.display = name.includes(query) ? '' : 'none';
+            });
+        }
 
         function addEntry(i, type) {
             let amount = prompt(type === 'work' ? "ജോലിക്കൂലി തുക നൽകുക:" : "നൽകിയ തുക നൽകുക:");
@@ -55,23 +68,10 @@
             }
         }
 
-        // വാട്‌സാപ്പിലേക്ക് കണക്ക് അയക്കാനുള്ള ഫങ്ഷൻ
         function sendWhatsApp(name, phone, work, given, balance) {
-            // ഇന്ത്യൻ നമ്പറുകൾക്കായി മുന്നിൽ 91 ചേർക്കുന്നു (സ്പേസ് ഒഴിവാക്കി)
             let cleanPhone = phone.replace(/\D/g, '');
-            if(cleanPhone.length === 10) {
-                cleanPhone = '91' + cleanPhone;
-            }
-      
-
-            let message = `*സൈറ്റ് കണക്ക് വിവരങ്ങൾ*%0A%0A` +
-                          `*പേര്:* ${name}%0A` +
-                          `*ആകെ ജോലിക്കൂലി:* ₹${work}%0A` +
-                          `*നൽകിയ തുക:* ₹${given}%0A` +
-                          `*ബാക്കി നൽകാനുള്ളത്:* ₹${balance}%0A%0A` +
-                          `_സൈറ്റ് മാനേജർ ആപ്പ് വഴി അയച്ചത്._`;
-
-            // ആ നമ്പറിലേക്ക് നേരിട്ട് വാട്‌സാപ്പ് വിൻഡോ തുറക്കുന്നു
+            if(cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
+            let message = `*സൈറ്റ് കണക്ക് വിവരങ്ങൾ*%0A%0A*പേര്:* ${name}%0A*ആകെ ജോലിക്കൂലി:* ₹${work}%0A*നൽകിയ തുക:* ₹${given}%0A*ബാക്കി നൽകാനുള്ളത്:* ₹${balance}%0A%0A_സൈറ്റ് മാനേജർ ആപ്പ് വഴി അയച്ചത്._`;
             window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
         }
 
@@ -83,7 +83,7 @@
             let balance = workAmount - givenAmount;
             
             return `
-            <div class="bg-white p-4 rounded-xl border mb-3">
+            <div class="staff-card bg-white p-4 rounded-xl border mb-3" data-name="${s.name}">
                 <div onclick="showDetails(${i})" class="cursor-pointer">
                     <p class="font-bold text-lg">${s.name}</p>
                     <p class="text-gray-500 text-sm">${s.phone}</p>
@@ -95,12 +95,7 @@
                 <div class="flex gap-2 mt-3 items-center">
                     <button onclick="addEntry(${i}, 'work')" class="bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-bold text-blue-700">ജോലി</button>
                     <button onclick="addEntry(${i}, 'given')" class="bg-green-100 px-3 py-1.5 rounded-lg text-xs font-bold text-green-700">നൽകിയത്</button>
-                    
-                    <!-- പുതിയ വാട്‌സാപ്പ് ബട്ടൺ -->
-                    <button onclick="sendWhatsApp('${s.name}', '${s.phone}', ${workAmount}, ${givenAmount}, ${balance})" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">
-                        WhatsApp
-                    </button>
-                    
+                    <button onclick="sendWhatsApp('${s.name}', '${s.phone}', ${workAmount}, ${givenAmount}, ${balance})" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">WhatsApp</button>
                     <button onclick="deleteStaff(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
                 </div>
             </div>`;
