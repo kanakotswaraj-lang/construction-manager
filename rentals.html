@@ -4,26 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>വാടക ഉപകരണങ്ങൾ</title>
-    <!-- Tailwind CSS ഉപയോഗിക്കുന്നു -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-4">
-
     <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold mb-6 text-center">വാടക ഉപകരണങ്ങൾ</h1>
         
-        <!-- ഡാറ്റ ഇവിടെയാണ് വരിക -->
-        <div id="toolList" class="space-y-4">
-            <p class="text-center text-gray-500">ലോഡ് ആകുന്നു...</p>
+        <!-- പുതിയ ഉപകരണം ചേർക്കാനുള്ള ഫോം -->
+        <div class="bg-white p-4 rounded-xl shadow-sm mb-6 border">
+            <input type="text" id="toolName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-2 border rounded mb-2">
+            <input type="number" id="toolPrice" placeholder="വാടക (രൂപ)" class="w-full p-2 border rounded mb-2">
+            <button id="addBtn" class="w-full bg-blue-600 text-white p-2 rounded font-bold">ചേർക്കുക</button>
         </div>
+
+        <div id="toolList" class="space-y-4"></div>
     </div>
 
-    <!-- Firebase സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+        import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
-        // നിങ്ങളുടെ കോൺഫിഗറേഷൻ
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -37,23 +37,30 @@
         const db = getDatabase(app);
         const toolsRef = ref(db, 'tools');
 
-        // ഡാറ്റ എടുക്കാനുള്ള ഫങ്ക്ഷൻ
+        // ഡാറ്റ ചേർക്കാനുള്ള ഫങ്ക്ഷൻ
+        document.getElementById('addBtn').onclick = () => {
+            const name = document.getElementById('toolName').value;
+            const price = document.getElementById('toolPrice').value;
+            if(name && price) {
+                push(toolsRef, { name, price });
+                document.getElementById('toolName').value = "";
+                document.getElementById('toolPrice').value = "";
+            }
+        };
+
+        // ഡാറ്റ കാണിക്കാനുള്ള ഫങ്ക്ഷൻ
         onValue(toolsRef, (snapshot) => {
             const data = snapshot.val();
             const list = document.getElementById('toolList');
-            
-            list.innerHTML = ""; // പഴയത് ക്ലിയർ ചെയ്യുന്നു
-            
+            list.innerHTML = "";
             if (data) {
                 Object.values(data).forEach(tool => {
                     list.innerHTML += `
                         <div class="bg-white p-4 rounded-xl shadow-sm border">
-                            <h3 class="font-bold text-lg">${tool.name || 'പേരില്ലാത്ത ഉപകരണം'}</h3>
-                            <p class="text-gray-600">വാടക: ₹${tool.price || '0'}</p>
+                            <h3 class="font-bold text-lg">${tool.name}</h3>
+                            <p class="text-gray-600">വാടക: ₹${tool.price}</p>
                         </div>`;
                 });
-            } else {
-                list.innerHTML = "<p class='text-center text-gray-500'>നിലവിൽ ഉപകരണങ്ങൾ ഒന്നുമില്ല.</p>";
             }
         });
     </script>
