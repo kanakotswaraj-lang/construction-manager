@@ -19,50 +19,63 @@
 
         <div id="toolList" class="space-y-4"></div>
     </div>
+<script type="module">
+    // 1. Firebase ലൈബ്രറികൾ ലോഡ് ചെയ്യുന്നു
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+    // 2. നിങ്ങളുടെ Firebase കോൺഫിഗറേഷൻ (ഇത് നിങ്ങളുടെ പ്രോജക്റ്റിൽ നിന്ന് കിട്ടിയത്)
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.firebasestorage.app",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36b"
+    };
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.firebasestorage.app",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36b"
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const toolsRef = ref(db, 'tools');
+
+    // 3. ഡാറ്റ ആഡ് ചെയ്യാനുള്ള ഫങ്ക്ഷൻ (പുതുക്കിയത്)
+    window.addTool = () => {
+        let toolData = {
+            name: document.getElementById('toolName').value,
+            qty: document.getElementById('qty').value,
+            rate: document.getElementById('rate').value,
+            type: document.getElementById('personType').value,
+            person: document.getElementById('personName').value,
+            phone: document.getElementById('phone').value,
+            startDate: new Date().toISOString(),
+            paid: 0
         };
+        push(toolsRef, toolData);
+        alert("വിവരങ്ങൾ സേവ് ചെയ്തു!");
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const toolsRef = ref(db, 'tools');
+    // 4. ഡാറ്റ ഡിസ്പ്ലേ ചെയ്യാനുള്ള ഫങ്ക്ഷൻ
+    onValue(toolsRef, (snapshot) => {
+        const data = snapshot.val();
+        let list = document.getElementById('toolList');
+        list.innerHTML = "";
+        
+        if (data) {
+            Object.entries(data).forEach(([key, t]) => {
+                let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+                let total = (t.qty * t.rate * days);
+                
+                list.innerHTML += `
+                    <div class="bg-white p-4 rounded-3xl shadow-sm border">
+                        <h3 class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</h3>
+                        <p class="text-sm flex items-center gap-1">👤 <strong>${t.type}:</strong> ${t.person}</p>
+                        <p class="text-sm font-bold text-red-600">നൽകാനുള്ളത്: ₹${total - t.paid}</p>
+                    </div>`;
+            });
+        }
+    });
+</script>
 
-        // ഡാറ്റ ചേർക്കാനുള്ള ഫങ്ക്ഷൻ
-        document.getElementById('addBtn').onclick = () => {
-            const name = document.getElementById('toolName').value;
-            const price = document.getElementById('toolPrice').value;
-            if(name && price) {
-                push(toolsRef, { name, price });
-                document.getElementById('toolName').value = "";
-                document.getElementById('toolPrice').value = "";
-            }
-        };
-
-        // ഡാറ്റ കാണിക്കാനുള്ള ഫങ്ക്ഷൻ
-        onValue(toolsRef, (snapshot) => {
-            const data = snapshot.val();
-            const list = document.getElementById('toolList');
-            list.innerHTML = "";
-            if (data) {
-                Object.values(data).forEach(tool => {
-                    list.innerHTML += `
-                        <div class="bg-white p-4 rounded-xl shadow-sm border">
-                            <h3 class="font-bold text-lg">${tool.name}</h3>
-                            <p class="text-gray-600">വാടക: ₹${tool.price}</p>
-                        </div>`;
-                });
-            }
-        });
-    </script>
+    
 </body>
 </html>
