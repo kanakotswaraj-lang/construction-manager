@@ -47,6 +47,7 @@
     const toolsRef = ref(db, 'tools');
     
     let allTools = {}; // എല്ലാ ഡാറ്റയും സേവ് ചെയ്യാൻ
+let totalTools = 0; // ഈ വരി ഇവിടെ ചേർക്കുക
 
     // ചേർക്കാൻ
     window.addTool = () => {
@@ -79,26 +80,31 @@
         renderList(Object.entries(allTools).filter(([k, t]) => t.person.toLowerCase().includes(input)));
     };
 
-    // ലിസ്റ്റ് ഡിസ്പ്ലേ ചെയ്യാൻ
-    function renderList(dataArray) {
-        let list = document.getElementById('toolList');
-        list.innerHTML = "";
-        dataArray.forEach(([key, t]) => {
-            let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
-            let total = (t.qty * t.rate * days);
-            list.innerHTML += `
-                <div class="bg-white p-4 rounded-3xl shadow-sm border mb-3">
-                    <h3 class="font-bold">${t.name} (${t.qty} എണ്ണം)</h3>
-                    <p class="text-sm">👤 <strong>${t.person}</strong> (${t.type})</p>
-                    <p class="text-sm font-bold text-red-600">വാടക: ₹${total}</p>
-                    <div class="flex gap-2 mt-3">
-                        <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-600 text-white p-2 rounded text-xs">WhatsApp</button>
-                        <button onclick='editTool("${key}", ${JSON.stringify(t)})' class="bg-blue-500 text-white p-2 rounded text-xs">Edit</button>
-                        <button onclick='deleteTool("${key}")' class="bg-red-500 text-white p-2 rounded text-xs">Delete</button>
-                    </div>
-                </div>`;
-        });
-    }
+// ലിസ്റ്റ് ഡിസ്പ്ലേ ചെയ്യാൻ
+function renderList(dataArray) {
+    let list = document.getElementById('toolList');
+    list.innerHTML = "";
+    totalTools = 0; // ഓരോ തവണയും ടോട്ടൽ സീറോയാക്കുന്നു
+
+    dataArray.forEach(([key, t]) => {
+        let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+        let total = (t.qty * t.rate * days);
+        
+        totalTools += total; // ഓരോ ടൂളിന്റെയും വാടക ടോട്ടലിലേക്ക് കൂട്ടുന്നു
+
+        list.innerHTML += `
+            <div class="bg-white p-4 rounded-3xl shadow-sm border mb-3">
+                <h3 class="font-bold">${t.name} (${t.qty} എണ്ണം)</h3>
+                <p class="text-sm">👤 <strong>${t.person}</strong> (${t.type})</p>
+                <p class="text-sm font-bold text-red-600">വാടക: ₹${total}</p>
+                <div class="flex gap-2 mt-3">
+                    <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-600 text-white p-2 rounded text-xs">WhatsApp</button>
+                    <button onclick='editTool("${key}", ${JSON.stringify(t)})' class="bg-blue-500 text-white p-2 rounded text-xs">Edit</button>
+                    <button onclick='deleteTool("${key}")' class="bg-red-500 text-white p-2 rounded text-xs">Delete</button>
+                </div>
+            </div>`;
+    });
+}
 
     onValue(toolsRef, (snapshot) => {
         allTools = snapshot.val() || {};
