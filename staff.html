@@ -21,7 +21,7 @@
         <div id="staffList" class="space-y-4"></div>
     </div>
 
-    <script>
+    <script type="module">
         let staff = JSON.parse(localStorage.getItem('staff') || '[]');
 
         function addStaff() {
@@ -31,7 +31,11 @@
             staff.push({name, phone, history: []});
             localStorage.setItem('staff', JSON.stringify(staff));
             location.reload();
-        }
+  // സെർച്ച് ഫങ്ഷൻ
+    window.filterTools = () => {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        renderList(Object.entries(allTools).filter(([k, t]) => t.person.toLowerCase().includes(input)));
+    };      }
 
         function addEntry(i, type) {
             let amount = prompt(type === 'work' ? "ജോലിക്കൂലി തുക നൽകുക:" : "നൽകിയ തുക നൽകുക:");
