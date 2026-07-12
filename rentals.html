@@ -15,7 +15,7 @@
             <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="qty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="rate" placeholder="ദിവസ വാടക (ഒരെണ്ണത്തിന്)" class="w-full p-3 border rounded-xl mb-2">
-            <input type="text" id="personName" placeholder="മേസ്ത്രിയുടെ പേര്" class="w-full p-3 border rounded-xl mb-2">
+            <input type="text" id="personName" placeholder="മേസ്ത്രിയുടെ/ഉടമസ്ഥന്റെ പേര്" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (10 അക്കം)" class="w-full p-3 border rounded-xl mb-2">
             <button onclick="addTool()" class="w-full bg-slate-900 text-white p-3 rounded-2xl font-bold">ചേർക്കുക</button>
         </div>
@@ -35,8 +35,7 @@
                 person: document.getElementById('personName').value,
                 phone: document.getElementById('phone').value,
                 startDate: new Date().toISOString(),
-                paid: 0,
-                status: 'ഉപയോഗിക്കുന്നു'
+                paid: 0
             };
             tools.push(tool);
             localStorage.setItem('tools', JSON.stringify(tools));
@@ -50,13 +49,13 @@
             let total = (t.qty * t.rate * days);
             let bal = total - t.paid;
 
-            let msg = `നമസ്കാരം, ${t.name}-ന്റെ വാടക കണക്ക്:%0A` +
+            // മെസ്സേജിൽ ഉടമസ്ഥന്റെ പേര് ഉൾപ്പെടുത്തി
+            let msg = `വാടക കണക്ക് വിവരം:%0A` +
                       `ഉപകരണം: ${t.name}%0A` +
-                      `എണ്ണം: ${t.qty}%0A` +
-                      `ദിവസങ്ങൾ: ${days}%0A` +
+                      `ഉടമസ്ഥൻ: ${t.person}%0A` +
                       `ആകെ വാടക: ₹${total}%0A` +
                       `നൽകിയ തുക: ₹${t.paid}%0A` +
-                      `ഇനി നൽകാനുള്ളത്: ₹${bal}%0A` +
+                      `ബാക്കി നൽകാനുള്ളത്: ₹${bal}%0A` +
                       `സൈറ്റ് മാനേജർ ആപ്പിൽ നിന്ന്.`;
             
             let phone = '91' + t.phone; 
@@ -72,10 +71,11 @@
             list.innerHTML += `
                 <div class="bg-white p-4 rounded-3xl shadow-sm border">
                     <h3 class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</h3>
-                    <p class="text-sm">മേസ്ത്രി: ${t.person}</p>
+                    <!-- പേരിനൊപ്പം ഐക്കൺ -->
+                    <p class="text-sm flex items-center gap-1">👤 <strong>ഉടമസ്ഥൻ:</strong> ${t.person}</p>
                     <p class="text-sm font-bold text-red-600">നൽകാനുള്ളത്: ₹${total - t.paid}</p>
                     <div class="flex gap-2 mt-3">
-                        <button onclick="sendWhatsApp(${i})" class="bg-green-600 text-white p-2 rounded text-xs font-bold">WhatsApp</button>
+                        <button onclick="sendWhatsApp(${i})" class="bg-green-600 text-white p-2 rounded text-xs font-bold">WhatsApp അയക്കുക</button>
                         <button onclick="deleteTool(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
                     </div>
                 </div>`;
