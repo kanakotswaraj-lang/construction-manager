@@ -23,11 +23,13 @@
             <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (10 അക്കം)" class="w-full p-3 border rounded-xl mb-2">
             <button onclick="addTool()" class="w-full bg-slate-900 text-white p-3 rounded-2xl font-bold">ചേർക്കുക</button>
         </div>
-
+<input type="text" id="searchInput" placeholder="പേര് വെച്ച് തിരയുക..." onkeyup="filterTools()" class="w-full p-3 border rounded-xl mb-4">
+        
         <div id="toolList" class="grid grid-cols-1 gap-4"></div>
     </div>
 
-    <script type="module">
+    
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
     import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
@@ -43,8 +45,10 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const toolsRef = ref(db, 'tools');
+    
+    let allTools = {}; // എല്ലാ ഡാറ്റയും സേവ് ചെയ്യാൻ
 
-    // ഉപകരണം ചേർക്കാൻ
+    // ചേർക്കാൻ
     window.addTool = () => {
         let tool = {
             name: document.getElementById('toolName').value,
@@ -55,64 +59,50 @@
             phone: document.getElementById('phone').value,
             startDate: new Date().toISOString()
         };
-        push(toolsRef, tool);
-        location.reload();
-    };
-<button onclick='editTool("${key}", ${JSON.stringify(t)})' class="bg-blue-500 text-white p-2 rounded text-xs font-bold">എഡിറ്റ്</button>
-
-        // പേര്, എണ്ണം, റേറ്റ് എന്നിവ മാറ്റാൻ (Edit)
-    window.editTool = (key, current) => {
-        let newName = prompt("ഉപകരണത്തിന്റെ പേര്:", current.name);
-        let newQty = prompt("എണ്ണം:", current.qty);
-        let newRate = prompt("ദിവസ വാടക:", current.rate);
-
-        if (newName && newQty && newRate) {
-            update(ref(db, 'tools/' + key), {
-                name: newName,
-                qty: newQty,
-                rate: newRate
-            });
-        }
+        push(toolsRef, tool).then(() => location.reload());
     };
 
+    // എഡിറ്റ് ചെയ്യാൻ
+    window.editTool = (key, t) => {
+        let n = prompt("പേര്:", t.name);
+        let q = prompt("എണ്ണം:", t.qty);
+        let r = prompt("വാടക:", t.rate);
+        if(n && q && r) update(ref(db, 'tools/' + key), {name: n, qty: q, rate: r});
+    };
 
     // ഡിലീറ്റ് ചെയ്യാൻ
-    window.deleteTool = (key) => {
-        if(confirm("ഈ കണക്ക് നീക്കം ചെയ്യണോ?")) {
-            remove(ref(db, 'tools/' + key));
-        }
-    };
+    window.deleteTool = (key) => { if(confirm("നീക്കം ചെയ്യണോ?")) remove(ref(db, 'tools/' + key)); };
 
-    // വാട്‌സാപ്പ് മെസ്സേജ് അയക്കാൻ
-    window.sendWhatsApp = (t) => {
-        let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
-        let total = (t.qty * t.rate * days);
-        let msg = `വാടക കണക്ക് വിവരം:%0Aഉപകരണം: ${t.name}%0A${t.type}: ${t.person}%0Aആകെ വാടക: ₹${total}%0Aസൈറ്റ് മാനേജർ ആപ്പിൽ നിന്ന്.`;
-        window.open(`https://wa.me/91${t.phone}?text=${msg}`, '_blank');
+    // സെർച്ച് ഫങ്ഷൻ
+    window.filterTools = () => {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        renderList(Object.entries(allTools).filter(([k, t]) => t.person.toLowerCase().includes(input)));
     };
 
     // ലിസ്റ്റ് ഡിസ്പ്ലേ ചെയ്യാൻ
-    onValue(toolsRef, (snapshot) => {
-        const data = snapshot.val();
+    function renderList(dataArray) {
         let list = document.getElementById('toolList');
         list.innerHTML = "";
-        if (data) {
-            Object.entries(data).forEach(([key, t]) => {
-                let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
-                let total = (t.qty * t.rate * days);
-                list.innerHTML += `
-                    <div class="bg-white p-4 rounded-3xl shadow-sm border mb-3">
-                        <h3 class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</h3>
-                        <p class="text-sm flex items-center gap-1">👤 <strong>${t.type}:</strong> ${t.person}</p>
-                        <p class="text-sm font-bold text-red-600">നൽകാനുള്ളത്: ₹${total}</p>
-                        <div class="flex gap-2 mt-3">
-                            <button onclick='sendWhatsApp(${JSON.stringify(t)})' class="bg-green-600 text-white p-2 rounded text-xs font-bold">WhatsApp</button>
-                            <button onclick='editPerson("${key}", "${t.person}")' class="bg-blue-500 text-white p-2 rounded text-xs font-bold">പേര് മാറ്റുക</button>
-                            <button onclick="deleteTool('${key}')" class="bg-red-500 text-white p-2 rounded text-xs font-bold">നീക്കം</button>
-                        </div>
-                    </div>`;
-            });
-        }
+        dataArray.forEach(([key, t]) => {
+            let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+            let total = (t.qty * t.rate * days);
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-3xl shadow-sm border mb-3">
+                    <h3 class="font-bold">${t.name} (${t.qty} എണ്ണം)</h3>
+                    <p class="text-sm">👤 <strong>${t.person}</strong> (${t.type})</p>
+                    <p class="text-sm font-bold text-red-600">വാടക: ₹${total}</p>
+                    <div class="flex gap-2 mt-3">
+                        <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-600 text-white p-2 rounded text-xs">WhatsApp</button>
+                        <button onclick='editTool("${key}", ${JSON.stringify(t)})' class="bg-blue-500 text-white p-2 rounded text-xs">Edit</button>
+                        <button onclick='deleteTool("${key}")' class="bg-red-500 text-white p-2 rounded text-xs">Delete</button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    onValue(toolsRef, (snapshot) => {
+        allTools = snapshot.val() || {};
+        renderList(Object.entries(allTools));
     });
 </script>
 
