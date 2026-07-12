@@ -65,7 +65,7 @@
             // സെർച്ച് ഫങ്ഷൻ
     window.filterTools = () => {
         let input = document.getElementById('searchInput').value.toLowerCase();
-        renderList(Object.entries(allTools).filter(([k, t]) => t.person.toLowerCase().includes(input)));
+        renderList(Object.entries(allnames).filter(([k, t]) => t.staff.toLowerCase().includes(input)));
     };      }
 
             let message = `*സൈറ്റ് കണക്ക് വിവരങ്ങൾ*%0A%0A` +
