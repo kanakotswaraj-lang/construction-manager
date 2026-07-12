@@ -3,79 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>വാടക ഉപകരണങ്ങൾ</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <title>വാടക ഉപകരണങ്ങൾ</title>
 </head>
-<body class="bg-gray-100 p-4">
+<body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-bold mb-6 text-center">വാടക ഉപകരണങ്ങൾ</h1>
+        <h1 class="text-xl font-bold mb-4 text-center">വാടക ഉപകരണങ്ങൾ</h1>
         
-        <!-- പുതിയ ഉപകരണം ചേർക്കാനുള്ള ഫോം -->
-        <div class="bg-white p-4 rounded-xl shadow-sm mb-6 border">
-            <input type="text" id="toolName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-2 border rounded mb-2">
-            <input type="number" id="toolPrice" placeholder="വാടക (രൂപ)" class="w-full p-2 border rounded mb-2">
-            <button id="addBtn" class="w-full bg-blue-600 text-white p-2 rounded font-bold">ചേർക്കുക</button>
+        <!-- പഴയ ഫോം (എല്ലാ ഫീൽഡുകളും ഉള്ളത്) -->
+        <div class="bg-white p-4 rounded-3xl shadow-sm border mb-6">
+            <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="qty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="rate" placeholder="ദിവസ വാടക (ഒരെണ്ണത്തിന്)" class="w-full p-3 border rounded-xl mb-2">
+            <select id="personType" class="w-full p-3 border rounded-xl mb-2">
+                <option value="ഉടമസ്ഥൻ">ഉടമസ്ഥൻ</option>
+                <option value="വാടകയ്ക്ക് എടുക്കുന്ന ആൾ">വാടകയ്ക്ക് എടുക്കുന്ന ആൾ</option>
+            </select>
+            <input type="text" id="personName" placeholder="പേര്" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (10 അക്കം)" class="w-full p-3 border rounded-xl mb-2">
+            <button onclick="addTool()" class="w-full bg-slate-900 text-white p-3 rounded-2xl font-bold">ചേർക്കുക</button>
         </div>
 
-        <div id="toolList" class="space-y-4"></div>
+        <div id="toolList" class="grid grid-cols-1 gap-4"></div>
     </div>
-<script type="module">
-    // 1. Firebase ലൈബ്രറികൾ ലോഡ് ചെയ്യുന്നു
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
-    // 2. നിങ്ങളുടെ Firebase കോൺഫിഗറേഷൻ (ഇത് നിങ്ങളുടെ പ്രോജക്റ്റിൽ നിന്ന് കിട്ടിയത്)
-    const firebaseConfig = {
-        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-        authDomain: "mesthri-app.firebaseapp.com",
-        projectId: "mesthri-app",
-        storageBucket: "mesthri-app.firebasestorage.app",
-        messagingSenderId: "1060617901864",
-        appId: "1:1060617901864:web:5ffb9378cf36b"
-    };
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const toolsRef = ref(db, 'tools');
-
-    // 3. ഡാറ്റ ആഡ് ചെയ്യാനുള്ള ഫങ്ക്ഷൻ (പുതുക്കിയത്)
-    window.addTool = () => {
-        let toolData = {
-            name: document.getElementById('toolName').value,
-            qty: document.getElementById('qty').value,
-            rate: document.getElementById('rate').value,
-            type: document.getElementById('personType').value,
-            person: document.getElementById('personName').value,
-            phone: document.getElementById('phone').value,
-            startDate: new Date().toISOString(),
-            paid: 0
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36b"
         };
-        push(toolsRef, toolData);
-        alert("വിവരങ്ങൾ സേവ് ചെയ്തു!");
-    };
 
-    // 4. ഡാറ്റ ഡിസ്പ്ലേ ചെയ്യാനുള്ള ഫങ്ക്ഷൻ
-    onValue(toolsRef, (snapshot) => {
-        const data = snapshot.val();
-        let list = document.getElementById('toolList');
-        list.innerHTML = "";
-        
-        if (data) {
-            Object.entries(data).forEach(([key, t]) => {
-                let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
-                let total = (t.qty * t.rate * days);
-                
-                list.innerHTML += `
-                    <div class="bg-white p-4 rounded-3xl shadow-sm border">
-                        <h3 class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</h3>
-                        <p class="text-sm flex items-center gap-1">👤 <strong>${t.type}:</strong> ${t.person}</p>
-                        <p class="text-sm font-bold text-red-600">നൽകാനുള്ളത്: ₹${total - t.paid}</p>
-                    </div>`;
-            });
-        }
-    });
-</script>
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const toolsRef = ref(db, 'tools');
 
-    
+        // ചേർക്കാനുള്ള ഫങ്ഷൻ
+        window.addTool = () => {
+            let tool = {
+                name: document.getElementById('toolName').value,
+                qty: document.getElementById('qty').value,
+                rate: document.getElementById('rate').value,
+                type: document.getElementById('personType').value,
+                person: document.getElementById('personName').value,
+                phone: document.getElementById('phone').value,
+                startDate: new Date().toISOString()
+            };
+            push(toolsRef, tool);
+            location.reload();
+        };
+
+        // വാട്‌സാപ്പ് മെസ്സേജ് അയക്കാൻ
+        window.sendWhatsApp = (t) => {
+            let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+            let total = (t.qty * t.rate * days);
+            let msg = `വാടക കണക്ക് വിവരം:%0Aഉപകരണം: ${t.name}%0A${t.type}: ${t.person}%0Aആകെ വാടക: ₹${total}%0Aസൈറ്റ് മാനേജർ ആപ്പിൽ നിന്ന്.`;
+            window.open(`https://wa.me/91${t.phone}?text=${msg}`, '_blank');
+        };
+
+        // ഡാറ്റ ലിസ്റ്റ് കാണിക്കാൻ
+        onValue(toolsRef, (snapshot) => {
+            const data = snapshot.val();
+            let list = document.getElementById('toolList');
+            list.innerHTML = "";
+            if (data) {
+                Object.entries(data).forEach(([key, t]) => {
+                    let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+                    let total = (t.qty * t.rate * days);
+                    list.innerHTML += `
+                        <div class="bg-white p-4 rounded-3xl shadow-sm border">
+                            <h3 class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</h3>
+                            <p class="text-sm flex items-center gap-1">👤 <strong>${t.type}:</strong> ${t.person}</p>
+                            <p class="text-sm font-bold text-red-600">നൽകാനുള്ളത്: ₹${total}</p>
+                            <div class="flex gap-2 mt-3">
+                                <button onclick='sendWhatsApp(${JSON.stringify(t)})' class="bg-green-600 text-white p-2 rounded text-xs font-bold">WhatsApp അയക്കുക</button>
+                            </div>
+                        </div>`;
+                });
+            }
+        });
+    </script>
 </body>
 </html>
