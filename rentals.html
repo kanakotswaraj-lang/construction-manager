@@ -15,7 +15,14 @@
             <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="qty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="rate" placeholder="ദിവസ വാടക (ഒരെണ്ണത്തിന്)" class="w-full p-3 border rounded-xl mb-2">
-            <input type="text" id="personName" placeholder="മേസ്ത്രിയുടെ/ഉടമസ്ഥന്റെ പേര്" class="w-full p-3 border rounded-xl mb-2">
+            
+            <!-- ഇവിടെയാണ് പുതിയ ഡ്രോപ്പ്‌ഡൗൺ ചേർത്തത് -->
+            <select id="personType" class="w-full p-3 border rounded-xl mb-2">
+                <option value="ഉടമസ്ഥൻ">ഉടമസ്ഥൻ</option>
+                <option value="വാടകയ്ക്ക് എടുക്കുന്ന ആൾ">വാടകയ്ക്ക് എടുക്കുന്ന ആൾ</option>
+            </select>
+            
+            <input type="text" id="personName" placeholder="പേര്" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (10 അക്കം)" class="w-full p-3 border rounded-xl mb-2">
             <button onclick="addTool()" class="w-full bg-slate-900 text-white p-3 rounded-2xl font-bold">ചേർക്കുക</button>
         </div>
@@ -32,6 +39,7 @@
                 name: document.getElementById('toolName').value,
                 qty: document.getElementById('qty').value,
                 rate: document.getElementById('rate').value,
+                type: document.getElementById('personType').value, // ടൈപ്പ് സേവ് ചെയ്യുന്നു
                 person: document.getElementById('personName').value,
                 phone: document.getElementById('phone').value,
                 startDate: new Date().toISOString(),
@@ -49,10 +57,9 @@
             let total = (t.qty * t.rate * days);
             let bal = total - t.paid;
 
-            // മെസ്സേജിൽ ഉടമസ്ഥന്റെ പേര് ഉൾപ്പെടുത്തി
             let msg = `വാടക കണക്ക് വിവരം:%0A` +
                       `ഉപകരണം: ${t.name}%0A` +
-                      `ഉടമസ്ഥൻ: ${t.person}%0A` +
+                      `${t.type}: ${t.person}%0A` +
                       `ആകെ വാടക: ₹${total}%0A` +
                       `നൽകിയ തുക: ₹${t.paid}%0A` +
                       `ബാക്കി നൽകാനുള്ളത്: ₹${bal}%0A` +
@@ -71,8 +78,8 @@
             list.innerHTML += `
                 <div class="bg-white p-4 rounded-3xl shadow-sm border">
                     <h3 class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</h3>
-                    <!-- പേരിനൊപ്പം ഐക്കൺ -->
-                    <p class="text-sm flex items-center gap-1">👤 <strong>ഉടമസ്ഥൻ:</strong> ${t.person}</p>
+                    <!-- ഐക്കണും ടൈപ്പും പേരും ഇവിടെ കാണിക്കും -->
+                    <p class="text-sm flex items-center gap-1">👤 <strong>${t.type}:</strong> ${t.person}</p>
                     <p class="text-sm font-bold text-red-600">നൽകാനുള്ളത്: ₹${total - t.paid}</p>
                     <div class="flex gap-2 mt-3">
                         <button onclick="sendWhatsApp(${i})" class="bg-green-600 text-white p-2 rounded text-xs font-bold">WhatsApp അയക്കുക</button>
