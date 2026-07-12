@@ -31,11 +31,7 @@
             staff.push({name, phone, history: []});
             localStorage.setItem('staff', JSON.stringify(staff));
             location.reload();
-  // സെർച്ച് ഫങ്ഷൻ
-    window.filterTools = () => {
-        let input = document.getElementById('searchInput').value.toLowerCase();
-        renderList(Object.entries(allTools).filter(([k, t]) => t.person.toLowerCase().includes(input)));
-    };      }
+  
 
         function addEntry(i, type) {
             let amount = prompt(type === 'work' ? "ജോലിക്കൂലി തുക നൽകുക:" : "നൽകിയ തുക നൽകുക:");
@@ -66,6 +62,11 @@
             if(cleanPhone.length === 10) {
                 cleanPhone = '91' + cleanPhone;
             }
+            // സെർച്ച് ഫങ്ഷൻ
+    window.filterTools = () => {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        renderList(Object.entries(allTools).filter(([k, t]) => t.person.toLowerCase().includes(input)));
+    };      }
 
             let message = `*സൈറ്റ് കണക്ക് വിവരങ്ങൾ*%0A%0A` +
                           `*പേര്:* ${name}%0A` +
