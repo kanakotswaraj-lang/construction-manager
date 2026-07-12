@@ -62,6 +62,19 @@
 
     async function loadTransactions() {
         const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
+        const rentalSnapshot = await getDocs(collection(db, "rentals")); //
+    
+const rentalSnapshot = await getDocs(collection(db, "rentals"));
+rentalSnapshot.forEach((doc) => {
+    const r = doc.data();
+    // വാടക തുക കണക്കാക്കുന്നു (അതായത് qty * rate * days)
+    let days = Math.max(1, Math.ceil((new Date() - new Date(r.startDate)) / (1000 * 60 * 60 * 24)));
+    let totalRental = (Number(r.qty) * Number(r.rate) * days);
+    
+    // ഈ വാടക 'ആകെ ചെലവ്' (totalExpense) ഭാഗത്തേക്ക് കൂട്ടുന്നു
+    totalExpense += totalRental;
+});
+
         const listDiv = document.getElementById("worksList");
         const incomeElement = document.getElementById("total-income");
         const expenseElement = document.getElementById("total-expense");
