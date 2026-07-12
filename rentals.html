@@ -58,14 +58,23 @@
         push(toolsRef, tool);
         location.reload();
     };
+<button onclick='editTool("${key}", ${JSON.stringify(t)})' class="bg-blue-500 text-white p-2 rounded text-xs font-bold">എഡിറ്റ്</button>
 
-    // പേര് മാറ്റാൻ (Edit)
-    window.editPerson = (key, oldName) => {
-        let newName = prompt("പുതിയ പേര് നൽകുക:", oldName);
-        if (newName != null && newName != "") {
-            update(ref(db, 'tools/' + key), { person: newName });
+        // പേര്, എണ്ണം, റേറ്റ് എന്നിവ മാറ്റാൻ (Edit)
+    window.editTool = (key, current) => {
+        let newName = prompt("ഉപകരണത്തിന്റെ പേര്:", current.name);
+        let newQty = prompt("എണ്ണം:", current.qty);
+        let newRate = prompt("ദിവസ വാടക:", current.rate);
+
+        if (newName && newQty && newRate) {
+            update(ref(db, 'tools/' + key), {
+                name: newName,
+                qty: newQty,
+                rate: newRate
+            });
         }
     };
+
 
     // ഡിലീറ്റ് ചെയ്യാൻ
     window.deleteTool = (key) => {
