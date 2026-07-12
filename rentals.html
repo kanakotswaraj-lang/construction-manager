@@ -13,7 +13,7 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const db = getDatabase(app, "[https://mesthri-app-default-rtdb.firebaseio.com/](https://mesthri-app-default-rtdb.firebaseio.com/)");
     const toolsRef = ref(db, 'tools');
 
     let tools = [];
