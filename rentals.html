@@ -59,13 +59,23 @@
             location.reload();
         };
 
-        // വാട്‌സാപ്പ് മെസ്സേജ് അയക്കാൻ
-        window.sendWhatsApp = (t) => {
-            let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
-            let total = (t.qty * t.rate * days);
-            let msg = `വാടക കണക്ക് വിവരം:%0Aഉപകരണം: ${t.name}%0A${t.type}: ${t.person}%0Aആകെ വാടക: ₹${total}%0Aസൈറ്റ് മാനേജർ ആപ്പിൽ നിന്ന്.`;
-            window.open(`https://wa.me/91${t.phone}?text=${msg}`, '_blank');
-        };
+        // വാട്‌സാപ്പ് മെസ്സേജ് അയക്കുന്ന ഫങ്ഷൻ (പുതുക്കിയത്)
+window.sendWhatsApp = (t) => {
+    let dateObj = new Date(t.startDate);
+    let dateStr = dateObj.toLocaleDateString('ml-IN'); // തീയതി മലയാളം ഫോർമാറ്റിൽ
+    let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+    let total = (t.qty * t.rate * days);
+    
+    let msg = `വാടക കണക്ക് വിവരം:%0A` +
+              `ഉപകരണം: ${t.name}%0A` +
+              `എടുത്ത തീയതി: ${dateStr}%0A` +
+              `${t.type}: ${t.person}%0A` +
+              `ആകെ വാടക: ₹${total}%0A` +
+              `സൈറ്റ് മാനേജർ ആപ്പിൽ നിന്ന്.`;
+              
+    window.open(`https://wa.me/91${t.phone}?text=${msg}`, '_blank');
+};
+
 
         // ഡാറ്റ ലിസ്റ്റ് കാണിക്കാൻ
         onValue(toolsRef, (snapshot) => {
