@@ -28,76 +28,84 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.firebasestorage.app",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36b"
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.firebasestorage.app",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const toolsRef = ref(db, 'tools');
+
+    // ഉപകരണം ചേർക്കാൻ
+    window.addTool = () => {
+        let tool = {
+            name: document.getElementById('toolName').value,
+            qty: document.getElementById('qty').value,
+            rate: document.getElementById('rate').value,
+            type: document.getElementById('personType').value,
+            person: document.getElementById('personName').value,
+            phone: document.getElementById('phone').value,
+            startDate: new Date().toISOString()
         };
+        push(toolsRef, tool);
+        location.reload();
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const toolsRef = ref(db, 'tools');
+    // പേര് മാറ്റാൻ (Edit)
+    window.editPerson = (key, oldName) => {
+        let newName = prompt("പുതിയ പേര് നൽകുക:", oldName);
+        if (newName != null && newName != "") {
+            update(ref(db, 'tools/' + key), { person: newName });
+        }
+    };
 
-        // ചേർക്കാനുള്ള ഫങ്ഷൻ
-        window.addTool = () => {
-            let tool = {
-                name: document.getElementById('toolName').value,
-                qty: document.getElementById('qty').value,
-                rate: document.getElementById('rate').value,
-                type: document.getElementById('personType').value,
-                person: document.getElementById('personName').value,
-                phone: document.getElementById('phone').value,
-                startDate: new Date().toISOString()
-            };
-            push(toolsRef, tool);
-            location.reload();
-        };
+    // ഡിലീറ്റ് ചെയ്യാൻ
+    window.deleteTool = (key) => {
+        if(confirm("ഈ കണക്ക് നീക്കം ചെയ്യണോ?")) {
+            remove(ref(db, 'tools/' + key));
+        }
+    };
 
-        // വാട്‌സാപ്പ് മെസ്സേജ് അയക്കുന്ന ഫങ്ഷൻ (പുതുക്കിയത്)
-window.sendWhatsApp = (t) => {
-    let dateObj = new Date(t.startDate);
-    let dateStr = dateObj.toLocaleDateString('ml-IN'); // തീയതി മലയാളം ഫോർമാറ്റിൽ
-    let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
-    let total = (t.qty * t.rate * days);
-    
-    let msg = `വാടക കണക്ക് വിവരം:%0A` +
-              `ഉപകരണം: ${t.name}%0A` +
-              `എടുത്ത തീയതി: ${dateStr}%0A` +
-              `${t.type}: ${t.person}%0A` +
-              `ആകെ വാടക: ₹${total}%0A` +
-              `സൈറ്റ് മാനേജർ ആപ്പിൽ നിന്ന്.`;
-              
-    window.open(`https://wa.me/91${t.phone}?text=${msg}`, '_blank');
-};
+    // വാട്‌സാപ്പ് മെസ്സേജ് അയക്കാൻ
+    window.sendWhatsApp = (t) => {
+        let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+        let total = (t.qty * t.rate * days);
+        let msg = `വാടക കണക്ക് വിവരം:%0Aഉപകരണം: ${t.name}%0A${t.type}: ${t.person}%0Aആകെ വാടക: ₹${total}%0Aസൈറ്റ് മാനേജർ ആപ്പിൽ നിന്ന്.`;
+        window.open(`https://wa.me/91${t.phone}?text=${msg}`, '_blank');
+    };
 
+    // ലിസ്റ്റ് ഡിസ്പ്ലേ ചെയ്യാൻ
+    onValue(toolsRef, (snapshot) => {
+        const data = snapshot.val();
+        let list = document.getElementById('toolList');
+        list.innerHTML = "";
+        if (data) {
+            Object.entries(data).forEach(([key, t]) => {
+                let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+                let total = (t.qty * t.rate * days);
+                list.innerHTML += `
+                    <div class="bg-white p-4 rounded-3xl shadow-sm border mb-3">
+                        <h3 class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</h3>
+                        <p class="text-sm flex items-center gap-1">👤 <strong>${t.type}:</strong> ${t.person}</p>
+                        <p class="text-sm font-bold text-red-600">നൽകാനുള്ളത്: ₹${total}</p>
+                        <div class="flex gap-2 mt-3">
+                            <button onclick='sendWhatsApp(${JSON.stringify(t)})' class="bg-green-600 text-white p-2 rounded text-xs font-bold">WhatsApp</button>
+                            <button onclick='editPerson("${key}", "${t.person}")' class="bg-blue-500 text-white p-2 rounded text-xs font-bold">പേര് മാറ്റുക</button>
+                            <button onclick="deleteTool('${key}')" class="bg-red-500 text-white p-2 rounded text-xs font-bold">നീക്കം</button>
+                        </div>
+                    </div>`;
+            });
+        }
+    });
+</script>
 
-        // ഡാറ്റ ലിസ്റ്റ് കാണിക്കാൻ
-        onValue(toolsRef, (snapshot) => {
-            const data = snapshot.val();
-            let list = document.getElementById('toolList');
-            list.innerHTML = "";
-            if (data) {
-                Object.entries(data).forEach(([key, t]) => {
-                    let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
-                    let total = (t.qty * t.rate * days);
-                    list.innerHTML += `
-                        <div class="bg-white p-4 rounded-3xl shadow-sm border">
-                            <h3 class="font-bold text-lg">${t.name} (${t.qty} എണ്ണം)</h3>
-                            <p class="text-sm flex items-center gap-1">👤 <strong>${t.type}:</strong> ${t.person}</p>
-                            <p class="text-sm font-bold text-red-600">നൽകാനുള്ളത്: ₹${total}</p>
-                            <div class="flex gap-2 mt-3">
-                                <button onclick='sendWhatsApp(${JSON.stringify(t)})' class="bg-green-600 text-white p-2 rounded text-xs font-bold">WhatsApp അയക്കുക</button>
-                            </div>
-                        </div>`;
-                });
-            }
-        });
-    </script>
 </body>
 </html>
