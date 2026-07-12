@@ -9,16 +9,23 @@
 <body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold mb-6 text-slate-800 text-center">സൈറ്റ് മാനേജർ</h1>
-   <div class="grid grid-cols-2 gap-4 mt-6">
-    <div class="bg-blue-50 p-4 rounded-2xl">
-        <div class="text-blue-600 text-xs font-bold">ആകെ വരവ്</div>
-        <div id="sumwage" class="text-lg font-bold text-slate-800">₹0</div>
+   
+<div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
+    <h2 class="text-gray-500 text-sm font-medium">ആകെ ബാധ്യത</h2>
+    <div id="totalBalance" class="text-4xl font-extrabold text-slate-900 mt-1">₹0</div>
+    
+    <!-- വരവും നൽകിയതും താഴെ വരുന്നു -->
+    <div class="grid grid-cols-2 gap-4 mt-6">
+        <div class="bg-blue-50 p-4 rounded-2xl">
+            <div class="text-blue-600 text-xs font-bold">ആകെ വരവ്</div>
+            <div id="sumwage" class="text-lg font-bold text-slate-800">₹0</div>
+        </div>
+        <div class="bg-orange-50 p-4 rounded-2xl">
+            <div class="text-orange-600 text-xs font-bold">നൽകിയത്</div>
+            <div id="sumPaid" class="text-lg font-bold text-slate-800">₹0</div>
+        </div>
     </div>
-    <div class="bg-orange-50 p-4 rounded-2xl">
-        <div class="text-orange-600 text-xs font-bold">നൽകിയത്</div>
-        <div id="sumPaid" class="text-lg font-bold text-slate-800">₹0</div>
-    </div>
-</div>     
+</div>
 
         <div class="grid grid-cols-1 gap-3">
             <a href="staff.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">ജീവനക്കാർ</a>
