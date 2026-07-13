@@ -17,89 +17,83 @@
             <button onclick="addStaff()" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold">ചേർക്കുക</button>
         </div>
 
-        <!-- സെർച്ച് ബാർ -->
         <div class="mb-4">
             <input type="text" id="search" placeholder="പേര് തിരയുക..." onkeyup="filterStaff()" class="w-full p-3 border rounded-xl shadow-sm">
         </div>
 
-        <div id="staffList" class="space-y-4"></div>
+        <div id="staffList" class="space-y-4">Loading...</div>
     </div>
 
-    <script>
-        let staff = JSON.parse(localStorage.getItem('staff') || '[]');
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        function addStaff() {
+        
+const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let staff = [];
+
+        // ഫയർബേസിൽ നിന്ന് ഡാറ്റ എടുക്കാൻ
+        async function loadStaff() {
+            const querySnapshot = await getDocs(collection(db, "staff_entries"));
+            staff = [];
+            querySnapshot.forEach((doc) => {
+                staff.push({ id: doc.id, ...doc.data() });
+            });
+            renderStaff();
+        }
+
+        async function addStaff() {
             let name = document.getElementById('name').value;
             let phone = document.getElementById('phone').value;
             if(!name || !phone) return alert("വിവരങ്ങൾ നൽകുക!");
-            staff.push({name, phone, history: []});
-            localStorage.setItem('staff', JSON.stringify(staff));
+            
+            await addDoc(collection(db, "staff_entries"), { name, phone, history: [] });
             location.reload();
-        } // ഇവിടെയാണ് ആ ബ്രേസ് ചേർത്തിരിക്കുന്നത്
+        }
 
-        function filterStaff() {
+        window.addStaff = addStaff; // ഫങ്ഷൻ ഗ്ലോബൽ ആക്കാൻ
+
+        function renderStaff() {
+            let listElement = document.getElementById('staffList');
+            listElement.innerHTML = staff.map((s, i) => {
+                let history = s.history || [];
+                let workAmount = history.filter(h => h.type === 'work').reduce((sum, h) => sum + h.amount, 0);
+                let givenAmount = history.filter(h => h.type === 'given').reduce((sum, h) => sum + h.amount, 0);
+                let balance = workAmount - givenAmount;
+                
+                return `
+                <div class="staff-card bg-white p-4 rounded-xl border mb-3" data-name="${s.name}">
+                    <div>
+                        <p class="font-bold text-lg">${s.name}</p>
+                        <p class="text-gray-500 text-sm">${s.phone}</p>
+                        <p class="text-sm mt-1">ജോലി: ₹${workAmount} | നൽകിയത്: ₹${givenAmount}</p>
+                        <p class="text-sm font-bold mt-1 ${balance > 0 ? 'text-red-600' : 'text-green-600'}">
+                            നൽകാനുള്ളത്: ₹${balance}
+                        </p>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        window.filterStaff = function() {
             let query = document.getElementById('search').value.toLowerCase();
-            let items = document.querySelectorAll('.staff-card');
-            items.forEach(item => {
-                let name = item.getAttribute('data-name').toLowerCase();
-                item.style.display = name.includes(query) ? '' : 'none';
+            document.querySelectorAll('.staff-card').forEach(item => {
+                item.style.display = item.getAttribute('data-name').toLowerCase().includes(query) ? '' : 'none';
             });
         }
 
-        function addEntry(i, type) {
-            let amount = prompt(type === 'work' ? "ജോലിക്കൂലി തുക നൽകുക:" : "നൽകിയ തുക നൽകുക:");
-            if(!amount) return;
-            staff[i].history.push({type, amount: parseInt(amount), date: new Date().toLocaleDateString()});
-            localStorage.setItem('staff', JSON.stringify(staff));
-            location.reload();
-        }
-
-        function showDetails(i) {
-            let s = staff[i];
-            let details = (s.history || []).map(h => `${h.date}: ${h.type === 'work' ? 'ജോലിക്കൂലി: ' : 'നൽകിയത്: '} ₹${h.amount}`).join('\n');
-            alert(`പേര്: ${s.name}\nനമ്പർ: ${s.phone}\n\nചരിത്രം:\n${details || 'വിവരങ്ങളില്ല'}`);
-        }
-
-        function deleteStaff(i) {
-            if(confirm('നീക്കം ചെയ്യണോ?')) {
-                staff.splice(i, 1);
-                localStorage.setItem('staff', JSON.stringify(staff));
-                location.reload();
-            }
-        }
-
-        function sendWhatsApp(name, phone, work, given, balance) {
-            let cleanPhone = phone.replace(/\D/g, '');
-            if(cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
-            let message = `*സൈറ്റ് കണക്ക് വിവരങ്ങൾ*%0A%0A*പേര്:* ${name}%0A*ആകെ ജോലിക്കൂലി:* ₹${work}%0A*നൽകിയ തുക:* ₹${given}%0A*ബാക്കി നൽകാനുള്ളത്:* ₹${balance}%0A%0A_സൈറ്റ് മാനേജർ ആപ്പ് വഴി അയച്ചത്._`;
-            window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
-        }
-
-        let listElement = document.getElementById('staffList');
-        listElement.innerHTML = staff.map((s, i) => {
-            let history = s.history || [];
-            let workAmount = history.filter(h => h.type === 'work').reduce((sum, h) => sum + h.amount, 0);
-            let givenAmount = history.filter(h => h.type === 'given').reduce((sum, h) => sum + h.amount, 0);
-            let balance = workAmount - givenAmount;
-            
-            return `
-            <div class="staff-card bg-white p-4 rounded-xl border mb-3" data-name="${s.name}">
-                <div onclick="showDetails(${i})" class="cursor-pointer">
-                    <p class="font-bold text-lg">${s.name}</p>
-                    <p class="text-gray-500 text-sm">${s.phone}</p>
-                    <p class="text-sm mt-1">ജോലി: ₹${workAmount} | നൽകിയത്: ₹${givenAmount}</p>
-                    <p class="text-sm font-bold mt-1 ${balance > 0 ? 'text-red-600' : 'text-green-600'}">
-                        നൽകാനുള്ളത്: ₹${balance}
-                    </p>
-                </div>
-                <div class="flex gap-2 mt-3 items-center">
-                    <button onclick="addEntry(${i}, 'work')" class="bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-bold text-blue-700">ജോലി</button>
-                    <button onclick="addEntry(${i}, 'given')" class="bg-green-100 px-3 py-1.5 rounded-lg text-xs font-bold text-green-700">നൽകിയത്</button>
-                    <button onclick="sendWhatsApp('${s.name}', '${s.phone}', ${workAmount}, ${givenAmount}, ${balance})" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">WhatsApp</button>
-                    <button onclick="deleteStaff(${i})" class="text-red-500 text-xs ml-auto">നീക്കം</button>
-                </div>
-            </div>`;
-        }).join('');
+        loadStaff();
     </script>
 </body>
 </html>
