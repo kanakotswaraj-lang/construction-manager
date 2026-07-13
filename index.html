@@ -12,11 +12,11 @@
    
 <div class="grid grid-cols-2 gap-4 mb-6">
     <div class="bg-blue-600 p-4 rounded-2xl text-white shadow-md">
-        <p class="text-sm opacity-80">ആകെ ജോലിക്കൂലി</p>
+        <p class="text-sm opacity-80">ആകെ വരുമാനം</p>
         <p id="totalWork" class="text-xl font-bold">₹0</p>
     </div>
     <div class="bg-green-600 p-4 rounded-2xl text-white shadow-md">
-        <p class="text-sm opacity-80">നൽകാനുള്ളത്</p>
+        <p class="text-sm opacity-80">കയ്യിലുള്ളത്</p>
         <p id="totalBalance" class="text-xl font-bold">₹0</p>
     </div>
 </div>
@@ -44,11 +44,17 @@
             <a href="cash.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">സൈറ്റ് കണക്ക്</a>
         </div>
     </div>
-    <script type="module">
-     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-const firebaseConfig = {
+    // ... നിങ്ങളുടെ firebaseConfig വിവരങ്ങൾ ഇവിടെ ഉണ്ടാകും ...
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+
+    const firebaseConfig = {
     apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
     authDomain: "mesthri-app.firebaseapp.com",
     projectId: "mesthri-app",
@@ -56,57 +62,47 @@ const firebaseConfig = {
     messagingSenderId: "1060617901864",
     appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
 };
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-async function updateDashboard() {
-    try {
-        // 1. staff_entries-ൽ നിന്ന് ഡാറ്റ എടുക്കുന്നു
-        const staffSnapshot = await getDocs(collection(db, "staff_entries"));
-        let totalWork = 0;
-        let totalGiven = 0;
-        
-        staffSnapshot.forEach((doc) => {
-            let s = doc.data();
-            // 'history' എന്ന അറേയിൽ നിന്നാണ് കണക്കുകൾ എടുക്കുന്നത്
-            let history = s.history || [];
+    async function updateDashboard() {
+        try {
+            const staffSnapshot = await getDocs(collection(db, "staff_entries"));
+            let totalWork = 0;
+            let totalGiven = 0;
             
-            // വർക്ക് (ജോലി) തുക കൂട്ടുന്നു
-            totalWork += history.filter(h => h.type === 'work').reduce((sum, h) => sum + (Number(h.amount) || 0), 0);
-            // നൽകിയത് (given) തുക കൂട്ടുന്നു
-            totalGiven += history.filter(h => h.type === 'given').reduce((sum, h) => sum + (Number(h.amount) || 0), 0);
-        });
+            staffSnapshot.forEach((doc) => {
+                let s = doc.data();
+                let history = s.history || [];
+                totalWork += history.filter(h => h.type === 'work').reduce((sum, h) => sum + (Number(h.amount) || 0), 0);
+                totalGiven += history.filter(h => h.type === 'given').reduce((sum, h) => sum + (Number(h.amount) || 0), 0);
+            });
 
-        // 2. cash_entries-ൽ നിന്ന് ഡാറ്റ എടുക്കുന്നു
-        const cashSnapshot = await getDocs(collection(db, "cash_entries"));
-        let totalIncome = 0;
-        let totalExpense = 0;
-        
-        cashSnapshot.forEach((doc) => {
-            let c = doc.data();
-            if(c.type === 'income') totalIncome += Number(c.amount || 0);
-            if(c.type === 'expense') totalExpense += Number(c.amount || 0);
-        });
+            const cashSnapshot = await getDocs(collection(db, "cash_entries"));
+            let totalIncome = 0;
+            let totalExpense = 0;
+            
+            cashSnapshot.forEach((doc) => {
+                let c = doc.data();
+                if(c.type === 'income') totalIncome += Number(c.amount || 0);
+                if(c.type === 'expense') totalExpense += Number(c.amount || 0);
+            });
 
-        // 3. മൊത്തം കണക്കുകൾ കൂട്ടുന്നു
-        let finalIncome = totalWork + totalIncome; // ജോലി + വരവ്
-        let finalPaid = totalGiven + totalExpense; // നൽകിയത് + ചെലവ്
+            let finalIncome = totalWork + totalIncome; 
+            let finalPaid = totalGiven + totalExpense; 
+            let balanceInHand = finalIncome - finalPaid;
 
-        // 4. HTML-ലേക്ക് വാല്യൂകൾ അപ്‌ഡേറ്റ് ചെയ്യുന്നു
-        document.getElementById('totalWork').innerText = '₹' + finalIncome;
-        document.getElementById('sumwage').innerText = '₹' + finalIncome;
-        document.getElementById('sumPaid').innerText = '₹' + finalPaid;
-        document.getElementById('totalBalance').innerText = '₹' + (finalIncome - finalPaid);
-        
-    } catch (e) {
-        console.error("Dashboard Error:", e);
+            document.getElementById('totalWork').innerText = '₹' + finalIncome;
+            document.getElementById('sumwage').innerText = '₹' + finalIncome;
+            document.getElementById('sumPaid').innerText = '₹' + finalPaid;
+            document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
+            
+        } catch (e) {
+            console.error("Dashboard Error:", e);
+        }
     }
-}
-updateDashboard();
+    updateDashboard();
+    // പുതിയ updateDashboard ഫങ്ഷൻ ഇവിടെ അവസാനിക്കുന്നു
+</script>
 
-
-    </script>
+    <
 
 </body>
 </html>
