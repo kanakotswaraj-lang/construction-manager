@@ -92,8 +92,7 @@ const firebaseConfig = {
             }).join('');
         }
          // import സ്റ്റേറ്റ്‌മെന്റുകളിൽ updateDoc, deleteDoc, doc എന്നിവ കൂടി ചേർക്കുക
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
+        
         // ജോലി/നൽകിയ തുക ആഡ് ചെയ്യാൻ
         window.addEntry = async function(id, type) {
             let amount = prompt(type === 'work' ? "ജോലിക്കൂലി തുക നൽകുക:" : "നൽകിയ തുക നൽകുക:");
