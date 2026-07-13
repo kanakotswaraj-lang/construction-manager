@@ -87,7 +87,7 @@ async function updateDashboard() {
         let finalIncome = totalWork + totalIncome;
         let finalPaid = totalGiven + totalExpense;
 
-        // 4. HTML-ലേക്ക് വാല്യൂകൾ അപ്‌ഡേറ്റ് ചെയ്യുന്നു
+                // 4. HTML-ലേക്ക് വാല്യൂകൾ അപ്‌ഡേറ്റ് ചെയ്യുന്നു
         document.getElementById('totalWork').innerText = '₹' + finalIncome;
         document.getElementById('sumwage').innerText = '₹' + finalIncome;
         document.getElementById('sumPaid').innerText = '₹' + finalPaid;
@@ -98,8 +98,10 @@ async function updateDashboard() {
     }
 }
 
-// ഫങ്ഷൻ വിളിക്കുന്നു
+// ഫങ്ഷൻ കോൾ ചെയ്യുന്നു
 updateDashboard();
+
+
 
 
 
