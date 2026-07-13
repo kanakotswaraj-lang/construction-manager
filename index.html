@@ -60,30 +60,50 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+
 async function updateDashboard() {
     try {
-        const querySnapshot = await getDocs(collection(db, "staff_entries"));
+        // 1. staff_entries-ൽ നിന്ന് ഡാറ്റ എടുക്കുന്നു
+        const staffSnapshot = await getDocs(collection(db, "staff_entries"));
         let totalWork = 0;
         let totalGiven = 0;
-
-        querySnapshot.forEach((doc) => {
+        staffSnapshot.forEach((doc) => {
             let s = doc.data();
             let history = s.history || [];
             totalWork += history.filter(h => h.type === 'work').reduce((sum, h) => sum + (h.amount || 0), 0);
             totalGiven += history.filter(h => h.type === 'given').reduce((sum, h) => sum + (h.amount || 0), 0);
         });
 
-        // HTML-ലേക്ക് വാല്യൂകൾ നൽകുന്നു
-        document.getElementById('totalWork').innerText = '₹' + totalWork;
-        document.getElementById('sumwage').innerText = '₹' + totalWork;
-        document.getElementById('sumPaid').innerText = '₹' + totalGiven;
-        document.getElementById('totalBalance').innerText = '₹' + (totalWork - totalGiven);
+        // 2. cash_entries-ൽ നിന്ന് ഡാറ്റ എടുക്കുന്നു
+        const cashSnapshot = await getDocs(collection(db, "cash_entries"));
+        let totalIncome = 0;
+        let totalExpense = 0;
+        cashSnapshot.forEach((doc) => {
+            let c = doc.data();
+            if(c.type === 'income') totalIncome += parseInt(c.amount || 0);
+            if(c.type === 'expense') totalExpense += parseInt(c.amount || 0);
+        });
+
+        // 3. മൊത്തം കണക്കുകൾ കൂട്ടുന്നു
+        let finalIncome = totalWork + totalIncome;
+        let finalPaid = totalGiven + totalExpense;
+
+        // 4. HTML-ലേക്ക് വാല്യൂകൾ അപ്‌ഡേറ്റ് ചെയ്യുന്നു
+        document.getElementById('totalWork').innerText = '₹' + finalIncome;
+        document.getElementById('sumwage').innerText = '₹' + finalIncome;
+        document.getElementById('sumPaid').innerText = '₹' + finalPaid;
+        document.getElementById('totalBalance').innerText = '₹' + (finalIncome - finalPaid);
+        
     } catch (e) {
-        console.error("Firebase Error: ", e);
+        console.error("Dashboard Error:", e);
     }
 }
 
+// ഫങ്ഷൻ വിളിക്കുന്നു
 updateDashboard();
+
+
+
 
     </script>
 
