@@ -9,7 +9,18 @@
 <body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold mb-6 text-slate-800 text-center">സൈറ്റ് മാനേജർ</h1>
-   
+   <
+<div class="grid grid-cols-2 gap-4 mb-6">
+    <div class="bg-blue-600 p-4 rounded-2xl text-white shadow-md">
+        <p class="text-sm opacity-80">ആകെ ജോലിക്കൂലി</p>
+        <p id="totalWork" class="text-xl font-bold">₹0</p>
+    </div>
+    <div class="bg-green-600 p-4 rounded-2xl text-white shadow-md">
+        <p class="text-sm opacity-80">നൽകാനുള്ളത്</p>
+        <p id="totalBalance" class="text-xl font-bold">₹0</p>
+    </div>
+</div>
+
 <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
     <h2 class="text-gray-500 text-sm font-medium">ആകെ ബാധ്യത</h2>
     <div id="totalBalance" class="text-4xl font-extrabold text-slate-900 mt-1">₹0</div>
@@ -33,7 +44,7 @@
             <a href="cash.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">സൈറ്റ് കണക്ക്</a>
         </div>
     </div>
-    <script>
+    <script type="module">
      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
@@ -55,6 +66,30 @@ const db = getFirestore(app);
                 let cashList = JSON.parse(localStorage.getItem('cash') || '[]');
                 
                 let totalWage = 0, totalPaid = 0, totalRent = 0;
+
+
+// ഡാഷ്‌ബോർഡ് അപ്‌ഡേറ്റ് ചെയ്യാൻ
+async function updateDashboard() {
+    const querySnapshot = await getDocs(collection(db, "staff_entries"));
+    let totalWork = 0;
+    let totalBalance = 0;
+
+    querySnapshot.forEach((doc) => {
+        let s = doc.data();
+        let history = s.history || [];
+        let work = history.filter(h => h.type === 'work').reduce((sum, h) => sum + (h.amount || 0), 0);
+        let given = history.filter(h => h.type === 'given').reduce((sum, h) => sum + (h.amount || 0), 0);
+        
+        totalWork += work;
+        totalBalance += (work - given);
+    });
+
+    document.getElementById('totalWork').innerText = '₹' + totalWork;
+    document.getElementById('totalBalance').innerText = '₹' + totalBalance;
+}
+
+// പേജ് ലോഡ് ആകുമ്പോൾ ഈ ഫങ്ഷൻ വിളിക്കുക
+updateDashboard();
 
                 // ജീവനക്കാരുടെ കണക്ക്
                 staffList.forEach(s => {
