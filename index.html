@@ -59,14 +59,7 @@ const db = getFirestore(app);
         messagingSenderId: "1060617901864",
         appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
     };
-        function updateDashboard() {
-            try {
-                let staffList = JSON.parse(localStorage.getItem('staff') || '[]');
-                let tools = JSON.parse(localStorage.getItem('tools') || '[]'); // വാടക ഉപകരണങ്ങൾ
-                let cashList = JSON.parse(localStorage.getItem('cash') || '[]');
-                
-                let totalWage = 0, totalPaid = 0, totalRent = 0;
-
+        
 
 // ഡാഷ്‌ബോർഡ് അപ്‌ഡേറ്റ് ചെയ്യാൻ
 async function updateDashboard() {
