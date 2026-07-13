@@ -24,32 +24,24 @@
         <!-- ലിസ്റ്റ് വരുന്ന ഭാഗം -->
         <div id="cashList" class="space-y-2"></div>
     </div>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+ <script type="module">
+     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
     authDomain: "mesthri-app.firebaseapp.com",
-    databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
     projectId: "mesthri-app",
-    storageBucket: "mesthri-app.firebasestorage.app",
+    storageBucket: "mesthri-app.appspot.com",
     messagingSenderId: "1060617901864",
-    appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-    measurementId: "G-J9Y5TW9D7T"
-  };
-
-  // Initialize Firebase
-
-
+    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+async function updateDashboard() {
+    try {
 
 // ഡാറ്റ സേവ് ചെയ്യാൻ
 window.addCash = async (type) => {
