@@ -24,35 +24,89 @@
         <!-- ലിസ്റ്റ് വരുന്ന ഭാഗം -->
         <div id="cashList" class="space-y-2"></div>
     </div>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
-    <script>
-        let cashList = JSON.parse(localStorage.getItem('cash') || '[]');
-        
-        function addCash(type) {
-            let siteName = document.getElementById('siteName').value;
-            let desc = document.getElementById('desc').value;
-            let amount = document.getElementById('amount').value;
-            
-            if(!siteName || !desc || !amount) return alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
-            
-            cashList.push({siteName, desc, amount: parseInt(amount), type, date: new Date().toLocaleDateString()});
-            localStorage.setItem('cash', JSON.stringify(cashList));
-            location.reload();
-        }
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+    authDomain: "mesthri-app.firebaseapp.com",
+    databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
+    projectId: "mesthri-app",
+    storageBucket: "mesthri-app.firebasestorage.app",
+    messagingSenderId: "1060617901864",
+    appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+    measurementId: "G-J9Y5TW9D7T"
+  };
 
-        // ലിസ്റ്റ് കാണിക്കാൻ
-        document.getElementById('cashList').innerHTML = cashList.map((c, i) => `
-            <div class="bg-white p-4 rounded-xl border flex justify-between items-center">
+  // Initialize Firebase
+
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ഡാറ്റ സേവ് ചെയ്യാൻ
+window.addCash = async (type) => {
+    let siteName = document.getElementById('siteName').value;
+    let desc = document.getElementById('desc').value;
+    let amount = parseInt(document.getElementById('amount').value);
+    
+    if(!siteName || !desc || !amount) return alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
+    
+    await addDoc(collection(db, "cash_entries"), { siteName, desc, amount, type, date: new Date().toLocaleDateString() });
+    location.reload();
+};
+
+// ഡാറ്റ ഡിലീറ്റ് ചെയ്യാൻ
+window.deleteCashEntry = async (id) => {
+    if(confirm("ഈ കണക്ക് ഡിലീറ്റ് ചെയ്യണോ?")) {
+        await deleteDoc(doc(db, "cash_entries", id));
+        location.reload();
+    }
+};
+
+// വാട്‌സാപ്പ് മെസ്സേജ്
+window.sendWhatsApp = (amount, desc) => {
+    let msg = `നമസ്കാരം, സൈറ്റ് കണക്ക് പ്രകാരം ${desc} ഇനത്തിൽ ₹${amount} ലഭിച്ചിട്ടുണ്ട്.`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+};
+
+// ലിസ്റ്റ് ലോഡ് ചെയ്യാൻ
+async function loadCash() {
+    const querySnapshot = await getDocs(collection(db, "cash_entries"));
+    let html = "";
+    querySnapshot.forEach((doc) => {
+        let c = doc.data();
+        html += `
+            <div class="bg-white p-4 rounded-xl border flex justify-between items-center mb-2">
                 <div>
-                    <p class="font-bold text-sm text-blue-600">${c.siteName}</p>
-                    <p class="font-bold">${c.desc}</p>
+                    <p class="font-bold text-blue-600">${c.siteName}</p>
+                    <p>${c.desc}</p>
                     <p class="text-xs text-gray-400">${c.date}</p>
                 </div>
-                <span class="font-bold ${c.type === 'income' ? 'text-green-600' : 'text-red-600'}">
-                    ${c.type === 'income' ? '+' : '-'} ₹${c.amount}
-                </span>
+                <div class="text-right">
+                    <p class="font-bold ${c.type === 'income' ? 'text-green-600' : 'text-red-600'}">
+                        ${c.type === 'income' ? '+' : '-'} ₹${c.amount}
+                    </p>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="deleteCashEntry('${doc.id}')" class="text-red-500 text-xs">ഡിലീറ്റ്</button>
+                        ${c.type === 'income' ? `<button onclick="sendWhatsApp(${c.amount}, '${c.desc}')" class="text-blue-500 text-xs">WhatsApp</button>` : ''}
+                    </div>
+                </div>
             </div>
-        `).join('');
+        `;
+    });
+    document.getElementById('cashList').innerHTML = html;
+}
+loadCash();
+
+
     </script>
 </body>
 </html>
