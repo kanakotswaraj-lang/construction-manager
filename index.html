@@ -66,28 +66,34 @@ async function updateDashboard() {
         const staffSnapshot = await getDocs(collection(db, "staff_entries"));
         let totalWork = 0;
         let totalGiven = 0;
+        
         staffSnapshot.forEach((doc) => {
             let s = doc.data();
+            // 'history' എന്ന അറേയിൽ നിന്നാണ് കണക്കുകൾ എടുക്കുന്നത്
             let history = s.history || [];
-            totalWork += history.filter(h => h.type === 'work').reduce((sum, h) => sum + (h.amount || 0), 0);
-            totalGiven += history.filter(h => h.type === 'given').reduce((sum, h) => sum + (h.amount || 0), 0);
+            
+            // വർക്ക് (ജോലി) തുക കൂട്ടുന്നു
+            totalWork += history.filter(h => h.type === 'work').reduce((sum, h) => sum + (Number(h.amount) || 0), 0);
+            // നൽകിയത് (given) തുക കൂട്ടുന്നു
+            totalGiven += history.filter(h => h.type === 'given').reduce((sum, h) => sum + (Number(h.amount) || 0), 0);
         });
 
         // 2. cash_entries-ൽ നിന്ന് ഡാറ്റ എടുക്കുന്നു
         const cashSnapshot = await getDocs(collection(db, "cash_entries"));
         let totalIncome = 0;
         let totalExpense = 0;
+        
         cashSnapshot.forEach((doc) => {
             let c = doc.data();
-            if(c.type === 'income') totalIncome += parseInt(c.amount || 0);
-            if(c.type === 'expense') totalExpense += parseInt(c.amount || 0);
+            if(c.type === 'income') totalIncome += Number(c.amount || 0);
+            if(c.type === 'expense') totalExpense += Number(c.amount || 0);
         });
 
         // 3. മൊത്തം കണക്കുകൾ കൂട്ടുന്നു
-        let finalIncome = totalWork + totalIncome;
-        let finalPaid = totalGiven + totalExpense;
+        let finalIncome = totalWork + totalIncome; // ജോലി + വരവ്
+        let finalPaid = totalGiven + totalExpense; // നൽകിയത് + ചെലവ്
 
-                // 4. HTML-ലേക്ക് വാല്യൂകൾ അപ്‌ഡേറ്റ് ചെയ്യുന്നു
+        // 4. HTML-ലേക്ക് വാല്യൂകൾ അപ്‌ഡേറ്റ് ചെയ്യുന്നു
         document.getElementById('totalWork').innerText = '₹' + finalIncome;
         document.getElementById('sumwage').innerText = '₹' + finalIncome;
         document.getElementById('sumPaid').innerText = '₹' + finalPaid;
@@ -97,13 +103,7 @@ async function updateDashboard() {
         console.error("Dashboard Error:", e);
     }
 }
-
-// ഫങ്ഷൻ കോൾ ചെയ്യുന്നു
 updateDashboard();
-
-
-
-
 
 
     </script>
