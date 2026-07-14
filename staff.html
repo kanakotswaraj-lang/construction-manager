@@ -4,55 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ജീവനക്കാരുടെ കണക്ക്</title>
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>body { background-color: #f3f4f6; }</style>
 </head>
-<body class="p-4">
-    <div id="dashboard" class="mb-4"></div>
-    <div id="staffList"></div>
+<body class="bg-gray-100 p-4">
 
-<script type="module">
-     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-    authDomain: "mesthri-app.firebaseapp.com",
-    projectId: "mesthri-app",
-    storageBucket: "mesthri-app.appspot.com",
-    messagingSenderId: "1060617901864",
-    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-async function updateDashboard() {
-    try {
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-bold mb-4 text-center">ജീവനക്കാർ</h1>
         
-        // മൊത്തം കണക്ക് കാണിക്കാൻ
-        function updateDashboard() {
-            let totalWork = 0, totalGiven = 0;
-            // ഇവിടെ കണക്കുകൂട്ടലുകൾ വരുന്നു...
-            document.getElementById('dashboard').innerHTML = `
-                <div class="bg-indigo-600 p-5 rounded-2xl text-white shadow-xl">
-                    <h2 class="text-lg opacity-80">മൊത്തം ബാലൻസ്</h2>
-                    <p class="text-3xl font-bold">₹${totalWork - totalGiven}</p>
-                </div>
-            `;
+        <!-- പുതിയ ജീവനക്കാരെ ചേർക്കാൻ -->
+        <div class="bg-white p-4 rounded-xl shadow-sm mb-4">
+            <input type="text" id="name" placeholder="പേര്" class="w-full p-2 border rounded mb-2">
+            <input type="text" id="phone" placeholder="ഫോൺ നമ്പർ" class="w-full p-2 border rounded mb-2">
+            <button onclick="addStaff()" class="w-full bg-blue-600 text-white p-2 rounded-lg font-bold">ചേർക്കുക</button>
+        </div>
+
+        <div id="staffList"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+            
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let staff = [];
+
+        async function loadStaff() {
+            const querySnapshot = await getDocs(collection(db, "staff_entries"));
+            staff = [];
+            querySnapshot.forEach((doc) => {
+                staff.push({ id: doc.id, ...doc.data() });
+            });
+            renderStaff();
         }
 
-        // PDF ഡൗൺലോഡ് ഫങ്ഷൻ
-        window.downloadPDF = function(name, history) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.text(`Report for ${name}`, 10, 10);
-            history.forEach((h, i) => {
-                doc.text(`${h.date} | ${h.type}: ${h.amount} (${h.description})`, 10, 20 + (i * 10));
-            });
-            doc.save(`${name}_report.pdf`);
+        window.addStaff = async function() {
+            let name = document.getElementById('name').value;
+            let phone = document.getElementById('phone').value;
+            if(!name || !phone) return alert("വിവരങ്ങൾ നൽകുക!");
+            await addDoc(collection(db, "staff_entries"), { name, phone, history: [] });
+            location.reload();
+        }
+
+        function renderStaff() {
+            let listElement = document.getElementById('staffList');
+            if(!listElement) return;
+            listElement.innerHTML = staff.map((s, i) => {
+                let history = s.history || [];
+                let workAmount = history.filter(h => h.type === 'work').reduce((sum, h) => sum + (h.amount || 0), 0);
+                let givenAmount = history.filter(h => h.type === 'given').reduce((sum, h) => sum + (h.amount || 0), 0);
+                let balance = workAmount - givenAmount;
+                
+                return `
+                <div class="bg-white p-4 rounded-xl border mb-3">
+                    <p class="font-bold text-lg">${s.name || 'പേരില്ല'}</p>
+                    <p class="text-gray-500 text-sm mb-2">${s.phone || ''}</p>
+                    <p class="text-sm">ജോലി: ₹${workAmount} | നൽകിയത്: ₹${givenAmount}</p>
+                    <p class="text-sm font-bold ${balance > 0 ? 'text-red-600' : 'text-green-600'}">നൽകാനുള്ളത്: ₹${balance}</p>
+                    
+                    <div class="flex gap-2 mt-3 items-center flex-wrap">
+                        <button onclick="addEntry('${s.id}', 'work')" class="bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-bold text-blue-700">ജോലി</button>
+                        <button onclick="addEntry('${s.id}', 'given')" class="bg-green-100 px-3 py-1.5 rounded-lg text-xs font-bold text-green-700">നൽകിയത്</button>
+                        <button onclick="showHistory(${i})" class="bg-yellow-100 px-3 py-1.5 rounded-lg text-xs font-bold text-yellow-700">ഹിസ്റ്ററി</button>
+                        <button onclick="sendWhatsApp('${s.name}', '${s.phone}', ${workAmount}, ${givenAmount}, ${balance})" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">WhatsApp</button>
+                        <button onclick="deleteStaff('${s.id}')" class="text-red-500 text-xs ml-auto">നീക്കം</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        window.addEntry = async function(id, type) {
+            let desc = prompt("എന്തിനുള്ള തുകയാണ്? (ഉദാ: പണി, അഡ്വാൻസ്):");
+            if(desc === null) return;
+            let amount = prompt("തുക നൽകുക:");
+            if(!amount) return;
+
+            const staffRef = doc(db, "staff_entries", id);
+            const staffSnap = await getDoc(staffRef);
+            
+            if (staffSnap.exists()) {
+                let currentHistory = staffSnap.data().history || [];
+                let today = new Date().toLocaleDateString('en-GB');
+                currentHistory.push({
+                    type: type,
+                    amount: parseInt(amount),
+                    description: desc,
+                    date: today
+                });
+                await updateDoc(staffRef, { history: currentHistory });
+                loadStaff();
+            }
         };
+
+        window.showHistory = function(index) {
+            let s = staff[index];
+            let history = s.history || [];
+            let msg = `ഹിസ്റ്ററി (${s.name}):\n\n`;
+            if(history.length === 0) {
+                msg += "ഇടപാടുകൾ ഒന്നുമില്ല.";
+            } else {
+                history.forEach(h => {
+                    msg += `${h.date} | ${h.type === 'work' ? 'ജോലി: ₹' : 'നൽകിയത്: ₹'}${h.amount} (${h.description})\n`;
+                });
+            }
+            alert(msg);
+        };
+
+        window.deleteStaff = async function(id) {
+            if(confirm('ഈ ജീവനക്കാരെ നീക്കം ചെയ്യണോ?')) {
+                await deleteDoc(doc(db, "staff_entries", id));
+                loadStaff();
+            }
+        };    
+
+        window.sendWhatsApp = function(name, phone, work, given, balance) {
+            let cleanPhone = phone.replace(/\D/g, '');
+            if(cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
+            let message = `*സൈറ്റ് കണക്ക് വിവരങ്ങൾ*%0A%0A*പേര്:* ${name}%0A*ആകെ ജോലിക്കൂലി:* ₹${work}%0A*നൽകിയ തുക:* ₹${given}%0A*ബാക്കി നൽകാനുള്ളത്:* ₹${balance}%0A%0A_സൈറ്റ് മാനേജർ ആപ്പ് വഴി അയച്ചത്._`;
+            window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
+        };
+
+        loadStaff();
     </script>
 </body>
 </html>
