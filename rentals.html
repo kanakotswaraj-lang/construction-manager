@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ml">
 <head>
@@ -10,15 +9,10 @@
 <body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
         <h1 class="text-xl font-bold mb-4 text-center">വാടക ഉപകരണങ്ങൾ</h1>
-        <!-- ആകെ തുക കാണിക്കുന്ന ബോക്സ് -->
-<div class="bg-blue-600 p-4 rounded-3xl shadow-lg text-white mb-6 text-center">
-    <p class="text-sm">ആകെ ലഭിക്കാനുള്ളത്</p>
-    <h2 id="totalDue" class="text-3xl font-bold">₹0</h2>
-</div>
-
-        <!-- ആകെ തുക കാണിക്കാൻ -->
-        <div class="bg-blue-600 p-4 rounded-3xl shadow-lg text-white mb-6 text-center">
-            <p class="text-sm">ആകെ ലഭിക്കാനുള്ളത്</p>
+        
+        <!-- ആകെ ലഭിക്കാനുള്ള തുക -->
+        <div class="bg-blue-600 p-6 rounded-3xl shadow-lg text-white mb-6 text-center">
+            <p class="text-sm opacity-80">ആകെ ലഭിക്കാനുള്ളത്</p>
             <h2 id="totalDue" class="text-3xl font-bold">₹0</h2>
         </div>
         
@@ -61,14 +55,17 @@
             person: document.getElementById('personName').value,
             phone: document.getElementById('phone').value,
             startDate: document.getElementById('startDate').value,
-            status: 'Pending' // പുതിയ സ്റ്റാറ്റസ്
+            paid: 0 // പേയ്‌മെന്റ് ട്രാക്ക് ചെയ്യാൻ
         };
         push(toolsRef, tool).then(() => location.reload());
     };
 
-    window.toggleStatus = (key, currentStatus) => {
-        let newStatus = currentStatus === 'Pending' ? 'Paid' : 'Pending';
-        update(ref(db, 'tools/' + key), { status: newStatus }).then(() => location.reload());
+    window.addPayment = (key, currentPaid) => {
+        let amount = prompt("എത്ര രൂപയാണ് നൽകിയത്?", "0");
+        if(amount !== null) {
+            let newPaid = Number(currentPaid) + Number(amount);
+            update(ref(db, 'tools/' + key), { paid: newPaid }).then(() => location.reload());
+        }
     };
 
     window.deleteTool = (key) => { if(confirm("നീക്കം ചെയ്യണോ?")) remove(ref(db, 'tools/' + key)); };
@@ -82,15 +79,19 @@
         Object.entries(data).forEach(([key, t]) => {
             let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
             let total = (t.qty * t.rate * days);
-            if(t.status === 'Pending') totalDue += total;
+            let paid = t.paid || 0;
+            let balance = total - paid;
+            totalDue += balance; // ബാലൻസ് തുക മാത്രം ആകെ തുകയിൽ കൂട്ടുന്നു
             
             list.innerHTML += `
                 <div class="bg-white p-4 rounded-3xl shadow-sm border mb-3">
                     <h3 class="font-bold">${t.name} (${t.qty} എണ്ണം)</h3>
                     <p class="text-sm">👤 ${t.person}</p>
-                    <p class="text-sm font-bold ${t.status === 'Paid' ? 'text-green-600' : 'text-red-600'}">വാടക: ₹${total} (${days} ദിവസം)</p>
+                    <p class="text-sm font-bold text-slate-600">ആകെ വാടക: ₹${total} (${days} ദിവസം)</p>
+                    <p class="text-sm font-bold text-green-600">നൽകിയത്: ₹${paid}</p>
+                    <p class="text-sm font-bold text-red-600">ബാക്കി: ₹${balance}</p>
                     <div class="flex gap-2 mt-3">
-                        <button onclick="toggleStatus('${key}', '${t.status}')" class="bg-yellow-500 text-white p-2 rounded text-xs">${t.status === 'Pending' ? 'Paid ആക്കി മാറ്റുക' : 'Pending ആക്കുക'}</button>
+                        <button onclick="addPayment('${key}', ${paid})" class="bg-blue-600 text-white p-2 rounded text-xs">പണം ലഭിച്ചു</button>
                         <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-600 text-white p-2 rounded text-xs">WhatsApp</button>
                         <button onclick="deleteTool('${key}')" class="bg-red-500 text-white p-2 rounded text-xs">Delete</button>
                     </div>
