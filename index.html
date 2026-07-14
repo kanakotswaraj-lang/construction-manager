@@ -12,7 +12,7 @@
    
 <div class="grid grid-cols-2 gap-4 mb-6">
     <div class="bg-blue-600 p-4 rounded-2xl text-white shadow-md">
-        <p class="text-sm opacity-80">ആകെ വരുമാനം</p>
+        <p class="text-sm opacity-80">കൂലി നൽകിയത്</p>
         <p id="totalWork" class="text-xl font-bold">₹0</p>
     </div>
     <div class="bg-green-600 p-4 rounded-2xl text-white shadow-md">
@@ -98,7 +98,7 @@ async function updateDashboard() {
         // സ്ക്രീനിൽ ഡിസ്‌പ്ലേ ചെയ്യുന്നത്
         document.getElementById('totalWork').innerText = '₹' + finalIncome;
         document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
-        document.getElementById('sumwage').innerText = '₹' + totalIncome; 
+        document.getElementById('sumwage').innerText = '₹' + totalGiven; 
         document.getElementById('sumPaid').innerText = '₹' + totalExpense;
 
     } catch (e) {
