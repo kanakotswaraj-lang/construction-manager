@@ -53,66 +53,67 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        // നിങ്ങളുടെ Firebase Config ഇവിടെ നൽകുക
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_ID",
-            appId: "YOUR_APP_ID"
-        };
+    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+    authDomain: "mesthri-app.firebaseapp.com",
+    projectId: "mesthri-app",
+    storageBucket: "mesthri-app.appspot.com",
+    messagingSenderId: "1060617901864",
+    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+};
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function updateDashboard() {
-            try {
-                // 1. ജീവനക്കാരുടെ കണക്കുകൾ
-                const staffSnapshot = await getDocs(collection(db, "staff_entries"));
-                let totalWork = 0;
-                let totalGiven = 0;
-                
-                staffSnapshot.forEach((doc) => {
-                    let s = doc.data();
-                    if (s.history) {
-                        s.history.forEach(h => {
-                            if (h.type === 'work') totalWork += Number(h.amount || 0);
-                            if (h.type === 'given') totalGiven += Number(h.amount || 0);
-                        });
-                    }
-                });
+    
 
-                // 2. സൈറ്റ് വരവ്-ചെലവ് കണക്കുകൾ
-                const cashSnapshot = await getDocs(collection(db, "cash_entries"));
-                let totalIncome = 0;
-                let totalExpense = 0;
-                
-                cashSnapshot.forEach((doc) => {
-                    let c = doc.data();
-                    if (c.type === 'income') totalIncome += Number(c.amount || 0);
-                    if (c.type === 'expense') totalExpense += Number(c.amount || 0);
-                });
+    async function updateDashboard() {
+        try {
+            // 1. ജീവനക്കാരുടെ കണക്കുകൾ (പഴയ രീതിയിൽ)
+            const staffSnapshot = await getDocs(collection(db, "staff_entries"));
+            let totalWork = 0;
+            let totalGiven = 0;
+            
+            staffSnapshot.forEach((doc) => {
+                let s = doc.data();
+                if (s.history) {
+                    s.history.forEach(h => {
+                        if (h.type === 'work') totalWork += Number(h.amount || 0);
+                        if (h.type === 'given') totalGiven += Number(h.amount || 0);
+                    });
+                }
+            });
 
-                // 3. ഫൈനൽ കണക്കുകൾ
-                let finalIncome = totalWork + totalIncome; 
-                let finalPaid = totalGiven + totalExpense; 
-                let balanceInHand = finalIncome - finalPaid;
-                let liability = finalPaid; // ബാധ്യതയായി ഇവിടെ നൽകിയത് കാണിക്കുന്നു
+            // 2. സൈറ്റ് വരവ്-ചെലവ് കണക്കുകൾ (പഴയ രീതിയിൽ)
+            const cashSnapshot = await getDocs(collection(db, "cash_entries"));
+            let totalIncome = 0;
+            let totalExpense = 0;
+            
+            cashSnapshot.forEach((doc) => {
+                let c = doc.data();
+                if (c.type === 'income') totalIncome += Number(c.amount || 0);
+                if (c.type === 'expense') totalExpense += Number(c.amount || 0);
+            });
 
-                // 4. ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക
-                document.getElementById('totalWork').innerText = '₹' + finalIncome;
-                document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
-                document.getElementById('totalLiability').innerText = '₹' + liability;
-                document.getElementById('rentalIncome').innerText = '₹' + totalIncome; 
-                document.getElementById('sumPaid').innerText = '₹' + finalPaid;
+            // 3. ഫൈനൽ കണക്കുകൂട്ടൽ (പഴയ രീതി)
+            let finalIncome = totalWork + totalIncome; 
+            let finalPaid = totalGiven + totalExpense; 
+            let balanceInHand = finalIncome - finalPaid;
 
-            } catch (e) {
-                console.error("Dashboard Error:", e);
-            }
+            // 4. ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക
+            document.getElementById('totalWork').innerText = '₹' + finalIncome;
+            document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
+            document.getElementById('totalLiability').innerText = '₹' + finalPaid; // ബാധ്യത
+            document.getElementById('rentalIncome').innerText = '₹' + totalIncome; // വാടക വരവ്
+            document.getElementById('sumPaid').innerText = '₹' + finalExpense; // ആകെ നൽകിയത്
+
+        } catch (e) {
+            console.error("Dashboard Error:", e);
         }
+    }
 
-        updateDashboard();
-    </script>
+    updateDashboard();
+</script>
+
 </body>
 </html>
