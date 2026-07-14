@@ -91,13 +91,13 @@
 
     window.deleteTool = (key) => { if(confirm("നീക്കം ചെയ്യണോ?")) remove(ref(db, 'tools/' + key)); };
 
-        onValue(toolsRef, (snapshot) => {
+            onValue(toolsRef, (snapshot) => {
         let data = snapshot.val() || {};
         let list = document.getElementById('toolList');
         let totalDue = 0;
         list.innerHTML = "";
 
-        // ഡാറ്റയെ തീയതി അനുസരിച്ച് അടുക്കുന്നു (പുതിയത് ആദ്യം വരും)
+        // തീയതി അനുസരിച്ച് അടുക്കുന്നു (പുതിയത് ആദ്യം വരും)
         let sortedEntries = Object.entries(data).sort((a, b) => {
             return new Date(b[1].startDate) - new Date(a[1].startDate);
         });
@@ -109,7 +109,7 @@
             let balance = total - paid;
             totalDue += balance;
             
-            // കോഡ് അതേപോലെ നിലനിർത്തുന്നു, കാർഡിന്റെ ലുക്കിൽ മാറ്റമൊന്നുമില്ല
+            // പഴയ ഡിസൈൻ അതേപോലെ നിലനിർത്തുന്നു
             list.innerHTML += `
                 <div class="tool-card bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-4" data-name="${t.person}">
                     <h3 class="font-bold text-lg text-slate-800">${t.name} <span class="text-sm text-slate-400">(${t.qty} എണ്ണം)</span></h3>
@@ -128,6 +128,7 @@
         });
         document.getElementById('totalDue').innerText = "₹" + totalDue;
     });
+
 
     
 </script>
