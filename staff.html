@@ -107,7 +107,7 @@
         }
     };
 
-   window.showHistory = function(index) {
+window.showHistory = function(index) {
     let s = staff[index];
     let history = s.history || [];
     let msg = `ഹിസ്റ്ററി (${s.name}):\n\n`;
@@ -116,14 +116,13 @@
         msg += "ഇടപാടുകൾ ഒന്നുമില്ല.";
     } else {
         history.forEach(h => {
-            // വിവരണം (description) ഉണ്ടോ എന്ന് നോക്കുന്നു
-            let desc = h.description ? ` - ${h.description}` : "";
-            // ടൈപ്പ് അനുസരിച്ച് വ്യക്തമായ വരികൾ
-            msg += `${h.date} | ${h.type === 'work' ? 'ജോലി ചെയ്തത്: ₹' : 'നൽകിയത്: ₹'}${h.amount}${desc}\n`;
+            // ഇവിടെ നിങ്ങൾ നൽകിയ തീയതിയും വിവരവും കൃത്യമായി വരുന്നു
+            msg += `${h.description} | ${h.type === 'work' ? 'ജോലി: ₹' : 'നൽകിയത്: ₹'}${h.amount}\n`;
         });
     }
     alert(msg);
 };
+
  
     window.deleteStaff = async function(id) {
         if(confirm('ഈ ജീവനക്കാരെ നീക്കം ചെയ്യണോ?')) {
