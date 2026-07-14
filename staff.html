@@ -108,18 +108,22 @@
     };
 
     window.showHistory = function(index) {
-        let s = staff[index];
-        let history = s.history || [];
-        let msg = `ഹിസ്റ്ററി (${s.name}):\n\n`;
-        if(history.length === 0) {
-            msg += "ഇടപാടുകൾ ഒന്നുമില്ല.";
-        } else {
-            history.forEach(h => {
-                msg += `${h.date} | ${h.type === 'work' ? 'ജോലി' : 'നൽകിയത്'}: ₹${h.amount} (${h.description || ''})\n`;
-            });
-        }
-        alert(msg);
-    };
+    let s = staff[index];
+    let history = s.history || [];
+    let msg = `ഹിസ്റ്ററി (${s.name}):\n\n`;
+    
+    if(history.length === 0) {
+        msg += "ഇടപാടുകൾ ഒന്നുമില്ല.";
+    } else {
+        history.forEach(h => {
+            // വിവരണം (description) ഉണ്ടെങ്കിൽ മാത്രം ബ്രാക്കറ്റിൽ കാണിക്കുന്നു
+            let desc = h.description ? ` (${h.description})` : "";
+            msg += `${h.date} | ${h.type === 'work' ? 'ജോലി' : 'നൽകിയത്'}: ₹${h.amount}${desc}\n`;
+        });
+    }
+    alert(msg);
+};
+
 
     window.deleteStaff = async function(id) {
         if(confirm('ഈ ജീവനക്കാരെ നീക്കം ചെയ്യണോ?')) {
