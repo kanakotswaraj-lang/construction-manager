@@ -22,12 +22,18 @@
         </div>
     </div>
 
+    <!-- ആകെ ബാധ്യത ബോക്സ് -->
+    <div class="bg-red-50 p-4 rounded-xl mb-6 border border-red-100">
+        <p class="text-sm text-red-600 font-bold">ആകെ ബാധ്യത</p>
+        <p id="totalLiability" class="text-2xl font-bold text-red-900">₹0</p>
+    </div>
+
     <!-- ചെറിയ വിവര ബോക്സുകൾ -->
     <div class="bg-white p-6 rounded-2xl shadow-sm mb-6">
         <div class="grid grid-cols-2 gap-4">
             <div class="bg-blue-50 p-4 rounded-xl">
-                <p class="text-sm text-gray-600">ആകെ വരവ്</p>
-                <p id="sumwage" class="text-lg font-bold text-blue-900">₹0</p>
+                <p class="text-sm text-gray-600">വാടക വരുമാനം</p>
+                <p id="rentalIncome" class="text-lg font-bold text-blue-900">₹0</p>
             </div>
             <div class="bg-orange-50 p-4 rounded-xl">
                 <p class="text-sm text-gray-600">ആകെ നൽകിയത്</p>
@@ -47,15 +53,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
+        // നിങ്ങളുടെ Firebase Config ഇവിടെ നൽകുക
         const firebaseConfig = {
-    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-    authDomain: "mesthri-app.firebaseapp.com",
-    projectId: "mesthri-app",
-    storageBucket: "mesthri-app.appspot.com",
-    messagingSenderId: "1060617901864",
-    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-};
-    
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_ID",
+            appId: "YOUR_APP_ID"
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -92,11 +98,13 @@
                 let finalIncome = totalWork + totalIncome; 
                 let finalPaid = totalGiven + totalExpense; 
                 let balanceInHand = finalIncome - finalPaid;
+                let liability = finalPaid; // ബാധ്യതയായി ഇവിടെ നൽകിയത് കാണിക്കുന്നു
 
                 // 4. ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക
                 document.getElementById('totalWork').innerText = '₹' + finalIncome;
                 document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
-                document.getElementById('sumwage').innerText = '₹' + finalIncome; 
+                document.getElementById('totalLiability').innerText = '₹' + liability;
+                document.getElementById('rentalIncome').innerText = '₹' + totalIncome; 
                 document.getElementById('sumPaid').innerText = '₹' + finalPaid;
 
             } catch (e) {
