@@ -64,39 +64,53 @@
 };
 async function updateDashboard() {
     try {
+        // ജീവനക്കാരുടെ കണക്ക്
         const staffSnapshot = await getDocs(collection(db, "staff_entries"));
-        
-        // ടെസ്റ്റ് ചെയ്യാൻ: എത്ര പേരുണ്ടെന്ന് ആകെ വരുമാനം ബോക്സിൽ കാണിക്കും
-        // ഇത് ഡാറ്റ വരുന്നുണ്ടോ എന്ന് മനസ്സിലാക്കാൻ മാത്രമാണ്
-        document.getElementById('totalWork').innerText = 'Count: ' + staffSnapshot.size;
-
         let totalWork = 0;
         let totalGiven = 0;
         
         staffSnapshot.forEach((doc) => {
             let s = doc.data();
-            let history = s.history || [];
-            totalWork += history.filter(h => h.type === 'work').reduce((sum, h) => sum + (Number(h.amount) || 0), 0);
-            totalGiven += history.filter(h => h.type === 'given').reduce((sum, h) => sum + (Number(h.amount) || 0), 0);
+            if (s.history) {
+                s.history.forEach(h => {
+                    if (h.type === 'work') totalWork += Number(h.amount || 0);
+                    if (h.type === 'given') totalGiven += Number(h.amount || 0);
+                });
+            }
         });
 
-        // എല്ലാം ശരിയാണെങ്കിൽ ഇത് പ്രവർത്തിക്കും
-        if (staffSnapshot.size > 0) {
-            document.getElementById('totalWork').innerText = '₹' + totalWork;
-            document.getElementById('sumPaid').innerText = '₹' + totalGiven;
-        }
+        // സൈറ്റ് വരവ്-ചെലവ് കണക്ക്
+        const cashSnapshot = await getDocs(collection(db, "cash_entries"));
+        let totalIncome = 0;
+        let totalExpense = 0;
         
+        cashSnapshot.forEach((doc) => {
+            let c = doc.data();
+            if (c.type === 'income') totalIncome += Number(c.amount || 0);
+            if (c.type === 'expense') totalExpense += Number(c.amount || 0);
+        });
+
+        // മൊത്തം കണക്കുകൾ
+        let finalIncome = totalWork + totalIncome; 
+        let finalPaid = totalGiven + totalExpense; 
+        let balanceInHand = finalIncome - finalPaid;
+
+        // സ്ക്രീനിൽ ഡിസ്‌പ്ലേ ചെയ്യുന്നത്
+        document.getElementById('totalWork').innerText = '₹' + finalIncome;
+        document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
+        document.getElementById('sumwage').innerText = '₹' + totalIncome; 
+        document.getElementById('sumPaid').innerText = '₹' + totalExpense;
+
     } catch (e) {
-        // എന്തെങ്കിലും പിശകുണ്ടെങ്കിൽ അത് ടോട്ടൽ ബാലൻസ് ബോക്സിൽ കാണിക്കും
-        document.getElementById('totalBalance').innerText = 'Error';
         console.error("Dashboard Error:", e);
     }
 }
+
 updateDashboard();
 
 </script>
 
-    <
+    
 
 </body>
 </html>
