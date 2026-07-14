@@ -3,58 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>സെറ്റ് മാനേജർ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>സൈറ്റ് മാനേജർ</title>
 </head>
-<body class="bg-slate-50 p-4 font-sans">
-    <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-bold mb-6 text-slate-800 text-center">സൈറ്റ് മാനേജർ</h1>
-   
-<div class="grid grid-cols-2 gap-4 mb-6">
-    <div class="bg-blue-600 p-4 rounded-2xl text-white shadow-md">
-        <p class="text-sm opacity-80">കൂലി നൽകിയത്</p>
-        <p id="totalWork" class="text-xl font-bold">₹0</p>
-    </div>
-    <div class="bg-green-600 p-4 rounded-2xl text-white shadow-md">
-        <p class="text-sm opacity-80">കയ്യിലുള്ളത്</p>
-        <p id="totalBalance" class="text-xl font-bold">₹0</p>
-    </div>
-</div>
+<body class="bg-gray-100 p-4">
 
-<div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
-    <h2 class="text-gray-500 text-sm font-medium">ആകെ ബാധ്യത</h2>
-    <div id="totalBalance" class="text-4xl font-extrabold text-slate-900 mt-1">₹0</div>
-    
-    <!-- വരവും നൽകിയതും താഴെ വരുന്നു -->
-    <div class="grid grid-cols-2 gap-4 mt-6">
-        <div class="bg-blue-50 p-4 rounded-2xl">
-            <div class="text-blue-600 text-xs font-bold">ആകെ വരവ്</div>
-            <div id="sumwage" class="text-lg font-bold text-slate-800">₹0</div>
+    <h1 class="text-2xl font-bold text-center mb-6">സെറ്റ് മാനേജർ</h1>
+
+    <!-- പ്രധാന ഡാഷ്‌ബോർഡ് കാർഡുകൾ -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-600 p-4 rounded-xl text-white">
+            <p class="text-sm opacity-80">ആകെ വരുമാനം</p>
+            <p id="totalWork" class="text-xl font-bold">₹0</p>
         </div>
-        <div class="bg-orange-50 p-4 rounded-2xl">
-            <div class="text-orange-600 text-xs font-bold">നൽകിയത്</div>
-            <div id="sumPaid" class="text-lg font-bold text-slate-800">₹0</div>
+        <div class="bg-green-600 p-4 rounded-xl text-white">
+            <p class="text-sm opacity-80">കയ്യിലുള്ളത്</p>
+            <p id="totalBalance" class="text-xl font-bold">₹0</p>
         </div>
     </div>
-</div>
 
-        <div class="grid grid-cols-1 gap-3">
-            <a href="staff.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">ജീവനക്കാർ</a>
-            <a href="rentals.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">വാടക ഉപകരണങ്ങൾ</a>
-            <a href="cash.html" class="p-4 bg-white rounded-2xl shadow-sm border font-bold text-center">സൈറ്റ് കണക്ക്</a>
+    <!-- ചെറിയ വിവര ബോക്സുകൾ -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm mb-6">
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-blue-50 p-4 rounded-xl">
+                <p class="text-sm text-gray-600">ആകെ വരവ്</p>
+                <p id="sumwage" class="text-lg font-bold text-blue-900">₹0</p>
+            </div>
+            <div class="bg-orange-50 p-4 rounded-xl">
+                <p class="text-sm text-gray-600">ആകെ നൽകിയത്</p>
+                <p id="sumPaid" class="text-lg font-bold text-orange-900">₹0</p>
+            </div>
         </div>
     </div>
-    
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    // ... നിങ്ങളുടെ firebaseConfig വിവരങ്ങൾ ഇവിടെ ഉണ്ടാകും ...
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    <!-- മെനുകൾ -->
+    <div class="space-y-4">
+        <a href="staff.html" class="block bg-white p-4 text-center font-bold rounded-xl shadow-sm border">ജീവനക്കാർ</a>
+        <a href="rental.html" class="block bg-white p-4 text-center font-bold rounded-xl shadow-sm border">വാടക ഉപകരണങ്ങൾ</a>
+        <a href="cash.html" class="block bg-white p-4 text-center font-bold rounded-xl shadow-sm border">സെറ്റ് കണക്ക്</a>
+    </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    const firebaseConfig = {
+        const firebaseConfig = {
     apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
     authDomain: "mesthri-app.firebaseapp.com",
     projectId: "mesthri-app",
@@ -62,55 +55,56 @@
     messagingSenderId: "1060617901864",
     appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
 };
-async function updateDashboard() {
-    try {
-        // ജീവനക്കാരുടെ കണക്ക്
-        const staffSnapshot = await getDocs(collection(db, "staff_entries"));
-        let totalWork = 0;
-        let totalGiven = 0;
-        
-        staffSnapshot.forEach((doc) => {
-            let s = doc.data();
-            if (s.history) {
-                s.history.forEach(h => {
-                    if (h.type === 'work') totalWork += Number(h.amount || 0);
-                    if (h.type === 'given') totalGiven += Number(h.amount || 0);
-                });
-            }
-        });
-
-        // സൈറ്റ് വരവ്-ചെലവ് കണക്ക്
-        const cashSnapshot = await getDocs(collection(db, "cash_entries"));
-        let totalIncome = 0;
-        let totalExpense = 0;
-        
-        cashSnapshot.forEach((doc) => {
-            let c = doc.data();
-            if (c.type === 'income') totalIncome += Number(c.amount || 0);
-            if (c.type === 'expense') totalExpense += Number(c.amount || 0);
-        });
-
-        // മൊത്തം കണക്കുകൾ
-        let finalIncome = totalWork + totalIncome; 
-        let finalPaid = totalGiven + totalExpense; 
-        let balanceInHand = finalIncome - finalPaid;
-
-        // സ്ക്രീനിൽ ഡിസ്‌പ്ലേ ചെയ്യുന്നത്
-        document.getElementById('totalWork').innerText = '₹' + finalIncome;
-        document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
-        document.getElementById('sumwage').innerText = '₹' + totalGiven; 
-        document.getElementById('sumPaid').innerText = '₹' + totalExpense;
-
-    } catch (e) {
-        console.error("Dashboard Error:", e);
-    }
-}
-
-updateDashboard();
-
-</script>
-
     
 
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function updateDashboard() {
+            try {
+                // 1. ജീവനക്കാരുടെ കണക്കുകൾ
+                const staffSnapshot = await getDocs(collection(db, "staff_entries"));
+                let totalWork = 0;
+                let totalGiven = 0;
+                
+                staffSnapshot.forEach((doc) => {
+                    let s = doc.data();
+                    if (s.history) {
+                        s.history.forEach(h => {
+                            if (h.type === 'work') totalWork += Number(h.amount || 0);
+                            if (h.type === 'given') totalGiven += Number(h.amount || 0);
+                        });
+                    }
+                });
+
+                // 2. സൈറ്റ് വരവ്-ചെലവ് കണക്കുകൾ
+                const cashSnapshot = await getDocs(collection(db, "cash_entries"));
+                let totalIncome = 0;
+                let totalExpense = 0;
+                
+                cashSnapshot.forEach((doc) => {
+                    let c = doc.data();
+                    if (c.type === 'income') totalIncome += Number(c.amount || 0);
+                    if (c.type === 'expense') totalExpense += Number(c.amount || 0);
+                });
+
+                // 3. ഫൈനൽ കണക്കുകൾ
+                let finalIncome = totalWork + totalIncome; 
+                let finalPaid = totalGiven + totalExpense; 
+                let balanceInHand = finalIncome - finalPaid;
+
+                // 4. ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക
+                document.getElementById('totalWork').innerText = '₹' + finalIncome;
+                document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
+                document.getElementById('sumwage').innerText = '₹' + finalIncome; 
+                document.getElementById('sumPaid').innerText = '₹' + finalPaid;
+
+            } catch (e) {
+                console.error("Dashboard Error:", e);
+            }
+        }
+
+        updateDashboard();
+    </script>
 </body>
 </html>
