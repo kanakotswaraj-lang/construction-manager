@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ml">
 <head>
@@ -10,28 +11,29 @@
     <div class="max-w-md mx-auto">
         <h1 class="text-xl font-bold mb-4 text-center">വാടക ഉപകരണങ്ങൾ</h1>
         
-        <!-- പഴയ ഫോം (എല്ലാ ഫീൽഡുകളും ഉള്ളത്) -->
+        <!-- ആകെ തുക കാണിക്കാൻ -->
+        <div class="bg-blue-600 p-4 rounded-3xl shadow-lg text-white mb-6 text-center">
+            <p class="text-sm">ആകെ ലഭിക്കാനുള്ളത്</p>
+            <h2 id="totalDue" class="text-3xl font-bold">₹0</h2>
+        </div>
+        
         <div class="bg-white p-4 rounded-3xl shadow-sm border mb-6">
             <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="qty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="rate" placeholder="ദിവസ വാടക (ഒരെണ്ണത്തിന്)" class="w-full p-3 border rounded-xl mb-2">
-            <select id="personType" class="w-full p-3 border rounded-xl mb-2">
-                <option value="ഉടമസ്ഥൻ">ഉടമസ്ഥൻ</option>
-                <option value="വാടകയ്ക്ക് എടുക്കുന്ന ആൾ">വാടകയ്ക്ക് എടുക്കുന്ന ആൾ</option>
-            </select>
+            <input type="number" id="rate" placeholder="ദിവസ വാടക" class="w-full p-3 border rounded-xl mb-2">
             <input type="text" id="personName" placeholder="പേര്" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (10 അക്കം)" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3 border rounded-xl mb-2">
+            <label class="text-xs text-gray-500">തുടങ്ങിയ തീയതി:</label>
+            <input type="date" id="startDate" class="w-full p-3 border rounded-xl mb-2">
             <button onclick="addTool()" class="w-full bg-slate-900 text-white p-3 rounded-2xl font-bold">ചേർക്കുക</button>
         </div>
-<input type="text" id="searchInput" placeholder="പേര് വെച്ച് തിരയുക..." onkeyup="filterTools()" class="w-full p-3 border rounded-xl mb-4">
-        
+
         <div id="toolList" class="grid grid-cols-1 gap-4"></div>
     </div>
-
     
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -45,72 +47,52 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const toolsRef = ref(db, 'tools');
-    
-    let allTools = {}; // എല്ലാ ഡാറ്റയും സേവ് ചെയ്യാൻ
-let totalTools = 0; // ഈ വരി ഇവിടെ ചേർക്കുക
 
-    // ചേർക്കാൻ
     window.addTool = () => {
         let tool = {
             name: document.getElementById('toolName').value,
             qty: document.getElementById('qty').value,
             rate: document.getElementById('rate').value,
-            type: document.getElementById('personType').value,
             person: document.getElementById('personName').value,
             phone: document.getElementById('phone').value,
-            startDate: new Date().toISOString()
+            startDate: document.getElementById('startDate').value,
+            status: 'Pending' // പുതിയ സ്റ്റാറ്റസ്
         };
         push(toolsRef, tool).then(() => location.reload());
     };
 
-    // എഡിറ്റ് ചെയ്യാൻ
-    window.editTool = (key, t) => {
-        let n = prompt("പേര്:", t.name);
-        let q = prompt("എണ്ണം:", t.qty);
-        let r = prompt("വാടക:", t.rate);
-        if(n && q && r) update(ref(db, 'tools/' + key), {name: n, qty: q, rate: r});
+    window.toggleStatus = (key, currentStatus) => {
+        let newStatus = currentStatus === 'Pending' ? 'Paid' : 'Pending';
+        update(ref(db, 'tools/' + key), { status: newStatus }).then(() => location.reload());
     };
 
-    // ഡിലീറ്റ് ചെയ്യാൻ
     window.deleteTool = (key) => { if(confirm("നീക്കം ചെയ്യണോ?")) remove(ref(db, 'tools/' + key)); };
 
-    // സെർച്ച് ഫങ്ഷൻ
-    window.filterTools = () => {
-        let input = document.getElementById('searchInput').value.toLowerCase();
-        renderList(Object.entries(allTools).filter(([k, t]) => t.person.toLowerCase().includes(input)));
-    };
-
-// ലിസ്റ്റ് ഡിസ്പ്ലേ ചെയ്യാൻ
-function renderList(dataArray) {
-    let list = document.getElementById('toolList');
-    list.innerHTML = "";
-    totalTools = 0; // ഓരോ തവണയും ടോട്ടൽ സീറോയാക്കുന്നു
-
-    dataArray.forEach(([key, t]) => {
-        let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
-        let total = (t.qty * t.rate * days);
-        
-        totalTools += total; // ഓരോ ടൂളിന്റെയും വാടക ടോട്ടലിലേക്ക് കൂട്ടുന്നു
-
-        list.innerHTML += `
-            <div class="bg-white p-4 rounded-3xl shadow-sm border mb-3">
-                <h3 class="font-bold">${t.name} (${t.qty} എണ്ണം)</h3>
-                <p class="text-sm">👤 <strong>${t.person}</strong> (${t.type})</p>
-                <p class="text-sm font-bold text-red-600">വാടക: ₹${total}</p>
-                <div class="flex gap-2 mt-3">
-                    <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-600 text-white p-2 rounded text-xs">WhatsApp</button>
-                    <button onclick='editTool("${key}", ${JSON.stringify(t)})' class="bg-blue-500 text-white p-2 rounded text-xs">Edit</button>
-                    <button onclick='deleteTool("${key}")' class="bg-red-500 text-white p-2 rounded text-xs">Delete</button>
-                </div>
-            </div>`;
-    });
-}
-
     onValue(toolsRef, (snapshot) => {
-        allTools = snapshot.val() || {};
-        renderList(Object.entries(allTools));
+        let data = snapshot.val() || {};
+        let list = document.getElementById('toolList');
+        let totalDue = 0;
+        list.innerHTML = "";
+
+        Object.entries(data).forEach(([key, t]) => {
+            let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+            let total = (t.qty * t.rate * days);
+            if(t.status === 'Pending') totalDue += total;
+            
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-3xl shadow-sm border mb-3">
+                    <h3 class="font-bold">${t.name} (${t.qty} എണ്ണം)</h3>
+                    <p class="text-sm">👤 ${t.person}</p>
+                    <p class="text-sm font-bold ${t.status === 'Paid' ? 'text-green-600' : 'text-red-600'}">വാടക: ₹${total} (${days} ദിവസം)</p>
+                    <div class="flex gap-2 mt-3">
+                        <button onclick="toggleStatus('${key}', '${t.status}')" class="bg-yellow-500 text-white p-2 rounded text-xs">${t.status === 'Pending' ? 'Paid ആക്കി മാറ്റുക' : 'Pending ആക്കുക'}</button>
+                        <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-600 text-white p-2 rounded text-xs">WhatsApp</button>
+                        <button onclick="deleteTool('${key}')" class="bg-red-500 text-white p-2 rounded text-xs">Delete</button>
+                    </div>
+                </div>`;
+        });
+        document.getElementById('totalDue').innerText = "₹" + totalDue;
     });
 </script>
-
 </body>
 </html>
