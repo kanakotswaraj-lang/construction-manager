@@ -99,13 +99,15 @@
             let finalIncome = totalWork + totalIncome; 
             let finalPaid = totalGiven + totalExpense; 
             let balanceInHand = finalIncome - finalPaid;
+// 4. ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക
+document.getElementById('totalWork').innerText = '₹' + finalIncome;
+document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
 
-            // 4. ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക
-            document.getElementById('totalWork').innerText = '₹' + finalIncome;
-            document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
-            document.getElementById('totalLiability').innerText = '₹' + finalPaid; // ബാധ്യത
-            document.getElementById('rentalIncome').innerText = '₹' + totalIncome; // വാടക വരവ്
-            document.getElementById('sumPaid').innerText = '₹' + finalExpense; // ആകെ നൽകിയത്
+// മാറ്റങ്ങൾ വരുത്തിയ വരികൾ:
+document.getElementById('totalLiability').innerText = '₹' + balanceInHand; // ബാക്കി കയ്യിൽ കിട്ടാനുള്ളത്
+document.getElementById('rentalIncome').innerText = '₹' + totalIncome;     // വാടക വരുമാനം മാത്രം
+document.getElementById('sumPaid').innerText = '₹' + finalPaid;           // ആകെ നൽകിയത് (finalPaid)
+            
 
         } catch (e) {
             console.error("Dashboard Error:", e);
