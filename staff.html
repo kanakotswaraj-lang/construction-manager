@@ -106,6 +106,32 @@
             loadStaff();
         }
     };
+        window.addEntry = async function(id, type) {
+    let desc = prompt("എന്തിനുള്ള തുകയാണ്? (ഉദാ: പണി, അഡ്വാൻസ്):");
+    if(desc === null) return;
+    
+    let amount = prompt("തുക നൽകുക:");
+    if(!amount) return;
+
+    const staffRef = doc(db, "staff_entries", id);
+    const staffSnap = await getDoc(staffRef);
+    
+    if (staffSnap.exists()) {
+        let currentHistory = staffSnap.data().history || [];
+        // ഇവിടെ തീയതിയും വിവരവും ഒരുമിച്ച് സേവ് ചെയ്യുന്നു
+        let today = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY ഫോർമാറ്റിൽ
+        currentHistory.push({
+            type: type,
+            amount: parseInt(amount),
+            description: desc,
+            date: today 
+        });
+        
+        await updateDoc(staffRef, { history: currentHistory });
+        loadStaff(); 
+    }
+};
+
 
 window.showHistory = function(index) {
     let s = staff[index];
@@ -116,8 +142,8 @@ window.showHistory = function(index) {
         msg += "ഇടപാടുകൾ ഒന്നുമില്ല.";
     } else {
         history.forEach(h => {
-            // ഇവിടെ നിങ്ങൾ നൽകിയ തീയതിയും വിവരവും കൃത്യമായി വരുന്നു
-            msg += `${h.description} | ${h.type === 'work' ? 'ജോലി: ₹' : 'നൽകിയത്: ₹'}${h.amount}\n`;
+            // തീയതിയും വിവരവും കൂടെ തുകയും കാണിക്കുന്നു
+            msg += `${h.date} | ${h.type === 'work' ? 'ജോലി: ₹' : 'നൽകിയത്: ₹'}${h.amount} (${h.description})\n`;
         });
     }
     alert(msg);
