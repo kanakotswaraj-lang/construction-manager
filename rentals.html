@@ -4,28 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF ഡൗൺലോഡ് ചെയ്യാൻ ലൈബ്രറി -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <title>വാടക ഉപകരണങ്ങൾ</title>
 </head>
 <body class="bg-slate-50 p-4 font-sans">
-    <div class="max-w-md mx-auto">
+    <div class="max-w-md mx-auto" id="printableArea">
         <h1 class="text-2xl font-bold mb-6 text-center text-slate-800">വാടക ഉപകരണങ്ങൾ</h1>
         
-        <!-- ആകെ ലഭിക്കാനുള്ള തുക -->
         <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 rounded-3xl shadow-lg text-white mb-6 text-center">
             <p class="text-sm opacity-80 uppercase tracking-widest">ആകെ ലഭിക്കാനുള്ളത്</p>
             <h2 id="totalDue" class="text-4xl font-black mt-1">₹0</h2>
+            <!-- PDF ഡൗൺലോഡ് ബട്ടൺ -->
+            <button onclick="downloadPDF()" class="mt-4 bg-white text-blue-800 px-4 py-1 rounded-full text-xs font-bold">PDF ഡൗൺലോഡ്</button>
         </div>
         
-        <!-- പുതിയത് ചേർക്കാൻ -->
+        <!-- സെർച്ച് ഫീച്ചർ -->
+        <input type="text" id="searchInput" placeholder="പേര് വെച്ച് തിരയുക..." onkeyup="filterList()" class="w-full p-4 border border-slate-200 rounded-2xl mb-6 outline-none shadow-sm">
+
+        <!-- ഫോം പഴയതുപോലെ -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
-            <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border border-slate-200 rounded-xl mb-2 focus:ring-2 focus:ring-blue-500 outline-none">
-            <input type="number" id="qty" placeholder="എണ്ണം" class="w-full p-3 border border-slate-200 rounded-xl mb-2 focus:ring-2 focus:ring-blue-500 outline-none">
-            <input type="number" id="rate" placeholder="ദിവസ വാടക" class="w-full p-3 border border-slate-200 rounded-xl mb-2 focus:ring-2 focus:ring-blue-500 outline-none">
-            <input type="text" id="personName" placeholder="പേര്" class="w-full p-3 border border-slate-200 rounded-xl mb-2 focus:ring-2 focus:ring-blue-500 outline-none">
-            <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3 border border-slate-200 rounded-xl mb-2 focus:ring-2 focus:ring-blue-500 outline-none">
-            <label class="text-xs text-slate-400 ml-1">തുടങ്ങിയ തീയതി:</label>
-            <input type="date" id="startDate" class="w-full p-3 border border-slate-200 rounded-xl mb-4 focus:ring-2 focus:ring-blue-500 outline-none">
-            <button onclick="addTool()" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-bold hover:bg-slate-800 transition">ചേർക്കുക</button>
+            <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="qty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="rate" placeholder="ദിവസ വാടക" class="w-full p-3 border rounded-xl mb-2">
+            <input type="text" id="personName" placeholder="പേര്" class="w-full p-3 border rounded-xl mb-2">
+            <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3 border rounded-xl mb-2">
+            <input type="date" id="startDate" class="w-full p-3 border rounded-xl mb-4">
+            <button onclick="addTool()" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-bold">ചേർക്കുക</button>
         </div>
 
         <div id="toolList" class="grid grid-cols-1 gap-4"></div>
@@ -48,6 +53,22 @@
     const db = getDatabase(app);
     const toolsRef = ref(db, 'tools');
 
+    // PDF ഡൗൺലോഡ് ഫങ്ഷൻ
+    window.downloadPDF = () => {
+        const element = document.getElementById('printableArea');
+        html2pdf().from(element).save('വാടക_കണക്ക്.pdf');
+    };
+
+    // സെർച്ച് ഫങ്ഷൻ
+    window.filterList = () => {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let cards = document.getElementsByClassName('tool-card');
+        Array.from(cards).forEach(card => {
+            let name = card.getAttribute('data-name').toLowerCase();
+            card.style.display = name.includes(input) ? "" : "none";
+        });
+    };
+
     window.addTool = () => {
         let tool = {
             name: document.getElementById('toolName').value,
@@ -58,18 +79,13 @@
             startDate: document.getElementById('startDate').value,
             paid: 0
         };
-        if(tool.name && tool.person) {
-            push(toolsRef, tool).then(() => location.reload());
-        } else {
-            alert("എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
-        }
+        push(toolsRef, tool).then(() => location.reload());
     };
 
     window.addPayment = (key, currentPaid) => {
         let amount = prompt("എത്ര രൂപയാണ് നൽകിയത്?", "0");
         if(amount !== null) {
-            let newPaid = Number(currentPaid) + Number(amount);
-            update(ref(db, 'tools/' + key), { paid: newPaid }).then(() => location.reload());
+            update(ref(db, 'tools/' + key), { paid: Number(currentPaid) + Number(amount) }).then(() => location.reload());
         }
     };
 
@@ -89,27 +105,16 @@
             totalDue += balance;
             
             list.innerHTML += `
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-4 transition-all hover:shadow-md">
-                    <h3 class="font-bold text-lg text-slate-800">${t.name} <span class="text-sm text-slate-400 font-normal">(${t.qty} എണ്ണം)</span></h3>
+                <div class="tool-card bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-4" data-name="${t.person}">
+                    <h3 class="font-bold text-lg text-slate-800">${t.name} <span class="text-sm text-slate-400">(${t.qty} എണ്ണം)</span></h3>
                     <p class="text-sm text-slate-500 mb-3">👤 ${t.person}</p>
-                    
                     <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-3 rounded-2xl mb-4">
-                        <div>
-                            <p class="text-[10px] text-slate-400 uppercase font-bold">വാടക</p>
-                            <p class="font-bold text-slate-700">₹${total}</p>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-slate-400 uppercase font-bold">നൽകിയത്</p>
-                            <p class="font-bold text-green-600">₹${paid}</p>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-slate-400 uppercase font-bold">ബാക്കി</p>
-                            <p class="font-bold text-red-600">₹${balance}</p>
-                        </div>
+                        <div><p class="text-[10px] text-slate-400 font-bold">വാടക</p><p class="font-bold">₹${total}</p></div>
+                        <div><p class="text-[10px] text-slate-400 font-bold">നൽകിയത്</p><p class="font-bold text-green-600">₹${paid}</p></div>
+                        <div><p class="text-[10px] text-slate-400 font-bold">ബാക്കി</p><p class="font-bold text-red-600">₹${balance}</p></div>
                     </div>
-
                     <div class="flex gap-2">
-                        <button onclick="addPayment('${key}', ${paid})" class="flex-1 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold shadow-blue-200 shadow-lg">പണം ലഭിച്ചു</button>
+                        <button onclick="addPayment('${key}', ${paid})" class="flex-1 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold">പണം ലഭിച്ചു</button>
                         <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-100 text-green-700 px-4 py-2 rounded-xl text-xs font-bold">WhatsApp</button>
                         <button onclick="deleteTool('${key}')" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-xs font-bold">Delete</button>
                     </div>
