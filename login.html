@@ -2,50 +2,56 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ലോഗിൻ - സെറ്റ് മാനേജർ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>ലോഗിൻ</title>
 </head>
-<body class="bg-slate-50 p-4 flex items-center justify-center h-screen">
-    <div class="bg-white p-8 rounded-xl border shadow-sm w-full max-w-sm">
-        <h1 class="text-2xl font-bold text-slate-800 mb-6 text-center">ലോഗിൻ</h1>
-        <input type="email" id="email" placeholder="ഇമെയിൽ" class="w-full p-3 border rounded-xl outline-none mb-3">
-        <input type="password" id="password" placeholder="പാസ്‌വേഡ്" class="w-full p-3 border rounded-xl outline-none mb-6">
-        <button onclick="login()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ലോഗിൻ ചെയ്യുക</button>
+<body class="bg-slate-50 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white p-8 rounded-3xl shadow-lg border w-full max-w-sm">
+        <h2 class="text-3xl font-bold mb-6 text-center text-blue-600">സ്വാഗതം!</h2>
+        <p class="text-gray-500 mb-8 text-center">നിങ്ങളുടെ കണക്കുകൾ കാണാൻ ലോഗിൻ ചെയ്യുക</p>
+        
+        <input type="email" id="email" placeholder="ഇമെയിൽ" class="w-full p-4 border rounded-xl mb-4">
+        <input type="password" id="password" placeholder="പാസ്‌വേഡ്" class="w-full p-4 border rounded-xl mb-6">
+        
+        <button onclick="login()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-bold text-lg mb-4 hover:bg-blue-700">ലോഗിൻ</button>
+        
+        <p class="text-center text-sm text-gray-500">
+            പുതിയ അക്കൗണ്ട് വേണോ? <a href="signup.html" class="text-blue-600 font-bold">ഇവിടെ രജിസ്റ്റർ ചെയ്യുക</a>
+        </p>
     </div>
 
- <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey:"AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-        authDomain: "mesthri-app.firebaseapp.com",
-        projectId: "mesthri-app",
-        storageBucket: "mesthri-app.firebasestorage.app",
-        messagingSenderId: "1060617901864",
-        appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-        measurementId: "G-J9Y5TW9D7T"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // ലോഗിൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ വർക്ക് ആകുന്ന രീതിയിൽ ഇവിടെ തന്നെ കൊടുക്കുന്നു
-    window.login = function() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
         
-        signInWithEmailAndPassword(auth, email, password)
-            .then(() => {
-                window.location.href = "index.html";
-            })
-            .catch((error) => {
-                alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
-            });
-    };
-</script>  
-  
- 
+<script type="module">
+     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+    authDomain: "mesthri-app.firebaseapp.com",
+    projectId: "mesthri-app",
+    storageBucket: "mesthri-app.appspot.com",
+    messagingSenderId: "1060617901864",
+    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function updateDashboard() {
+    try {
+        window.login = () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => { window.location.href = "index.html"; })
+                .catch((error) => { alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message); });
+        };
+    </script>
 </body>
 </html>
