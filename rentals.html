@@ -2,7 +2,7 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- PDF ഡൗൺലോഡ് ചെയ്യാൻ ലൈബ്രറി -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -10,6 +10,19 @@
 </head>
 <body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto" id="printableArea">
+        
+        <!-- ലോഗിൻ ഹെഡറും മേസ്ത്രി പ്രൊഫൈൽ ഐക്കണും -->
+        <div class="bg-slate-800 text-white p-3 rounded-2xl shadow-sm mb-4 flex justify-between items-center px-4">
+            <div class="flex items-center gap-2">
+                <!-- പേരിന്റെ ആദ്യ അക്ഷരം കാണിക്കുന്ന റൗണ്ട് ഐക്കൺ -->
+                <div id="userAvatar" class="w-7 h-7 bg-yellow-400 text-slate-900 rounded-full flex items-center justify-center font-black text-sm uppercase">
+                    ..
+                </div>
+                <span class="text-xs font-bold">മേസ്ത്രി: <span id="displayUser" class="text-yellow-400">ലോഡ് ചെയ്യുന്നു...</span></span>
+            </div>
+            <a href="dashboard.html" class="text-[10px] bg-blue-600 px-3 py-1.5 rounded-lg font-bold hover:bg-blue-700 transition">മെയിൻ പേജ്</a>
+        </div>
+
         <h1 class="text-2xl font-bold mb-6 text-center text-slate-800">വാടക ഉപകരണങ്ങൾ</h1>
         
         <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 rounded-3xl shadow-lg text-white mb-6 text-center">
@@ -30,7 +43,7 @@
             <input type="text" id="personName" placeholder="പേര്" class="w-full p-3 border rounded-xl mb-2">
             <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3 border rounded-xl mb-2">
             <input type="date" id="startDate" class="w-full p-3 border rounded-xl mb-4">
-            <button onclick="addTool()" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-bold">ചേർക്കുക</button>
+            <button id="btnAddTool" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-bold">ചേർക്കുക</button>
         </div>
 
         <div id="toolList" class="grid grid-cols-1 gap-4"></div>
@@ -39,6 +52,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -46,12 +60,38 @@
         projectId: "mesthri-app",
         storageBucket: "mesthri-app.firebasestorage.app",
         messagingSenderId: "1060617901864",
-        appId: "1:1060617901864:web:5ffb9378cf36b"
+        appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+        measurementId: "G-J9Y5TW9D7T"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const toolsRef = ref(db, 'tools');
+    const auth = getAuth(app);
+
+    let currentUserId = "";
+    let userToolsRef = null;
+
+    // ലോഗിൻ പരിശോധിക്കുന്നു
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUserId = user.uid;
+            const userName = user.email.split('@')[0];
+            document.getElementById("displayUser").innerText = userName;
+            
+            // പേരിന്റെ ആദ്യ അക്ഷരം എടുത്ത് പ്രൊഫൈൽ ലോഗോയിൽ കാണിക്കുന്നു
+            const firstLetter = userName.charAt(0).toUpperCase();
+            document.getElementById("userAvatar").innerText = firstLetter;
+            
+            // ഓരോ മേസ്ത്രിക്കും പ്രത്യേകം ഡാറ്റാബേസ് പാത്ത് സെറ്റ് ചെയ്യുന്നു
+            userToolsRef = ref(db, 'tools/' + currentUserId);
+            
+            // ലോഗിൻ കഴിഞ്ഞാൽ ഡാറ്റ തത്സമയം എടുക്കുന്നു
+            loadTools();
+        } else {
+            // ലോഗിൻ ചെയ്തില്ലെങ്കിൽ തിരിച്ചു വിടുന്നു
+            window.location.href = "login.html";
+        }
+    });
 
     // PDF ഡൗൺലോഡ് ഫങ്ഷൻ
     window.downloadPDF = () => {
@@ -69,20 +109,47 @@
         });
     };
 
-    window.addTool = () => {
-        let tool = {
-            name: document.getElementById('toolName').value,
-            qty: document.getElementById('qty').value,
-            rate: document.getElementById('rate').value,
-            person: document.getElementById('personName').value,
-            phone: document.getElementById('phone').value,
-            startDate: document.getElementById('startDate').value,
-            paid: 0,
-            history: [] // ഹിസ്റ്ററി സൂക്ഷിക്കാൻ പുതിയ അറേ
-        };
-        push(toolsRef, tool).then(() => location.reload());
+    // വാടക ഉപകരണം ചേർക്കാനുള്ള ഫങ്ഷൻ
+    const addTool = () => {
+        if (!currentUserId || !userToolsRef) return alert("ദയവായി വീണ്ടും ലോഗിൻ ചെയ്യുക!");
+
+        const toolName = document.getElementById('toolName').value.trim();
+        const qty = document.getElementById('qty').value;
+        const rate = document.getElementById('rate').value;
+        const person = document.getElementById('personName').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const startDate = document.getElementById('startDate').value;
+
+        if (toolName && qty && rate && person && startDate) {
+            let tool = {
+                name: toolName,
+                qty: Number(qty),
+                rate: Number(rate),
+                person: person,
+                phone: phone,
+                startDate: startDate,
+                paid: 0,
+                history: [] // ഹിസ്റ്ററി സൂക്ഷിക്കാൻ
+            };
+
+            push(userToolsRef, tool).then(() => {
+                // ഇൻപുട്ട് ഫീൽഡുകൾ ക്ലിയർ ചെയ്യുന്നു
+                document.getElementById('toolName').value = "";
+                document.getElementById('qty').value = "";
+                document.getElementById('rate').value = "";
+                document.getElementById('personName').value = "";
+                document.getElementById('phone').value = "";
+                document.getElementById('startDate').value = "";
+                alert("ഉപകരണത്തിന്റെ വിവരങ്ങൾ രേഖപ്പെടുത്തി!");
+            }).catch(err => {
+                alert("സേവ് ചെയ്യാൻ പറ്റിയില്ല: " + err.message);
+            });
+        } else {
+            alert("എല്ലാ വിവരങ്ങളും കൃത്യമായി പൂരിപ്പിക്കുക!");
+        }
     };
 
+    // പണം രേഖപ്പെടുത്താനുള്ള ഫങ്ഷൻ
     window.addPayment = (key, currentPaid, existingHistoryJSON) => {
         let amount = prompt("എത്ര രൂപയാണ് നൽകിയത്?", "0");
         if(amount && Number(amount) > 0) {
@@ -97,10 +164,10 @@
             let today = new Date().toLocaleDateString('en-GB'); 
             existingHistory.push({ date: today, amount: Number(amount) });
 
-            update(ref(db, 'tools/' + key), { 
+            update(ref(db, `tools/${currentUserId}/${key}`), { 
                 paid: Number(currentPaid) + Number(amount),
                 history: existingHistory
-            }).then(() => location.reload());
+            });
         }
     };
 
@@ -114,65 +181,82 @@
         }
     };
 
-    window.deleteTool = (key) => { if(confirm("നീക്കം ചെയ്യണോ?")) remove(ref(db, 'tools/' + key)); };
+    // ഡിലീറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ
+    window.deleteTool = (key) => { 
+        if(confirm("ഈ വാടക കണക്ക് നീക്കം ചെയ്യണോ?")) {
+            remove(ref(db, `tools/${currentUserId}/${key}`));
+        }
+    };
 
-    onValue(toolsRef, (snapshot) => {
-        let data = snapshot.val() || {};
-        let list = document.getElementById('toolList');
-        let totalDue = 0;
-        list.innerHTML = "";
+    // ബട്ടൺ ഇവന്റ് ലിസണർ
+    document.getElementById("btnAddTool").addEventListener("click", addTool);
 
-        let sortedEntries = Object.entries(data).sort((a, b) => {
-            return new Date(b[1].startDate) - new Date(a[1].startDate);
-        });
+    // ഡാറ്റ ലോഡ് ചെയ്യുന്ന ഫങ്ഷൻ
+    function loadTools() {
+        onValue(userToolsRef, (snapshot) => {
+            let data = snapshot.val() || {};
+            let list = document.getElementById('toolList');
+            let totalDue = 0;
+            list.innerHTML = "";
 
-        sortedEntries.forEach(([key, t]) => {
-            let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
-            let total = (t.qty * t.rate * days);
-            let paid = t.paid || 0;
-            let balance = total - paid;
-            totalDue += balance;
-            
-            // ഹിസ്റ്ററി ലിസ്റ്റ് ഉണ്ടെങ്കിൽ അത് തയ്യാറാക്കുന്നു
-            let historyHTML = "";
-            let historyData = t.history || [];
-            if(historyData.length > 0) {
-                historyData.forEach(h => {
-                    historyHTML += `<div class="flex justify-between text-xs text-slate-600 border-b border-dashed py-1"><span>📅 ${h.date}</span><span class="font-bold text-green-600">₹${h.amount}</span></div>`;
-                });
-            } else {
-                historyHTML = `<p class="text-xs text-slate-400 text-center">ഇതുവരെ പേയ്മെന്റുകൾ ഒന്നും നടത്തിയിട്ടില്ല.</p>`;
+            let sortedEntries = Object.entries(data).sort((a, b) => {
+                return new Date(b[1].startDate) - new Date(a[1].startDate);
+            });
+
+            if(sortedEntries.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">വാടക വിവരങ്ങൾ ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല.</p>`;
+                document.getElementById('totalDue').innerText = "₹0";
+                return;
             }
 
-            // സുരക്ഷിതമായി ഹിസ്റ്ററി ഡാറ്റ ഫങ്ഷനിലേക്ക് കൈമാറാൻ
-            let historyJSON = encodeURIComponent(JSON.stringify(historyData));
+            sortedEntries.forEach(([key, t]) => {
+                let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
+                let total = (t.qty * t.rate * days);
+                let paid = t.paid || 0;
+                let balance = total - paid;
+                totalDue += balance;
+                
+                // ഹിസ്റ്ററി ലിസ്റ്റ് ഉണ്ടെങ്കിൽ അത് തയ്യാറാക്കുന്നു
+                let historyHTML = "";
+                let historyData = t.history || [];
+                if(historyData.length > 0) {
+                    historyData.forEach(h => {
+                        historyHTML += `<div class="flex justify-between text-xs text-slate-600 border-b border-dashed py-1"><span>📅 ${h.date}</span><span class="font-bold text-green-600">₹${h.amount}</span></div>`;
+                    });
+                } else {
+                    historyHTML = `<p class="text-xs text-slate-400 text-center">ഇതുവരെ പേയ്മെന്റുകൾ ഒന്നും നടത്തിയിട്ടില്ല.</p>`;
+                }
 
-            list.innerHTML += `
-                <div class="tool-card bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-4" data-name="${t.person}">
-                    <h3 class="font-bold text-lg text-slate-800">${t.name} <span class="text-sm text-slate-400">(${t.qty} എണ്ണം)</span></h3>
-                    <p class="text-sm text-slate-500 mb-3">👤 ${t.person}</p>
-                    <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-3 rounded-2xl mb-4">
-                        <div><p class="text-[10px] text-slate-400 font-bold">വാടക</p><p class="font-bold">₹${total}</p></div>
-                        <div><p class="text-[10px] text-slate-400 font-bold">നൽകിയത്</p><p class="font-bold text-green-600">₹${paid}</p></div>
-                        <div><p class="text-[10px] text-slate-400 font-bold">ബാക്കി</p><p class="font-bold text-red-600">₹${balance}</p></div>
-                    </div>
+                // സുരക്ഷിതമായി ഹിസ്റ്ററി ഡാറ്റ ഫങ്ഷനിലേക്ക് കൈമാറാൻ
+                let historyJSON = encodeURIComponent(JSON.stringify(historyData));
 
-                    <!-- മറഞ്ഞിരിക്കുന്ന ഹിസ്റ്ററി ബോക്സ് -->
-                    <div id="hist-${key}" class="bg-yellow-50/50 p-3 rounded-2xl mb-4 border border-yellow-100" style="display: none;">
-                        <p class="text-[11px] font-bold text-slate-500 mb-2 border-b pb-1">📄 പേയ്മെന്റ് ഹിസ്റ്ററി</p>
-                        ${historyHTML}
-                    </div>
+                list.innerHTML += `
+                    <div class="tool-card bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-4" data-name="${t.person}">
+                        <h3 class="font-bold text-lg text-slate-800">${t.name} <span class="text-sm text-slate-400">(${t.qty} എണ്ണം)</span></h3>
+                        <p class="text-sm text-slate-500 mb-3">👤 ${t.person}</p>
+                        <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-3 rounded-2xl mb-4">
+                            <div><p class="text-[10px] text-slate-400 font-bold">വാടക (ദിവസം: ${days})</p><p class="font-bold">₹${total}</p></div>
+                            <div><p class="text-[10px] text-slate-400 font-bold">നൽകിയത്</p><p class="font-bold text-green-600">₹${paid}</p></div>
+                            <div><p class="text-[10px] text-slate-400 font-bold">ബാക്കി</p><p class="font-bold text-red-600">₹${balance}</p></div>
+                        </div>
 
-                    <div class="flex gap-2 flex-wrap">
-                        <button onclick="addPayment('${key}', ${paid}, '${historyJSON}')" class="flex-1 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold">പണം ലഭിച്ചു</button>
-                        <button onclick="toggleHistory('${key}')" class="bg-yellow-100 text-yellow-700 px-3 py-2 rounded-xl text-xs font-bold">ഹിസ്റ്ററി</button>
-                        <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-100 text-green-700 px-3 py-2 rounded-xl text-xs font-bold">WhatsApp</button>
-                        <button onclick="deleteTool('${key}')" class="bg-red-50 text-red-600 px-3 py-2 rounded-xl text-xs font-bold">Delete</button>
-                    </div>
-                </div>`;
+                        <!-- മറഞ്ഞിരിക്കുന്ന ഹിസ്റ്ററി ബോക്സ് -->
+                        <div id="hist-${key}" class="bg-yellow-50/50 p-3 rounded-2xl mb-4 border border-yellow-100" style="display: none;">
+                            <p class="text-[11px] font-bold text-slate-500 mb-2 border-b pb-1">📄 പേയ്മെന്റ് ഹിസ്റ്ററി</p>
+                            ${historyHTML}
+                        </div>
+
+                        <div class="flex gap-2 flex-wrap">
+                            <button onclick="addPayment('${key}', ${paid}, '${historyJSON}')" class="flex-1 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold">പണം ലഭിച്ചു</button>
+                            <button onclick="toggleHistory('${key}')" class="bg-yellow-100 text-yellow-700 px-3 py-2 rounded-xl text-xs font-bold">ഹിസ്റ്ററി</button>
+                            <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-100 text-green-700 px-3 py-2 rounded-xl text-xs font-bold">WhatsApp</button>
+                            <button onclick="deleteTool('${key}')" class="bg-red-50 text-red-600 px-3 py-2 rounded-xl text-xs font-bold">Delete</button>
+                        </div>
+                    </div>`;
+            });
+            document.getElementById('totalDue').innerText = "₹" + totalDue;
         });
-        document.getElementById('totalDue').innerText = "₹" + totalDue;
-    });
+    }
 </script>
 </body>
 </html>
