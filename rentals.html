@@ -77,27 +77,51 @@
             person: document.getElementById('personName').value,
             phone: document.getElementById('phone').value,
             startDate: document.getElementById('startDate').value,
-            paid: 0
+            paid: 0,
+            history: [] // ഹിസ്റ്ററി സൂക്ഷിക്കാൻ പുതിയ അറേ
         };
         push(toolsRef, tool).then(() => location.reload());
     };
 
-    window.addPayment = (key, currentPaid) => {
+    window.addPayment = (key, currentPaid, existingHistoryJSON) => {
         let amount = prompt("എത്ര രൂപയാണ് നൽകിയത്?", "0");
-        if(amount !== null) {
-            update(ref(db, 'tools/' + key), { paid: Number(currentPaid) + Number(amount) }).then(() => location.reload());
+        if(amount && Number(amount) > 0) {
+            let existingHistory = [];
+            if (existingHistoryJSON) {
+                try {
+                    existingHistory = JSON.parse(decodeURIComponent(existingHistoryJSON));
+                } catch(e) { console.error(e); }
+            }
+            
+            // ഇന്നത്തെ തീയതി എടുക്കുന്നു
+            let today = new Date().toLocaleDateString('en-GB'); 
+            existingHistory.push({ date: today, amount: Number(amount) });
+
+            update(ref(db, 'tools/' + key), { 
+                paid: Number(currentPaid) + Number(amount),
+                history: existingHistory
+            }).then(() => location.reload());
+        }
+    };
+
+    // ഹിസ്റ്ററി കാണിക്കാനും ഒളിപ്പിക്കാനുമുള്ള ഫങ്ഷൻ
+    window.toggleHistory = (key) => {
+        let el = document.getElementById('hist-' + key);
+        if(el.style.display === "none") {
+            el.style.display = "block";
+        } else {
+            el.style.display = "none";
         }
     };
 
     window.deleteTool = (key) => { if(confirm("നീക്കം ചെയ്യണോ?")) remove(ref(db, 'tools/' + key)); };
 
-            onValue(toolsRef, (snapshot) => {
+    onValue(toolsRef, (snapshot) => {
         let data = snapshot.val() || {};
         let list = document.getElementById('toolList');
         let totalDue = 0;
         list.innerHTML = "";
 
-        // തീയതി അനുസരിച്ച് അടുക്കുന്നു (പുതിയത് ആദ്യം വരും)
         let sortedEntries = Object.entries(data).sort((a, b) => {
             return new Date(b[1].startDate) - new Date(a[1].startDate);
         });
@@ -109,7 +133,20 @@
             let balance = total - paid;
             totalDue += balance;
             
-            // പഴയ ഡിസൈൻ അതേപോലെ നിലനിർത്തുന്നു
+            // ഹിസ്റ്ററി ലിസ്റ്റ് ഉണ്ടെങ്കിൽ അത് തയ്യാറാക്കുന്നു
+            let historyHTML = "";
+            let historyData = t.history || [];
+            if(historyData.length > 0) {
+                historyData.forEach(h => {
+                    historyHTML += `<div class="flex justify-between text-xs text-slate-600 border-b border-dashed py-1"><span>📅 ${h.date}</span><span class="font-bold text-green-600">₹${h.amount}</span></div>`;
+                });
+            } else {
+                historyHTML = `<p class="text-xs text-slate-400 text-center">ഇതുവരെ പേയ്മെന്റുകൾ ഒന്നും നടത്തിയിട്ടില്ല.</p>`;
+            }
+
+            // സുരക്ഷിതമായി ഹിസ്റ്ററി ഡാറ്റ ഫങ്ഷനിലേക്ക് കൈമാറാൻ
+            let historyJSON = encodeURIComponent(JSON.stringify(historyData));
+
             list.innerHTML += `
                 <div class="tool-card bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-4" data-name="${t.person}">
                     <h3 class="font-bold text-lg text-slate-800">${t.name} <span class="text-sm text-slate-400">(${t.qty} എണ്ണം)</span></h3>
@@ -119,18 +156,23 @@
                         <div><p class="text-[10px] text-slate-400 font-bold">നൽകിയത്</p><p class="font-bold text-green-600">₹${paid}</p></div>
                         <div><p class="text-[10px] text-slate-400 font-bold">ബാക്കി</p><p class="font-bold text-red-600">₹${balance}</p></div>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="addPayment('${key}', ${paid})" class="flex-1 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold">പണം ലഭിച്ചു</button>
-                        <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-100 text-green-700 px-4 py-2 rounded-xl text-xs font-bold">WhatsApp</button>
-                        <button onclick="deleteTool('${key}')" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-xs font-bold">Delete</button>
+
+                    <!-- മറഞ്ഞിരിക്കുന്ന ഹിസ്റ്ററി ബോക്സ് -->
+                    <div id="hist-${key}" class="bg-yellow-50/50 p-3 rounded-2xl mb-4 border border-yellow-100" style="display: none;">
+                        <p class="text-[11px] font-bold text-slate-500 mb-2 border-b pb-1">📄 പേയ്മെന്റ് ഹിസ്റ്ററി</p>
+                        ${historyHTML}
+                    </div>
+
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="addPayment('${key}', ${paid}, '${historyJSON}')" class="flex-1 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold">പണം ലഭിച്ചു</button>
+                        <button onclick="toggleHistory('${key}')" class="bg-yellow-100 text-yellow-700 px-3 py-2 rounded-xl text-xs font-bold">ഹിസ്റ്ററി</button>
+                        <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-100 text-green-700 px-3 py-2 rounded-xl text-xs font-bold">WhatsApp</button>
+                        <button onclick="deleteTool('${key}')" class="bg-red-50 text-red-600 px-3 py-2 rounded-xl text-xs font-bold">Delete</button>
                     </div>
                 </div>`;
         });
         document.getElementById('totalDue').innerText = "₹" + totalDue;
     });
-
-
-    
 </script>
 </body>
 </html>
