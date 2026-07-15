@@ -17,32 +17,38 @@
             <h2 class="text-xl font-bold mb-5 text-center text-slate-700">വരവ്-ചെലവ് കണക്ക്</h2>
             
             <div class="space-y-4">
+                <!-- 1. സെറ്റിന്റെ പേര് -->
                 <input type="text" id="description" placeholder="സെറ്റിന്റെ പേര്" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
+                
+                <!-- 2. വിശദാംശങ്ങൾ -->
                 <input type="text" id="details" placeholder="വിശദാംശങ്ങൾ" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
+                
+                <!-- 3. ഫോൺ നമ്പർ -->
                 <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (ഉദാ: 9876543210)" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
                 
-                <!-- തീയതി തിരഞ്ഞെടുക്കാനുള്ള പുതിയ കള്ളി -->
+                <!-- 4. തീയതി തിരഞ്ഞെടുക്കാനുള്ള കള്ളി (കൃത്യമായ ഓർഡറിൽ) -->
                 <div class="space-y-1">
-                    <label class="text-xs text-slate-500 px-1">തീയതി തിരഞ്ഞെടുക്കുക:</label>
+                    <label class="text-[11px] text-slate-400 font-bold px-1 uppercase">തീയതി തിരഞ്ഞെടുക്കുക</label>
                     <input type="date" id="customDate" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500 text-slate-700">
                 </div>
 
+                <!-- 5. തുക -->
                 <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
                 
+                <!-- 6. ബട്ടണുകൾ -->
                 <div class="flex gap-4">
-                    <button onclick="saveTransaction('വരവ്')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition text-center">വരവ്</button>
-                    <button onclick="saveTransaction('ചെലവ്')" class="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition text-center">ചെലവ്</button>
+                    <button id="btnIncome" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition text-center">വരവ്</button>
+                    <button id="btnExpense" class="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition text-center">ചെലവ്</button>
                 </div>
             </div>
         </div>
 
-        <!-- പുതിയ സെർച്ച് ബോക്സും ടോട്ടൽ കാൽക്കുലേറ്ററും -->
+        <!-- സെർച്ച് ബോക്സും ടോട്ടൽ കണക്കുകളും -->
         <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-6 space-y-4">
             <div>
-                <input type="text" id="searchInput" oninput="filterTransactions()" placeholder="സെറ്റിന്റെ പേര് വെച്ച് തിരയുക..." class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-blue-500 font-medium">
+                <input type="text" id="searchInput" placeholder="സെറ്റിന്റെ പേര് വെച്ച് തിരയുക..." class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-blue-500 font-medium">
             </div>
             
-            <!-- പണം കണക്കുകൂട്ടി കാണിക്കുന്ന ബോക്സ് -->
             <div class="grid grid-cols-3 gap-2 text-center pt-2 border-t border-slate-100">
                 <div class="p-2 bg-green-50 rounded-2xl">
                     <span class="text-[10px] text-green-700 block font-medium">ആകെ വരവ്</span>
@@ -59,18 +65,18 @@
             </div>
         </div>
 
-        <!-- തത്സമയ ഹിസ്റ്ററി സെക്ഷൻ -->
+        <!-- തത്സമയ ഹിസ്റ്ററി -->
         <h3 class="text-lg font-bold mb-3 text-slate-700 px-1">ഇടപാടുകളുടെ ഹിസ്റ്ററി</h3>
         <div id="historyList" class="space-y-3">
             <p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
         </div>
     </div>
 
+<!-- കൃത്യമായ ഓർഡറിൽ ഫയർബേസ് സ്ക്രിപ്റ്റ് താഴെ നൽകുന്നു -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    // നിങ്ങളുടെ കൃത്യമായ ഫയർബേസ് കോൺഫിഗറേഷൻ
     const firebaseConfig = {
         apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
         authDomain: "mesthri-app.firebaseapp.com",
@@ -84,13 +90,14 @@
     const db = getDatabase(app);
     const transRef = ref(db, 'transactions');
 
-    // ഇന്നത്തെ തീയതി ഡിഫോൾട്ട് ആയി സെറ്റ് ചെയ്യാൻ
+    // ഇന്നത്തെ തീയതി സെറ്റ് ചെയ്യൽ
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('customDate').value = today;
 
-    let allTransactions = []; // ഡാറ്റ സൂക്ഷിക്കാൻ ഒരു ലിസ്റ്റ്
+    let allTransactions = [];
 
-    window.saveTransaction = (type) => {
+    // സേവ് ചെയ്യാനുള്ള ഫങ്ഷൻ
+    const saveTransaction = (type) => {
         const desc = document.getElementById("description").value;
         const details = document.getElementById("details").value;
         const phone = document.getElementById("phone").value;
@@ -98,7 +105,6 @@
         const selectedDate = document.getElementById("customDate").value;
 
         if (desc && amount && selectedDate) {
-            // തിരഞ്ഞെടുത്ത തീയതി 7/15/2026 രൂപത്തിലേക്ക് മാറ്റുന്നു
             const dateParts = selectedDate.split('-');
             const formattedDate = `${Number(dateParts[1])}/${Number(dateParts[2])}/${dateParts[0]}`;
 
@@ -116,7 +122,7 @@
                 document.getElementById("details").value = "";
                 document.getElementById("phone").value = "";
                 document.getElementById("amount").value = "";
-                document.getElementById('customDate').value = today; // തീയതി വീണ്ടും ഇന്നത്തേതാക്കുന്നു
+                document.getElementById('customDate').value = today;
                 alert("കണക്ക് സേവ് ചെയ്തു!");
             });
         } else {
@@ -124,21 +130,27 @@
         }
     };
 
+    // ഡിലീറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ window ഒബ്ജക്റ്റിലേക്ക് നൽകുന്നു
     window.deleteTransaction = (key) => {
         if (confirm("ഈ ഇടപാട് നീക്കം ചെയ്യണോ?")) {
             remove(ref(db, 'transactions/' + key));
         }
     };
 
-    // തത്സമയം ഡാറ്റ എടുക്കുന്ന ഭാഗം
+    // ബട്ടണുകളിലേക്ക് ക്ലിക്ക് ലിസണർ നൽകുന്നു (HTML ഓർഡർ പ്രശ്നം പരിഹരിക്കാൻ)
+    document.getElementById("btnIncome").addEventListener("click", () => saveTransaction("വരവ്"));
+    document.getElementById("btnExpense").addEventListener("click", () => saveTransaction("ചെലവ്"));
+    document.getElementById("searchInput").addEventListener("input", () => filterTransactions());
+
+    // ഡാറ്റ മാറ്റങ്ങൾ തത്സമയം എടുക്കുന്നു
     onValue(transRef, (snapshot) => {
         const data = snapshot.val() || {};
-        allTransactions = Object.entries(data).reverse(); // പുതിയത് ആദ്യം വരാൻ തിരിക്കുന്നു
-        filterTransactions(); // ലിസ്റ്റും കണക്കുകളും അപ്ഡേറ്റ് ചെയ്യാൻ
+        allTransactions = Object.entries(data).reverse();
+        filterTransactions();
     });
 
-    // ലിസ്റ്റ് ഫിൽട്ടർ ചെയ്യാനും തുക കണക്കുകൂട്ടാനുമുള്ള ഫങ്ഷൻ
-    window.filterTransactions = () => {
+    // ലിസ്റ്റും തുകയും കണക്കുകൂട്ടൽ
+    function filterTransactions() {
         const searchVal = document.getElementById("searchInput").value.toLowerCase().trim();
         const historyList = document.getElementById("historyList");
         historyList.innerHTML = "";
@@ -150,21 +162,18 @@
         allTransactions.forEach(([key, t]) => {
             const desc = t.description.toLowerCase();
             
-            // സെർച്ച് ബോക്സിൽ അടിച്ചത് ഈ പേരുമായി പൊരുത്തപ്പെടുന്നുണ്ടോ എന്ന് നോക്കുന്നു
             if (searchVal === "" || desc.includes(searchVal)) {
                 hasData = true;
                 const isIncome = t.type === "വരവ്";
                 const amtColor = isIncome ? "text-green-600" : "text-red-600";
                 const amtSign = isIncome ? "+" : "-";
 
-                // തുക കൂട്ടുന്നു
                 if (isIncome) {
                     totalIncome += t.amount;
                 } else {
                     totalExpense += t.amount;
                 }
 
-                // ലിസ്റ്റ് കാണിക്കുന്നു
                 historyList.innerHTML += `
                     <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex justify-between items-center">
                         <div>
@@ -188,7 +197,6 @@
             historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">ആവശ്യപ്പെട്ട വിവരങ്ങൾ ഒന്നും കണ്ടെത്തിയില്ല.</p>`;
         }
 
-        // തുകകൾ മുകളിൽ കാണിക്കുന്നു
         document.getElementById("totalIncome").innerText = `₹${totalIncome}`;
         document.getElementById("totalExpense").innerText = `₹${totalExpense}`;
         
@@ -205,7 +213,7 @@
             balanceEl.className = "text-sm font-black text-red-600";
             balanceLabel.innerText = "ബാധ്യത";
         }
-    };
+    }
 </script>
 </body>
 </html>
