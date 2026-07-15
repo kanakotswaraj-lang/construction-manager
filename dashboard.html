@@ -60,49 +60,51 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    async function loadTransactions() {
-        const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
-      const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
-const rentalsSnapshot = await getDocs(collection(db, "rentals")); 
+async function loadTransactions() {
+    const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
+    const rentalSnapshot = await getDocs(collection(db, "rentals"));
 
-// ബാക്കി പഴയപോലെ:
-rentalsSnapshot.forEach((doc) => {
-    const r = doc.data();
-    // ... കണക്കുകൂട്ടൽ ...
-    totalExpense += totalRental;
-}); 
+    let totalIncome = 0;
+    let totalExpense = 0; // ഇവിടെയാണ് നമ്മൾ ആദ്യം വാടകച്ചെലവ് കൂട്ടാൻ പോകുന്നത്
+
+    // 1. ആദ്യം വാടകച്ചെലവ് കണക്കാക്കി totalExpense-ലേക്ക് കൂട്ടുക
+    rentalSnapshot.forEach((doc) => {
+        const r = doc.data();
+        let days = Math.max(1, Math.ceil((new Date() - new Date(r.startDate)) / (1000 * 60 * 60 * 24)));
+        let totalRental = (Number(r.qty) * Number(r.rate) * days);
+        totalExpense += totalRental; 
+    });
+
+    // 2. ബാക്കി വരവ്/ചെലവ് എൻട്രികൾ ലൂപ്പ് ചെയ്യുക
+    const listDiv = document.getElementById("worksList");
+    listDiv.innerHTML = "";
     
-const rentalSnapshot = await getDocs(collection(db, "rentals"));
-rentalSnapshot.forEach((doc) => {
-    const r = doc.data();
-    // വാടക തുക കണക്കാക്കുന്നു (അതായത് qty * rate * days)
-    let days = Math.max(1, Math.ceil((new Date() - new Date(r.startDate)) / (1000 * 60 * 60 * 24)));
-    let totalRental = (Number(r.qty) * Number(r.rate) * days);
-    
-    // ഈ വാടക 'ആകെ ചെലവ്' (totalExpense) ഭാഗത്തേക്ക് കൂട്ടുന്നു
-    totalExpense += totalRental;
-});
+    const searchInput = document.getElementById("searchInput").value.toLowerCase();
+    const categoryFilter = document.getElementById("categoryFilter").value;
 
-        const listDiv = document.getElementById("worksList");
-        const incomeElement = document.getElementById("total-income");
-        const expenseElement = document.getElementById("total-expense");
-        const searchInput = document.getElementById("searchInput").value.toLowerCase();
-        const categoryFilter = document.getElementById("categoryFilter").value;
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const category = data.category || "മറ്റ് ചെലവുകൾ";
+        const matchesSearch = data.description.toLowerCase().includes(searchInput);
+        const matchesCategory = (categoryFilter === "എല്ലാം" || category === categoryFilter);
 
-        listDiv.innerHTML = "";
-        let totalIncome = 0;
-        let totalExpense = 0;
+        if (matchesSearch && matchesCategory) {
+            const amount = Number(data.amount);
+            
+            // കൂലി എന്ന വിഭാഗം വരുമാനത്തിൽ കൂട്ടരുത് എന്ന് പറഞ്ഞതുകൊണ്ട്:
+            if (data.type === "വരവ്") {
+                totalIncome += amount;
+            } else if (data.type === "ചെലവ്") {
+                totalExpense += amount; // കൂലിയും മറ്റ് ചെലവുകളും ഇവിടെ വരും
+            }
 
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const category = data.category || "മറ്റ് ചെലവുകൾ";
-            const matchesSearch = data.description.toLowerCase().includes(searchInput);
-            const matchesCategory = (categoryFilter === "എല്ലാം" || category === categoryFilter);
+            listDiv.innerHTML += `... (നിങ്ങളുടെ പഴയ HTML കോഡ് ഇവിടെ നൽകുക) ...`;
+        }
+    });
 
-            if (matchesSearch && matchesCategory) {
-                const amount = Number(data.amount);
-                if (data.type === "വരവ്") totalIncome += amount;
-                else totalExpense += amount;
+    document.getElementById("total-income").innerText = "₹" + totalIncome;
+    document.getElementById("total-expense").innerText = "₹" + totalExpense;
+}
 
                 listDiv.innerHTML += `
                     <div class="bg-white p-4 rounded-lg shadow-sm border mb-2 flex justify-between items-center">
@@ -142,14 +144,7 @@ rentalSnapshot.forEach((doc) => {
         }
     };
 
-    window.logout = () => { signOut(auth).then(() => { window.location.href = "login.html"; }); };
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            document.getElementById("user-info").innerText = "ലോഗിൻ ചെയ്തു: " + user.email;
-            loadTransactions();
-        } else { window.location.href = "login.html"; }
-    });
+    
 </script>
 </body>
 </html>
