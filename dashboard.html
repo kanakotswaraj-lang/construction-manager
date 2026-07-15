@@ -22,7 +22,7 @@
     <!-- ഇത് നിങ്ങളുടെ പഴയ ബോക്സുകൾക്ക് പകരം വെക്കുക -->
 <div class="grid grid-cols-2 gap-4 mb-6">
     <div class="bg-blue-600 text-white p-4 rounded-2xl text-center shadow-lg">
-        <p class="text-xs opacity-80">ആകെ വരുമാനം</p>
+        <p class="text-xs opacity-80">ആകെ ലഭിച്ച തുക</p>
         <h2 id="total-income" class="text-xl font-bold">₹0</h2>
     </div>
     <div class="bg-green-600 text-white p-4 rounded-2xl text-center shadow-lg">
@@ -32,7 +32,7 @@
 </div>
 
 <div class="bg-red-50 p-4 rounded-2xl mb-6 shadow-sm border border-red-200">
-    <p class="text-xs text-red-600 font-bold">ആകെ ബാധ്യത</p>
+    <p class="text-xs text-red-600 font-bold">ജീവനക്കാർക്ക് നൽകാനുള്ളത്</p>
     <h2 id="total-liability" class="text-xl font-bold text-red-700">₹0</h2>
 </div>
 
@@ -66,40 +66,34 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    async function loadTransactions() {
-        const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
-        const rentalSnapshot = await getDocs(collection(db, "rentals"));
-
-        let totalIncome = 0;
-        let totalExpense = 0;
-
-        // 1. വാടകച്ചെലവ് ആദ്യം കണക്കുകൂട്ടുന്നു
-        rentalSnapshot.forEach((doc) => {
-            const r = doc.data();
-            let days = Math.max(1, Math.ceil((new Date() - new Date(r.startDate)) / (1000 * 60 * 60 * 24)));
-            totalExpense += (Number(r.qty) * Number(r.rate) * days);
-        });
-
-        const listDiv = document.getElementById("worksList");
-        listDiv.innerHTML = "";
+    // ലോജിക് മാറ്റം:
+async function loadTransactions() {
+    const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
+    
+    let totalIncome = 0; // ശരിക്കുള്ള വരവ് മാത്രം
+    let totalLiability = 0; // കൂലി + മറ്റ് ബാധ്യതകൾ
+    
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const amount = Number(data.amount);
         
-        const searchInput = document.getElementById("searchInput").value.toLowerCase();
-        const categoryFilter = document.getElementById("categoryFilter").value;
+        if (data.type === "വരവ്") {
+            totalIncome += amount;
+        } else if (data.type === "ചെലവ്") {
+            // കൂലിയാണെങ്കിൽ അത് totalLiability-ലേക്ക് കൂട്ടുക
+            totalLiability += amount; 
+        }
+    });
 
-        // 2. ബാക്കി വരവ്/ചെലവ് കണക്കാക്കുന്നു
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const amount = Number(data.amount);
-            const category = data.category || "മറ്റ് ചെലവുകൾ";
-            
-            if (data.description.toLowerCase().includes(searchInput) && (categoryFilter === "എല്ലാം" || category === categoryFilter)) {
-                
-                // കൂലി 'വരവ്' അല്ല, അതുകൊണ്ട് അത് വരുമാനത്തിൽ കൂട്ടരുത്
-                if (data.type === "വരവ്") {
-                    totalIncome += amount;
-                } else {
-                    totalExpense += amount;
-                }
+    // ആകെ ബാധ്യതയിൽ വാടക ചെലവും കൂടി കൂട്ടുക
+    let totalExpenseDisplay = totalLiability + totalRentalExpense; 
+    
+    // ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക
+    document.getElementById("total-income").innerText = "₹" + totalIncome;
+    document.getElementById("total-liability").innerText = "₹" + totalLiability;
+    // ...ബാക്കി കോഡ്...
+}
+
 
                 listDiv.innerHTML += `
                     <div class="bg-white p-4 rounded-lg shadow-sm border mb-2 flex justify-between items-center">
