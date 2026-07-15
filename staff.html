@@ -10,21 +10,56 @@
 <body class="bg-gray-100 p-4">
 
     <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-bold mb-4 text-center">ജീവനക്കാർ</h1>
-        
-        <!-- പുതിയ ജീവനക്കാരെ ചേർക്കാൻ -->
-        <div class="bg-white p-4 rounded-xl shadow-sm mb-4">
-            <input type="text" id="name" placeholder="പേര്" class="w-full p-2 border rounded mb-2">
-            <input type="text" id="phone" placeholder="ഫോൺ നമ്പർ" class="w-full p-2 border rounded mb-2">
-            <button onclick="addStaff()" class="w-full bg-blue-600 text-white p-2 rounded-lg font-bold">ചേർക്കുക</button>
+        <!-- ലോഗിൻ ഹെഡർ -->
+        <div class="bg-slate-800 text-white p-3 rounded-2xl shadow-sm mb-4 flex justify-between items-center px-4">
+            <span class="text-xs font-bold">👤 മേസ്ത്രി: <span id="displayUser" class="text-yellow-400">ലോഡ് ചെയ്യുന്നു...</span></span>
+            <a href="dashboard.html" class="text-[10px] bg-blue-600 px-3 py-1.5 rounded-lg font-bold hover:bg-blue-700 transition">മെയിൻ പേജ്</a>
         </div>
 
-        <div id="staffList"></div>
+        <h1 class="text-2xl font-bold mb-4 text-center text-slate-800">ജീവനക്കാർ</h1>
+        
+        <!-- പുതിയ ജീവനക്കാരെ ചേർക്കാൻ -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border mb-4">
+            <h3 class="text-sm font-bold text-slate-500 mb-3 uppercase tracking-wider">പുതിയ തൊഴിലാളിയെ ചേർക്കുക</h3>
+            <input type="text" id="name" placeholder="പേര്" class="w-full p-3 border rounded-xl mb-2 focus:border-blue-500 outline-none">
+            <input type="text" id="phone" placeholder="ഫോൺ നമ്പർ (ഉദാ: 9876543210)" class="w-full p-3 border rounded-xl mb-3 focus:border-blue-500 outline-none">
+            <button onclick="addStaff()" class="w-full bg-slate-900 text-white p-3.5 rounded-xl font-bold shadow hover:bg-slate-800 transition">ചേർക്കുക</button>
+        </div>
+
+        <div id="staffList" class="space-y-3"></div>
+    </div>
+
+    <!-- പഴയ ഡാറ്റാബേസിൽ നിന്നും തീയതി തിരഞ്ഞെടുക്കാനുള്ള മോഡൽ വിൻഡോ (Popup) -->
+    <div id="entryModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl">
+            <h3 id="modalTitle" class="text-lg font-bold mb-4 text-slate-800">വിവരങ്ങൾ ചേർക്കുക</h3>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">വിശദാംശങ്ങൾ</label>
+                    <input type="text" id="modalDesc" placeholder="ഉദാ: കോൺക്രീറ്റ് പണി, അഡ്വാൻസ്" class="w-full p-3 border rounded-xl outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">തീയതി തിരഞ്ഞെടുക്കുക</label>
+                    <input type="date" id="modalDate" class="w-full p-3 border rounded-xl outline-none focus:border-blue-500 text-slate-700">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">തുക</label>
+                    <input type="number" id="modalAmount" placeholder="തുക ₹" class="w-full p-3 border rounded-xl outline-none focus:border-blue-500">
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal()" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-xl font-bold">ഒഴിവാക്കുക</button>
+                <button onclick="saveModalEntry()" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold">സേവ് ചെയ്യുക</button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
             
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -37,11 +72,30 @@
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
         let staff = [];
+        let currentUserId = "";
+        
+        // താൽക്കാലികമായി ഡാറ്റ സൂക്ഷിക്കാൻ
+        let tempActiveId = "";
+        let tempActiveType = "";
+
+        // ലോഗിൻ പരിശോധിക്കുന്നു
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                document.getElementById("displayUser").innerText = user.email.split('@')[0];
+                loadStaff();
+            } else {
+                window.location.href = "login.html";
+            }
+        });
 
         async function loadStaff() {
-            const querySnapshot = await getDocs(collection(db, "staff_entries"));
+            // ലോഗിൻ ചെയ്ത ആളുടെ സ്റ്റാഫുകളെ മാത്രം എടുക്കുന്നു
+            const q = query(collection(db, "staff_entries"), where("userId", "==", currentUserId));
+            const querySnapshot = await getDocs(q);
             staff = [];
             querySnapshot.forEach((doc) => {
                 staff.push({ id: doc.id, ...doc.data() });
@@ -50,16 +104,33 @@
         }
 
         window.addStaff = async function() {
-            let name = document.getElementById('name').value;
-            let phone = document.getElementById('phone').value;
-            if(!name || !phone) return alert("വിവരങ്ങൾ നൽകുക!");
-            await addDoc(collection(db, "staff_entries"), { name, phone, history: [] });
-            location.reload();
+            let name = document.getElementById('name').value.trim();
+            let phone = document.getElementById('phone').value.trim();
+            if(!name || !phone) return alert("ദയവായി വിവരങ്ങൾ നൽകുക!");
+            
+            // userId കൂടി ചേർത്താണ് ഡാറ്റാബേസിലേക്ക് സേവ് ചെയ്യുന്നത്
+            await addDoc(collection(db, "staff_entries"), { 
+                name, 
+                phone, 
+                userId: currentUserId,
+                history: [] 
+            });
+            
+            document.getElementById('name').value = "";
+            document.getElementById('phone').value = "";
+            alert("തൊഴിലാളിയെ വിജയകരമായി ചേർത്തു!");
+            loadStaff();
         }
 
         function renderStaff() {
             let listElement = document.getElementById('staffList');
             if(!listElement) return;
+            
+            if(staff.length === 0) {
+                listElement.innerHTML = `<p class="text-xs text-slate-400 text-center py-6 bg-white rounded-2xl border">തൊഴിലാളികൾ ആരുമില്ല. പുതിയ ആളുകളെ മുകളിൽ ചേർക്കാം!</p>`;
+                return;
+            }
+
             listElement.innerHTML = staff.map((s, i) => {
                 let history = s.history || [];
                 let workAmount = history.filter(h => h.type === 'work').reduce((sum, h) => sum + (h.amount || 0), 0);
@@ -67,42 +138,75 @@
                 let balance = workAmount - givenAmount;
                 
                 return `
-                <div class="bg-white p-4 rounded-xl border mb-3">
-                    <p class="font-bold text-lg">${s.name || 'പേരില്ല'}</p>
-                    <p class="text-gray-500 text-sm mb-2">${s.phone || ''}</p>
-                    <p class="text-sm">ജോലി: ₹${workAmount} | നൽകിയത്: ₹${givenAmount}</p>
-                    <p class="text-sm font-bold ${balance > 0 ? 'text-red-600' : 'text-green-600'}">നൽകാനുള്ളത്: ₹${balance}</p>
+                <div class="bg-white p-5 rounded-3xl border shadow-sm mb-3">
+                    <p class="font-bold text-lg text-slate-800">${s.name || 'പേരില്ല'}</p>
+                    <p class="text-slate-500 text-xs mb-3">📞 ${s.phone || 'നമ്പർ നൽകിയിട്ടില്ല'}</p>
+                    <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-3 rounded-2xl mb-4">
+                        <div><p class="text-[9px] text-slate-400 font-bold">ആകെ കൂലി</p><p class="font-bold text-sm text-slate-700">₹${workAmount}</p></div>
+                        <div><p class="text-[9px] text-slate-400 font-bold">നൽകിയത്</p><p class="font-bold text-sm text-green-600">₹${givenAmount}</p></div>
+                        <div><p class="text-[9px] text-slate-400 font-bold">ബാക്കി നൽകാൻ</p><p class="font-bold text-sm text-red-600">₹${balance}</p></div>
+                    </div>
                     
-                    <div class="flex gap-2 mt-3 items-center flex-wrap">
-                        <button onclick="addEntry('${s.id}', 'work')" class="bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-bold text-blue-700">ജോലി</button>
-                        <button onclick="addEntry('${s.id}', 'given')" class="bg-green-100 px-3 py-1.5 rounded-lg text-xs font-bold text-green-700">നൽകിയത്</button>
-                        <button onclick="showHistory(${i})" class="bg-yellow-100 px-3 py-1.5 rounded-lg text-xs font-bold text-yellow-700">ഹിസ്റ്ററി</button>
-                        <button onclick="sendWhatsApp('${s.name}', '${s.phone}', ${workAmount}, ${givenAmount}, ${balance})" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">WhatsApp</button>
-                        <button onclick="deleteStaff('${s.id}')" class="text-red-500 text-xs ml-auto">നീക്കം</button>
+                    <div class="flex gap-2 items-center flex-wrap">
+                        <button onclick="openEntryModal('${s.id}', 'work')" class="flex-1 bg-blue-100 hover:bg-blue-200 py-2 rounded-xl text-xs font-bold text-blue-700 transition">പണി കൂട്ടി</button>
+                        <button onclick="openEntryModal('${s.id}', 'given')" class="flex-1 bg-green-100 hover:bg-green-200 py-2 rounded-xl text-xs font-bold text-green-700 transition">പണം നൽകി</button>
+                        <button onclick="showHistory(${i})" class="bg-yellow-100 hover:bg-yellow-200 px-3 py-2 rounded-xl text-xs font-bold text-yellow-700 transition">ഹിസ്റ്ററി</button>
+                        <button onclick="sendWhatsApp('${s.name}', '${s.phone}', ${workAmount}, ${givenAmount}, ${balance})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl text-xs font-bold transition">WhatsApp</button>
+                        <button onclick="deleteStaff('${s.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 p-2 rounded-xl text-xs ml-auto transition">Delete</button>
                     </div>
                 </div>`;
             }).join('');
         }
 
-        window.addEntry = async function(id, type) {
-            let desc = prompt("എന്തിനുള്ള തുകയാണ്? (ഉദാ: പണി, അഡ്വാൻസ്):");
-            if(desc === null) return;
-            let amount = prompt("തുക നൽകുക:");
-            if(!amount) return;
+        // തീയതിയും വിവരങ്ങളും ചേർക്കാനുള്ള മോഡൽ ബോക്സ് കാണിക്കാൻ
+        window.openEntryModal = function(id, type) {
+            tempActiveId = id;
+            tempActiveType = type;
+            
+            document.getElementById("modalTitle").innerText = type === 'work' ? "ജോലി തുക ചേർക്കുക" : "ശമ്പളം നൽകിയത് രേഖപ്പെടുത്തുക";
+            document.getElementById("modalDesc").value = type === 'work' ? "പണിക്കൂലി" : "അഡ്വാൻസ്";
+            document.getElementById("modalAmount").value = "";
+            
+            // ഇന്നത്തെ തീയതി ഓട്ടോമാറ്റിക്കായി കലണ്ടറിൽ കാണിക്കും, മാറ്റണമെങ്കിൽ മാറ്റാം
+            document.getElementById("modalDate").value = new Date().toISOString().split('T')[0];
+            
+            document.getElementById("entryModal").classList.remove("hidden");
+        };
 
-            const staffRef = doc(db, "staff_entries", id);
+        window.closeModal = function() {
+            document.getElementById("entryModal").classList.add("hidden");
+        };
+
+        // മോഡലിൽ നിന്ന് ഫയർബേസിലേക്ക് കണക്ക് സേവ് ചെയ്യാൻ
+        window.saveModalEntry = async function() {
+            let desc = document.getElementById("modalDesc").value.trim();
+            let selectedDate = document.getElementById("modalDate").value;
+            let amount = document.getElementById("modalAmount").value;
+
+            if(!desc || !selectedDate || !amount) {
+                alert("എല്ലാ വിവരങ്ങളും കൃത്യമായി പൂരിപ്പിക്കുക!");
+                return;
+            }
+
+            const staffRef = doc(db, "staff_entries", tempActiveId);
             const staffSnap = await getDoc(staffRef);
             
             if (staffSnap.exists()) {
                 let currentHistory = staffSnap.data().history || [];
-                let today = new Date().toLocaleDateString('en-GB');
+                
+                // തീയതി dd/mm/yyyy രൂപത്തിലേക്ക് മാറ്റുന്നു
+                let dateParts = selectedDate.split('-');
+                let formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
                 currentHistory.push({
-                    type: type,
+                    type: tempActiveType,
                     amount: parseInt(amount),
                     description: desc,
-                    date: today
+                    date: formattedDate
                 });
+                
                 await updateDoc(staffRef, { history: currentHistory });
+                closeModal();
                 loadStaff();
             }
         };
@@ -110,19 +214,19 @@
         window.showHistory = function(index) {
             let s = staff[index];
             let history = s.history || [];
-            let msg = `ഹിസ്റ്ററി (${s.name}):\n\n`;
+            let msg = `📄 ഹിസ്റ്ററി (${s.name}):\n\n`;
             if(history.length === 0) {
-                msg += "ഇടപാടുകൾ ഒന്നുമില്ല.";
+                msg += "ഇടപാടുകൾ ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല.";
             } else {
                 history.forEach(h => {
-                    msg += `${h.date} | ${h.type === 'work' ? 'ജോലി: ₹' : 'നൽകിയത്: ₹'}${h.amount} (${h.description})\n`;
+                    msg += `📅 ${h.date} | ${h.type === 'work' ? 'കൂലി: ₹' : 'നൽകിയത്: ₹'}${h.amount} (${h.description})\n`;
                 });
             }
             alert(msg);
         };
 
         window.deleteStaff = async function(id) {
-            if(confirm('ഈ ജീവനക്കാരെ നീക്കം ചെയ്യണോ?')) {
+            if(confirm('ഈ ജീവനക്കാരന്റെ അക്കൗണ്ട് പൂർണ്ണമായി ഒഴിവാക്കണോ?')) {
                 await deleteDoc(doc(db, "staff_entries", id));
                 loadStaff();
             }
@@ -134,8 +238,6 @@
             let message = `*സൈറ്റ് കണക്ക് വിവരങ്ങൾ*%0A%0A*പേര്:* ${name}%0A*ആകെ ജോലിക്കൂലി:* ₹${work}%0A*നൽകിയ തുക:* ₹${given}%0A*ബാക്കി നൽകാനുള്ളത്:* ₹${balance}%0A%0A_സൈറ്റ് മാനേജർ ആപ്പ് വഴി അയച്ചത്._`;
             window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
         };
-
-        loadStaff();
     </script>
 </body>
 </html>
