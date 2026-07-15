@@ -26,24 +26,25 @@
         <h1 class="text-2xl font-bold mb-6 text-center text-slate-800">വാടക ഉപകരണങ്ങൾ</h1>
         
         <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 rounded-3xl shadow-lg text-white mb-6 text-center">
-            <p class="text-sm opacity-80 uppercase tracking-widest">ആകെ ലഭിക്കാനുള്ളത്</p>
+            <p class="text-sm opacity-80 uppercase tracking-widest">ബാക്കി വാടക കൊടുക്കാനുള്ളത്</p>
             <h2 id="totalDue" class="text-4xl font-black mt-1">₹0</h2>
             <!-- PDF ഡൗൺലോഡ് ബട്ടൺ -->
-            <button onclick="downloadPDF()" class="mt-4 bg-white text-blue-800 px-4 py-1 rounded-full text-xs font-bold">PDF ഡൗൺലോഡ്</button>
+            <button onclick="downloadPDF()" class="mt-4 bg-white text-blue-800 px-4 py-1 rounded-full text-xs font-bold shadow-md hover:bg-slate-100 transition">PDF ഡൗൺലോഡ്</button>
         </div>
         
         <!-- സെർച്ച് ഫീച്ചർ -->
         <input type="text" id="searchInput" placeholder="പേര് വെച്ച് തിരയുക..." onkeyup="filterList()" class="w-full p-4 border border-slate-200 rounded-2xl mb-6 outline-none shadow-sm">
 
-        <!-- ഫോം പഴയതുപോലെ -->
+        <!-- ഫോം -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
-            <input type="text" id="toolName" placeholder="ഉപകരണം" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="qty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="rate" placeholder="ദിവസ വാടക" class="w-full p-3 border rounded-xl mb-2">
-            <input type="text" id="personName" placeholder="പേര്" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3 border rounded-xl mb-2">
-            <input type="date" id="startDate" class="w-full p-3 border rounded-xl mb-4">
-            <button id="btnAddTool" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-bold">ചേർക്കുക</button>
+            <h3 class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">പുതിയ വാടക കണക്ക് ചേർക്കുക</h3>
+            <input type="text" id="toolName" placeholder="ഉപകരണം (ഉദാ: മിക്സർ മെഷീൻ)" class="w-full p-3 border rounded-xl mb-2 focus:border-blue-500 outline-none">
+            <input type="number" id="qty" placeholder="എണ്ണം" class="w-full p-3 border rounded-xl mb-2 focus:border-blue-500 outline-none">
+            <input type="number" id="rate" placeholder="ദിവസ വാടക (തുക ₹)" class="w-full p-3 border rounded-xl mb-2 focus:border-blue-500 outline-none">
+            <input type="text" id="personName" placeholder="വാടകയ്ക്ക് തന്ന ആളുടെ പേര്" class="w-full p-3 border rounded-xl mb-2 focus:border-blue-500 outline-none">
+            <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3 border rounded-xl mb-2 focus:border-blue-500 outline-none">
+            <input type="date" id="startDate" class="w-full p-3 border rounded-xl mb-4 text-slate-700 focus:border-blue-500 outline-none">
+            <button id="btnAddTool" class="w-full bg-slate-900 hover:bg-slate-800 text-white p-4 rounded-2xl font-bold transition">ചേർക്കുക</button>
         </div>
 
         <div id="toolList" class="grid grid-cols-1 gap-4"></div>
@@ -78,17 +79,14 @@
             const userName = user.email.split('@')[0];
             document.getElementById("displayUser").innerText = userName;
             
-            // പേരിന്റെ ആദ്യ അക്ഷരം എടുത്ത് പ്രൊഫൈൽ ലോഗോയിൽ കാണിക്കുന്നു
             const firstLetter = userName.charAt(0).toUpperCase();
             document.getElementById("userAvatar").innerText = firstLetter;
             
-            // ഓരോ മേസ്ത്രിക്കും പ്രത്യേകം ഡാറ്റാബേസ് പാത്ത് സെറ്റ് ചെയ്യുന്നു
-            userToolsRef = ref(db, 'tools/' + currentUserId);
+            // മെയിൻ ഡാഷ്‌ബോർഡുമായി ഒത്തുപോകാൻ ഡാറ്റാബേസ് പാത്ത് 'rentals' ലേക്ക് മാറ്റി
+            userToolsRef = ref(db, 'rentals/' + currentUserId);
             
-            // ലോഗിൻ കഴിഞ്ഞാൽ ഡാറ്റ തത്സമയം എടുക്കുന്നു
             loadTools();
         } else {
-            // ലോഗിൻ ചെയ്തില്ലെങ്കിൽ തിരിച്ചു വിടുന്നു
             window.location.href = "login.html";
         }
     });
@@ -128,12 +126,12 @@
                 person: person,
                 phone: phone,
                 startDate: startDate,
-                paid: 0,
-                history: [] // ഹിസ്റ്ററി സൂക്ഷിക്കാൻ
+                totalRent: 0, // തത്സമയ വാടക സൂക്ഷിക്കാൻ
+                rentPaid: 0,  // നൽകിയ തുക
+                history: ""   // ഹിസ്റ്ററി ടെക്സ്റ്റ് രൂപത്തിൽ സൂക്ഷിക്കാൻ
             };
 
             push(userToolsRef, tool).then(() => {
-                // ഇൻപുട്ട് ഫീൽഡുകൾ ക്ലിയർ ചെയ്യുന്നു
                 document.getElementById('toolName').value = "";
                 document.getElementById('qty').value = "";
                 document.getElementById('rate').value = "";
@@ -149,49 +147,54 @@
         }
     };
 
-    // പണം രേഖപ്പെടുത്താനുള്ള ഫങ്ഷൻ
-    window.addPayment = (key, currentPaid, existingHistoryJSON) => {
+    // പണം നൽകിയത് രേഖപ്പെടുത്തൽ
+    window.addPayment = (key, currentPaid, currentTotal, existingHistory) => {
         let amount = prompt("എത്ര രൂപയാണ് നൽകിയത്?", "0");
         if(amount && Number(amount) > 0) {
-            let existingHistory = [];
-            if (existingHistoryJSON) {
-                try {
-                    existingHistory = JSON.parse(decodeURIComponent(existingHistoryJSON));
-                } catch(e) { console.error(e); }
-            }
+            let numAmount = Number(amount);
+            let updatedPaid = Number(currentPaid) + numAmount;
             
-            // ഇന്നത്തെ തീയതി എടുക്കുന്നു
+            // തീയതി എടുക്കുന്നു
             let today = new Date().toLocaleDateString('en-GB'); 
-            existingHistory.push({ date: today, amount: Number(amount) });
+            let newHistoryEntry = `📅 ${today} | നൽകിയത്: ₹${numAmount}\n`;
+            let updatedHistory = newHistoryEntry + (existingHistory || "");
 
-            update(ref(db, `tools/${currentUserId}/${key}`), { 
-                paid: Number(currentPaid) + Number(amount),
-                history: existingHistory
+            update(ref(db, `rentals/${currentUserId}/${key}`), { 
+                rentPaid: updatedPaid,
+                history: updatedHistory
             });
         }
     };
 
-    // ഹിസ്റ്ററി കാണിക്കാനും ഒളിപ്പിക്കാനുമുള്ള ഫങ്ഷൻ
-    window.toggleHistory = (key) => {
-        let el = document.getElementById('hist-' + key);
-        if(el.style.display === "none") {
-            el.style.display = "block";
+    // ഹിസ്റ്ററി അലർട്ട് വിൻഡോ വഴി കാണിക്കാൻ
+    window.showHistory = (person, historyText) => {
+        let msg = `📄 പേയ്മെന്റ് ഹിസ്റ്ററി (${person}):\n\n`;
+        if(!historyText || historyText.trim() === "") {
+            msg += "ഇതുവരെ പണം നൽകിയ വിവരങ്ങൾ ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല.";
         } else {
-            el.style.display = "none";
+            msg += historyText;
         }
+        alert(msg);
     };
 
-    // ഡിലീറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ
+    // ഡിലീറ്റ് ചെയ്യൽ
     window.deleteTool = (key) => { 
-        if(confirm("ഈ വാടക കണക്ക് നീക്കം ചെയ്യണോ?")) {
-            remove(ref(db, `tools/${currentUserId}/${key}`));
+        if(confirm("ഈ വാടക കണക്ക് പൂർണ്ണമായി നീക്കം ചെയ്യണോ?")) {
+            remove(ref(db, `rentals/${currentUserId}/${key}`));
         }
     };
 
-    // ബട്ടൺ ഇവന്റ് ലിസണർ
+    // വാട്സാപ്പ് സന്ദേശം
+    window.sendWhatsApp = function(name, phone, toolName, total, paid, balance) {
+        let cleanPhone = phone.replace(/\D/g, '');
+        if(cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
+        let message = `*ഉപകരണ വാടക വിവരങ്ങൾ*%0A%0A*പേര്:* ${name}%0A*ഉപകരണം:* ${toolName}%0A*ആകെ വാടക തുക:* ₹${total}%0A*നൽകിയ തുക:* ₹${paid}%0A*ബാക്കി നൽകാനുള്ളത്:* ₹${balance}%0A%0A_സൈറ്റ് മാനേജർ ആപ്പ് വഴി അയച്ചത്._`;
+        window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
+    };
+
     document.getElementById("btnAddTool").addEventListener("click", addTool);
 
-    // ഡാറ്റ ലോഡ് ചെയ്യുന്ന ഫങ്ഷൻ
+    // ഡാറ്റ ലോഡ് ചെയ്യുന്നു
     function loadTools() {
         onValue(userToolsRef, (snapshot) => {
             let data = snapshot.val() || {};
@@ -204,7 +207,7 @@
             });
 
             if(sortedEntries.length === 0) {
-                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">വാടക വിവരങ്ങൾ ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല.</p>`;
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-6 bg-white rounded-3xl border border-slate-100">വാടക വിവരങ്ങൾ ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല.</p>`;
                 document.getElementById('totalDue').innerText = "₹0";
                 return;
             }
@@ -212,45 +215,30 @@
             sortedEntries.forEach(([key, t]) => {
                 let days = Math.max(1, Math.ceil((new Date() - new Date(t.startDate)) / (1000 * 60 * 60 * 24)));
                 let total = (t.qty * t.rate * days);
-                let paid = t.paid || 0;
+                let paid = t.rentPaid || 0;
                 let balance = total - paid;
                 totalDue += balance;
-                
-                // ഹിസ്റ്ററി ലിസ്റ്റ് ഉണ്ടെങ്കിൽ അത് തയ്യാറാക്കുന്നു
-                let historyHTML = "";
-                let historyData = t.history || [];
-                if(historyData.length > 0) {
-                    historyData.forEach(h => {
-                        historyHTML += `<div class="flex justify-between text-xs text-slate-600 border-b border-dashed py-1"><span>📅 ${h.date}</span><span class="font-bold text-green-600">₹${h.amount}</span></div>`;
-                    });
-                } else {
-                    historyHTML = `<p class="text-xs text-slate-400 text-center">ഇതുവരെ പേയ്മെന്റുകൾ ഒന്നും നടത്തിയിട്ടില്ല.</p>`;
-                }
 
-                // സുരക്ഷിതമായി ഹിസ്റ്ററി ഡാറ്റ ഫങ്ഷനിലേക്ക് കൈമാറാൻ
-                let historyJSON = encodeURIComponent(JSON.stringify(historyData));
+                // മെയിൻ ഡാഷ്‌ബോർഡിന്റെ കൃത്യതയ്ക്കായി ആകെ വാടക ഡാറ്റാബേസിൽ തത്സമയം അപ്‌ഡേറ്റ് ചെയ്യുന്നു
+                if(t.totalRent !== total) {
+                    update(ref(db, `rentals/${currentUserId}/${key}`), { totalRent: total });
+                }
 
                 list.innerHTML += `
                     <div class="tool-card bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-4" data-name="${t.person}">
                         <h3 class="font-bold text-lg text-slate-800">${t.name} <span class="text-sm text-slate-400">(${t.qty} എണ്ണം)</span></h3>
                         <p class="text-sm text-slate-500 mb-3">👤 ${t.person}</p>
-                        <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-3 rounded-2xl mb-4">
-                            <div><p class="text-[10px] text-slate-400 font-bold">വാടക (ദിവസം: ${days})</p><p class="font-bold">₹${total}</p></div>
-                            <div><p class="text-[10px] text-slate-400 font-bold">നൽകിയത്</p><p class="font-bold text-green-600">₹${paid}</p></div>
-                            <div><p class="text-[10px] text-slate-400 font-bold">ബാക്കി</p><p class="font-bold text-red-600">₹${balance}</p></div>
-                        </div>
-
-                        <!-- മറഞ്ഞിരിക്കുന്ന ഹിസ്റ്ററി ബോക്സ് -->
-                        <div id="hist-${key}" class="bg-yellow-50/50 p-3 rounded-2xl mb-4 border border-yellow-100" style="display: none;">
-                            <p class="text-[11px] font-bold text-slate-500 mb-2 border-b pb-1">📄 പേയ്മെന്റ് ഹിസ്റ്ററി</p>
-                            ${historyHTML}
+                        <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-3 rounded-2xl mb-4 border border-slate-100">
+                            <div><p class="text-[9px] text-slate-400 font-bold uppercase">വാടക (${days} ദിവസം)</p><p class="font-bold text-slate-700 text-sm">₹${total}</p></div>
+                            <div><p class="text-[9px] text-slate-400 font-bold uppercase">നൽകിയത്</p><p class="font-bold text-green-600 text-sm">₹${paid}</p></div>
+                            <div><p class="text-[9px] text-slate-400 font-bold uppercase">ബാക്കി</p><p class="font-bold text-red-600 text-sm">₹${balance}</p></div>
                         </div>
 
                         <div class="flex gap-2 flex-wrap">
-                            <button onclick="addPayment('${key}', ${paid}, '${historyJSON}')" class="flex-1 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold">പണം ലഭിച്ചു</button>
-                            <button onclick="toggleHistory('${key}')" class="bg-yellow-100 text-yellow-700 px-3 py-2 rounded-xl text-xs font-bold">ഹിസ്റ്ററി</button>
-                            <button onclick='window.open("https://wa.me/91${t.phone}")' class="bg-green-100 text-green-700 px-3 py-2 rounded-xl text-xs font-bold">WhatsApp</button>
-                            <button onclick="deleteTool('${key}')" class="bg-red-50 text-red-600 px-3 py-2 rounded-xl text-xs font-bold">Delete</button>
+                            <button onclick="addPayment('${key}', ${paid}, ${total}, '${encodeURIComponent(t.history || "")}')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-xs font-bold transition">പണം നൽകി</button>
+                            <button onclick="showHistory('${t.person}', '${encodeURIComponent(t.history || "")}')" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-3 py-2.5 rounded-xl text-xs font-bold transition">ഹിസ്റ്ററി</button>
+                            <button onclick="sendWhatsApp('${t.person}', '${t.phone}', '${t.name}', ${total}, ${paid}, ${balance})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2.5 rounded-xl text-xs font-bold transition">WhatsApp</button>
+                            <button onclick="deleteTool('${key}')" class="bg-red-50 hover:bg-red-100 text-red-600 p-2.5 rounded-xl text-xs ml-auto transition">Delete</button>
                         </div>
                     </div>`;
             });
