@@ -2,98 +2,218 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>സൈറ്റ് കണക്ക്</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f1f5f9; font-family: sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-50 p-4">
+<body class="p-4">
+
     <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-bold mb-6">സൈറ്റ് കണക്ക്</h1>
-        
-        <div class="bg-white p-5 rounded-2xl shadow-sm border mb-6">
-            <input type="text" id="siteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3 border rounded-xl mb-2">
-            <input type="text" id="desc" placeholder="വിശദാംശങ്ങൾ" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (ഉദാ: 9876543210)" class="w-full p-3 border rounded-xl mb-2">
-            <input type="number" id="amount" placeholder="തുക" class="w-full p-3 border rounded-xl mb-3">
-            <div class="flex gap-2">
-                <button onclick="addCash('income')" class="flex-1 bg-green-600 text-white p-3 rounded-xl font-bold">വരവ്</button>
-                <button onclick="addCash('expense')" class="flex-1 bg-red-600 text-white p-3 rounded-xl font-bold">ചെലവ്</button>
+        <!-- കണക്ക് രേഖപ്പെടുത്തുന്ന പ്രധാന ബോക്സ് -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
+            <h2 class="text-xl font-bold mb-5 text-center text-slate-700">വരവ്-ചെലവ് കണക്ക്</h2>
+            
+            <div class="space-y-4">
+                <!-- 1. സെറ്റിന്റെ പേര് -->
+                <input type="text" id="description" placeholder="സെറ്റിന്റെ പേര്" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
+                
+                <!-- 2. വിശദാംശങ്ങൾ -->
+                <input type="text" id="details" placeholder="വിശദാംശങ്ങൾ" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
+                
+                <!-- 3. ഫോൺ നമ്പർ -->
+                <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (ഉദാ: 9876543210)" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
+                
+                <!-- 4. തീയതി തിരഞ്ഞെടുക്കാനുള്ള കള്ളി -->
+                <div class="space-y-1">
+                    <label class="text-[11px] text-slate-400 font-bold px-1 uppercase">തീയതി തിരഞ്ഞെടുക്കുക</label>
+                    <input type="date" id="customDate" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500 text-slate-700">
+                </div>
+
+                <!-- 5. തുക -->
+                <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
+                
+                <!-- 6. ബട്ടണുകൾ -->
+                <div class="flex gap-4">
+                    <button id="btnIncome" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition text-center">വരവ്</button>
+                    <button id="btnExpense" class="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition text-center">ചെലവ്</button>
+                </div>
             </div>
         </div>
 
-        <div id="cashList" class="space-y-2"></div>
+        <!-- സെർച്ച് ബോക്സും ടോട്ടൽ കണക്കുകളും -->
+        <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-6 space-y-4">
+            <div>
+                <input type="text" id="searchInput" placeholder="സെറ്റിന്റെ പേര് വെച്ച് തിരയുക..." class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-blue-500 font-medium">
+            </div>
+            
+            <div class="grid grid-cols-3 gap-2 text-center pt-2 border-t border-slate-100">
+                <div class="p-2 bg-green-50 rounded-2xl">
+                    <span class="text-[10px] text-green-700 block font-medium">ആകെ വരവ്</span>
+                    <span id="totalIncome" class="text-sm font-black text-green-600">₹0</span>
+                </div>
+                <div class="p-2 bg-red-50 rounded-2xl">
+                    <span class="text-[10px] text-red-700 block font-medium">ആകെ ചെലവ്</span>
+                    <span id="totalExpense" class="text-sm font-black text-red-600">₹0</span>
+                </div>
+                <div class="p-2 bg-blue-50 rounded-2xl">
+                    <span id="balanceLabel" class="text-[10px] text-blue-700 block font-medium">ബാക്കി</span>
+                    <span id="totalBalance" class="text-sm font-black text-blue-600">₹0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- തത്സമയ ഹിസ്റ്ററി -->
+        <h3 class="text-lg font-bold mb-3 text-slate-700 px-1">ഇടപാടുകളുടെ ഹിസ്റ്ററി</h3>
+        <div id="historyList" class="space-y-3">
+            <p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
+        </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+<!-- ഫയർബേസ് സ്ക്രിപ്റ്റ് താഴെ നൽകുന്നു -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.appspot.com",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.firebasestorage.app",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36b"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const transRef = ref(db, 'transactions');
 
-        window.addCash = async (type) => {
-            let siteName = document.getElementById('siteName').value;
-            let desc = document.getElementById('desc').value;
-            let phone = document.getElementById('phone').value; // പുതിയ ഫീൽഡ്
-            let amount = parseInt(document.getElementById('amount').value);
+    // ഇന്നത്തെ തീയതി സെറ്റ് ചെയ്യൽ
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('customDate').value = today;
+
+    let allTransactions = [];
+
+    // സേവ് ചെയ്യാനുള്ള ഫങ്ഷൻ
+    const saveTransaction = (type) => {
+        const desc = document.getElementById("description").value;
+        const details = document.getElementById("details").value;
+        const phone = document.getElementById("phone").value;
+        const amount = document.getElementById("amount").value;
+        const selectedDate = document.getElementById("customDate").value;
+
+        if (desc && amount && selectedDate) {
+            const dateParts = selectedDate.split('-');
+            const formattedDate = `${Number(dateParts[1])}/${Number(dateParts[2])}/${dateParts[0]}`;
+
+            const transaction = {
+                description: desc,
+                details: details,
+                phone: phone,
+                amount: Number(amount),
+                type: type,
+                date: formattedDate
+            };
+
+            push(transRef, transaction).then(() => {
+                document.getElementById("description").value = "";
+                document.getElementById("details").value = "";
+                document.getElementById("phone").value = "";
+                document.getElementById("amount").value = "";
+                document.getElementById('customDate').value = today;
+                alert("കണക്ക് സേവ് ചെയ്തു!");
+            });
+        } else {
+            alert("പേര്, തീയതി, തുക എന്നിവ നിർബന്ധമായും നൽകുക!");
+        }
+    };
+
+    // ഡിലീറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ
+    window.deleteTransaction = (key) => {
+        if (confirm("ഈ ഇടപാട് നീക്കം ചെയ്യണോ?")) {
+            remove(ref(db, 'transactions/' + key));
+        }
+    };
+
+    // ഇവന്റ് ലിസണറുകൾ നൽകുന്നു
+    document.getElementById("btnIncome").addEventListener("click", () => saveTransaction("വരവ്"));
+    document.getElementById("btnExpense").addEventListener("click", () => saveTransaction("ചെലവ്"));
+    document.getElementById("searchInput").addEventListener("input", () => filterTransactions());
+
+    // ഡാറ്റ മാറ്റങ്ങൾ തത്സമയം എടുക്കുന്നു
+    onValue(transRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        allTransactions = Object.entries(data).reverse();
+        filterTransactions();
+    });
+
+    // ലിസ്റ്റും തുകയും കണക്കുകൂട്ടൽ
+    function filterTransactions() {
+        const searchVal = document.getElementById("searchInput").value.toLowerCase().trim();
+        const historyList = document.getElementById("historyList");
+        historyList.innerHTML = "";
+
+        let totalIncome = 0;
+        let totalExpense = 0;
+        let hasData = false;
+
+        allTransactions.forEach(([key, t]) => {
+            const desc = t.description.toLowerCase();
             
-            if(!siteName || !desc || !amount || !phone) return alert("എല്ലാ വിവരങ്ങളും നൽകുക!");
-            
-            await addDoc(collection(db, "cash_entries"), { siteName, desc, phone, amount, type, date: new Date().toLocaleDateString() });
-            location.reload();
-        };
+            if (searchVal === "" || desc.includes(searchVal)) {
+                hasData = true;
+                const isIncome = t.type === "വരവ്";
+                const amtColor = isIncome ? "text-green-600" : "text-red-600";
+                const amtSign = isIncome ? "+" : "-";
 
-        window.deleteCashEntry = async (id) => {
-            if(confirm("ഈ കണക്ക് ഡിലീറ്റ് ചെയ്യണോ?")) {
-                await deleteDoc(doc(db, "cash_entries", id));
-                location.reload();
-            }
-        };
+                if (isIncome) {
+                    totalIncome += t.amount;
+                } else {
+                    totalExpense += t.amount;
+                }
 
-        // വാട്‌സാപ്പ് മെസ്സേജ് (ഫോൺ നമ്പർ ഉപയോഗിച്ച്)
-        window.sendWhatsApp = (phone, amount, desc) => {
-            const formattedPhone = phone.startsWith('91') ? phone : '91' + phone;
-            let msg = `നമസ്കാരം, സൈറ്റ് കണക്ക് പ്രകാരം ${desc} ഇനത്തിൽ ₹${amount} ലഭിച്ചിട്ടുണ്ട്.`;
-            window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        async function loadCash() {
-            const querySnapshot = await getDocs(collection(db, "cash_entries"));
-            let html = "";
-            querySnapshot.forEach((doc) => {
-                let c = doc.data();
-                html += `
-                    <div class="bg-white p-4 rounded-xl border flex justify-between items-center mb-2">
+                historyList.innerHTML += `
+                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex justify-between items-center">
                         <div>
-                            <p class="font-bold text-blue-600">${c.siteName}</p>
-                            <p>${c.desc}</p>
-                            <p class="text-xs text-gray-400">${c.date}</p>
+                            <h4 class="font-bold text-blue-600 text-base">${t.description}</h4>
+                            <p class="text-xs text-slate-700 font-medium mt-1">${t.details || 'വിശദാംശങ്ങൾ നൽകിയിട്ടില്ല'}</p>
+                            <p class="text-[10px] text-slate-400 mt-1">📅 ${t.date}</p>
                         </div>
                         <div class="text-right">
-                            <p class="font-bold ${c.type === 'income' ? 'text-green-600' : 'text-red-600'}">
-                                ${c.type === 'income' ? '+' : '-'} ₹${c.amount}
-                            </p>
-                            <div class="flex gap-2 mt-2">
-                                <button onclick="deleteCashEntry('${doc.id}')" class="text-red-500 text-xs font-bold">ഡിലീറ്റ്</button>
-                                ${c.type === 'income' ? `<button onclick="sendWhatsApp('${c.phone}', ${c.amount}, '${c.desc}')" class="text-blue-500 text-xs font-bold">WhatsApp</button>` : ''}
+                            <div class="font-bold text-lg ${amtColor} mb-2">${amtSign} ₹${t.amount}</div>
+                            <div class="flex gap-2 justify-end">
+                                <span onclick="deleteTransaction('${key}')" class="text-xs text-red-500 cursor-pointer hover:underline font-bold mr-2">ഡിലീറ്റ്</span>
+                                <span onclick='window.open("https://wa.me/91${t.phone || ''}")' class="text-xs text-blue-500 cursor-pointer hover:underline font-bold">WhatsApp</span>
                             </div>
                         </div>
                     </div>
                 `;
-            });
-            document.getElementById('cashList').innerHTML = html;
+            }
+        });
+
+        if (!hasData) {
+            historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">ആവശ്യപ്പെട്ട വിവരങ്ങൾ ഒന്നും കണ്ടെത്തിയില്ല.</p>`;
         }
+
+        document.getElementById("totalIncome").innerText = `₹${totalIncome}`;
+        document.getElementById("totalExpense").innerText = `₹${totalExpense}`;
         
-        loadCash();
-    </script>
+        const balance = totalIncome - totalExpense;
+        const balanceEl = document.getElementById("totalBalance");
+        const balanceLabel = document.getElementById("balanceLabel");
+
+        if (balance >= 0) {
+            balanceEl.innerText = `₹${balance}`;
+            balanceEl.className = "text-sm font-black text-blue-600";
+            balanceLabel.innerText = "ബാക്കി തുക";
+        } else {
+            balanceEl.innerText = `₹${Math.abs(balance)}`;
+            balanceEl.className = "text-sm font-black text-red-600";
+            balanceLabel.innerText = "ബാധ്യത";
+        }
+    }
+</script>
 </body>
 </html>
