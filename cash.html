@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</title>
+    <title>വരവ്-ചെലവ് അക്കൗണ്ട്</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #f1f5f9; font-family: sans-serif; }
@@ -12,30 +12,56 @@
 <body class="p-4">
 
     <div class="max-w-md mx-auto">
-        <!-- കണക്ക് രേഖപ്പെടുത്തുന്ന പ്രധാന ബോക്സ് -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
+        
+        <!-- 1. സുരക്ഷിതമായ ലോഗിൻ / രജിസ്റ്റർ ബോക്സ് -->
+        <div id="authBox" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
+            <div id="loginForm">
+                <h3 class="text-xl font-bold mb-4 text-center text-slate-700">മേസ്ത്രി ലോഗിൻ</h3>
+                <div class="space-y-3">
+                    <input type="text" id="loginUser" placeholder="യൂസർനെയിം (User Name)" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-blue-500 font-bold">
+                    <input type="password" id="loginPass" placeholder="പാസ്‌വേർഡ് (Password)" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-blue-500 font-bold">
+                    <button id="btnLogin" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition">അക്കൗണ്ടിൽ കയറുക</button>
+                    <p class="text-xs text-center text-slate-500 mt-2">
+                        പുതിയ ആളാണോ? <span id="toRegister" class="text-blue-600 font-bold cursor-pointer underline">ഇവിടെ പുതിയ അക്കൗണ്ട് ഉണ്ടാക്കുക</span>
+                    </p>
+                </div>
+            </div>
+
+            <div id="registerForm" class="hidden">
+                <h3 class="text-xl font-bold mb-4 text-center text-slate-700">പുതിയ മേസ്ത്രി രജിസ്ട്രേഷൻ</h3>
+                <div class="space-y-3">
+                    <input type="text" id="regUser" placeholder="പുതിയ യൂസർനെയിം (ഇംഗ്ലീഷിൽ, സ്പേസ് ഇല്ലാതെ)" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-indigo-500 font-bold">
+                    <input type="password" id="regPass" placeholder="പുതിയ പാസ്‌വേർഡ്" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-indigo-500 font-bold">
+                    <button id="btnRegister" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition">അക്കൗണ്ട് നിർമ്മിക്കുക</button>
+                    <p class="text-xs text-center text-slate-500 mt-2">
+                        നിലവിൽ അക്കൗണ്ട് ഉണ്ടോ? <span id="toLogin" class="text-indigo-600 font-bold cursor-pointer underline">ഇവിടെ ലോഗിൻ ചെയ്യുക</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. ലോഗൗട്ട് ചെയ്യാനുള്ള ചെറിയ ബട്ടൺ (ആപ്പ് തുറന്നു കഴിഞ്ഞാൽ കാണുന്നത്) -->
+        <div id="userHeader" class="hidden bg-slate-800 text-white p-3 rounded-2xl shadow-sm mb-4 flex justify-between items-center px-4">
+            <span class="text-xs font-bold">👤 മേസ്ത്രി: <span id="displayUser" class="text-yellow-400">...</span></span>
+            <button id="btnLogout" class="text-[10px] bg-red-600 px-3 py-1 rounded-lg font-bold hover:bg-red-700 transition">Log Out</button>
+        </div>
+
+        <!-- 3. കണക്ക് രേഖപ്പെടുത്തുന്ന പ്രധാന ഫോം (ലോഗിൻ ചെയ്താൽ മാത്രം കാണും) -->
+        <div id="mainForm" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6 transition-all duration-300">
             <h2 class="text-xl font-bold mb-5 text-center text-slate-700">വരവ്-ചെലവ് കണക്ക്</h2>
             
             <div class="space-y-4">
-                <!-- 1. സെറ്റിന്റെ പേര് -->
                 <input type="text" id="description" placeholder="സെറ്റിന്റെ പേര്" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
-                
-                <!-- 2. വിശദാംശങ്ങൾ -->
                 <input type="text" id="details" placeholder="വിശദാംശങ്ങൾ" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
-                
-                <!-- 3. ഫോൺ നമ്പർ -->
                 <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (ഉദാ: 9876543210)" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
                 
-                <!-- 4. തീയതി തിരഞ്ഞെടുക്കാനുള്ള കള്ളി -->
                 <div class="space-y-1">
                     <label class="text-[11px] text-slate-400 font-bold px-1 uppercase">തീയതി തിരഞ്ഞെടുക്കുക</label>
                     <input type="date" id="customDate" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500 text-slate-700">
                 </div>
 
-                <!-- 5. തുക -->
                 <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
                 
-                <!-- 6. ബട്ടണുകൾ -->
                 <div class="flex gap-4">
                     <button id="btnIncome" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition text-center">വരവ്</button>
                     <button id="btnExpense" class="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition text-center">ചെലവ്</button>
@@ -43,8 +69,8 @@
             </div>
         </div>
 
-        <!-- സെർച്ച് ബോക്സും ടോട്ടൽ കണക്കുകളും -->
-        <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-6 space-y-4">
+        <!-- 4. സെർച്ച് ബോക്സും ടോട്ടൽ കണക്കുകളും (ഉപകരണങ്ങളുടെ വരവ് എന്നത് ചെലവ് എന്ന് തിരുത്തിയത് ഇവിടെയാണ്) -->
+        <div id="summaryBox" class="hidden bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-6 space-y-4 transition-all duration-300">
             <div>
                 <input type="text" id="searchInput" placeholder="സെറ്റിന്റെ പേര് വെച്ച് തിരയുക..." class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-blue-500 font-medium">
             </div>
@@ -55,27 +81,27 @@
                     <span id="totalIncome" class="text-sm font-black text-green-600">₹0</span>
                 </div>
                 <div class="p-2 bg-red-50 rounded-2xl">
+                    <!-- ഇവിടെ 'ഉപകരണങ്ങൾ' അടക്കമുള്ള ആകെ ചെലവ് വ്യക്തമായി കാണിക്കും -->
                     <span class="text-[10px] text-red-700 block font-medium">ആകെ ചെലവ്</span>
                     <span id="totalExpense" class="text-sm font-black text-red-600">₹0</span>
                 </div>
                 <div class="p-2 bg-blue-50 rounded-2xl">
-                    <span id="balanceLabel" class="text-[10px] text-blue-700 block font-medium">ബാക്കി</span>
+                    <span id="balanceLabel" class="text-[10px] text-blue-700 block font-medium">ബാക്കി തുക</span>
                     <span id="totalBalance" class="text-sm font-black text-blue-600">₹0</span>
                 </div>
             </div>
         </div>
 
-        <!-- തത്സമയ ഹിസ്റ്ററി -->
-        <h3 class="text-lg font-bold mb-3 text-slate-700 px-1">ഇടപാടുകളുടെ ഹിസ്റ്ററി</h3>
-        <div id="historyList" class="space-y-3">
-            <p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
+        <!-- 5. തത്സമയ ഹിസ്റ്ററി -->
+        <div id="historyBox" class="hidden transition-all duration-300">
+            <h3 class="text-lg font-bold mb-3 text-slate-700 px-1">ഇടപാടുകളുടെ ഹിസ്റ്ററി</h3>
+            <div id="historyList" class="space-y-3"></div>
         </div>
     </div>
 
-<!-- ഫയർബേസ് സ്ക്രിപ്റ്റ് താഴെ നൽകുന്നു -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove, get, child } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -88,16 +114,112 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const transRef = ref(db, 'transactions');
+    
+    let currentMestri = "";
+    let allTransactions = [];
 
-    // ഇന്നത്തെ തീയതി സെറ്റ് ചെയ്യൽ
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('customDate').value = today;
 
-    let allTransactions = [];
+    // സ്ക്രീൻ മാറ്റാനുള്ള ലിസണർമാർ
+    document.getElementById("toRegister").addEventListener("click", () => {
+        document.getElementById("loginForm").classList.add("hidden");
+        document.getElementById("registerForm").classList.remove("hidden");
+    });
+    document.getElementById("toLogin").addEventListener("click", () => {
+        document.getElementById("registerForm").classList.add("hidden");
+        document.getElementById("loginForm").classList.remove("hidden");
+    });
 
-    // സേവ് ചെയ്യാനുള്ള ഫങ്ഷൻ
+    // ഓട്ടോ ലോഗിൻ പരിശോധന
+    const savedUser = localStorage.getItem("mesthriUsername");
+    if(savedUser) {
+        loginSuccess(savedUser);
+    }
+
+    // പുതിയ അക്കൗണ്ട് ഉണ്ടാക്കൽ (Register)
+    document.getElementById("btnRegister").addEventListener("click", () => {
+        const user = document.getElementById("regUser").value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+        const pass = document.getElementById("regPass").value.trim();
+
+        if(!user || !pass) {
+            alert("യൂസർനെയിമും പാസ്‌വേർഡും നിർബന്ധമാണ്!");
+            return;
+        }
+
+        const userRef = ref(db, 'users/' + user);
+        get(userRef).then((snapshot) => {
+            if(snapshot.exists()) {
+                alert("ഈ യൂസർനെയിം നിലവിലുണ്ട്! ദയവായി മറ്റൊന്ന് തിരഞ്ഞെടുക്കുക.");
+            } else {
+                push(ref(db, 'users/' + user), { password: pass }).then(() => {
+                    alert("അക്കൗണ്ട് വിജയകരമായി ഉണ്ടാക്കി! ഇനി ലോഗിൻ ചെയ്യാം.");
+                    document.getElementById("registerForm").classList.add("hidden");
+                    document.getElementById("loginForm").classList.remove("hidden");
+                    document.getElementById("loginUser").value = user;
+                });
+            }
+        });
+    });
+
+    // ലോഗിൻ ചെയ്യൽ (Login)
+    document.getElementById("btnLogin").addEventListener("click", () => {
+        const user = document.getElementById("loginUser").value.trim().toLowerCase();
+        const pass = document.getElementById("loginPass").value.trim();
+
+        if(!user || !pass) {
+            alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
+            return;
+        }
+
+        const userRef = ref(db, 'users/' + user);
+        get(userRef).then((snapshot) => {
+            if(snapshot.exists()) {
+                const userData = snapshot.val();
+                const firstKey = Object.keys(userData)[0];
+                if(userData[firstKey].password === pass) {
+                    localStorage.setItem("mesthriUsername", user);
+                    loginSuccess(user);
+                } else {
+                    alert("തെറ്റായ പാസ്‌വേർഡ്!");
+                }
+            } else {
+                alert("ഇങ്ങനെയൊരു യൂസർനെയിം കണ്ടെത്തിയില്ല!");
+            }
+        });
+    });
+
+    // ലോഗൗട്ട് (Logout)
+    document.getElementById("btnLogout").addEventListener("click", () => {
+        localStorage.removeItem("mesthriUsername");
+        location.reload();
+    });
+
+    // ലോഗിൻ വിജയകരമായാൽ ഫോമുകൾ കാണിക്കുന്ന ഫങ്ഷൻ
+    function loginSuccess(user) {
+        currentMestri = user;
+        document.getElementById("displayUser").innerText = user;
+        
+        // കാഴ്ചകൾ മാറ്റുന്നു
+        document.getElementById("authBox").classList.add("hidden");
+        document.getElementById("userHeader").classList.remove("hidden");
+        document.getElementById("mainForm").classList.remove("hidden");
+        document.getElementById("summaryBox").classList.remove("hidden");
+        document.getElementById("historyBox").classList.remove("hidden");
+
+        // ആ യൂസറുടെ ഡാറ്റ ഫയർബേസിൽ നിന്ന് എടുക്കുന്നു
+        const transRef = ref(db, 'mestri_data/' + currentMestri);
+        onValue(transRef, (snapshot) => {
+            const data = snapshot.val() || {};
+            allTransactions = Object.entries(data).reverse();
+            filterTransactions();
+        });
+    }
+
+    // സേവ് ചെയ്യൽ
     const saveTransaction = (type) => {
+        if(!currentMestri) return;
+        
         const desc = document.getElementById("description").value;
         const details = document.getElementById("details").value;
         const phone = document.getElementById("phone").value;
@@ -117,39 +239,31 @@
                 date: formattedDate
             };
 
-            push(transRef, transaction).then(() => {
+            push(ref(db, 'mestri_data/' + currentMestri), transaction).then(() => {
                 document.getElementById("description").value = "";
                 document.getElementById("details").value = "";
                 document.getElementById("phone").value = "";
                 document.getElementById("amount").value = "";
                 document.getElementById('customDate').value = today;
-                alert("കണക്ക് സേവ് ചെയ്തു!");
+                alert("കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
             });
         } else {
             alert("പേര്, തീയതി, തുക എന്നിവ നിർബന്ധമായും നൽകുക!");
         }
     };
 
-    // ഡിലീറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ
+    // ഡിലീറ്റ് ചെയ്യൽ
     window.deleteTransaction = (key) => {
         if (confirm("ഈ ഇടപാട് നീക്കം ചെയ്യണോ?")) {
-            remove(ref(db, 'transactions/' + key));
+            remove(ref(db, `mestri_data/${currentMestri}/${key}`));
         }
     };
 
-    // ഇവന്റ് ലിസണറുകൾ നൽകുന്നു
     document.getElementById("btnIncome").addEventListener("click", () => saveTransaction("വരവ്"));
     document.getElementById("btnExpense").addEventListener("click", () => saveTransaction("ചെലവ്"));
     document.getElementById("searchInput").addEventListener("input", () => filterTransactions());
 
-    // ഡാറ്റ മാറ്റങ്ങൾ തത്സമയം എടുക്കുന്നു
-    onValue(transRef, (snapshot) => {
-        const data = snapshot.val() || {};
-        allTransactions = Object.entries(data).reverse();
-        filterTransactions();
-    });
-
-    // ലിസ്റ്റും തുകയും കണക്കുകൂട്ടൽ
+    // ഫിൽട്ടറും തുക കൂട്ടലും
     function filterTransactions() {
         const searchVal = document.getElementById("searchInput").value.toLowerCase().trim();
         const historyList = document.getElementById("historyList");
@@ -194,7 +308,7 @@
         });
 
         if (!hasData) {
-            historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">ആവശ്യപ്പെട്ട വിവരങ്ങൾ ഒന്നും കണ്ടെത്തിയില്ല.</p>`;
+            historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">കണക്കുകൾ ഒന്നും കണ്ടെത്തിയില്ല.</p>`;
         }
 
         document.getElementById("totalIncome").innerText = `₹${totalIncome}`;
