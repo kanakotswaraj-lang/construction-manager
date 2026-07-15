@@ -10,43 +10,42 @@
 
 <div class="max-w-md mx-auto">
     <div id="user-info" class="mb-4">ലോഗിൻ പരിശോധിക്കുന്നു...</div>
-    <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg">ലോഗ് ഔട്ട് ചെയ്യുക</button>
-    
-    <hr class="my-6">
+    <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg mb-4">ലോഗ് ഔട്ട് ചെയ്യുക</button>
     
     <a href="transactions.html" class="block w-full bg-blue-500 text-white p-4 text-center rounded-xl mb-4 font-bold">
         പുതിയ വരവ്/ചെലവ് ചേർക്കുക
     </a>
 
     <!-- മൊത്തം തുക -->
-    <!-- ഇത് നിങ്ങളുടെ പഴയ ബോക്സുകൾക്ക് പകരം വെക്കുക -->
-<div class="grid grid-cols-2 gap-4 mb-6">
-    <div class="bg-blue-600 text-white p-4 rounded-2xl text-center shadow-lg">
-        <p class="text-xs opacity-80"><p>ആകെ ലഭിച്ച തുക</p>
-        <h2 id="total-income" class="text-xl font-bold">₹0</h2>
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-600 text-white p-4 rounded-2xl text-center shadow-lg">
+            <p class="text-xs opacity-80">ആകെ ലഭിച്ച തുക</p>
+            <h2 id="total-income" class="text-xl font-bold">₹0</h2>
+        </div>
+        <div class="bg-green-600 text-white p-4 rounded-2xl text-center shadow-lg">
+            <p class="text-xs opacity-80">കയ്യിലുള്ളത്</p>
+            <h2 id="balance" class="text-xl font-bold">₹0</h2>
+        </div>
     </div>
-    <div class="bg-green-600 text-white p-4 rounded-2xl text-center shadow-lg">
-        <p class="text-xs opacity-80"><p>കയ്യിലുള്ളത്</p>
-        <h2 id="balance" class="text-xl font-bold">₹0</h2>
-    </div>
-</div>
 
-<div class="bg-red-50 p-4 rounded-2xl mb-6 shadow-sm border border-red-200">
-    <p class="text-xs text-red-600 font-bold"><p>ജീവനക്കാർക്ക് നൽകാനുള്ളത്</p>
-    <h2 id="total-liability" class="text-xl font-bold text-red-700">₹0</h2>
-</div>
-
-<div class="grid grid-cols-2 gap-4 mb-6">
-    <div class="bg-white p-4 rounded-2xl text-center shadow-sm border">
-        <p class="text-xs text-gray-500"><p>വാടക ചെലവ്</p>
-        <h2 id="total-rental-expense" class="text-xl font-bold text-gray-800">₹0</h2>
+    <div class="bg-red-50 p-4 rounded-2xl mb-6 shadow-sm border border-red-200">
+        <p class="text-xs text-red-600 font-bold">ജീവനക്കാർക്ക് നൽകാനുള്ളത്</p>
+        <h2 id="total-liability" class="text-xl font-bold text-red-700">₹0</h2>
     </div>
-    <div class="bg-white p-4 rounded-2xl text-center shadow-sm border">
-        <p class="text-xs text-gray-500"><p>ആകെ നൽകിയത്</p>
-        <h2 id="total-given" class="text-xl font-bold text-gray-800">₹0</h2>
-    </div>
-</div>
 
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-2xl text-center shadow-sm border">
+            <p class="text-xs text-gray-500">വാടക ചെലവ്</p>
+            <h2 id="total-rental-expense" class="text-xl font-bold text-gray-800">₹0</h2>
+        </div>
+        <div class="bg-white p-4 rounded-2xl text-center shadow-sm border">
+            <p class="text-xs text-gray-500">ആകെ നൽകിയത്</p>
+            <h2 id="total-given" class="text-xl font-bold text-gray-800">₹0</h2>
+        </div>
+    </div>
+
+    <div id="worksList" class="space-y-2"></div>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -66,105 +65,51 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
+    async function loadTransactions() {
+        const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
+        const rentalSnapshot = await getDocs(collection(db, "rentals"));
+        const staffSnapshot = await getDocs(collection(db, "staff"));
 
+        let totalIncome = 0;
+        let totalGivenToStaff = 0;
+        let totalWorkAmount = 0;
+        let totalRentalExpense = 0;
 
-    // ആകെ ബാധ്യതയിൽ വാടക ചെലവും കൂടി കൂട്ടുക
-    let totalExpenseDisplay = totalLiability + totalRentalExpense; 
-    
-    // ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക
-    document.getElementById("total-income").innerText = "₹" + totalIncome;
-    document.getElementById("total-liability").innerText = "₹" + totalLiability;
-    // ...ബാക്കി കോഡ്...
-}
-async function loadTransactions() {
-    const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
-    const rentalSnapshot = await getDocs(collection(db, "rentals"));
-    const staffSnapshot = await getDocs(collection(db, "staff")); // ജീവനക്കാരുടെ ഡാറ്റ എടുക്കാൻ
-
-    let totalIncome = 0;      
-    let totalGivenToStaff = 0; 
-    let totalWorkAmount = 0;   
-    let totalRentalExpense = 0; 
-
-    // 1. വാടക ചെലവ് കണക്കാക്കുന്നു
-    rentalSnapshot.forEach((doc) => {
-        const r = doc.data();
-        let days = Math.max(1, Math.ceil((new Date() - new Date(r.startDate)) / (1000 * 60 * 60 * 24)));
-        totalRentalExpense += (Number(r.qty) * Number(r.rate) * days);
-    });
-
-    // 2. ജീവനക്കാരുടെ കണക്ക്
-    staffSnapshot.forEach((doc) => {
-        const s = doc.data();
-        totalWorkAmount += Number(s.workAmount || 0);
-        totalGivenToStaff += Number(s.givenAmount || 0);
-    });
-
-    // 3. വരവ്/ചെലവ് കണക്ക്
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.type === "വരവ്") totalIncome += Number(data.amount || 0);
-    });
-
-    let totalLiability = totalWorkAmount - totalGivenToStaff; 
-    let finalBalance = totalIncome - totalLiability - totalRentalExpense; 
-
-    // HTML-ൽ അപ്‌ഡേറ്റ് ചെയ്യുക
-    document.getElementById("total-income").innerText = "₹" + totalIncome;
-    document.getElementById("total-liability").innerText = "₹" + totalLiability;
-    document.getElementById("total-rental-expense").innerText = "₹" + totalRentalExpense;
-    document.getElementById("balance").innerText = "₹" + finalBalance;
-    
-    // ... ഇനിയും ബാക്കിയുള്ള ലിസ്റ്റ് കാണിക്കുന്ന കോഡ് ഇവിടെ കൊടുക്കുക ...
-}
-
-
-                listDiv.innerHTML += `
-                    <div class="bg-white p-4 rounded-lg shadow-sm border mb-2 flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-gray-800">${data.description} <span class="text-[10px] bg-gray-200 px-1 rounded">${category}</span></p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <p class="font-bold ${data.type === 'വരവ്' ? 'text-green-600' : 'text-red-600'}">₹${amount}</p>
-                            <button onclick="editTransaction('${doc.id}', '${data.description}', ${amount})" class="text-blue-500 px-2 font-bold">✎</button>
-                            <button onclick="deleteTransaction('${doc.id}')" class="text-red-500 px-2 font-bold">X</button>
-                        </div>
-                    </div>
-                `;
-            }
+        rentalSnapshot.forEach((doc) => {
+            const r = doc.data();
+            let days = Math.max(1, Math.ceil((new Date() - new Date(r.startDate)) / (1000 * 60 * 60 * 24)));
+            totalRentalExpense += (Number(r.qty || 0) * Number(r.rate || 0) * days);
         });
 
+        staffSnapshot.forEach((doc) => {
+            const s = doc.data();
+            totalWorkAmount += Number(s.workAmount || 0);
+            totalGivenToStaff += Number(s.givenAmount || 0);
+        });
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.type === "വരവ്") totalIncome += Number(data.amount || 0);
+        });
+
+        let totalLiability = totalWorkAmount - totalGivenToStaff;
+        let finalBalance = totalIncome - totalGivenToStaff - totalRentalExpense;
+
         document.getElementById("total-income").innerText = "₹" + totalIncome;
-        document.getElementById("total-expense").innerText = "₹" + totalExpense;
+        document.getElementById("total-liability").innerText = "₹" + totalLiability;
+        document.getElementById("total-rental-expense").innerText = "₹" + totalRentalExpense;
+        document.getElementById("total-given").innerText = "₹" + totalGivenToStaff;
+        document.getElementById("balance").innerText = "₹" + finalBalance;
     }
 
-    // Event listeners
-    document.getElementById("searchInput").addEventListener("input", loadTransactions);
-    document.getElementById("categoryFilter").addEventListener("change", loadTransactions);
-
-    window.deleteTransaction = async (id) => {
-        if (confirm("ഈ എൻട്രി നീക്കം ചെയ്യണോ?")) {
-            await deleteDoc(doc(db, "transactions", id));
-            loadTransactions();
-        }
-    };
-
-    window.editTransaction = async (id, currentDesc, currentAmount) => {
-        const newDesc = prompt("വിവരണം മാറ്റുക:", currentDesc);
-        const newAmount = prompt("തുക മാറ്റുക:", currentAmount);
-        if (newDesc !== null && newAmount !== null) {
-            await updateDoc(doc(db, "transactions", id), { description: newDesc, amount: Number(newAmount) });
-            loadTransactions();
-        }
-    };
+    window.logout = () => { signOut(auth).then(() => { window.location.href = "login.html"; }); };
 
     onAuthStateChanged(auth, (user) => {
-        if (user) loadTransactions();
-        else window.location.href = "login.html";
+        if (user) {
+            document.getElementById("user-info").innerText = "ലോഗിൻ ചെയ്തു: " + user.email;
+            loadTransactions();
+        } else { window.location.href = "login.html"; }
     });
 </script>
-
-
-
 </body>
 </html>
