@@ -66,53 +66,61 @@
         const db = getFirestore(app);
 
     
+async function updateDashboard() {
+    try {
+        // 1. ജീവനക്കാരുടെ കണക്കുകൾ
+        const staffSnapshot = await getDocs(collection(db, "staff_entries"));
+        let totalWork = 0;
+        let totalGiven = 0;
+        
+        staffSnapshot.forEach((doc) => {
+            let s = doc.data();
+            if (s.history) {
+                s.history.forEach(h => {
+                    if (h.type === 'work') totalWork += Number(h.amount || 0);
+                    if (h.type === 'given') totalGiven += Number(h.amount || 0);
+                });
+            }
+        });
 
-    async function updateDashboard() {
-        try {
-            // 1. ജീവനക്കാരുടെ കണക്കുകൾ (പഴയ രീതിയിൽ)
-            const staffSnapshot = await getDocs(collection(db, "staff_entries"));
-            let totalWork = 0;
-            let totalGiven = 0;
-            
-            staffSnapshot.forEach((doc) => {
-                let s = doc.data();
-                if (s.history) {
-                    s.history.forEach(h => {
-                        if (h.type === 'work') totalWork += Number(h.amount || 0);
-                        if (h.type === 'given') totalGiven += Number(h.amount || 0);
-                    });
-                }
-            });
+        // 2. സൈറ്റ് വരവ്-ചെലവ് കണക്കുകൾ
+        const cashSnapshot = await getDocs(collection(db, "cash_entries"));
+        let totalIncome = 0;
+        let totalExpense = 0;
+        
+        cashSnapshot.forEach((doc) => {
+            let c = doc.data();
+            if (c.type === 'income') totalIncome += Number(c.amount || 0);
+            if (c.type === 'expense') totalExpense += Number(c.amount || 0);
+        });
 
-            // 2. സൈറ്റ് വരവ്-ചെലവ് കണക്കുകൾ (പഴയ രീതിയിൽ)
-            const cashSnapshot = await getDocs(collection(db, "cash_entries"));
-            let totalIncome = 0;
-            let totalExpense = 0;
-            
-            cashSnapshot.forEach((doc) => {
-                let c = doc.data();
-                if (c.type === 'income') totalIncome += Number(c.amount || 0);
-                if (c.type === 'expense') totalExpense += Number(c.amount || 0);
-            });
+        // 3. ശരിക്കുമുള്ള ഫൈനൽ കണക്കുകൂട്ടലുകൾ (ഫിക്സ് ചെയ്തത്)
+        
+        // ആകെ വരുമാനം = സൈറ്റിൽ നിന്ന് കിട്ടിയ പണം മാത്രം (ജീവനക്കാരുടെ കൂലി കൂട്ടരുത്)
+        let finalIncome = totalIncome; 
+        
+        // ജീവനക്കാർക്ക് നൽകാനുള്ളത് (ബാധ്യത) = മൊത്തം കൂലി - കൊടുത്തത്
+        let totalLiability = totalWork - totalGiven; 
+        
+        // കയ്യിലുള്ളത് = സൈറ്റ് വരുമാനത്തിൽ നിന്ന് ജീവനക്കാർക്ക് കൊടുത്തതും മറ്റ് ചെലവുകളും കുറച്ചത്
+        let balanceInHand = totalIncome - totalGiven - totalExpense;
+        
+        // ആകെ ചെലവായത് = ജീവനക്കാർക്ക് കൊടുത്തത് + മറ്റ് ചെലവുകൾ
+        let finalPaid = totalGiven + totalExpense; 
 
-            // 3. ഫൈനൽ കണക്കുകൂട്ടൽ (പഴയ രീതി)
-            let finalIncome = totalWork + totalIncome; 
-            let finalPaid = totalGiven + totalExpense; 
-            let balanceInHand = finalIncome - finalPaid;
-// 4. ഡിസ്‌പ്ലേ അപ്‌ഡേറ്റ് ചെയ്യുക
-document.getElementById('totalWork').innerText = '₹' + finalIncome;
-document.getElementById('totalBalance').innerText = '₹' + balanceInHand;
-
-// മാറ്റങ്ങൾ വരുത്തിയ വരികൾ:
-document.getElementById('totalLiability').innerText = '₹' + balanceInHand; // ബാക്കി കയ്യിൽ കിട്ടാനുള്ളത്
-document.getElementById('rentalIncome').innerText = '₹' + totalIncome;     // വാടക വരുമാനം മാത്രം
-document.getElementById('sumPaid').innerText = '₹' + finalPaid;           // ആകെ നൽകിയത് (finalPaid)
-            
-
-        } catch (e) {
-            console.error("Dashboard Error:", e);
-        }
+        // 4. ഡിസ്‌പ്ലേ കൃത്യമായ ബോക്സുകളിലേക്ക് മാറ്റുന്നു
+        document.getElementById('totalWork').innerText = '₹' + finalIncome;       // ആകെ വരുമാനം (₹30,000 വരും)
+        document.getElementById('totalBalance').innerText = '₹' + balanceInHand;   // കയ്യിലുള്ളത്
+        document.getElementById('totalLiability').innerText = '₹' + totalLiability; // ജീവനക്കാർക്ക് നൽകാനുള്ളത് (ബാധ്യത)
+        document.getElementById('rentalIncome').innerText = '₹' + totalExpense;     // ആകെ ചെലവുകൾ / വാടക ചെലവ്
+        document.getElementById('sumPaid').innerText = '₹' + totalGiven;           // ജീവനക്കാർക്ക് നൽകിയത്
+        
+    } catch (error) {
+        console.error("Dashboard error: ", error);
     }
+}
+
+    
 
     updateDashboard();
 </script>
