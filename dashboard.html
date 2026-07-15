@@ -66,57 +66,45 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-async function loadTransactions() {
-    const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
-    const rentalSnapshot = await getDocs(collection(db, "rentals"));
+    async function loadTransactions() {
+        const querySnapshot = await getDocs(query(collection(db, "transactions"), orderBy("timestamp", "desc")));
+        const rentalSnapshot = await getDocs(collection(db, "rentals"));
 
-    let totalIncome = 0;
-    let totalExpense = 0; // ഇവിടെയാണ് നമ്മൾ ആദ്യം വാടകച്ചെലവ് കൂട്ടാൻ പോകുന്നത്
+        let totalIncome = 0;
+        let totalExpense = 0;
 
-    // 1. ആദ്യം വാടകച്ചെലവ് കണക്കാക്കി totalExpense-ലേക്ക് കൂട്ടുക
-    rentalSnapshot.forEach((doc) => {
-        const r = doc.data();
-        let days = Math.max(1, Math.ceil((new Date() - new Date(r.startDate)) / (1000 * 60 * 60 * 24)));
-        let totalRental = (Number(r.qty) * Number(r.rate) * days);
-        totalExpense += totalRental; 
-    });
+        // 1. വാടകച്ചെലവ് ആദ്യം കണക്കുകൂട്ടുന്നു
+        rentalSnapshot.forEach((doc) => {
+            const r = doc.data();
+            let days = Math.max(1, Math.ceil((new Date() - new Date(r.startDate)) / (1000 * 60 * 60 * 24)));
+            totalExpense += (Number(r.qty) * Number(r.rate) * days);
+        });
 
-    // 2. ബാക്കി വരവ്/ചെലവ് എൻട്രികൾ ലൂപ്പ് ചെയ്യുക
-    const listDiv = document.getElementById("worksList");
-    listDiv.innerHTML = "";
-    
-    const searchInput = document.getElementById("searchInput").value.toLowerCase();
-    const categoryFilter = document.getElementById("categoryFilter").value;
+        const listDiv = document.getElementById("worksList");
+        listDiv.innerHTML = "";
+        
+        const searchInput = document.getElementById("searchInput").value.toLowerCase();
+        const categoryFilter = document.getElementById("categoryFilter").value;
 
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const category = data.category || "മറ്റ് ചെലവുകൾ";
-        const matchesSearch = data.description.toLowerCase().includes(searchInput);
-        const matchesCategory = (categoryFilter === "എല്ലാം" || category === categoryFilter);
-
-        if (matchesSearch && matchesCategory) {
+        // 2. ബാക്കി വരവ്/ചെലവ് കണക്കാക്കുന്നു
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
             const amount = Number(data.amount);
+            const category = data.category || "മറ്റ് ചെലവുകൾ";
             
-            // കൂലി എന്ന വിഭാഗം വരുമാനത്തിൽ കൂട്ടരുത് എന്ന് പറഞ്ഞതുകൊണ്ട്:
-            if (data.type === "വരവ്") {
-                totalIncome += amount;
-            } else if (data.type === "ചെലവ്") {
-                totalExpense += amount; // കൂലിയും മറ്റ് ചെലവുകളും ഇവിടെ വരും
-            }
-
-            listDiv.innerHTML += `... (നിങ്ങളുടെ പഴയ HTML കോഡ് ഇവിടെ നൽകുക) ...`;
-        }
-    });
-
-    document.getElementById("total-income").innerText = "₹" + totalIncome;
-    document.getElementById("total-expense").innerText = "₹" + totalExpense;
-}
+            if (data.description.toLowerCase().includes(searchInput) && (categoryFilter === "എല്ലാം" || category === categoryFilter)) {
+                
+                // കൂലി 'വരവ്' അല്ല, അതുകൊണ്ട് അത് വരുമാനത്തിൽ കൂട്ടരുത്
+                if (data.type === "വരവ്") {
+                    totalIncome += amount;
+                } else {
+                    totalExpense += amount;
+                }
 
                 listDiv.innerHTML += `
                     <div class="bg-white p-4 rounded-lg shadow-sm border mb-2 flex justify-between items-center">
                         <div>
                             <p class="font-bold text-gray-800">${data.description} <span class="text-[10px] bg-gray-200 px-1 rounded">${category}</span></p>
-                            <p class="text-xs text-gray-500">${data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ml-IN') : 'N/A'}</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <p class="font-bold ${data.type === 'വരവ്' ? 'text-green-600' : 'text-red-600'}">₹${amount}</p>
@@ -127,10 +115,12 @@ async function loadTransactions() {
                 `;
             }
         });
-        incomeElement.innerText = "₹" + totalIncome;
-        expenseElement.innerText = "₹" + totalExpense;
+
+        document.getElementById("total-income").innerText = "₹" + totalIncome;
+        document.getElementById("total-expense").innerText = "₹" + totalExpense;
     }
 
+    // Event listeners
     document.getElementById("searchInput").addEventListener("input", loadTransactions);
     document.getElementById("categoryFilter").addEventListener("change", loadTransactions);
 
@@ -150,7 +140,13 @@ async function loadTransactions() {
         }
     };
 
-    
+    onAuthStateChanged(auth, (user) => {
+        if (user) loadTransactions();
+        else window.location.href = "login.html";
+    });
 </script>
+
+
+
 </body>
 </html>
