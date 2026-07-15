@@ -7,38 +7,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #f1f5f9; font-family: sans-serif; }
-        .main-container { max-w-md mx-auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body class="p-4">
 
     <div class="max-w-md mx-auto">
+        <!-- കണക്ക് രേഖപ്പെടുത്തുന്ന പ്രധാന ബോക്സ് -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
             <h2 class="text-xl font-bold mb-5 text-center text-slate-700">വരവ്-ചെലവ് കണക്ക്</h2>
             
             <div class="space-y-4">
-                <input type="text" id="description" placeholder="വിവരണം" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
+                <input type="text" id="description" placeholder="സെറ്റിന്റെ പേര്" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
+                <input type="text" id="details" placeholder="വിശദാംശങ്ങൾ" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
+                <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (ഉദാ: 9876543210)" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
+                <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
                 
-                <select id="type" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
-                    <option value="വരവ്">വരവ്</option>
-                    <option value="ചെലവ്">ചെലവ്</option>
-                </select>
-
-                <!-- കാറ്റഗറി സെലക്ട് ബോക്സ് -->
-                <select id="category" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
-                    <option value="മറ്റ് ചെലവുകൾ">മറ്റ് ചെലവുകൾ</option>
-                    <option value="സാധനങ്ങൾ">സാധനങ്ങൾ</option>
-                    <option value="കൂലി">കൂലി</option>
-                    <option value="വാടക">വാടക</option>
-                </select>
-                
-                <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
-                
-                <button onclick="saveTransaction()" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition">സേവ് ചെയ്യുക</button>
+                <div class="flex gap-4">
+                    <button onclick="saveTransaction('വരവ്')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition text-center">വരവ്</button>
+                    <button onclick="saveTransaction('ചെലവ്')" class="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition text-center">ചെലവ്</button>
+                </div>
             </div>
         </div>
 
-        <!-- പുതിയ തത്സമയ ഹിസ്റ്ററി സെക്ഷൻ -->
+        <!-- തത്സമയ ഹിസ്റ്ററി സെക്ഷൻ (നിങ്ങളുടെ പഴയ സൈറ്റ് ഡിസൈനിൽ തന്നെ!) -->
         <h3 class="text-lg font-bold mb-3 text-slate-700 px-1">ഇടപാടുകളുടെ ഹിസ്റ്ററി</h3>
         <div id="historyList" class="space-y-3">
             <p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
@@ -46,10 +37,10 @@
     </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    // നിങ്ങളുടെ Firebase കോൺഫിഗറേഷൻ
+    // നിങ്ങളുടെ കൃത്യമായ ഫയർബേസ് കോൺഫിഗറേഷൻ
     const firebaseConfig = {
         apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
         authDomain: "mesthri-app.firebaseapp.com",
@@ -58,88 +49,77 @@
         messagingSenderId: "1060617901864",
         appId: "1:1060617901864:web:5ffb9378cf36b"
     };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
 
-    window.saveTransaction = async () => {
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const transRef = ref(db, 'transactions'); // Realtime Database ഉപയോഗിക്കുന്നു
+
+    window.saveTransaction = (type) => {
         const desc = document.getElementById("description").value;
-        const type = document.getElementById("type").value;
+        const details = document.getElementById("details").value;
+        const phone = document.getElementById("phone").value;
         const amount = document.getElementById("amount").value;
-        const category = document.getElementById("category").value;
 
         if (desc && amount) {
-            await addDoc(collection(db, "transactions"), {
+            const transaction = {
                 description: desc,
-                type: type,
+                details: details,
+                phone: phone,
                 amount: Number(amount),
-                category: category,
-                timestamp: new Date()
+                type: type, // 'വരവ്' അല്ലെങ്കിൽ 'ചെലവ്'
+                date: new Date().toLocaleDateString('en-US') // 7/15/2026 രൂപത്തിൽ
+            };
+
+            push(transRef, transaction).then(() => {
+                document.getElementById("description").value = "";
+                document.getElementById("details").value = "";
+                document.getElementById("phone").value = "";
+                document.getElementById("amount").value = "";
+                alert("കണക്ക് സേവ് ചെയ്തു!");
             });
-            
-            // ഫോം ഫീൽഡുകൾ ക്ലിയർ ചെയ്യാൻ
-            document.getElementById("description").value = "";
-            document.getElementById("amount").value = "";
-            
-            alert("കണക്ക് സേവ് ചെയ്തു!");
         } else {
-            alert("എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
+            alert("പേരും തുകയും നിർബന്ധമായും നൽകുക!");
         }
     };
 
-    // ഹിസ്റ്ററിയിൽ നിന്നും കണക്ക് ഡിലീറ്റ് ചെയ്യാൻ
-    window.deleteTransaction = async (id) => {
+    window.deleteTransaction = (key) => {
         if (confirm("ഈ ഇടപാട് നീക്കം ചെയ്യണോ?")) {
-            try {
-                await deleteDoc(doc(db, "transactions", id));
-            } catch (error) {
-                console.error("Error deleting transaction: ", error);
-            }
+            remove(ref(db, 'transactions/' + key));
         }
     };
 
-    // തത്സമയ ഹിസ്റ്ററി ലോഡ് ചെയ്യുന്ന ഭാഗം
-    const transactionsQuery = query(collection(db, "transactions"), orderBy("timestamp", "desc"));
-    onSnapshot(transactionsQuery, (snapshot) => {
+    // ഹിസ്റ്ററി തത്സമയം കാണിക്കുന്ന ഫങ്ഷൻ
+    onValue(transRef, (snapshot) => {
         const historyList = document.getElementById("historyList");
         historyList.innerHTML = "";
+        const data = snapshot.val() || {};
 
-        if (snapshot.empty) {
+        if (Object.keys(data).length === 0) {
             historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">ഇടപാടുകൾ ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല.</p>`;
             return;
         }
 
-        snapshot.forEach((docSnap) => {
-            const data = docSnap.data();
-            const id = docSnap.id;
-            
-            // തീയതി ക്രമീകരിക്കാൻ
-            let dateStr = "";
-            if (data.timestamp) {
-                const date = data.timestamp.toDate ? data.timestamp.toDate() : new Date(data.timestamp);
-                dateStr = date.toLocaleDateString('en-GB');
-            }
+        // തീയതി അനുസരിച്ച് തിരിച്ചു വെക്കുന്നു (പുതിയത് ആദ്യം)
+        const sortedEntries = Object.entries(data).reverse();
 
-            const isIncome = data.type === "വരവ്";
+        sortedEntries.forEach(([key, t]) => {
+            const isIncome = t.type === "വരവ്";
             const amtColor = isIncome ? "text-green-600" : "text-red-600";
             const amtSign = isIncome ? "+" : "-";
-            const bgBadge = isIncome ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700";
 
             historyList.innerHTML += `
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 flex justify-between items-center">
-                    <div class="space-y-1">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-slate-800 text-sm">${data.description}</span>
-                            <span class="text-[10px] px-2 py-0.5 rounded-full ${bgBadge} font-medium">${data.category || 'മറ്റ് ചെലവുകൾ'}</span>
-                        </div>
-                        <span class="text-[10px] text-slate-400 block">📅 ${dateStr}</span>
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-blue-600 text-base">${t.description}</h4>
+                        <p class="text-xs text-slate-700 font-medium mt-1">${t.details || 'വിശദാംശങ്ങൾ നൽകിയിട്ടില്ല'}</p>
+                        <p class="text-[10px] text-slate-400 mt-1">${t.date}</p>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <span class="font-black text-base ${amtColor}">${amtSign}₹${data.amount}</span>
-                        <button onclick="deleteTransaction('${id}')" class="bg-red-50 text-red-500 hover:bg-red-100 p-2 rounded-xl text-xs font-bold transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1a3 3 0 003 3h10M4 7h16" />
-                            </svg>
-                        </button>
+                    <div class="text-right">
+                        <div class="font-bold text-lg ${amtColor} mb-2">${amtSign} ₹${t.amount}</div>
+                        <div class="flex gap-2 justify-end">
+                            <span onclick="deleteTransaction('${key}')" class="text-xs text-red-500 cursor-pointer hover:underline font-bold mr-2">ഡിലീറ്റ്</span>
+                            <span onclick='window.open("https://wa.me/91${t.phone || ''}")' class="text-xs text-blue-500 cursor-pointer hover:underline font-bold">WhatsApp</span>
+                        </div>
                     </div>
                 </div>
             `;
