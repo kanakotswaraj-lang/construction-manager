@@ -7,42 +7,57 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #f1f5f9; font-family: sans-serif; }
-        .main-container { max-width: 400px; margin: 20px auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .main-container { max-w-md mx-auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
-<body>
+<body class="p-4">
 
-    <div class="main-container">
-        <h2 class="text-xl font-bold mb-5 text-center text-slate-700">വരവ്-ചെലവ് കണക്ക്</h2>
-        
-        <div class="space-y-4">
-            <input type="text" id="description" placeholder="വിവരണം" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
+    <div class="max-w-md mx-auto">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
+            <h2 class="text-xl font-bold mb-5 text-center text-slate-700">വരവ്-ചെലവ് കണക്ക്</h2>
             
-            <select id="type" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
-                <option value="വരവ്">വരവ്</option>
-                <option value="ചെലവ്">ചെലവ്</option>
-            </select>
+            <div class="space-y-4">
+                <input type="text" id="description" placeholder="വിവരണം" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
+                
+                <select id="type" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
+                    <option value="വരവ്">വരവ്</option>
+                    <option value="ചെലവ്">ചെലവ്</option>
+                </select>
 
-            <!-- പുതിയ കാറ്റഗറി സെലക്ട് ബോക്സ് -->
-            <select id="category" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
-                <option value="മറ്റ് ചെലവുകൾ">മറ്റ് ചെലവുകൾ</option>
-                <option value="സാധനങ്ങൾ">സാധനങ്ങൾ</option>
-                <option value="കൂലി">കൂലി</option>
-                <option value="വാടക">വാടക</option>
-            </select>
-            
-            <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
-            
-            <button onclick="saveTransaction()" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition">സേവ് ചെയ്യുക</button>
+                <!-- കാറ്റഗറി സെലക്ട് ബോക്സ് -->
+                <select id="category" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
+                    <option value="മറ്റ് ചെലവുകൾ">മറ്റ് ചെലവുകൾ</option>
+                    <option value="സാധനങ്ങൾ">സാധനങ്ങൾ</option>
+                    <option value="കൂലി">കൂലി</option>
+                    <option value="വാടക">വാടക</option>
+                </select>
+                
+                <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-100 rounded-xl outline-none border-2 focus:border-emerald-500">
+                
+                <button onclick="saveTransaction()" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition">സേവ് ചെയ്യുക</button>
+            </div>
+        </div>
+
+        <!-- പുതിയ തത്സമയ ഹിസ്റ്ററി സെക്ഷൻ -->
+        <h3 class="text-lg font-bold mb-3 text-slate-700 px-1">ഇടപാടുകളുടെ ഹിസ്റ്ററി</h3>
+        <div id="historyList" class="space-y-3">
+            <p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
         </div>
     </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    // നിങ്ങളുടെ Firebase കോൺഫിഗറേഷൻ ഇവിടെ നൽകുക
-    const firebaseConfig = { /* ...നിങ്ങളുടെ കോൺഫിഗറേഷൻ... */ };
+    // നിങ്ങളുടെ Firebase കോൺഫിഗറേഷൻ
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.firebasestorage.app",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36b"
+    };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -60,12 +75,76 @@
                 category: category,
                 timestamp: new Date()
             });
+            
+            // ഫോം ഫീൽഡുകൾ ക്ലിയർ ചെയ്യാൻ
+            document.getElementById("description").value = "";
+            document.getElementById("amount").value = "";
+            
             alert("കണക്ക് സേവ് ചെയ്തു!");
-            window.location.href = "dashboard.html";
         } else {
             alert("എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
         }
     };
+
+    // ഹിസ്റ്ററിയിൽ നിന്നും കണക്ക് ഡിലീറ്റ് ചെയ്യാൻ
+    window.deleteTransaction = async (id) => {
+        if (confirm("ഈ ഇടപാട് നീക്കം ചെയ്യണോ?")) {
+            try {
+                await deleteDoc(doc(db, "transactions", id));
+            } catch (error) {
+                console.error("Error deleting transaction: ", error);
+            }
+        }
+    };
+
+    // തത്സമയ ഹിസ്റ്ററി ലോഡ് ചെയ്യുന്ന ഭാഗം
+    const transactionsQuery = query(collection(db, "transactions"), orderBy("timestamp", "desc"));
+    onSnapshot(transactionsQuery, (snapshot) => {
+        const historyList = document.getElementById("historyList");
+        historyList.innerHTML = "";
+
+        if (snapshot.empty) {
+            historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">ഇടപാടുകൾ ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല.</p>`;
+            return;
+        }
+
+        snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const id = docSnap.id;
+            
+            // തീയതി ക്രമീകരിക്കാൻ
+            let dateStr = "";
+            if (data.timestamp) {
+                const date = data.timestamp.toDate ? data.timestamp.toDate() : new Date(data.timestamp);
+                dateStr = date.toLocaleDateString('en-GB');
+            }
+
+            const isIncome = data.type === "വരവ്";
+            const amtColor = isIncome ? "text-green-600" : "text-red-600";
+            const amtSign = isIncome ? "+" : "-";
+            const bgBadge = isIncome ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700";
+
+            historyList.innerHTML += `
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 flex justify-between items-center">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-slate-800 text-sm">${data.description}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full ${bgBadge} font-medium">${data.category || 'മറ്റ് ചെലവുകൾ'}</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400 block">📅 ${dateStr}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-black text-base ${amtColor}">${amtSign}₹${data.amount}</span>
+                        <button onclick="deleteTransaction('${id}')" class="bg-red-50 text-red-500 hover:bg-red-100 p-2 rounded-xl text-xs font-bold transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1a3 3 0 003 3h10M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+    });
 </script>
 </body>
 </html>
