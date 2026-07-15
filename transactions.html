@@ -20,6 +20,13 @@
                 <input type="text" id="description" placeholder="സെറ്റിന്റെ പേര്" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
                 <input type="text" id="details" placeholder="വിശദാംശങ്ങൾ" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
                 <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (ഉദാ: 9876543210)" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
+                
+                <!-- തീയതി തിരഞ്ഞെടുക്കാനുള്ള പുതിയ കള്ളി -->
+                <div class="space-y-1">
+                    <label class="text-xs text-slate-500 px-1">തീയതി തിരഞ്ഞെടുക്കുക:</label>
+                    <input type="date" id="customDate" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500 text-slate-700">
+                </div>
+
                 <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
                 
                 <div class="flex gap-4">
@@ -29,7 +36,30 @@
             </div>
         </div>
 
-        <!-- തത്സമയ ഹിസ്റ്ററി സെക്ഷൻ (നിങ്ങളുടെ പഴയ സൈറ്റ് ഡിസൈനിൽ തന്നെ!) -->
+        <!-- പുതിയ സെർച്ച് ബോക്സും ടോട്ടൽ കാൽക്കുലേറ്ററും -->
+        <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-6 space-y-4">
+            <div>
+                <input type="text" id="searchInput" oninput="filterTransactions()" placeholder="സെറ്റിന്റെ പേര് വെച്ച് തിരയുക..." class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-blue-500 font-medium">
+            </div>
+            
+            <!-- പണം കണക്കുകൂട്ടി കാണിക്കുന്ന ബോക്സ് -->
+            <div class="grid grid-cols-3 gap-2 text-center pt-2 border-t border-slate-100">
+                <div class="p-2 bg-green-50 rounded-2xl">
+                    <span class="text-[10px] text-green-700 block font-medium">ആകെ വരവ്</span>
+                    <span id="totalIncome" class="text-sm font-black text-green-600">₹0</span>
+                </div>
+                <div class="p-2 bg-red-50 rounded-2xl">
+                    <span class="text-[10px] text-red-700 block font-medium">ആകെ ചെലവ്</span>
+                    <span id="totalExpense" class="text-sm font-black text-red-600">₹0</span>
+                </div>
+                <div class="p-2 bg-blue-50 rounded-2xl">
+                    <span id="balanceLabel" class="text-[10px] text-blue-700 block font-medium">ബാക്കി</span>
+                    <span id="totalBalance" class="text-sm font-black text-blue-600">₹0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- തത്സമയ ഹിസ്റ്ററി സെക്ഷൻ -->
         <h3 class="text-lg font-bold mb-3 text-slate-700 px-1">ഇടപാടുകളുടെ ഹിസ്റ്ററി</h3>
         <div id="historyList" class="space-y-3">
             <p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
@@ -52,22 +82,33 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const transRef = ref(db, 'transactions'); // Realtime Database ഉപയോഗിക്കുന്നു
+    const transRef = ref(db, 'transactions');
+
+    // ഇന്നത്തെ തീയതി ഡിഫോൾട്ട് ആയി സെറ്റ് ചെയ്യാൻ
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('customDate').value = today;
+
+    let allTransactions = []; // ഡാറ്റ സൂക്ഷിക്കാൻ ഒരു ലിസ്റ്റ്
 
     window.saveTransaction = (type) => {
         const desc = document.getElementById("description").value;
         const details = document.getElementById("details").value;
         const phone = document.getElementById("phone").value;
         const amount = document.getElementById("amount").value;
+        const selectedDate = document.getElementById("customDate").value;
 
-        if (desc && amount) {
+        if (desc && amount && selectedDate) {
+            // തിരഞ്ഞെടുത്ത തീയതി 7/15/2026 രൂപത്തിലേക്ക് മാറ്റുന്നു
+            const dateParts = selectedDate.split('-');
+            const formattedDate = `${Number(dateParts[1])}/${Number(dateParts[2])}/${dateParts[0]}`;
+
             const transaction = {
                 description: desc,
                 details: details,
                 phone: phone,
                 amount: Number(amount),
-                type: type, // 'വരവ്' അല്ലെങ്കിൽ 'ചെലവ്'
-                date: new Date().toLocaleDateString('en-US') // 7/15/2026 രൂപത്തിൽ
+                type: type,
+                date: formattedDate
             };
 
             push(transRef, transaction).then(() => {
@@ -75,10 +116,11 @@
                 document.getElementById("details").value = "";
                 document.getElementById("phone").value = "";
                 document.getElementById("amount").value = "";
+                document.getElementById('customDate').value = today; // തീയതി വീണ്ടും ഇന്നത്തേതാക്കുന്നു
                 alert("കണക്ക് സേവ് ചെയ്തു!");
             });
         } else {
-            alert("പേരും തുകയും നിർബന്ധമായും നൽകുക!");
+            alert("പേര്, തീയതി, തുക എന്നിവ നിർബന്ധമായും നൽകുക!");
         }
     };
 
@@ -88,43 +130,82 @@
         }
     };
 
-    // ഹിസ്റ്ററി തത്സമയം കാണിക്കുന്ന ഫങ്ഷൻ
+    // തത്സമയം ഡാറ്റ എടുക്കുന്ന ഭാഗം
     onValue(transRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        allTransactions = Object.entries(data).reverse(); // പുതിയത് ആദ്യം വരാൻ തിരിക്കുന്നു
+        filterTransactions(); // ലിസ്റ്റും കണക്കുകളും അപ്ഡേറ്റ് ചെയ്യാൻ
+    });
+
+    // ലിസ്റ്റ് ഫിൽട്ടർ ചെയ്യാനും തുക കണക്കുകൂട്ടാനുമുള്ള ഫങ്ഷൻ
+    window.filterTransactions = () => {
+        const searchVal = document.getElementById("searchInput").value.toLowerCase().trim();
         const historyList = document.getElementById("historyList");
         historyList.innerHTML = "";
-        const data = snapshot.val() || {};
 
-        if (Object.keys(data).length === 0) {
-            historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">ഇടപാടുകൾ ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല.</p>`;
-            return;
-        }
+        let totalIncome = 0;
+        let totalExpense = 0;
+        let hasData = false;
 
-        // തീയതി അനുസരിച്ച് തിരിച്ചു വെക്കുന്നു (പുതിയത് ആദ്യം)
-        const sortedEntries = Object.entries(data).reverse();
+        allTransactions.forEach(([key, t]) => {
+            const desc = t.description.toLowerCase();
+            
+            // സെർച്ച് ബോക്സിൽ അടിച്ചത് ഈ പേരുമായി പൊരുത്തപ്പെടുന്നുണ്ടോ എന്ന് നോക്കുന്നു
+            if (searchVal === "" || desc.includes(searchVal)) {
+                hasData = true;
+                const isIncome = t.type === "വരവ്";
+                const amtColor = isIncome ? "text-green-600" : "text-red-600";
+                const amtSign = isIncome ? "+" : "-";
 
-        sortedEntries.forEach(([key, t]) => {
-            const isIncome = t.type === "വരവ്";
-            const amtColor = isIncome ? "text-green-600" : "text-red-600";
-            const amtSign = isIncome ? "+" : "-";
+                // തുക കൂട്ടുന്നു
+                if (isIncome) {
+                    totalIncome += t.amount;
+                } else {
+                    totalExpense += t.amount;
+                }
 
-            historyList.innerHTML += `
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex justify-between items-center">
-                    <div>
-                        <h4 class="font-bold text-blue-600 text-base">${t.description}</h4>
-                        <p class="text-xs text-slate-700 font-medium mt-1">${t.details || 'വിശദാംശങ്ങൾ നൽകിയിട്ടില്ല'}</p>
-                        <p class="text-[10px] text-slate-400 mt-1">${t.date}</p>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-bold text-lg ${amtColor} mb-2">${amtSign} ₹${t.amount}</div>
-                        <div class="flex gap-2 justify-end">
-                            <span onclick="deleteTransaction('${key}')" class="text-xs text-red-500 cursor-pointer hover:underline font-bold mr-2">ഡിലീറ്റ്</span>
-                            <span onclick='window.open("https://wa.me/91${t.phone || ''}")' class="text-xs text-blue-500 cursor-pointer hover:underline font-bold">WhatsApp</span>
+                // ലിസ്റ്റ് കാണിക്കുന്നു
+                historyList.innerHTML += `
+                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-blue-600 text-base">${t.description}</h4>
+                            <p class="text-xs text-slate-700 font-medium mt-1">${t.details || 'വിശദാംശങ്ങൾ നൽകിയിട്ടില്ല'}</p>
+                            <p class="text-[10px] text-slate-400 mt-1">📅 ${t.date}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-lg ${amtColor} mb-2">${amtSign} ₹${t.amount}</div>
+                            <div class="flex gap-2 justify-end">
+                                <span onclick="deleteTransaction('${key}')" class="text-xs text-red-500 cursor-pointer hover:underline font-bold mr-2">ഡിലീറ്റ്</span>
+                                <span onclick='window.open("https://wa.me/91${t.phone || ''}")' class="text-xs text-blue-500 cursor-pointer hover:underline font-bold">WhatsApp</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         });
-    });
+
+        if (!hasData) {
+            historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-white rounded-3xl border border-slate-100">ആവശ്യപ്പെട്ട വിവരങ്ങൾ ഒന്നും കണ്ടെത്തിയില്ല.</p>`;
+        }
+
+        // തുകകൾ മുകളിൽ കാണിക്കുന്നു
+        document.getElementById("totalIncome").innerText = `₹${totalIncome}`;
+        document.getElementById("totalExpense").innerText = `₹${totalExpense}`;
+        
+        const balance = totalIncome - totalExpense;
+        const balanceEl = document.getElementById("totalBalance");
+        const balanceLabel = document.getElementById("balanceLabel");
+
+        if (balance >= 0) {
+            balanceEl.innerText = `₹${balance}`;
+            balanceEl.className = "text-sm font-black text-blue-600";
+            balanceLabel.innerText = "ബാക്കി തുക";
+        } else {
+            balanceEl.innerText = `₹${Math.abs(balance)}`;
+            balanceEl.className = "text-sm font-black text-red-600";
+            balanceLabel.innerText = "ബാധ്യത";
+        }
+    };
 </script>
 </body>
 </html>
