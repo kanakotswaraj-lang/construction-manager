@@ -16,10 +16,10 @@
         പുതിയ വരവ്/ചെലവ് ചേർക്കുക
     </a>
 
-    <!-- മൊത്തം തുക -->
+    <!-- കാർഡുകൾ - കൃത്യമായ ഐഡികൾ സഹിതം -->
     <div class="grid grid-cols-2 gap-4 mb-6">
         <div class="bg-blue-600 text-white p-4 rounded-2xl text-center shadow-lg">
-            <p class="text-xs opacity-80">ആകെ ലഭിച്ച തുക</p>
+            <p class="text-xs opacity-80">ആകെ ലഭിച്ച തുക (വരവ്)</p>
             <h2 id="total-income" class="text-xl font-bold">₹0</h2>
         </div>
         <div class="bg-green-600 text-white p-4 rounded-2xl text-center shadow-lg">
@@ -29,27 +29,32 @@
     </div>
 
     <div class="bg-red-50 p-4 rounded-2xl mb-6 shadow-sm border border-red-200">
-        <p class="text-xs text-red-600 font-bold">ജീവനക്കാർക്ക് നൽകാനുള്ളത്</p>
+        <p class="text-xs text-red-600 font-bold">ജീവനക്കാർക്ക് നൽകാനുള്ളത് (ബാധ്യത)</p>
         <h2 id="total-liability" class="text-xl font-bold text-red-700">₹0</h2>
     </div>
 
     <div class="grid grid-cols-2 gap-4 mb-6">
         <div class="bg-white p-4 rounded-2xl text-center shadow-sm border">
-            <p class="text-xs text-gray-500">വാടക ചെലവ്</p>
+            <p class="text-xs text-gray-500">ആകെ വാടക ചെലവ്</p>
             <h2 id="total-rental-expense" class="text-xl font-bold text-gray-800">₹0</h2>
         </div>
         <div class="bg-white p-4 rounded-2xl text-center shadow-sm border">
-            <p class="text-xs text-gray-500">ആകെ നൽകിയത്</p>
+            <p class="text-xs text-gray-500">ജീവനക്കാർക്ക് നൽകിയത്</p>
             <h2 id="total-given" class="text-xl font-bold text-gray-800">₹0</h2>
         </div>
     </div>
 
-    <div id="worksList" class="space-y-2"></div>
+    <!-- മെനു ലിങ്കുകൾ -->
+    <div class="space-y-3">
+        <a href="staff.html" class="block w-full bg-white p-4 text-center rounded-xl shadow-sm font-bold text-gray-700 border">ജീവനക്കാർ</a>
+        <a href="rentals.html" class="block w-full bg-white p-4 text-center rounded-xl shadow-sm font-bold text-gray-700 border">വാടക ഉപകരണങ്ങൾ</a>
+        <a href="transactions.html" class="block w-full bg-white p-4 text-center rounded-xl shadow-sm font-bold text-gray-700 border">സെറ്റ് കണക്ക്</a>
+    </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -75,26 +80,34 @@
         let totalWorkAmount = 0;
         let totalRentalExpense = 0;
 
+        // 1. വാടക ചെലവ് മാത്രം കൂട്ടുന്നു
         rentalSnapshot.forEach((doc) => {
             const r = doc.data();
             let days = Math.max(1, Math.ceil((new Date() - new Date(r.startDate)) / (1000 * 60 * 60 * 24)));
             totalRentalExpense += (Number(r.qty || 0) * Number(r.rate || 0) * days);
         });
 
+        // 2. ജീവനക്കാരുടെ കണക്ക്
         staffSnapshot.forEach((doc) => {
             const s = doc.data();
             totalWorkAmount += Number(s.workAmount || 0);
             totalGivenToStaff += Number(s.givenAmount || 0);
         });
 
+        // 3. സൈറ്റിൽ നിന്ന് കിട്ടിയ യഥാർത്ഥ വരുമാനം (വരവ് / മുൻകൂർ)
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            if (data.type === "വരവ്") totalIncome += Number(data.amount || 0);
+            if (data.type === "വരവ്" || data.type === "മുൻകൂർ") {
+                totalIncome += Number(data.amount || 0);
+            }
         });
 
+        // ഫൈനൽ കണക്കുകൂട്ടലുകൾ
         let totalLiability = totalWorkAmount - totalGivenToStaff;
+        // കയ്യിലുള്ളത് = ആകെ കിട്ടിയത് - ജീവനക്കാർക്ക് കൊടുത്തത് - വാടക ചെലവ്
         let finalBalance = totalIncome - totalGivenToStaff - totalRentalExpense;
 
+        // കൃത്യമായ ബോക്സുകളിലേക്ക് ഡാറ്റ നൽകുന്നു
         document.getElementById("total-income").innerText = "₹" + totalIncome;
         document.getElementById("total-liability").innerText = "₹" + totalLiability;
         document.getElementById("total-rental-expense").innerText = "₹" + totalRentalExpense;
