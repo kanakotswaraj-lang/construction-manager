@@ -15,209 +15,214 @@
 </head>
 <body class="bg-gradient-to-b from-slate-50 to-slate-100 min-h-screen p-4">
 
-    <div class="max-w-md mx-auto">
+                        <div class="max-w-md mx-auto">
         
-        
-<!-- പുതുക്കിയ സുരക്ഷിതമായ ഹെഡർ കോഡ് -->
-<div class="mx-4 mt-4 p-4 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-2xl shadow-xl flex items-center justify-between border border-slate-800">
-    <div class="flex items-center gap-3">
-        <div id="userAvatar" class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center font-black text-slate-950 shadow-md border border-amber-400">
-            M
+        <!-- 1. പുതിയ പെർഫെക്റ്റ് ഹെഡർ ബോക്സ് (പേര് ബട്ടണിന് മുകളിൽ കയറില്ല) -->
+        <div class="mx-4 mt-4 p-4 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-2xl shadow-xl flex items-center justify-between border border-slate-800 gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+                <div id="userAvatar" class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center font-black text-slate-950 shadow-md border border-amber-400 flex-shrink-0">
+                    M
+                </div>
+                <div class="min-w-0">
+                    <p class="text-[10px] text-slate-400 font-medium tracking-wide">ലോഗിൻ ചെയ്തിരിക്കുന്നു</p>
+                    <h3 id="displayUser" class="text-xs font-bold text-slate-100 truncate">മേസ്തിരി ലോഡ് ചെയ്യുന്നു...</h3>
+                </div>
+            </div>
+            <button id="logoutBtn" onclick="window.logout()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-md transition-all active:scale-95 flex-shrink-0">
+                Logout
+            </button>
         </div>
-        <div>
-            <p class="text-[10px] text-slate-400 font-medium tracking-wide">ലോഗിൻ ചെയ്തിരിക്കുന്നു</p>
-            <h3 id="displayUser" class="text-sm font-bold text-slate-100">മേസ്തിരി പ്രോ പ്രൊഫൈൽ</h3>
+
+        <!-- ആപ്പിന്റെ പേര് -->
+        <div class="text-center my-6">
+            <h1 class="text-3xl font-black text-slate-950 tracking-tight">മേസ്തിരി പ്രോ</h1>
+        </div>
+
+        <!-- സൈറ്റ് മാനേജർ ബട്ടൺ -->
+        <div class="mx-4 mb-6">
+            <a href="sites.html" class="flex items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-2xl border border-blue-200 shadow-sm transition active:scale-95 text-center">
+                സൈറ്റ് മാനേജർ
+            </a>
+        </div>
+
+        <!-- ഡാഷ്‌ബോർഡ് കാർഡുകൾ (കണക്കുകൾ കാണിക്കുന്നത്) -->
+        <div class="grid grid-cols-2 gap-4 mx-4 mb-4">
+            <div class="p-4 bg-blue-600 text-white rounded-3xl shadow-sm">
+                <span class="text-xs font-medium block opacity-80">ആകെ വന്ന തുക (വരവ്)</span>
+                <span id="totalIncome" class="text-2xl font-black block mt-2">₹0</span>
+            </div>
+            <div id="cashCard" class="p-4 bg-emerald-600 text-white rounded-3xl shadow-sm transition-colors duration-300">
+                <span class="text-xs font-medium block opacity-80">കയ്യിലുള്ള തുക</span>
+                <span id="cashInHand" class="text-2xl font-black block mt-2">₹0</span>
+            </div>
+        </div>
+
+        <div class="mx-4 mb-4 p-4 bg-red-50 text-red-700 rounded-3xl border border-red-100">
+            <span class="text-xs font-bold block text-red-500 uppercase">ബാക്കി നൽകാനുള്ളത് (ആകെ ബാധ്യത)</span>
+            <span id="totalLiability" class="text-2xl font-black block mt-1">₹0</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mx-4 mb-6">
+            <div class="p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                <span class="text-xs font-medium text-slate-500 block">വാടകയിനത്തിൽ കൊടുക്കാനുള്ളത്</span>
+                <span id="rentExpense" class="text-xl font-black text-slate-800 block mt-1">₹0</span>
+            </div>
+            <div class="p-4 bg-amber-50 rounded-3xl border border-amber-100 text-amber-800">
+                <span class="text-xs font-bold block text-amber-600 uppercase">ആകെ ചിലവായ തുക</span>
+                <span id="totalPaid" class="text-xl font-black block mt-1">₹0</span>
+            </div>
+        </div>
+
+        <!-- മെയിൻ മെനു ബട്ടണുകൾ -->
+        <div class="mx-4 space-y-3">
+            <a href="staff.html" class="flex items-center justify-between p-4 bg-white hover:bg-slate-50 rounded-2xl border border-slate-100 shadow-sm transition active:scale-98">
+                <span class="font-bold text-slate-800">ജീവനക്കാർ</span>
+                <span class="text-slate-400">→</span>
+            </a>
+            <a href="rent.html" class="flex items-center justify-between p-4 bg-white hover:bg-slate-50 rounded-2xl border border-slate-100 shadow-sm transition active:scale-98">
+                <span class="font-bold text-slate-800">വാടക ഉപകരണങ്ങൾ</span>
+                <span class="text-slate-400">→</span>
+            </a>
+            <a href="income.html" class="flex items-center justify-between p-4 bg-white hover:bg-slate-50 rounded-2xl border border-slate-100 shadow-sm transition active:scale-98">
+                <span class="font-bold text-slate-800">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</span>
+                <span class="text-slate-400">→</span>
+            </a>
+        </div>
+
+        <!-- 2. പുതിയ WHATSAPP ഫീഡ്‌ബാക്ക് ബട്ടൺ (YOURPHONE മാറ്റി നിങ്ങളുടെ 10 അക്ക നമ്പർ നൽകുക) -->
+        <div class="mx-4 mt-6 mb-8">
+            <a href="https://wa.me/91YOURPHONE?text=ഹലോ%20മേസ്തിരി%20പ്രോ%20ആപ്പിനെക്കുറിച്ചുള്ള%20എന്റെ%20അഭിപ്രായം:%20" 
+               target="_blank" 
+               class="flex items-center justify-center gap-3 w-full p-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-lg transition-all active:scale-95 text-center text-sm">
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 11.99 0c3.196.001 6.199 1.242 8.461 3.496 2.262 2.254 3.501 5.251 3.5 8.448-.003 6.657-5.34 12.00-11.932 12.00-1.995-.001-3.956-.5-5.699-1.448L0 24zm6.59-4.846c1.657.983 3.284 1.513 4.908 1.514 5.388 0 9.773-4.35 9.776-9.664.002-2.573-1.002-4.991-2.828-6.805-1.826-1.815-4.25-2.815-6.822-2.816-5.394 0-9.778 4.351-9.78 9.665-.001 1.71.45 3.38 1.306 4.867l-.98 3.57 3.66-.952zm10.222-6.526c-.302-.151-1.791-.882-2.074-.985-.282-.103-.489-.151-.692.151-.204.302-.79.985-.968 1.187-.179.203-.358.226-.66.075-2.91-1.455-4.041-2.502-4.734-3.69-.183-.314-.018-.485.133-.634.135-.133.302-.353.452-.529.151-.176.202-.302.302-.503.101-.202.051-.378-.026-.529-.076-.151-.692-1.666-.949-2.28-.25-.6-.524-.518-.718-.528-.186-.01-.4-.01-.614-.01-.215 0-.565.081-.861.403-.296.322-1.13 1.107-1.13 2.7 0 1.594 1.163 3.134 1.325 3.354.162.221 2.291 3.5 5.551 4.91.775.335 1.38.535 1.852.686.779.248 1.489.213 2.05.129.626-.094 1.791-.733 2.043-1.44.252-.707.252-1.314.176-1.44-.076-.127-.282-.203-.585-.354z"/>
+                </svg>
+                അഭിപ്രായങ്ങൾ അറിയിക്കുക (WhatsApp)
+            </a>
         </div>
     </div>
-    <button id="logoutBtn" onclick="window.logout()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-md transition-all active:scale-95">
-        Logout
-    </button>
-</div>
 
-        <!-- പ്രധാന ആപ്പ് ടൈറ്റിൽ -->
-        <div class="text-center mb-6">
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-3">മേസ്തിരി പ്രോ</h1>
+    <!-- 3. പൂർണ്ണമായ ഫയർബേസ് സ്ക്രിപ്റ്റ് (യാതൊരു മാറ്റവും വരുത്താതെ സുരക്ഷിതമാക്കിയത്) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
             
-            <div class="w-full max-w-[200px] mx-auto bg-blue-50 border-2 border-blue-200 px-4 py-2 rounded-2xl shadow-sm">
-                <p class="text-blue-600 font-black text-lg tracking-wide">
-                    സൈറ്റ് മാനേജർ
-                </p>
-            </div>
-        </div>
-        
-        <!-- പ്രധാന വരുമാന കാർഡുകൾ (മലയാളം ലളിതമാക്കിയത്) -->
-        <div class="grid grid-cols-2 gap-4 mb-4">
-            <div class="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-5 rounded-3xl shadow-lg border border-blue-500 transform active:scale-95 transition">
-                <p class="text-xs opacity-90 font-bold uppercase tracking-wide mb-2">ആകെ വന്ന തുക (വരവ്)</p>
-                <p class="text-3xl font-black tracking-wide" id="totalIncome">₹0</p>
-            </div>
-            
-            <div id="cashCard" class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-5 rounded-3xl shadow-lg border border-emerald-500 transform active:scale-95 transition">
-                <p class="text-xs opacity-90 font-bold uppercase tracking-wide mb-2">കയ്യിലുള്ള തുക</p>
-                <p class="text-3xl font-black tracking-wide" id="cashInHand">₹0</p>
-            </div>
-        </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
 
-        <!-- ആകെ ബാധ്യത കാർഡ് -->
-        <div class="bg-gradient-to-br from-rose-50 to-red-100/50 border-2 border-rose-200 p-5 rounded-3xl mb-4 shadow-md">
-            <p class="text-xs text-rose-600 font-black uppercase tracking-wide mb-2">ബാക്കി നൽകാനുള്ളത് (ആകെ ബാധ്യത)</p>
-            <p class="text-3xl font-black text-rose-700 tracking-wide" id="totalLiability">₹0</p>
-        </div>
+        let currentUserId = "";
 
-        <!-- വാടക വിവരങ്ങൾ -->
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="bg-white border-2 border-slate-200 p-5 rounded-3xl shadow-sm">
-                <p class="text-xs text-slate-500 font-bold uppercase mb-2">വാടകയിനത്തിൽ കൊടുക്കാനുള്ളത്</p>
-                <p class="text-2xl font-black text-slate-800 tracking-wide" id="rentExpense">₹0</p>
-            </div>
-            <div class="bg-gradient-to-br from-amber-50 to-amber-100/30 border-2 border-amber-200 p-5 rounded-3xl shadow-sm">
-                <p class="text-xs text-amber-700 font-bold uppercase mb-2">ആകെ ചിലവായ തുക</p>
-                <p class="text-2xl font-black text-amber-900 tracking-wide" id="totalPaid">₹0</p>
-            </div>
-        </div>
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                const userName = user.email.split('@')[0];
+                
+                const displayUserEl = document.getElementById("displayUser");
+                if(displayUserEl) displayUserEl.innerText = userName;
+                
+                const avatarEl = document.getElementById("userAvatar");
+                if(avatarEl) avatarEl.innerText = userName.charAt(0).toUpperCase();
+                
+                calculateDashboard();
+            } else {
+                window.location.href = "login.html";
+            }
+        });
 
-        <!-- മറ്റ് പേജുകളിലേക്കുള്ള മെനു ലിങ്കുകൾ -->
-        <div class="space-y-4">
-            <a href="staff.html" class="block w-full bg-white border-2 border-slate-200/80 p-5 rounded-3xl text-center font-black text-slate-800 shadow-md hover:bg-slate-50 hover:border-blue-300 active:scale-98 transition text-lg">
-                ജീവനക്കാർ
-            </a>
-            <a href="rentals.html" class="block w-full bg-white border-2 border-slate-200/80 p-5 rounded-3xl text-center font-bold text-slate-800 shadow-md hover:bg-slate-50 hover:border-blue-300 active:scale-98 transition text-lg">
-                വാടക ഉപകരണങ്ങൾ
-            </a>
-            <a href="transactions.html" class="block w-full bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 p-5 rounded-3xl text-center font-black text-blue-900 shadow-md hover:from-blue-100 hover:to-cyan-100 active:scale-98 transition text-lg">
-                സൈറ്റ് കണക്ക് (വരവ്-ചെലവ്)
-            </a>
-        </div>
-    </div>
+        function calculateDashboard() {
+            const staffRef = ref(db, 'staff/' + currentUserId);
+            onValue(staffRef, (snapshot) => {
+                const data = snapshot.val() || {};
+                let staffLiability = 0;
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        
-    const firebaseConfig = {
-        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-        authDomain: "mesthri-app.firebaseapp.com",
-        projectId: "mesthri-app",
-        storageBucket: "mesthri-app.firebasestorage.app",
-        messagingSenderId: "1060617901864",
-        appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-        measurementId: "G-J9Y5TW9D7T"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const auth = getAuth(app);
-
-    let currentUserId = "";
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            currentUserId = user.uid;
-            const userName = user.email.split('@')[0];
-            
-            // ലോഡിംഗ് ടെക്സ്റ്റ് മാറ്റി യൂസർ പേര് കാണിക്കുന്നു
-            const displayUserEl = document.getElementById("displayUser");
-            if(displayUserEl) displayUserEl.innerText = userName;
-            
-            const avatarEl = document.getElementById("userAvatar");
-            if(avatarEl) avatarEl.innerText = userName.charAt(0).toUpperCase();
-            
-            calculateDashboard();
-        } else {
-            window.location.href = "login.html";
-        }
-    });
-
-    function calculateDashboard() {
-        const staffRef = ref(db, 'staff/' + currentUserId);
-        onValue(staffRef, (snapshot) => {
-            const data = snapshot.val() || {};
-            let staffLiability = 0;
-
-            Object.values(data).forEach(s => {
-                let work = Number(s.workAmount || 0);
-                let given = Number(s.givenAmount || 0);
-                if (work > given) {
-                    staffLiability += (work - given);
-                }
-            });
-
-            const rentRef = ref(db, 'rentals/' + currentUserId);
-            onValue(rentRef, (rentSnapshot) => {
-                const rentData = rentSnapshot.val() || {};
-                let rentalLiability = 0;
-
-                Object.values(rentData).forEach(r => {
-                    let totalRent = Number(r.totalRent || 0);
-                    let rentPaid = Number(r.rentPaid || 0);
-                    if (totalRent > rentPaid) {
-                        rentalLiability += (totalRent - rentPaid);
+                Object.values(data).forEach(s => {
+                    let work = Number(s.workAmount || 0);
+                    let given = Number(s.givenAmount || 0);
+                    if (work > given) {
+                        staffLiability += (work - given);
                     }
                 });
 
-                // ഇവിടെ 'transactions/' ന് ശേഷം currentUserId ചേർത്തു
-                const mainRef = ref(db, 'transactions/' + currentUserId);
-                onValue(mainRef, (transSnapshot) => {
-                    const transData = transSnapshot.val() || {};
-                    let totalIncome = 0;
-                    let generalPaid = 0;
+                const rentRef = ref(db, 'rentals/' + currentUserId);
+                onValue(rentRef, (rentSnapshot) => {
+                    const rentData = rentSnapshot.val() || {};
+                    let rentalLiability = 0;
 
-                    Object.values(transData).forEach(t => {
-                        let amount = Number(t.amount || 0);
-                        if (t.type === 'വരവ്') {
-                            totalIncome += amount;
-                        } else if (t.type === 'ചെലവ്') {
-                            generalPaid += amount;
+                    Object.values(rentData).forEach(r => {
+                        let totalRent = Number(r.totalRent || 0);
+                        let rentPaid = Number(r.rentPaid || 0);
+                        if (totalRent > rentPaid) {
+                            rentalLiability += (totalRent - rentPaid);
                         }
                     });
 
-                    let totalStaffPaid = Object.values(data).reduce((sum, s) => sum + Number(s.givenAmount || 0), 0);
-                    let totalRentalPaid = Object.values(rentData).reduce((sum, r) => sum + Number(r.rentPaid || 0), 0);
+                    const mainRef = ref(db, 'transactions/' + currentUserId);
+                    onValue(mainRef, (transSnapshot) => {
+                        const transData = transSnapshot.val() || {};
+                        let totalIncome = 0;
+                        let generalPaid = 0;
 
-                    let finalTotalPaid = totalStaffPaid + totalRentalPaid + generalPaid;
-                    let finalCashInHand = totalIncome - finalTotalPaid;
-                    let finalLiability = staffLiability + rentalLiability;
+                        Object.values(transData).forEach(t => {
+                            let amount = Number(t.amount || 0);
+                            if (t.type === 'വരവ്') {
+                                totalIncome += amount;
+                            } else if (t.type === 'ചെലവ്') {
+                                generalPaid += amount;
+                            }
+                        });
 
-                    const cashCard = document.getElementById("cashCard");
-                    if (cashCard) {
-                        if (finalCashInHand < 0) {
-                            cashCard.classList.remove("from-emerald-600", "to-emerald-700", "border-emerald-500");
-                            cashCard.classList.add("from-amber-600", "to-amber-700", "border-amber-500");
-                        } else {
-                            cashCard.classList.remove("from-amber-600", "to-amber-700", "border-amber-500");
-                            cashCard.classList.add("from-emerald-600", "to-emerald-700", "border-emerald-500");
+                        let totalStaffPaid = Object.values(data).reduce((sum, s) => sum + Number(s.givenAmount || 0), 0);
+                        let totalRentalPaid = Object.values(rentData).reduce((sum, r) => sum + Number(r.rentPaid || 0), 0);
+
+                        let finalTotalPaid = totalStaffPaid + totalRentalPaid + generalPaid;
+                        let finalCashInHand = totalIncome - finalTotalPaid;
+                        let finalLiability = staffLiability + rentalLiability;
+
+                        const cashCard = document.getElementById("cashCard");
+                        if (cashCard) {
+                            if (finalCashInHand < 0) {
+                                cashCard.classList.remove("from-emerald-600", "to-emerald-700", "border-emerald-500");
+                                cashCard.classList.add("from-amber-600", "to-amber-700", "border-amber-500");
+                            } else {
+                                cashCard.classList.remove("from-amber-600", "to-amber-700", "border-amber-500");
+                                cashCard.classList.add("from-emerald-600", "to-emerald-700", "border-emerald-500");
+                            }
                         }
-                    }
 
-                    // ഡാറ്റ സ്ക്രീനിൽ കാണിക്കുന്നു
-                    if(document.getElementById("totalIncome")) document.getElementById("totalIncome").innerText = "₹" + totalIncome;
-                    if(document.getElementById("cashInHand")) document.getElementById("cashInHand").innerText = "₹" + finalCashInHand;
-                    if(document.getElementById("totalLiability")) document.getElementById("totalLiability").innerText = "₹" + finalLiability;
-                    if(document.getElementById("rentExpense")) document.getElementById("rentExpense").innerText = "₹" + rentalLiability;
-                    if(document.getElementById("totalPaid")) document.getElementById("totalPaid").innerText = "₹" + finalTotalPaid;
+                        if(document.getElementById("totalIncome")) document.getElementById("totalIncome").innerText = "₹" + totalIncome;
+                        if(document.getElementById("cashInHand")) document.getElementById("cashInHand").innerText = "₹" + finalCashInHand;
+                        if(document.getElementById("totalLiability")) document.getElementById("totalLiability").innerText = "₹" + finalLiability;
+                        if(document.getElementById("rentExpense")) document.getElementById("rentExpense").innerText = "₹" + rentalLiability;
+                        if(document.getElementById("totalPaid")) document.getElementById("totalPaid").innerText = "₹" + finalTotalPaid;
+                    });
                 });
             });
-        });
-    }
-
-    // ലോഗ് ഔട്ട് ബട്ടൺ ക്ലിക്ക് ഉറപ്പാക്കാൻ
-    window.logout = function() {
-        signOut(auth).then(() => {
-            window.location.href = "login.html";
-        }).catch((error) => {
-            console.error("ലോഗ് ഔട്ട് ചെയ്യാൻ പറ്റിയില്ല:", error);
-        });
-    }
-    
-    // HTML ബട്ടണിലേക്ക് ലോഗ് ഔട്ട് ഫംഗ്ഷൻ നേരിട്ട് ലിങ്ക് ചെയ്യുന്നു
-    setTimeout(() => {
-        const logoutBtn = document.querySelector('[onclick="logout()"]') || document.getElementById("logoutBtn");
-        if(logoutBtn) {
-            logoutBtn.onclick = window.logout;
         }
-    }, 1000);
-</script>
 
-
+        window.logout = function() {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
+            }).catch((error) => {
+                console.error("ലോഗ് ഔട്ട് ചെയ്യാൻ പറ്റിയില്ല:", error);
+            });
+        }
+        
+        setTimeout(() => {
+            const logoutBtn = document.getElementById("logoutBtn");
+            if(logoutBtn) {
+                logoutBtn.onclick = window.logout;
+            }
+        }, 1000);
+    </script>
 </body>
-</html>
