@@ -6,6 +6,8 @@
     <title>ജീവനക്കാരുടെ കണക്ക്</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF ഡൗൺലോഡ് ചെയ്യാനുള്ള ലൈബ്രറി -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body class="bg-gray-100 p-4 font-sans">
 
@@ -21,7 +23,13 @@
             <a href="dashboard.html" class="text-[10px] bg-blue-600 px-3 py-1.5 rounded-lg font-bold hover:bg-blue-700 transition">മെയിൻ പേജ്</a>
         </div>
 
-        <h1 class="text-2xl font-black mb-4 text-center text-slate-800">ജീവനക്കാർ</h1>
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-black text-slate-800">ജീവനക്കാർ</h1>
+            <!-- മൊത്തം പിഡിഎഫ് റിപ്പോർട്ട് ബട്ടൺ -->
+            <button onclick="downloadAllStaffPDF()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-1">
+                📄 PDF റിപ്പോർട്ട്
+            </button>
+        </div>
         
         <!-- പുതിയ ജീവനക്കാരെ ചേർക്കാൻ -->
         <div class="bg-white p-5 rounded-3xl shadow-sm border mb-4 border-slate-200">
@@ -61,6 +69,29 @@
         </div>
     </div>
 
+    <!-- പേരും ഫോണും തിരുത്താനുള്ള (Edit) മോഡൽ വിൻഡോ -->
+    <div id="editStaffModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl">
+            <h3 class="text-lg font-bold mb-4 text-slate-800">വിവരങ്ങൾ തിരുത്തുക</h3>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">പേര്</label>
+                    <input type="text" id="editStaffName" class="w-full p-3 border rounded-xl outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">ഫോൺ നമ്പർ</label>
+                    <input type="text" id="editStaffPhone" class="w-full p-3 border rounded-xl outline-none focus:border-blue-500">
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeEditModal()" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-xl font-bold">ഒഴിവാക്കുക</button>
+                <button onclick="updateStaffDetails()" class="flex-1 bg-amber-500 text-white py-3 rounded-xl font-bold">മാറ്റങ്ങൾ വരുത്തുക</button>
+            </div>
+        </div>
+    </div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
@@ -84,6 +115,7 @@
     
     let tempActiveId = "";
     let tempActiveType = "";
+    let tempEditStaffId = "";
 
     // ലോഗിൻ പരിശോധിക്കുന്നു
     onAuthStateChanged(auth, (user) => {
@@ -121,7 +153,7 @@
             phone: phone, 
             workAmount: 0,
             givenAmount: 0,
-            history: "" // ആദ്യ ഘട്ടത്തിൽ ഹിസ്റ്ററി ഇല്ല
+            history: ""
         }).then(() => {
             document.getElementById('name').value = "";
             document.getElementById('phone').value = "";
@@ -145,8 +177,15 @@
             
             return `
             <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm mb-3">
-                <p class="font-black text-lg text-slate-800">${s.name || 'പേരില്ല'}</p>
-                <p class="text-slate-400 text-xs mb-3 font-bold">📞 ${s.phone || 'നമ്പർ നൽകിയിട്ടില്ല'}</p>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="font-black text-lg text-slate-800 flex items-center gap-2">
+                            ${s.name || 'പേരില്ല'}
+                            <span onclick="openEditStaffModal('${key}', '${s.name}', '${s.phone}')" class="text-sm cursor-pointer text-amber-500 hover:text-amber-600 select-none">✏️</span>
+                        </p>
+                        <p class="text-slate-400 text-xs mb-3 font-bold">📞 ${s.phone || 'നമ്പർ നൽകിയിട്ടില്ല'}</p>
+                    </div>
+                </div>
                 <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-3 rounded-2xl mb-4 border border-slate-100">
                     <div><p class="text-[9px] text-slate-400 font-bold uppercase">ആകെ കൂലി</p><p class="font-black text-sm text-slate-700">₹${workAmount}</p></div>
                     <div><p class="text-[9px] text-slate-400 font-bold uppercase">നൽകിയത്</p><p class="font-black text-sm text-green-600">₹${givenAmount}</p></div>
@@ -163,6 +202,34 @@
             </div>`;
         }).join('');
     }
+
+    // ജീവനക്കാരെ എഡിറ്റ് ചെയ്യാനുള്ള മോഡൽ ഫങ്ഷനുകൾ
+    window.openEditStaffModal = function(id, name, phone) {
+        tempEditStaffId = id;
+        document.getElementById("editStaffName").value = name;
+        document.getElementById("editStaffPhone").value = phone;
+        document.getElementById("editStaffModal").classList.remove("hidden");
+    };
+
+    window.closeEditModal = function() {
+        document.getElementById("editStaffModal").classList.add("hidden");
+    };
+
+    window.updateStaffDetails = function() {
+        let uName = document.getElementById("editStaffName").value.trim();
+        let uPhone = document.getElementById("editStaffPhone").value.trim();
+
+        if(!uName || !uPhone) return alert("വിവരങ്ങൾ ഒന്നും ശൂന്യമായി വിടരുത്!");
+
+        const targetRef = ref(db, `staff/${currentUserId}/${tempEditStaffId}`);
+        update(targetRef, {
+            name: uName,
+            phone: uPhone
+        }).then(() => {
+            closeEditModal();
+            alert("വിവരങ്ങൾ വിജയകരമായി തിരുത്തി!");
+        });
+    };
 
     // മോഡൽ തുറക്കുക
     window.openEntryModal = function(id, type) {
@@ -192,7 +259,6 @@
             return;
         }
 
-        // കണ്ടെത്തിയ ജീവനക്കാരന്റെ വിവരങ്ങൾ എടുക്കുന്നു
         const staffObj = staffListGlobal.find(([key]) => key === tempActiveId);
         if (staffObj) {
             const sData = staffObj[1];
@@ -201,7 +267,6 @@
             let currentGiven = Number(sData.givenAmount || 0);
             let historyText = sData.history || "";
 
-            // കൂലി മാറ്റങ്ങൾ കണക്കാക്കുന്നു
             if (tempActiveType === 'work') {
                 currentWork += amount;
             } else {
@@ -211,12 +276,10 @@
             let dateParts = selectedDate.split('-');
             let formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
-            // ഹിസ്റ്ററി ടെക്സ്റ്റിലേക്ക് പുതിയ ഇടപാട് ചേർക്കുന്നു
             let typeLabel = tempActiveType === 'work' ? 'കൂലി' : 'നൽകിയത്';
             let newHistoryEntry = `📅 ${formattedDate} | ${typeLabel}: ₹${amount} (${desc})\n`;
             historyText = newHistoryEntry + historyText;
 
-            // ഫയർബേസ് അപ്‌ഡേറ്റ് ചെയ്യൽ
             const targetRef = ref(db, `staff/${currentUserId}/${tempActiveId}`);
             update(targetRef, {
                 workAmount: currentWork,
@@ -256,6 +319,67 @@
         if(cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
         let message = `*സൈറ്റ് കണക്ക് വിവരങ്ങൾ*%0A%0A*പേര്:* ${name}%0A*ആകെ ജോലിക്കൂലി:* ₹${work}%0A*നൽകിയ തുക:* ₹${given}%0A*ബാക്കി നൽകാനുള്ളത്:* ₹${balance}%0A%0A_സൈറ്റ് മാനേജർ ആപ്പ് വഴി അയച്ചത്._`;
         window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
+    };
+
+    // ജീവനക്കാരുടെ ആകെ പിഡിഎഫ് റിപ്പോർട്ട് ഉണ്ടാക്കൽ
+    window.downloadAllStaffPDF = function() {
+        if(staffListGlobal.length === 0) return alert("റിപ്പോർട്ട് ഉണ്ടാക്കാൻ ജീവനക്കാർ ആരുമില്ല!");
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(20);
+        doc.text("MESTHRI APP - STAFF REPORT", 14, 20);
+        
+        doc.setFontSize(10);
+        doc.setFont("Helvetica", "normal");
+        doc.text("Date: " + new Date().toLocaleDateString(), 14, 28);
+        doc.text("--------------------------------------------------------------------------------------", 14, 33);
+        
+        let y = 40;
+        
+        staffListGlobal.forEach(([key, s], index) => {
+            let work = Number(s.workAmount || 0);
+            let given = Number(s.givenAmount || 0);
+            let bal = work - given;
+            
+            if(y > 260) { doc.addPage(); y = 20; }
+            
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text(`${index + 1}. ${s.name} (Phone: ${s.phone})`, 14, y);
+            
+            y += 6;
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(10);
+            doc.text(`Total Wage: Rs.${work}  |  Paid: Rs.${given}  |  Balance: Rs.${bal}`, 16, y);
+            
+            y += 8;
+            doc.setFontSize(9);
+            doc.text("History:", 16, y);
+            
+            y += 5;
+            if(s.history && s.history.trim() !== "") {
+                let lines = s.history.split('\n');
+                lines.forEach(line => {
+                    if(line.trim() !== "") {
+                        if(y > 270) { doc.addPage(); y = 20; }
+                        doc.text("  " + line, 16, y);
+                        y += 5;
+                    }
+                });
+            } else {
+                doc.text("  No transaction history recorded.", 16, y);
+                y += 5;
+            }
+            
+            y += 5;
+            doc.text("--------------------------------------------------------------------------------------", 14, y);
+            y += 8;
+        });
+        
+        doc.save("Staff_Report_" + new Date().toISOString().split('T')[0] + ".pdf");
     };
 </script>
 </body>
