@@ -33,51 +33,49 @@
             </button>
         </div>
 
-<!-- പ്രധാന ആപ്പ് ടൈറ്റിൽ - പുതിയ കള്ളി സ്റ്റൈലിൽ -->
-<div class="text-center mb-6">
-    <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-3">മേസ്തിരി ആപ്പ്</h1>
-    
-    <!-- സൈറ്റ് മാനേജർ എന്നത് വ്യക്തമായ ഒരു കള്ളിക്കുള്ളിലേക്ക് മാറ്റി -->
-    <div class="w-full max-w-[200px] mx-auto bg-blue-50 border-2 border-blue-200 px-4 py-2 rounded-2xl shadow-sm">
-        <p class="text-blue-600 font-black text-lg tracking-wide">
-            സൈറ്റ് മാനേജർ
-        </p>
-    </div>
-</div>
+        <!-- പ്രധാന ആപ്പ് ടൈറ്റിൽ -->
+        <div class="text-center mb-6">
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-3">മേസ്തിരി ആപ്പ്</h1>
+            
+            <div class="w-full max-w-[200px] mx-auto bg-blue-50 border-2 border-blue-200 px-4 py-2 rounded-2xl shadow-sm">
+                <p class="text-blue-600 font-black text-lg tracking-wide">
+                    സൈറ്റ് മാനേജർ
+                </p>
+            </div>
+        </div>
         
-        <!-- പ്രധാന വരുമാന കാർഡുകൾ -->
+        <!-- പ്രധാന വരുമാന കാർഡുകൾ (മലയാളം ലളിതമാക്കിയത്) -->
         <div class="grid grid-cols-2 gap-4 mb-4">
             <div class="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-5 rounded-3xl shadow-lg border border-blue-500 transform active:scale-95 transition">
-                <p class="text-xs opacity-90 font-bold uppercase tracking-wide mb-2">ആകെ വരുമാനം</p>
+                <p class="text-xs opacity-90 font-bold uppercase tracking-wide mb-2">ആകെ വന്ന തുക (വരവ്)</p>
                 <p class="text-3xl font-black tracking-wide" id="totalIncome">₹0</p>
             </div>
             
-            <!-- കയ്യിലുള്ള തുക മൈനസ് ആണെങ്കിൽ തിരിച്ചറിയാൻ പ്രത്യേക സ്റ്റൈലിംഗ് നൽകും -->
             <div id="cashCard" class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-5 rounded-3xl shadow-lg border border-emerald-500 transform active:scale-95 transition">
-                <p class="text-xs opacity-90 font-bold uppercase tracking-wide mb-2">കയ്യിലുള്ളത്</p>
+                <p class="text-xs opacity-90 font-bold uppercase tracking-wide mb-2">കയ്യിലുള്ള തുക</p>
                 <p class="text-3xl font-black tracking-wide" id="cashInHand">₹0</p>
             </div>
         </div>
 
         <!-- ആകെ ബാധ്യത കാർഡ് -->
         <div class="bg-gradient-to-br from-rose-50 to-red-100/50 border-2 border-rose-200 p-5 rounded-3xl mb-4 shadow-md">
-            <p class="text-xs text-rose-600 font-black uppercase tracking-wide mb-2">ആകെ ബാധ്യത (തുല്യം നൽകാനുള്ളത്)</p>
+            <p class="text-xs text-rose-600 font-black uppercase tracking-wide mb-2">ബാക്കി നൽകാനുള്ളത് (ആകെ ബാധ്യത)</p>
             <p class="text-3xl font-black text-rose-700 tracking-wide" id="totalLiability">₹0</p>
         </div>
 
         <!-- വാടക വിവരങ്ങൾ -->
         <div class="grid grid-cols-2 gap-4 mb-6">
             <div class="bg-white border-2 border-slate-200 p-5 rounded-3xl shadow-sm">
-                <p class="text-xs text-slate-500 font-bold uppercase mb-2">ബാക്കി വാടക ചെലവ്</p>
+                <p class="text-xs text-slate-500 font-bold uppercase mb-2">വാടകയിനത്തിൽ കൊടുക്കാനുള്ളത്</p>
                 <p class="text-2xl font-black text-slate-800 tracking-wide" id="rentExpense">₹0</p>
             </div>
             <div class="bg-gradient-to-br from-amber-50 to-amber-100/30 border-2 border-amber-200 p-5 rounded-3xl shadow-sm">
-                <p class="text-xs text-amber-700 font-bold uppercase mb-2">ആകെ നൽകിയത്</p>
+                <p class="text-xs text-amber-700 font-bold uppercase mb-2">ആകെ ചിലവായ തുക</p>
                 <p class="text-2xl font-black text-amber-900 tracking-wide" id="totalPaid">₹0</p>
             </div>
         </div>
 
-        <!-- മറ്റ് പേജുകളിലേക്കുള്ള മെനു ലിങ്കുകൾ (ലിങ്കുകൾ തിരുത്തിയത് ഇവിടെയാണ്) -->
+        <!-- മറ്റ് പേജുകളിലേക്കുള്ള മെനു ലിങ്കുകൾ -->
         <div class="space-y-4">
             <a href="staff.html" class="block w-full bg-white border-2 border-slate-200/80 p-5 rounded-3xl text-center font-black text-slate-800 shadow-md hover:bg-slate-50 hover:border-blue-300 active:scale-98 transition text-lg">
                 ജീവനക്കാർ
@@ -85,9 +83,8 @@
             <a href="rentals.html" class="block w-full bg-white border-2 border-slate-200/80 p-5 rounded-3xl text-center font-bold text-slate-800 shadow-md hover:bg-slate-50 hover:border-blue-300 active:scale-98 transition text-lg">
                 വാടക ഉപകരണങ്ങൾ
             </a>
-            <!-- 404 എറർ വരാതിരിക്കാൻ ശരിയായ ഫയൽ നെയിം ആയ transactions.html ഇവിടെ നൽകിയിട്ടുണ്ട് -->
             <a href="transactions.html" class="block w-full bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 p-5 rounded-3xl text-center font-black text-blue-900 shadow-md hover:from-blue-100 hover:to-cyan-100 active:scale-98 transition text-lg">
-                സൈറ്റ് കണക്ക്
+                സൈറ്റ് കണക്ക് (വരവ്-ചെലവ്)
             </a>
         </div>
     </div>
@@ -152,7 +149,6 @@
                     }
                 });
 
-                // തിരുത്തിയ ഭാഗം: കറക്റ്റ് ഫോൾഡറിലേക്ക് മാറ്റി
                 const mainRef = ref(db, 'transactions');
                 onValue(mainRef, (transSnapshot) => {
                     const transData = transSnapshot.val() || {};
@@ -161,7 +157,6 @@
 
                     Object.values(transData).forEach(t => {
                         let amount = Number(t.amount || 0);
-                        // തിരുത്തിയ ഭാഗം: മലയാളം വാക്കുകളിലേക്ക് മാറ്റി
                         if (t.type === 'വരവ്') {
                             totalIncome += amount;
                         } else if (t.type === 'ചെലവ്') {
@@ -176,7 +171,6 @@
                     let finalCashInHand = totalIncome - finalTotalPaid;
                     let finalLiability = staffLiability + rentalLiability;
 
-                    // കയ്യിലുള്ളത് മൈനസ് സംഖ്യയാണെങ്കിൽ കാർഡ് ചുവപ്പ്/ഓറഞ്ച് നിറമാക്കാനുള്ള ലോജിക്
                     const cashCard = document.getElementById("cashCard");
                     if (finalCashInHand < 0) {
                         cashCard.classList.remove("from-emerald-600", "to-emerald-700", "border-emerald-500");
