@@ -113,8 +113,13 @@
         if (user) {
             currentUserId = user.uid;
             const userName = user.email.split('@')[0];
-            document.getElementById("displayUser").innerText = userName;
-            document.getElementById("userAvatar").innerText = userName.charAt(0).toUpperCase();
+            
+            // ലോഡിംഗ് ടെക്സ്റ്റ് മാറ്റി യൂസർ പേര് കാണിക്കുന്നു
+            const displayUserEl = document.getElementById("displayUser");
+            if(displayUserEl) displayUserEl.innerText = userName;
+            
+            const avatarEl = document.getElementById("userAvatar");
+            if(avatarEl) avatarEl.innerText = userName.charAt(0).toUpperCase();
             
             calculateDashboard();
         } else {
@@ -149,7 +154,8 @@
                     }
                 });
 
-                const mainRef = ref(db, 'transactions');
+                // ഇവിടെ 'transactions/' ന് ശേഷം currentUserId ചേർത്തു
+                const mainRef = ref(db, 'transactions/' + currentUserId);
                 onValue(mainRef, (transSnapshot) => {
                     const transData = transSnapshot.val() || {};
                     let totalIncome = 0;
@@ -172,30 +178,45 @@
                     let finalLiability = staffLiability + rentalLiability;
 
                     const cashCard = document.getElementById("cashCard");
-                    if (finalCashInHand < 0) {
-                        cashCard.classList.remove("from-emerald-600", "to-emerald-700", "border-emerald-500");
-                        cashCard.classList.add("from-amber-600", "to-amber-700", "border-amber-500");
-                    } else {
-                        cashCard.classList.remove("from-amber-600", "to-amber-700", "border-amber-500");
-                        cashCard.classList.add("from-emerald-600", "to-emerald-700", "border-emerald-500");
+                    if (cashCard) {
+                        if (finalCashInHand < 0) {
+                            cashCard.classList.remove("from-emerald-600", "to-emerald-700", "border-emerald-500");
+                            cashCard.classList.add("from-amber-600", "to-amber-700", "border-amber-500");
+                        } else {
+                            cashCard.classList.remove("from-amber-600", "to-amber-700", "border-amber-500");
+                            cashCard.classList.add("from-emerald-600", "to-emerald-700", "border-emerald-500");
+                        }
                     }
 
-                    document.getElementById("totalIncome").innerText = "₹" + totalIncome;
-                    document.getElementById("cashInHand").innerText = "₹" + finalCashInHand;
-                    document.getElementById("totalLiability").innerText = "₹" + finalLiability;
-                    document.getElementById("rentExpense").innerText = "₹" + rentalLiability;
-                    document.getElementById("totalPaid").innerText = "₹" + finalTotalPaid;
+                    // ഡാറ്റ സ്ക്രീനിൽ കാണിക്കുന്നു
+                    if(document.getElementById("totalIncome")) document.getElementById("totalIncome").innerText = "₹" + totalIncome;
+                    if(document.getElementById("cashInHand")) document.getElementById("cashInHand").innerText = "₹" + finalCashInHand;
+                    if(document.getElementById("totalLiability")) document.getElementById("totalLiability").innerText = "₹" + finalLiability;
+                    if(document.getElementById("rentExpense")) document.getElementById("rentExpense").innerText = "₹" + rentalLiability;
+                    if(document.getElementById("totalPaid")) document.getElementById("totalPaid").innerText = "₹" + finalTotalPaid;
                 });
             });
         });
     }
 
+    // ലോഗ് ഔട്ട് ബട്ടൺ ക്ലിക്ക് ഉറപ്പാക്കാൻ
     window.logout = function() {
         signOut(auth).then(() => {
             window.location.href = "login.html";
+        }).catch((error) => {
+            console.error("ലോഗ് ഔട്ട് ചെയ്യാൻ പറ്റിയില്ല:", error);
         });
     }
+    
+    // HTML ബട്ടണിലേക്ക് ലോഗ് ഔട്ട് ഫംഗ്ഷൻ നേരിട്ട് ലിങ്ക് ചെയ്യുന്നു
+    setTimeout(() => {
+        const logoutBtn = document.querySelector('[onclick="logout()"]') || document.getElementById("logoutBtn");
+        if(logoutBtn) {
+            logoutBtn.onclick = window.logout;
+        }
+    }, 1000);
 </script>
+
 
 </body>
 </html>
