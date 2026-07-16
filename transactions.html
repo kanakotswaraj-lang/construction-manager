@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</title>
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF ഡൗൺലോഡ് ചെയ്യാനുള്ള ലൈബ്രറി -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body { background-color: #f1f5f9; font-family: sans-serif; }
     </style>
@@ -14,7 +17,11 @@
     <div class="max-w-md mx-auto">
         <!-- കണക്ക് രേഖപ്പെടുത്തുന്ന പ്രധാന ബോക്സ് -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
-            <h2 class="text-xl font-bold mb-5 text-center text-slate-700">വരവ്-ചെലവ് കണക്ക്</h2>
+            <div class="flex justify-between items-center mb-5">
+                <a href="dashboard.html" class="text-[10px] bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-300 transition">മെയിൻ പേജ്</a>
+                <h2 class="text-xl font-bold text-slate-700">വരവ്-ചെലവ് കണക്ക്</h2>
+                <div class="w-14"></div> <!-- Flex alignment spacer -->
+            </div>
             
             <div class="space-y-4">
                 <!-- 1. സെറ്റിന്റെ പേര് -->
@@ -26,7 +33,7 @@
                 <!-- 3. ഫോൺ നമ്പർ -->
                 <input type="number" id="phone" placeholder="ഫോൺ നമ്പർ (ഉദാ: 9876543210)" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500">
                 
-                <!-- 4. തീയതി തിരഞ്ഞെടുക്കാനുള്ള കള്ളി (കൃത്യമായ ഓർഡറിൽ) -->
+                <!-- 4. തീയതി തിരഞ്ഞെടുക്കാനുള്ള കള്ളി -->
                 <div class="space-y-1">
                     <label class="text-[11px] text-slate-400 font-bold px-1 uppercase">തീയതി തിരഞ്ഞെടുക്കുക</label>
                     <input type="date" id="customDate" class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-emerald-500 text-slate-700">
@@ -43,10 +50,31 @@
             </div>
         </div>
 
-        <!-- സെർച്ച് ബോക്സും ടോട്ടൽ കണക്കുകളും -->
+        <!-- സെർച്ച് ബോക്സും തീയതി ഫിൽറ്ററും ടോട്ടൽ കണക്കുകളും -->
         <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-6 space-y-4">
             <div>
-                <input type="text" id="searchInput" placeholder="സെറ്റിന്റെ പേര് വെച്ച് തിരയുക..." class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-blue-500 font-medium">
+                <input type="text" id="searchInput" placeholder="സെറ്റിന്റെ പേര് വെച്ച് തിരയുക..." class="w-full p-3 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-blue-500 font-medium mb-3">
+            </div>
+
+            <!-- തീയതികൾ വെച്ച് ഫിൽറ്റർ ചെയ്യാനുള്ള കള്ളികൾ -->
+            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                <p class="text-[10px] text-slate-400 font-bold uppercase mb-2 px-1">തീയതി വെച്ച് തിരയാൻ:</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[9px] text-slate-400 font-medium block pl-1">തുടങ്ങുന്ന തീയതി</label>
+                        <input type="date" id="filterFromDate" class="w-full p-2 bg-white rounded-lg text-xs border outline-none text-slate-700">
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-slate-400 font-medium block pl-1">അവസാനിക്കുന്ന തീയതി</label>
+                        <input type="date" id="filterToDate" class="w-full p-2 bg-white rounded-lg text-xs border outline-none text-slate-700">
+                    </div>
+                </div>
+                <div class="flex gap-2 mt-3">
+                    <button id="btnClearFilter" class="flex-1 text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 rounded-xl transition">ഫിൽറ്റർ മാറ്റുക</button>
+                    <button id="btnDownloadPDF" class="flex-1 text-[10px] bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-xl transition shadow-sm flex items-center justify-center gap-1">
+                        📄 PDF റിപ്പോർട്ട്
+                    </button>
+                </div>
             </div>
             
             <div class="grid grid-cols-3 gap-2 text-center pt-2 border-t border-slate-100">
@@ -72,10 +100,45 @@
         </div>
     </div>
 
-<!-- കൃത്യമായ ഓർഡറിൽ ഫയർബേസ് സ്ക്രിപ്റ്റ് താഴെ നൽകുന്നു -->
+    <!-- വിവരങ്ങൾ എഡിറ്റ് ചെയ്യാനുള്ള മോഡൽ വിൻഡോ (Popup) -->
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl">
+            <h3 class="text-lg font-bold mb-4 text-slate-800">വിവരങ്ങൾ തിരുത്തുക</h3>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">സെറ്റിന്റെ പേര്</label>
+                    <input type="text" id="editDesc" class="w-full p-3 border rounded-xl outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">വിശദാംശങ്ങൾ</label>
+                    <input type="text" id="editDetails" class="w-full p-3 border rounded-xl outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">ഫോൺ നമ്പർ</label>
+                    <input type="number" id="editPhone" class="w-full p-3 border rounded-xl outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">തീയതി</label>
+                    <input type="date" id="editDate" class="w-full p-3 border rounded-xl outline-none focus:border-blue-500 text-slate-700">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">തുക</label>
+                    <input type="number" id="editAmount" class="w-full p-3 border rounded-xl outline-none focus:border-blue-500">
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeEditModal()" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-xl font-bold">Cancel</button>
+                <button onclick="updateTransaction()" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+<!-- ഫയർബേസ് സ്ക്രിപ്റ്റ് താഴെ നൽകുന്നു -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -95,12 +158,14 @@
     document.getElementById('customDate').value = today;
 
     let allTransactions = [];
+    let currentEditKey = "";
+    let currentEditType = "";
 
     // സേവ് ചെയ്യാനുള്ള ഫങ്ഷൻ
     const saveTransaction = (type) => {
-        const desc = document.getElementById("description").value;
-        const details = document.getElementById("details").value;
-        const phone = document.getElementById("phone").value;
+        const desc = document.getElementById("description").value.trim();
+        const details = document.getElementById("details").value.trim();
+        const phone = document.getElementById("phone").value.trim();
         const amount = document.getElementById("amount").value;
         const selectedDate = document.getElementById("customDate").value;
 
@@ -130,17 +195,89 @@
         }
     };
 
-    // ഡിലീറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ window ഒബ്ജക്റ്റിലേക്ക് നൽകുന്നു
+    // ഡിലീറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ
     window.deleteTransaction = (key) => {
         if (confirm("ഈ ഇടപാട് നീക്കം ചെയ്യണോ?")) {
             remove(ref(db, 'transactions/' + key));
         }
     };
 
-    // ബട്ടണുകളിലേക്ക് ക്ലിക്ക് ലിസണർ നൽകുന്നു (HTML ഓർഡർ പ്രശ്നം പരിഹരിക്കാൻ)
+    // എഡിറ്റ് മോഡൽ തുറക്കാനുള്ള ഫങ്ഷൻ
+    window.openEditModal = (key, desc, details, phone, dateStr, amount, type) => {
+        currentEditKey = key;
+        currentEditType = type;
+        
+        document.getElementById("editDesc").value = desc;
+        document.getElementById("editDetails").value = details === 'വിശദാംശങ്ങൾ നൽകിയിട്ടില്ല' ? '' : details;
+        document.getElementById("editPhone").value = phone;
+        document.getElementById("editAmount").value = amount;
+
+        // MM/DD/YYYY എന്നതിനെ YYYY-MM-DD രൂപത്തിലേക്ക് മാറ്റുന്നു
+        if(dateStr && dateStr.includes('/')) {
+            const parts = dateStr.split('/');
+            const mm = parts[0].padStart(2, '0');
+            const dd = parts[1].padStart(2, '0');
+            const yyyy = parts[2];
+            document.getElementById("editDate").value = `${yyyy}-${mm}-${dd}`;
+        }
+
+        document.getElementById("editModal").classList.remove("hidden");
+    };
+
+    window.closeEditModal = () => {
+        document.getElementById("editModal").classList.add("hidden");
+    };
+
+    // ഫയർബേസിലേക്ക് മാറ്റങ്ങൾ സേവ് ചെയ്യൽ
+    window.updateTransaction = () => {
+        const desc = document.getElementById("editDesc").value.trim();
+        const details = document.getElementById("editDetails").value.trim();
+        const phone = document.getElementById("editPhone").value.trim();
+        const amount = document.getElementById("editAmount").value;
+        const selectedDate = document.getElementById("editDate").value;
+
+        if (desc && amount && selectedDate) {
+            const dateParts = selectedDate.split('-');
+            const formattedDate = `${Number(dateParts[1])}/${Number(dateParts[2])}/${dateParts[0]}`;
+
+            const updatedData = {
+                description: desc,
+                details: details,
+                phone: phone,
+                amount: Number(amount),
+                type: currentEditType,
+                date: formattedDate
+            };
+
+            update(ref(db, 'transactions/' + currentEditKey), updatedData).then(() => {
+                closeEditModal();
+                alert("വിവരങ്ങൾ വിജയകരമായി തിരുത്തി!");
+            });
+        } else {
+            alert("എല്ലാ വിവരങ്ങളും കൃത്യമായി പൂരിപ്പിക്കുക!");
+        }
+    };
+
+    // ബട്ടണുകളിലേക്ക് ക്ലിക്ക് ലിസണർ നൽകുന്നു
     document.getElementById("btnIncome").addEventListener("click", () => saveTransaction("വരവ്"));
     document.getElementById("btnExpense").addEventListener("click", () => saveTransaction("ചെലവ്"));
     document.getElementById("searchInput").addEventListener("input", () => filterTransactions());
+    
+    // ഡേറ്റ് ഫിൽറ്ററുകൾ മാറുമ്പോൾ റൺ ചെയ്യാൻ
+    document.getElementById("filterFromDate").addEventListener("change", () => filterTransactions());
+    document.getElementById("filterToDate").addEventListener("change", () => filterTransactions());
+    
+    // ഫിൽറ്ററുകൾ ക്ലിയർ ചെയ്യാൻ
+    document.getElementById("btnClearFilter").addEventListener("click", () => {
+        document.getElementById("filterFromDate").value = "";
+        document.getElementById("filterToDate").value = "";
+        filterTransactions();
+    });
+
+    // PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യൽ
+    document.getElementById("btnDownloadPDF").addEventListener("click", () => {
+        downloadFilteredPDF();
+    });
 
     // ഡാറ്റ മാറ്റങ്ങൾ തത്സമയം എടുക്കുന്നു
     onValue(transRef, (snapshot) => {
@@ -149,9 +286,12 @@
         filterTransactions();
     });
 
-    // ലിസ്റ്റും തുകയും കണക്കുകൂട്ടൽ
+    // ലിസ്റ്റും തുകയും കണക്കുകൂട്ടൽ ഫങ്ഷൻ
     function filterTransactions() {
         const searchVal = document.getElementById("searchInput").value.toLowerCase().trim();
+        const fromDateVal = document.getElementById("filterFromDate").value;
+        const toDateVal = document.getElementById("filterToDate").value;
+        
         const historyList = document.getElementById("historyList");
         historyList.innerHTML = "";
 
@@ -162,7 +302,27 @@
         allTransactions.forEach(([key, t]) => {
             const desc = t.description.toLowerCase();
             
-            if (searchVal === "" || desc.includes(searchVal)) {
+            // തീയതി താരതമ്യം ചെയ്യാനായി യഥാർത്ഥ ഡേറ്റ് ഒബ്ജക്റ്റാക്കി മാറ്റുന്നു
+            let matchDate = true;
+            if (t.date && t.date.includes('/')) {
+                const parts = t.date.split('/');
+                const tDateObj = new Date(parts[2], parts[0] - 1, parts[1]);
+                
+                if (fromDateVal) {
+                    const fromObj = new Date(fromDateVal);
+                    fromObj.setHours(0,0,0,0);
+                    tDateObj.setHours(0,0,0,0);
+                    if (tDateObj < fromObj) matchDate = false;
+                }
+                if (toDateVal) {
+                    const toObj = new Date(toDateVal);
+                    toObj.setHours(0,0,0,0);
+                    tDateObj.setHours(0,0,0,0);
+                    if (tDateObj > toObj) matchDate = false;
+                }
+            }
+
+            if ((searchVal === "" || desc.includes(searchVal)) && matchDate) {
                 hasData = true;
                 const isIncome = t.type === "വരവ്";
                 const amtColor = isIncome ? "text-green-600" : "text-red-600";
@@ -174,18 +334,23 @@
                     totalExpense += t.amount;
                 }
 
+                // അപ്പൊസ്തോഫി പ്രശ്നങ്ങൾ വരാതിരിക്കാൻ സ്ട്രിംഗുകൾ സുരക്ഷിതമാക്കുന്നു
+                const safeDesc = t.description.replace(/['"]/g, "");
+                const safeDetails = (t.details || 'വിശദാംശങ്ങൾ നൽകിയിട്ടില്ല').replace(/['"]/g, "");
+
                 historyList.innerHTML += `
                     <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex justify-between items-center">
                         <div>
                             <h4 class="font-bold text-blue-600 text-base">${t.description}</h4>
                             <p class="text-xs text-slate-700 font-medium mt-1">${t.details || 'വിശദാംശങ്ങൾ നൽകിയിട്ടില്ല'}</p>
-                            <p class="text-[10px] text-slate-400 mt-1">📅 ${t.date}</p>
+                            <p class="text-[10px] text-slate-400 mt-1">📅 ${t.date} (${t.type})</p>
                         </div>
                         <div class="text-right">
                             <div class="font-bold text-lg ${amtColor} mb-2">${amtSign} ₹${t.amount}</div>
-                            <div class="flex gap-2 justify-end">
-                                <span onclick="deleteTransaction('${key}')" class="text-xs text-red-500 cursor-pointer hover:underline font-bold mr-2">ഡിലീറ്റ്</span>
-                                <span onclick='window.open("https://wa.me/91${t.phone || ''}")' class="text-xs text-blue-500 cursor-pointer hover:underline font-bold">WhatsApp</span>
+                            <div class="flex gap-2 justify-end text-xs font-bold">
+                                <span onclick="openEditModal('${key}', '${safeDesc}', '${safeDetails}', '${t.phone || ''}', '${t.date}', ${t.amount}, '${t.type}')" class="text-amber-500 cursor-pointer hover:underline mr-1">എഡിറ്റ്</span>
+                                <span onclick="deleteTransaction('${key}')" class="text-red-500 cursor-pointer hover:underline mr-1">ഡിലീറ്റ്</span>
+                                <span onclick='window.open("https://wa.me/91${t.phone || ''}")' class="text-blue-500 cursor-pointer hover:underline">WhatsApp</span>
                             </div>
                         </div>
                     </div>
@@ -213,6 +378,95 @@
             balanceEl.className = "text-sm font-black text-red-600";
             balanceLabel.innerText = "ബാധ്യത";
         }
+    }
+
+    // ഫിൽറ്റർ ചെയ്ത ഡാറ്റ വെച്ച് PDF ഉണ്ടാക്കുന്ന ഫങ്ഷൻ
+    function downloadFilteredPDF() {
+        const searchVal = document.getElementById("searchInput").value.toLowerCase().trim();
+        const fromDateVal = document.getElementById("filterFromDate").value;
+        const toDateVal = document.getElementById("filterToDate").value;
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(18);
+        doc.text("MESTHRI APP - SITE TRANSACTIONS", 14, 20);
+
+        doc.setFontSize(10);
+        doc.setFont("Helvetica", "normal");
+        
+        let dateInfo = "All Dates";
+        if(fromDateVal || toDateVal) {
+            dateInfo = `Period: ${fromDateVal || 'Start'} to ${toDateVal || 'End'}`;
+        }
+        doc.text(dateInfo + "  |  Generated: " + new Date().toLocaleDateString(), 14, 28);
+        doc.text("--------------------------------------------------------------------------------------", 14, 33);
+
+        let y = 40;
+        let pdfIncome = 0;
+        let pdfExpense = 0;
+
+        allTransactions.forEach(([key, t]) => {
+            const desc = t.description.toLowerCase();
+            let matchDate = true;
+            
+            if (t.date && t.date.includes('/')) {
+                const parts = t.date.split('/');
+                const tDateObj = new Date(parts[2], parts[0] - 1, parts[1]);
+                
+                if (fromDateVal) {
+                    const fromObj = new Date(fromDateVal);
+                    fromObj.setHours(0,0,0,0);
+                    tDateObj.setHours(0,0,0,0);
+                    if (tDateObj < fromObj) matchDate = false;
+                }
+                if (toDateVal) {
+                    const toObj = new Date(toDateVal);
+                    toObj.setHours(0,0,0,0);
+                    tDateObj.setHours(0,0,0,0);
+                    if (tDateObj > toObj) matchDate = false;
+                }
+            }
+
+            if ((searchVal === "" || desc.includes(searchVal)) && matchDate) {
+                if(y > 260) { doc.addPage(); y = 20; }
+
+                if (t.type === "വരവ്") pdfIncome += t.amount;
+                else pdfExpense += t.amount;
+
+                doc.setFont("Helvetica", "bold");
+                doc.setFontSize(11);
+                doc.text(`Description: ${t.description}`, 14, y);
+                
+                doc.setFont("Helvetica", "normal");
+                doc.text(`Type: ${t.type}  |  Amount: Rs.${t.amount}`, 120, y);
+                
+                y += 5;
+                doc.setFontSize(9);
+                doc.text(`Details: ${t.details || '-'}  |  Date: ${t.date}  |  Phone: ${t.phone || '-'}`, 14, y);
+                
+                y += 5;
+                doc.text(".................................................................................................................................", 14, y);
+                y += 8;
+            }
+        });
+
+        // ടോട്ടൽ സമ്മറി പേജിന്റെ അവസാനം ചേർക്കുന്നു
+        if(y > 240) { doc.addPage(); y = 20; }
+        y += 5;
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text("SUMMARY REPORT", 14, y);
+        y += 6;
+        doc.text(`Total Income  : Rs.${pdfIncome}`, 14, y);
+        y += 5;
+        doc.text(`Total Expense : Rs.${pdfExpense}`, 14, y);
+        y += 5;
+        const bal = pdfIncome - pdfExpense;
+        doc.text(`${bal >= 0 ? 'Net Balance' : 'Net Liability'}   : Rs.${Math.abs(bal)}`, 14, y);
+
+        doc.save("Site_Transactions_" + new Date().toISOString().split('T')[0] + ".pdf");
     }
 </script>
 </body>
