@@ -3,65 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>സൈറ്റ് മാനേജർ</title>
-    <!-- Tailwind CSS for styling -->
+    <title>മേസ്തിരി ആപ്പ് - സൈറ്റ് മാനേജർ</title>
+    <!-- Tailwind CSS ഫോർ സ്റ്റൈലിംഗ് -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- മനോഹരമായ മലയാളം ഫോണ്ട് -->
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Manjari', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-50 p-4 font-sans">
+<body class="bg-gradient-to-b from-slate-50 to-slate-100 min-h-screen p-4">
 
     <div class="max-w-md mx-auto">
         
-        <!-- ലോഗിൻ ഹെഡർ -->
-        <div class="bg-slate-800 text-white p-4 rounded-3xl shadow-sm mb-4 flex justify-between items-center">
-            <div class="flex items-center gap-2.5">
-                <div id="userAvatar" class="w-8 h-8 bg-yellow-400 text-slate-900 rounded-full flex items-center justify-center font-black text-sm uppercase">
+        <!-- പ്രൊഫൈൽ ഹെഡർ ബോക്സ് -->
+        <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-white p-4 rounded-3xl shadow-xl mb-6 flex justify-between items-center border border-slate-800">
+            <div class="flex items-center gap-3">
+                <div id="userAvatar" class="w-10 h-10 bg-gradient-to-tr from-yellow-400 to-amber-500 text-slate-950 rounded-2xl flex items-center justify-center font-black text-lg shadow-inner">
                     ..
                 </div>
-                <div class="leading-none">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">മേസ്ത്രി</p>
-                    <p id="displayUser" class="text-sm font-black text-yellow-400">ലോഡ് ചെയ്യുന്നു...</p>
+                <div class="leading-tight">
+                    <p class="text-[11px] text-slate-400 font-bold tracking-wider uppercase">മേസ്തിരി</p>
+                    <p id="displayUser" class="text-base font-black text-yellow-400">ലോഡ് ചെയ്യുന്നു...</p>
                 </div>
             </div>
-            <button onclick="logout()" class="text-[10px] bg-red-600/20 hover:bg-red-600/30 text-red-400 px-3 py-2 rounded-xl font-bold transition">Logout</button>
+            <button onclick="logout()" class="text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-4 py-2 rounded-2xl font-black transition shadow-sm">
+                Logout
+            </button>
         </div>
 
-        <h1 class="text-3xl font-black mb-6 text-center text-slate-800 tracking-tight">സൈറ്റ് മാനേജർ</h1>
+        <!-- പ്രധാന ആപ്പ് ടൈറ്റിൽ -->
+        <div class="text-center mb-6">
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight">മേസ്തിരി ആപ്പ്</h1>
+            <p class="text-blue-600 font-bold mt-1 text-lg">സൈറ്റ് മാനേജർ</p>
+        </div>
 
-        <!-- പ്രധാന കാർഡുകൾ -->
-        <div class="grid grid-cols-2 gap-3 mb-3">
-            <div class="bg-blue-600 text-white p-5 rounded-3xl shadow-md border border-blue-500">
-                <p class="text-[10px] opacity-80 font-bold uppercase tracking-wider mb-1">ആകെ വരുമാനം</p>
-                <p class="text-2xl font-black" id="totalIncome">₹0</p>
+        <!-- പ്രധാന വരുമാന കാർഡുകൾ -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-5 rounded-3xl shadow-lg border border-blue-500 transform active:scale-95 transition">
+                <p class="text-xs opacity-90 font-bold uppercase tracking-wide mb-2">ആകെ വരുമാനം</p>
+                <p class="text-3xl font-black tracking-wide" id="totalIncome">₹0</p>
             </div>
-            <div class="bg-emerald-600 text-white p-5 rounded-3xl shadow-md border border-emerald-500">
-                <p class="text-[10px] opacity-80 font-bold uppercase tracking-wider mb-1">കയ്യിലുള്ളത്</p>
-                <p class="text-2xl font-black" id="cashInHand">₹0</p>
+            
+            <!-- കയ്യിലുള്ള തുക മൈനസ് ആണെങ്കിൽ തിരിച്ചറിയാൻ പ്രത്യേക സ്റ്റൈലിംഗ് നൽകും -->
+            <div id="cashCard" class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-5 rounded-3xl shadow-lg border border-emerald-500 transform active:scale-95 transition">
+                <p class="text-xs opacity-90 font-bold uppercase tracking-wide mb-2">കയ്യിലുള്ളത്</p>
+                <p class="text-3xl font-black tracking-wide" id="cashInHand">₹0</p>
             </div>
         </div>
 
         <!-- ആകെ ബാധ്യത കാർഡ് -->
-        <div class="bg-rose-50 border border-rose-100 p-5 rounded-3xl mb-4 shadow-sm">
-            <p class="text-[10px] text-rose-500 font-black uppercase tracking-wider mb-1">ആകെ ബാധ്യത (തുല്യം നൽകാനുള്ളത്)</p>
-            <p class="text-2xl font-black text-rose-700" id="totalLiability">₹0</p>
+        <div class="bg-gradient-to-br from-rose-50 to-red-100/50 border-2 border-rose-200 p-5 rounded-3xl mb-4 shadow-md">
+            <p class="text-xs text-rose-600 font-black uppercase tracking-wide mb-2">ആകെ ബാധ്യത (തുല്യം നൽകാനുള്ളത്)</p>
+            <p class="text-3xl font-black text-rose-700 tracking-wide" id="totalLiability">₹0</p>
         </div>
 
-        <!-- വാടക വിവരം -->
-        <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="bg-slate-100 border border-slate-200 p-5 rounded-3xl">
-                <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">ബാക്കി വാടക ചെലവ്</p>
-                <p class="text-xl font-black text-slate-700" id="rentExpense">₹0</p>
+        <!-- വാടക വിവരങ്ങൾ -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-white border-2 border-slate-200 p-5 rounded-3xl shadow-sm">
+                <p class="text-xs text-slate-500 font-bold uppercase mb-2">ബാക്കി വാടക ചെലവ്</p>
+                <p class="text-2xl font-black text-slate-800 tracking-wide" id="rentExpense">₹0</p>
             </div>
-            <div class="bg-amber-50 border border-amber-100 p-5 rounded-3xl">
-                <p class="text-[10px] text-amber-600 font-bold uppercase mb-1">ആകെ നൽകിയത്</p>
-                <p class="text-xl font-black text-amber-800" id="totalPaid">₹0</p>
+            <div class="bg-gradient-to-br from-amber-50 to-amber-100/30 border-2 border-amber-200 p-5 rounded-3xl shadow-sm">
+                <p class="text-xs text-amber-700 font-bold uppercase mb-2">ആകെ നൽകിയത്</p>
+                <p class="text-2xl font-black text-amber-900 tracking-wide" id="totalPaid">₹0</p>
             </div>
         </div>
 
-        <!-- പേജ് ലിങ്കുകൾ -->
-        <div class="space-y-3">
-            <a href="staff.html" class="block w-full bg-white border border-slate-200 p-5 rounded-3xl text-center font-bold text-slate-800 shadow-sm hover:bg-slate-50 transition text-base">ജീവനക്കാർ</a>
-            <a href="rentals.html" class="block w-full bg-white border border-slate-200 p-5 rounded-3xl text-center font-bold text-slate-800 shadow-sm hover:bg-slate-50 transition text-base">വാടക ഉപകരണങ്ങൾ</a>
-            <a href="accounts.html" class="block w-full bg-white border border-slate-200 p-5 rounded-3xl text-center font-bold text-slate-800 shadow-sm hover:bg-slate-50 transition text-base">സെറ്റ് കണക്ക്</a>
+        <!-- മറ്റ് പേജുകളിലേക്കുള്ള മെനു ലിങ്കുകൾ (ലിങ്കുകൾ തിരുത്തിയത് ഇവിടെയാണ്) -->
+        <div class="space-y-4">
+            <a href="staff.html" class="block w-full bg-white border-2 border-slate-200/80 p-5 rounded-3xl text-center font-black text-slate-800 shadow-md hover:bg-slate-50 hover:border-blue-300 active:scale-98 transition text-lg">
+                ജീവനക്കാർ
+            </a>
+            <a href="rentals.html" class="block w-full bg-white border-2 border-slate-200/80 p-5 rounded-3xl text-center font-bold text-slate-800 shadow-md hover:bg-slate-50 hover:border-blue-300 active:scale-98 transition text-lg">
+                വാടക ഉപകരണങ്ങൾ
+            </a>
+            <!-- 404 എറർ വരാതിരിക്കാൻ ശരിയായ ഫയൽ നെയിം ആയ transactions.html ഇവിടെ നൽകിയിട്ടുണ്ട് -->
+            <a href="transactions.html" class="block w-full bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 p-5 rounded-3xl text-center font-black text-blue-900 shadow-md hover:from-blue-100 hover:to-cyan-100 active:scale-98 transition text-lg">
+                സൈറ്റ് കണക്ക്
+            </a>
         </div>
     </div>
 
@@ -99,7 +119,6 @@
     });
 
     function calculateDashboard() {
-        // 1. ജീവനക്കാരുടെ കണക്കുകൾ എടുക്കുക
         const staffRef = ref(db, 'staff/' + currentUserId);
         onValue(staffRef, (snapshot) => {
             const data = snapshot.val() || {};
@@ -113,7 +132,6 @@
                 }
             });
 
-            // 2. വാടക ഉപകരണങ്ങളുടെ കണക്കുകൾ എടുക്കുക
             const rentRef = ref(db, 'rentals/' + currentUserId);
             onValue(rentRef, (rentSnapshot) => {
                 const rentData = rentSnapshot.val() || {};
@@ -127,7 +145,6 @@
                     }
                 });
 
-                // 3. ജനറൽ എക്സ്പെൻസ്, വരുമാന കണക്കുകൾ എടുക്കുക
                 const mainRef = ref(db, 'transactions/' + currentUserId);
                 onValue(mainRef, (transSnapshot) => {
                     const transData = transSnapshot.val() || {};
@@ -143,30 +160,23 @@
                         }
                     });
 
-                    // ഫയർബേസ് വാടക കണക്ക് കാണാൻ (accounts പേജിലെ വാടകകൾ ഉണ്ടെങ്കിൽ)
-                    let totalRentPaidFromAccounts = 0;
-                    Object.values(transData).forEach(t => {
-                        if (t.type === 'expense' && (t.description || '').includes('വാടക')) {
-                            totalRentPaidFromAccounts += Number(t.amount || 0);
-                        }
-                    });
-
-                    // എല്ലാ ജീവനക്കാർക്കും ആകെ കൊടുത്ത ശമ്പളം
                     let totalStaffPaid = Object.values(data).reduce((sum, s) => sum + Number(s.givenAmount || 0), 0);
-                    
-                    // എല്ലാ വാടകയ്ക്കും കൊടുത്ത തുക
                     let totalRentalPaid = Object.values(rentData).reduce((sum, r) => sum + Number(r.rentPaid || 0), 0);
 
-                    // ആകെ കൊടുത്ത തുക (ശമ്പളം + വാടക + മറ്റ് ചെലവുകൾ)
                     let finalTotalPaid = totalStaffPaid + totalRentalPaid + generalPaid;
-
-                    // കയ്യിലുള്ള തുക = ആകെ വരുമാനം - ആകെ കൊടുത്തത്
                     let finalCashInHand = totalIncome - finalTotalPaid;
-
-                    // ആകെ ബാധ്യത = ജീവനക്കാർക്ക് കൊടുക്കാനുള്ളത് + വാടക കൊടുക്കാനുള്ളത്
                     let finalLiability = staffLiability + rentalLiability;
 
-                    // സ്ക്രീനിൽ കാണിക്കുക
+                    // കയ്യിലുള്ളത് മൈനസ് സംഖ്യയാണെങ്കിൽ കാർഡ് ചുവപ്പ് നിറമാക്കാനുള്ള ലോജിക്
+                    const cashCard = document.getElementById("cashCard");
+                    if (finalCashInHand < 0) {
+                        cashCard.classList.remove("from-emerald-600", "to-emerald-700", "border-emerald-500");
+                        cashCard.classList.add("from-amber-600", "to-amber-700", "border-amber-500");
+                    } else {
+                        cashCard.classList.remove("from-amber-600", "to-amber-700", "border-amber-500");
+                        cashCard.classList.add("from-emerald-600", "to-emerald-700", "border-emerald-500");
+                    }
+
                     document.getElementById("totalIncome").innerText = "₹" + totalIncome;
                     document.getElementById("cashInHand").innerText = "₹" + finalCashInHand;
                     document.getElementById("totalLiability").innerText = "₹" + finalLiability;
