@@ -152,7 +152,8 @@
                     }
                 });
 
-                const mainRef = ref(db, 'transactions/' + currentUserId);
+                // തിരുത്തിയ ഭാഗം: കറക്റ്റ് ഫോൾഡറിലേക്ക് മാറ്റി
+                const mainRef = ref(db, 'transactions');
                 onValue(mainRef, (transSnapshot) => {
                     const transData = transSnapshot.val() || {};
                     let totalIncome = 0;
@@ -160,9 +161,10 @@
 
                     Object.values(transData).forEach(t => {
                         let amount = Number(t.amount || 0);
-                        if (t.type === 'income') {
+                        // തിരുത്തിയ ഭാഗം: മലയാളം വാക്കുകളിലേക്ക് മാറ്റി
+                        if (t.type === 'വരവ്') {
                             totalIncome += amount;
-                        } else if (t.type === 'expense') {
+                        } else if (t.type === 'ചെലവ്') {
                             generalPaid += amount;
                         }
                     });
@@ -174,7 +176,7 @@
                     let finalCashInHand = totalIncome - finalTotalPaid;
                     let finalLiability = staffLiability + rentalLiability;
 
-                    // കയ്യിലുള്ളത് മൈനസ് സംഖ്യയാണെങ്കിൽ കാർഡ് ചുവപ്പ് നിറമാക്കാനുള്ള ലോജിക്
+                    // കയ്യിലുള്ളത് മൈനസ് സംഖ്യയാണെങ്കിൽ കാർഡ് ചുവപ്പ്/ഓറഞ്ച് നിറമാക്കാനുള്ള ലോജിക്
                     const cashCard = document.getElementById("cashCard");
                     if (finalCashInHand < 0) {
                         cashCard.classList.remove("from-emerald-600", "to-emerald-700", "border-emerald-500");
@@ -200,5 +202,6 @@
         });
     }
 </script>
+
 </body>
 </html>
