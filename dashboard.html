@@ -17,21 +17,22 @@
 
     <div class="max-w-md mx-auto">
         
-        <!-- പ്രൊഫൈൽ ഹെഡർ ബോക്സ് -->
-        <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-white p-4 rounded-3xl shadow-xl mb-6 flex justify-between items-center border border-slate-800">
-            <div class="flex items-center gap-3">
-                <div id="userAvatar" class="w-10 h-10 bg-gradient-to-tr from-yellow-400 to-amber-500 text-slate-950 rounded-2xl flex items-center justify-center font-black text-lg shadow-inner">
-                    ..
-                </div>
-                <div class="leading-tight">
-                    <p class="text-[11px] text-slate-400 font-bold tracking-wider uppercase">മേസ്തിരി</p>
-                    <p id="displayUser" class="text-base font-black text-yellow-400">ലോഡ് ചെയ്യുന്നു...</p>
-                </div>
-            </div>
-            <button onclick="logout()" class="text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-4 py-2 rounded-2xl font-black transition shadow-sm">
-                Logout
-            </button>
+        
+<!-- പുതുക്കിയ സുരക്ഷിതമായ ഹെഡർ കോഡ് -->
+<div class="mx-4 mt-4 p-4 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-2xl shadow-xl flex items-center justify-between border border-slate-800">
+    <div class="flex items-center gap-3">
+        <div id="userAvatar" class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center font-black text-slate-950 shadow-md border border-amber-400">
+            M
         </div>
+        <div>
+            <p class="text-[10px] text-slate-400 font-medium tracking-wide">ലോഗിൻ ചെയ്തിരിക്കുന്നു</p>
+            <h3 id="displayUser" class="text-sm font-bold text-slate-100">മേസ്തിരി പ്രോ പ്രൊഫൈൽ</h3>
+        </div>
+    </div>
+    <button id="logoutBtn" onclick="window.logout()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-md transition-all active:scale-95">
+        Logout
+    </button>
+</div>
 
         <!-- പ്രധാന ആപ്പ് ടൈറ്റിൽ -->
         <div class="text-center mb-6">
