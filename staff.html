@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>മേസ്തിരി പ്രോ - ജീവനക്കാരുടെ പ്രൊഫൈൽ & ചരിത്രം</title>
+    <title>മേസ്തിരി പ്രോ - ജീവനക്കാരുടെ കണക്കുപുസ്തകം</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -28,28 +28,28 @@
         <div class="my-6 mx-4 flex justify-between items-center">
             <h1 class="text-3xl font-black text-slate-950">ജീവനക്കാർ</h1>
             <button onclick="toggleForm()" id="addBtnText" class="px-4 py-2 bg-indigo-600 text-white font-bold rounded-xl text-sm shadow-md transition active:scale-95">
-                + ചേർക്കുക
+                + പുതിയ ആളെ ചേർക്കുക
             </button>
         </div>
 
-        <!-- പുതിയ തൊഴിലാളിയെ ചേർക്കാനുള്ള ഫോം (Toggle) -->
+        <!-- പുതിയ തൊഴിലാളിയെ ചേർക്കാനുള്ള ഫോം -->
         <div id="staffForm" class="mx-4 p-6 bg-white rounded-3xl border border-slate-100 shadow-md hidden mb-6">
-            <p class="text-xs font-bold text-slate-400 mb-4">തൊഴിലാളിയുടെ വിവരങ്ങൾ</p>
+            <p class="text-xs font-bold text-slate-400 mb-4">തൊഴിലാളിയുടെ വിവരങ്ങൾ നൽകുക</p>
             <div class="space-y-4">
                 <input type="hidden" id="editMemberId">
                 <input type="text" id="staffName" placeholder="തൊഴിലാളിയുടെ പേര്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-bold focus:outline-none focus:border-indigo-500">
                 <input type="tel" id="staffPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-bold focus:outline-none focus:border-indigo-500">
-                <input type="number" id="dailyWage" placeholder="ദിവസക്കൂലി (₹)" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-bold focus:outline-none focus:border-indigo-500">
+                <input type="number" id="dailyWage" placeholder="ഒരു ദിവസത്തെ കൂലി (₹)" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-bold focus:outline-none focus:border-indigo-500">
                 
                 <button onclick="saveStaffMember()" id="submitBtn" class="w-full p-4 bg-slate-950 hover:bg-slate-900 text-white font-bold rounded-xl shadow-md text-center">
-                    സേവ് ചെയ്യുക
+                    ലിസ്റ്റിലേക്ക് ചേർക്കുക
                 </button>
             </div>
         </div>
 
         <!-- ജീവനക്കാരുടെ ലിസ്റ്റ് -->
         <div class="mx-4">
-            <p class="text-xs font-bold text-slate-400 mb-3 px-2">നിലവിലുള്ള ജീവനക്കാർ</p>
+            <p class="text-xs font-bold text-slate-400 mb-3 px-2">നിലവിലുള്ള തൊഴിലാളികൾ</p>
             <div id="staffList" class="space-y-4"></div>
         </div>
     </div>
@@ -67,37 +67,39 @@
             
             <!-- പെയ്‌മെന്റ് ആഡ് ചെയ്യാനുള്ള ഭാഗം -->
             <div class="bg-slate-50 p-4 rounded-2xl border mb-4">
-                <p class="text-xs font-black text-slate-500 uppercase mb-3">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</p>
+                <p class="text-xs font-black text-indigo-950 uppercase mb-3">കണക്കുകൾ രേഖപ്പെടുത്താം</p>
                 <div class="grid grid-cols-2 gap-2 mb-2">
                     <input type="number" id="transAmount" placeholder="തുക (₹)" class="p-3 border rounded-xl font-bold text-sm">
-                    <select id="transType" class="p-3 border rounded-xl font-bold text-sm bg-white">
-                        <option value="attendance">ഹാജർ (കൂലി കൂട്ടുക)</option>
+                    <select id="transType" class="p-3 border rounded-xl font-bold text-sm bg-white text-slate-800">
+                        <option value="attendance">ഹാജർ (കൂലി കൂട്ടാൻ)</option>
                         <option value="advance">അഡ്വാൻസ് കൊടുത്തു</option>
-                        <option value="settlement">ശമ്പളം നൽകി</option>
+                        <option value="settlement">കൂലി കൊടുത്തു തീർത്തു</option>
                     </select>
                 </div>
-                <input type="text" id="transNote" placeholder="വിവരണം (ഓപ്ഷണൽ)" class="w-full p-3 border rounded-xl font-bold text-sm mb-2">
-                <button onclick="addTransaction()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-sm shadow-sm">സേവ് ചെയ്യുക</button>
+                <input type="text" id="transNote" placeholder="കുറിപ്പുകൾ (സ്ഥലം/പണി - ഓപ്ഷണൽ)" class="w-full p-3 border rounded-xl font-bold text-sm mb-2">
+                <button onclick="addTransaction()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-sm shadow-sm">കണക്കിൽ ചേർക്കുക</button>
             </div>
 
-            <!-- കണക്ക് വിവരങ്ങൾ -->
+            <!-- കണക്ക് വിവരങ്ങൾ (ലളിതമായ മലയാളത്തിൽ) -->
             <div class="grid grid-cols-2 gap-3 mb-4">
-                <div class="p-3 bg-emerald-50 text-emerald-800 rounded-xl border border-emerald-100">
-                    <span class="text-[10px] font-bold block uppercase opacity-80">ആകെ സമ്പാദിച്ചത്</span>
+                <div class="p-3 bg-blue-50 text-blue-900 rounded-xl border border-blue-100">
+                    <span class="text-[10px] font-bold block uppercase opacity-80">ആകെ പണിയെടുത്ത കൂലി</span>
                     <span id="totalEarned" class="text-lg font-black block mt-0.5">₹0</span>
                 </div>
-                <div class="p-3 bg-amber-50 text-amber-800 rounded-xl border border-amber-100">
-                    <span class="text-[10px] font-bold block uppercase opacity-80">ആകെ കൈപ്പറ്റിയത്</span>
+                <div class="p-3 bg-emerald-50 text-emerald-900 rounded-xl border border-emerald-100">
+                    <span class="text-[10px] font-bold block uppercase opacity-80">ഇതുവരെ കൊടുത്തത്</span>
                     <span id="totalPaid" class="text-lg font-black block mt-0.5">₹0</span>
                 </div>
             </div>
-            <div class="p-4 bg-rose-50 text-rose-800 rounded-2xl border border-rose-100 text-center mb-6">
-                <span class="text-xs font-bold block uppercase opacity-80">ബാക്കി നൽകാനുള്ളത്</span>
+            
+            <!-- ബാക്കി തുക കാണിക്കുന്ന വലിയ ബോക്സ് -->
+            <div id="balanceBox" class="p-4 rounded-2xl border text-center mb-6 shadow-sm">
+                <span id="balanceTitle" class="text-xs font-bold block uppercase opacity-80">കണക്ക് വിവരങ്ങൾ</span>
                 <span id="balanceDue" class="text-xl font-black block mt-0.5">₹0</span>
             </div>
 
             <!-- ഹിസ്റ്ററി ലിസ്റ്റ് -->
-            <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">ഇതുവരെയുള്ള ചരിത്രം (History)</p>
+            <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">ഇതുവരെയുള്ള ഇടപാടുകൾ (History)</p>
             <div id="historyContainer" class="space-y-2"></div>
         </div>
     </div>
@@ -111,9 +113,7 @@
         function toggleForm() {
             const form = document.getElementById('staffForm');
             form.classList.toggle('hidden');
-            if(form.classList.contains('hidden')) {
-                resetForm();
-            }
+            if(form.classList.contains('hidden')) { resetForm(); }
         }
 
         function resetForm() {
@@ -121,8 +121,8 @@
             document.getElementById('staffPhone').value = '';
             document.getElementById('dailyWage').value = '';
             document.getElementById('editMemberId').value = '';
-            document.getElementById('submitBtn').innerText = 'സേവ് ചെയ്യുക';
-            document.getElementById('addBtnText').innerText = '+ ചേർക്കുക';
+            document.getElementById('submitBtn').innerText = 'ലിസ്റ്റിലേക്ക് ചേർക്കുക';
+            document.getElementById('addBtnText').innerText = '+ പുതിയ ആളെ ചേർക്കുക';
         }
 
         function saveStaffMember() {
@@ -131,10 +131,9 @@
             const wage = parseFloat(document.getElementById('dailyWage').value) || 0;
             const id = document.getElementById('editMemberId').value;
 
-            if (!name) { alert('പേര് നിർബന്ധമാണ്!'); return; }
+            if (!name) { alert('തൊഴിലാളിയുടെ പേര് ടൈപ്പ് ചെയ്യുക!'); return; }
 
             if (id) {
-                // Edit existing
                 const member = staffMembers.find(m => m.id == id);
                 if (member) {
                     member.name = name;
@@ -142,7 +141,6 @@
                     member.wage = wage;
                 }
             } else {
-                // Add new
                 staffMembers.push({
                     id: Date.now(),
                     name: name,
@@ -168,13 +166,23 @@
             }
 
             staffMembers.forEach(member => {
-                // Calculate individual balance
                 let earned = 0, paid = 0;
                 (member.history || []).forEach(h => {
                     if(h.type === 'attendance') earned += h.amount;
                     else paid += h.amount;
                 });
                 let bal = earned - paid;
+
+                // ലളിതമായ മലയാളത്തിൽ കാർഡിലെ വിവരണം
+                let statusText = "കണക്ക് തീർന്നു";
+                let statusClass = "text-slate-500";
+                if (bal > 0) {
+                    statusText = `ഇനി കൊടുക്കാനുണ്ട്: ₹${bal}`;
+                    statusClass = "text-rose-600 font-black";
+                } else if (bal < 0) {
+                    statusText = `കൂടുതൽ വാങ്ങിയിട്ടുണ്ട്: ₹${Math.abs(bal)}`;
+                    statusClass = "text-emerald-600 font-black";
+                }
 
                 const card = document.createElement('div');
                 card.className = 'bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-3';
@@ -185,16 +193,14 @@
                             <p class="text-xs text-slate-400 font-bold">കൂലി: ₹${member.wage}/ദിവസം</p>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs font-bold block text-slate-400">ബാക്കി</span>
-                            <span class="font-black ${bal >= 0 ? 'text-rose-600' : 'text-emerald-600'}">₹${bal}</span>
+                            <span class="${statusClass} text-sm">${statusText}</span>
                         </div>
                     </div>
                     <div class="flex items-center justify-between border-t pt-2 mt-1">
-                        <button onclick="openHistory(${member.id})" class="text-xs font-bold text-indigo-600 hover:underline">📋 ചരിത്രം കാണുക</button>
-                        <div class="flex gap-3">
-                            <!-- പേനയുടെ ചിത്രം വെച്ചുള്ള എഡിറ്റ് ബട്ടൺ -->
+                        <button onclick="openHistory(${member.id})" class="text-xs font-bold text-indigo-600 hover:underline">📋 കണക്കുപുസ്തകം തുറക്കുക</button>
+                        <div class="flex gap-4">
                             <button onclick="editStaff(${member.id})" class="text-slate-500 hover:text-amber-600 flex items-center gap-1 text-xs font-bold">
-                                ✏️ എഡിറ്റ്
+                                ✏️ തിരുത്തുക
                             </button>
                             <button onclick="deleteStaff(${member.id})" class="text-rose-500 hover:text-rose-700 text-xs font-bold">
                                 🗑️ ഒഴിവാക്കുക
@@ -215,21 +221,20 @@
             document.getElementById('staffPhone').value = member.phone;
             document.getElementById('dailyWage').value = member.wage;
 
-            document.getElementById('submitBtn').innerText = 'മാറ്റങ്ങൾ സേവ് ചെയ്യുക';
-            document.getElementById('addBtnText').innerText = 'Close';
+            document.getElementById('submitBtn').innerText = 'മാറ്റങ്ങൾ സംരക്ഷിക്കുക';
+            document.getElementById('addBtnText').innerText = 'ഫോം അടയ്ക്കുക';
             document.getElementById('staffForm').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function deleteStaff(id) {
-            if(confirm('ഈ ജീവനക്കാരന്റെ മുഴുവൻ ചരിത്രവും അക്കൗണ്ടും ഒഴിവാക്കണോ?')) {
+            if(confirm('ഈ ജീവനക്കാരന്റെ മുഴുവൻ കണക്കുകളും ലിസ്റ്റിൽ നിന്ന് ഒഴിവാക്കണോ?')) {
                 staffMembers = staffMembers.filter(m => m.id !== id);
                 localStorage.setItem('mesthri_staff', JSON.stringify(staffMembers));
                 displayStaff();
             }
         }
 
-        // --- ഹിസ്റ്ററി മോഡൽ പ്രവർത്തനങ്ങൾ ---
         function openHistory(id) {
             activeStaffId = id;
             const member = staffMembers.find(m => m.id === id);
@@ -254,18 +259,23 @@
             const type = document.getElementById('transType').value;
             const note = document.getElementById('transNote').value.trim();
 
-            if(!amount || amount <= 0) { alert('കൃത്യമായ തുക രേഖപ്പെടുത്തുക!'); return; }
+            if(!amount || amount <= 0) { alert('ദയവായി ശരിയായ തുക രേഖപ്പെടുത്തുക!'); return; }
 
             const member = staffMembers.find(m => m.id === activeStaffId);
             if(!member) return;
 
             if(!member.history) member.history = [];
 
+            let defaultNote = '';
+            if(type === 'attendance') defaultNote = 'ഹാജർ (കൂലി ചേർത്തു)';
+            else if(type === 'advance') defaultNote = 'അഡ്വാൻസ് നൽകിയത്';
+            else defaultNote = 'കൂലി കൊടുത്തു തീർത്തത്';
+
             member.history.unshift({
                 id: Date.now(),
                 type: type,
                 amount: amount,
-                note: note || (type==='attendance' ? 'ഹാജർ രേഖപ്പെടുത്തി' : 'തുക നൽകി'),
+                note: note || defaultNote,
                 date: new Date().toLocaleDateString('ml-IN')
             });
 
@@ -289,17 +299,29 @@
                 else paid += h.amount;
 
                 const item = document.createElement('div');
-                item.className = `p-3 rounded-xl flex justify-between items-center text-sm ${h.type === 'attendance' ? 'bg-slate-50 border' : 'bg-emerald-50/60 border border-emerald-100'}`;
+                
+                // പച്ച, ചുവപ്പ് നിറങ്ങൾ കൃത്യമായി ഇവിടെ നൽകുന്നു
+                let badgeClass = "";
+                let sign = "";
+                if(h.type === 'attendance') {
+                    badgeClass = "bg-slate-50 border text-slate-900";
+                    sign = "+";
+                } else {
+                    badgeClass = "bg-emerald-50 text-emerald-800 border border-emerald-100";
+                    sign = "-";
+                }
+
+                item.className = `p-3 rounded-xl flex justify-between items-center text-sm ${badgeClass}`;
                 item.innerHTML = `
                     <div>
-                        <p class="font-bold text-slate-800">${h.note}</p>
+                        <p class="font-bold">${h.note}</p>
                         <span class="text-[10px] text-slate-400 font-bold">${h.date}</span>
                     </div>
                     <div class="text-right">
-                        <span class="font-black text-base ${h.type === 'attendance' ? 'text-slate-900' : 'text-emerald-700'}">
-                            ${h.type === 'attendance' ? '+' : '-'} ₹${h.amount}
+                        <span class="font-black text-base">
+                            ${sign} ₹${h.amount}
                         </span>
-                        <button onclick="deleteHistoryItem(${member.id}, ${h.id})" class="block text-[10px] text-rose-500 ml-auto hover:underline mt-0.5">Delete</button>
+                        <button onclick="deleteHistoryItem(${member.id}, ${h.id})" class="block text-[10px] text-rose-500 ml-auto hover:underline mt-0.5">ഒഴിവാക്കുക</button>
                     </div>
                 `;
                 container.appendChild(item);
@@ -307,11 +329,31 @@
 
             document.getElementById('totalEarned').innerText = '₹' + earned;
             document.getElementById('totalPaid').innerText = '₹' + paid;
-            document.getElementById('balanceDue').innerText = '₹' + (earned - paid);
+            
+            // ബാക്കി തുക കാണിക്കുന്ന ഭാഗത്തെ പച്ചമലയാളം കണക്കുകൂട്ടൽ
+            const balBox = document.getElementById('balanceBox');
+            const balTitle = document.getElementById('balanceTitle');
+            const balDue = document.getElementById('balanceDue');
+            
+            let bal = earned - paid;
+            
+            if (bal > 0) {
+                balBox.className = "p-4 bg-rose-50 text-rose-800 rounded-2xl border border-rose-100 text-center mb-6 shadow-sm";
+                balTitle.innerText = "ഇനി മേസ്തിരി കൊടുക്കാനുള്ളത്";
+                balDue.innerText = '₹' + bal;
+            } else if (bal < 0) {
+                balBox.className = "p-4 bg-emerald-50 text-emerald-800 rounded-2xl border border-emerald-100 text-center mb-6 shadow-sm";
+                balTitle.innerText = "തൊഴിലാളി കൂടുതൽ വാങ്ങിയത്";
+                balDue.innerText = '₹' + Math.abs(bal);
+            } else {
+                balBox.className = "p-4 bg-slate-50 text-slate-700 rounded-2xl border border-slate-200 text-center mb-6 shadow-sm";
+                balTitle.innerText = "കണക്കുകൾ എല്ലാം തീർന്നു";
+                balDue.innerText = '₹0';
+            }
         }
 
         function deleteHistoryItem(memberId, itemId) {
-            if(confirm('ഈ ഇടപാട് ചരിത്രത്തിൽ നിന്നും ഒഴിവാക്കണോ?')) {
+            if(confirm('ഈ ഇടപാട് ഹിസ്റ്ററിയിൽ നിന്നും ഒഴിവാക്കണോ?')) {
                 const member = staffMembers.find(m => m.id === memberId);
                 if(member) {
                     member.history = member.history.filter(h => h.id !== itemId);
@@ -321,9 +363,7 @@
             }
         }
 
-        function exportToPDF() {
-            alert('PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ആകുന്നു...');
-        }
+        function exportToPDF() { alert('PDF റിപ്പോർട്ട് തയ്യാറാകുന്നു...'); }
     </script>
 </body>
 </html>
