@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<
+   <!DOCTYPE html>
 <html lang="ml" translate="no">
     
 <head>
@@ -15,9 +16,9 @@
 </head>
 <body class="bg-gradient-to-b from-slate-50 to-slate-100 min-h-screen p-4">
 
-                        <div class="max-w-md mx-auto">
+    <div class="max-w-md mx-auto">
         
-        <!-- 1. പുതിയ പെർഫെക്റ്റ് ഹെഡർ ബോക്സ് (പേര് ബട്ടണിന് മുകളിൽ കയറില്ല) -->
+        <!-- 1. പെർഫെക്റ്റ് ഹെഡർ ബോക്സ് (മാറ്റമില്ലാതെ) -->
         <div class="mx-4 mt-4 p-4 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-2xl shadow-xl flex items-center justify-between border border-slate-800 gap-4">
             <div class="flex items-center gap-3 min-w-0">
                 <div id="userAvatar" class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center font-black text-slate-950 shadow-md border border-amber-400 flex-shrink-0">
@@ -33,19 +34,21 @@
             </button>
         </div>
 
-        <!-- ആപ്പിന്റെ പേര് -->
+        <!-- കളർഫുൾ മേസ്തിരി പ്രോ തലക്കെട്ട് -->
         <div class="text-center my-6">
-            <h1 class="text-3xl font-black text-slate-950 tracking-tight">മേസ്തിരി പ്രോ</h1>
+            <h1 class="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent drop-shadow-sm py-1">
+                മേസ്തിരി പ്രോ
+            </h1>
         </div>
 
-        <!-- സൈറ്റ് മാനേജർ ബട്ടൺ -->
+        <!-- സൈറ്റ് മാനേജർ ബട്ടൺ (മാറ്റമില്ലാതെ) -->
         <div class="mx-4 mb-6">
             <a href="sites.html" class="flex items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-2xl border border-blue-200 shadow-sm transition active:scale-95 text-center">
                 സൈറ്റ് മാനേജർ
             </a>
         </div>
 
-        <!-- ഡാഷ്‌ബോർഡ് കാർഡുകൾ (കണക്കുകൾ കാണിക്കുന്നത്) -->
+        <!-- ഡാഷ്‌ബോർഡ് കാർഡുകൾ (കണക്കുകൾ ഒന്നും മാറ്റിയിട്ടില്ല) -->
         <div class="grid grid-cols-2 gap-4 mx-4 mb-4">
             <div class="p-4 bg-blue-600 text-white rounded-3xl shadow-sm">
                 <span class="text-xs font-medium block opacity-80">ആകെ വന്ന തുക (വരവ്)</span>
@@ -73,40 +76,48 @@
             </div>
         </div>
 
-        <!-- മെയിൻ മെനു ബട്ടണുകൾ -->
-        <div class="mx-4 space-y-3">
-            <a href="staff.html" class="flex items-center justify-between p-4 bg-white hover:bg-slate-50 rounded-2xl border border-slate-100 shadow-sm transition active:scale-98">
-                <span class="font-bold text-slate-800">ജീവനക്കാർ</span>
-                <span class="text-slate-400">→</span>
+        <!-- പുതിയ കളർഫുൾ മെയിൻ മെനു ബട്ടണുകൾ -->
+        <div class="mx-4 space-y-4">
+            <!-- ജീവനക്കാർ (Royal Purple) -->
+            <a href="staff.html" class="flex items-center justify-between bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-5 rounded-2xl shadow-lg transition transform active:scale-98">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl bg-white/20 p-2 rounded-xl">👥</span>
+                    <span class="font-bold text-lg tracking-wide">ജീവനക്കാർ</span>
+                </div>
+                <span class="text-xl bg-white/20 w-8 h-8 flex items-center justify-center rounded-full">➔</span>
             </a>
-            <a href="rentals.html" class="flex items-center justify-between p-4 bg-white hover:bg-slate-50 rounded-2xl border border-slate-100 shadow-sm transition active:scale-98">
-                <span class="font-bold text-slate-800">വാടക ഉപകരണങ്ങൾ</span>
-                <span class="text-slate-400">→</span>
-            </a>
-            <a href="transactions.html" class="flex items-center justify-between p-4 bg-white hover:bg-slate-50 rounded-2xl border border-slate-100 shadow-sm transition active:scale-98">
-                <span class="font-bold text-slate-800">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</span>
-                <span class="text-slate-400">→</span>
-            </a>
-        </div>
-<!-- 2. പുതിയ WHATSAPP ഫീഡ്‌ബാക്ക് ബട്ടൺ -->
-<div class="mx-4 mt-6 mb-8">
-    <a href="https://wa.me/916238020523?text=ഹലോ%20മേസ്തിരി%20പ്രോ%20ആപ്പിനെക്കുറിച്ചുള്ള%20എന്റെ%20അഭിപ്രായം:%20" 
-       target="_blank" 
-       class="block w-full text-center bg-emerald-800 hover:bg-emerald-700 text-white p-4 rounded-2xl font-bold transition active:scale-95 shadow-md flex items-center justify-center gap-2">
-        <svg class="w-5 h-5 inline-block text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.244 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.458L0 24zm6.59-4.846c1.666.988 3.311 1.488 4.956 1.489 5.487.002 9.948-4.43 9.951-9.92.001-2.66-1.026-5.163-2.895-7.034C16.83 1.816 14.332.784 11.673.784c-5.49 0-9.952 4.431-9.955 9.92-.001 1.936.507 3.814 1.472 5.46L2.21 21.785l5.636-1.477z"/>
-        </svg>
-        <span>അഭിപ്രായങ്ങൾ അറിയിക്കുക (WhatsApp)</span>
-    </a>
-</div>
 
-</div>
+            <!-- വാടക ഉപകരണങ്ങൾ (Vibrant Teal) -->
+            <a href="rentals.html" class="flex items-center justify-between bg-gradient-to-r from-teal-500 to-emerald-600 text-white p-5 rounded-2xl shadow-lg transition transform active:scale-98">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl bg-white/20 p-2 rounded-xl">🛠️</span>
+                    <span class="font-bold text-lg tracking-wide">വാടക ഉപകരണങ്ങൾ</span>
+                </div>
+                <span class="text-xl bg-white/20 w-8 h-8 flex items-center justify-center rounded-full">➔</span>
+            </a>
 
-        
+            <!-- വരവ്-ചെലവ് രേഖപ്പെടുത്തുക (Warm Rose) -->
+            <a href="transactions.html" class="flex items-center justify-between bg-gradient-to-r from-rose-500 to-pink-600 text-white p-5 rounded-2xl shadow-lg transition transform active:scale-98">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl bg-white/20 p-2 rounded-xl">📊</span>
+                    <span class="font-bold text-lg tracking-wide">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</span>
+                </div>
+                <span class="text-xl bg-white/20 w-8 h-8 flex items-center justify-center rounded-full">➔</span>
+            </a>
+            
+            <!-- പുതിയ വാട്സാപ്പ് ഫീഡ്‌ബാക്ക് ബട്ടൺ (Clean & Fixed) -->
+            <div class="pt-2 mb-8">
+                <a href="https://wa.me/916238020523?text=ഹലോ%20മേസ്തിരി%20പ്രോ%20ആപ്പിനെക്കുറിച്ചുള്ള%20എന്റെ%20അഭിപ്രായം:" 
+                   target="_blank" 
+                   class="block w-full text-center bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-2xl font-bold transition transform active:scale-95 shadow-lg flex items-center justify-center gap-2 text-lg">
+                   💬 അഭിപ്രായങ്ങൾ അറിയിക്കുക (WhatsApp)
+                </a>
+            </div>
         </div>
+
     </div>
 
-    <!-- 3. പൂർണ്ണമായ ഫയർബേസ് സ്ക്രിപ്റ്റ് (യാതൊരു മാറ്റവും വരുത്താതെ സുരക്ഷിതമാക്കിയത്) -->
+ <!-- 3. പൂർണ്ണമായ ഫയർബേസ് സ്ക്രിപ്റ്റ് (യാതൊരു മാറ്റവും വരുത്താതെ സുരക്ഷിതമാക്കിയത്) -->
         <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
