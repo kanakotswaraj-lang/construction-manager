@@ -16,7 +16,14 @@
         background-color: #f3f4f6 !important; 
         color: #000000 !important; /* അക്ഷരങ്ങൾ കടും കറുപ്പാക്കുന്നു */
     }
-
+// പേജ് ലോഡ് ആകുമ്പോൾ പേര് സെറ്റ് ചെയ്യുന്നു
+window.addEventListener('DOMContentLoaded', (event) => {
+    // ലോഗിൻ ചെയ്യുമ്പോൾ 'mesthriName' എന്ന പേരിൽ പേര് സേവ് ചെയ്തിട്ടുണ്ടെന്ന് ഉറപ്പാക്കുക
+    const userName = localStorage.getItem('mesthriName') || 'മ'; 
+    const firstLetter = userName.charAt(0).toUpperCase();
+    document.getElementById('userInitial').innerText = firstLetter;
+});
+        
     /* എല്ലാ പ്രധാന അക്ഷരങ്ങളും വലുതാക്കുന്നു */
     h1, h2, p, span, div, a {
         font-size: 1.3rem !important; /* വലിപ്പം കൂട്ടുന്നു */
@@ -40,17 +47,20 @@
 <body class="bg-gray-100 min-h-screen flex flex-col pb-24">
 
     <!-- HEADER -->
-    <header class="bg-slate-900 text-white px-4 py-5 rounded-b-3xl shadow-lg grid grid-cols-3 items-center mx-3 mt-2">
-        <div class="flex justify-start">
-            <div class="w-14 h-14 rounded-full bg-amber-500 text-slate-900 font-black text-3xl flex items-center justify-center shadow-md">മ</div>
-        </div>
-        <div class="text-center">
-            <h1 class="text-2xl font-black tracking-wide text-amber-400 leading-none">MESTHRI PRO</h1>
-        </div>
-        <div class="flex justify-end">
-            <button onclick="handleLogout()" class="bg-red-600 text-white font-bold py-2 px-3 rounded-xl text-xs">ലോഗ് ഔട്ട്</button>
-        </div>
+    <header class="bg-black text-white px-4 py-6 rounded-b-3xl shadow-lg grid grid-cols-3 items-center mx-3 mt-2 border-b-4 border-amber-400">
+    <div class="flex justify-start">
+        <!-- ലോഗിൻ ചെയ്ത ആളുടെ പേരിന്റെ ആദ്യ അക്ഷരം വരാൻ -->
+        <div id="userInitial" class="w-16 h-16 rounded-full bg-amber-400 text-black font-black text-4xl flex items-center justify-center shadow-lg border-2 border-white"></div>
+    </div>
+    <div class="text-center">
+        <h1 class="text-2xl font-black tracking-widest text-amber-400 leading-none">MESTHRI<br>PRO</h1>
+    </div>
+    <div class="flex justify-end">
+        <button onclick="handleLogout()" class="bg-red-600 text-white font-black py-3 px-4 rounded-xl text-sm border-2 border-white">ലോഗ് ഔട്ട്</button>
+    </div>
     </header>
+    
+    
 
     <!-- MAIN CONTENT -->
     <main class="flex-1 px-4 py-6 max-w-md mx-auto w-full space-y-6">
