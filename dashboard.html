@@ -6,11 +6,35 @@
     <title>Mesthri Pro - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap');
-        body { font-family: 'Manjari', sans-serif; }
-    </style>
+    
 </head>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap');
+    
+    body { 
+        font-family: 'Manjari', sans-serif; 
+        background-color: #f3f4f6; /* കുറച്ചുകൂടി കടുപ്പമുള്ള പശ്ചാത്തലം */
+        color: #111827; /* അക്ഷരങ്ങൾക്ക് നല്ല കറുപ്പ് നിറം */
+        font-weight: 700; /* അക്ഷരങ്ങൾക്ക് കട്ടി കൂട്ടുന്നു */
+    }
+
+    /* വെയിലത്ത് വായിക്കാൻ എളുപ്പമാക്കാൻ അക്ഷരങ്ങളുടെ വലിപ്പം കൂട്ടുന്നു */
+    h1, h2, p {
+        letter-spacing: -0.025em;
+    }
+
+    .text-3xl { 
+        font-size: 2.25rem !important; /* വലിയ അക്ഷരങ്ങൾ */
+        font-weight: 900 !important; 
+    }
+
+    /* കാർഡുകൾക്ക് കൂടുതൽ ബോൾഡ് ലുക്ക് നൽകുന്നു */
+    .bg-gradient-to-br, .bg-white { 
+        border: 2px solid #374151; /* ബോർഡർ കടുപ്പിക്കുന്നു */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
 <body class="bg-gray-100 min-h-screen flex flex-col pb-24">
 
     <!-- HEADER -->
@@ -85,22 +109,26 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function updateDashboard() {
-            let totalIncome = 0;
-            let totalExpense = 0;
-            const querySnapshot = await getDocs(collection(db, "transactions"));
-            querySnapshot.forEach((doc) => {
-                let data = doc.data();
-                let amount = parseFloat(data.amount) || 0;
-                if (data.type === "income") totalIncome += amount;
-                else totalExpense += amount;
-            });
-            document.getElementById('dashIncome').innerText = '₹' + totalIncome;
-            document.getElementById('dashExpense').innerText = '₹' + totalExpense;
-        }
+        // Firestore-ൽ നിന്ന് ഡാറ്റ എടുത്ത് ടാലി ചെയ്യുന്ന കോഡ്
+async function updateDashboard() {
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    const querySnapshot = await getDocs(collection(db, "transactions"));
+    querySnapshot.forEach((doc) => {
+        let data = doc.data();
+        let amount = parseFloat(data.amount) || 0;
+        if (data.type === "income") totalIncome += amount;
+        else totalExpense += amount;
+    });
+
+    // സ്ക്രീനിൽ കാണിക്കുന്ന ഭാഗം
+    document.getElementById('dashIncome').innerText = '₹' + totalIncome.toLocaleString('en-IN');
+    document.getElementById('dashExpense').innerText = '₹' + totalExpense.toLocaleString('en-IN');
+}
 
         window.sendWhatsAppFeedback = () => { 
-            window.open("https://wa.me/916238020523?text=ഹലോ+മേസ്തിരി,+Mesthri+Pro+ആപ്പിനെക്കുറിച്ച്...", '_ ഇതിൽ മാറ്റം വരുത്തേണ്ടത്');
+            window.open("https://wa.me/916238020523?text=ഹലോ+മേസ്തിരി,+Mesthri+Pro+ആപ്പിനെക്കുറിച്ച്...", '_blank');
         };
 
         window.handleLogout = () => { window.location.href = "index.html"; };
