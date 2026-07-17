@@ -16,16 +16,24 @@
 <body class="bg-gray-100 min-h-screen flex flex-col pb-24">
 
     <!-- TOP BAR (HEADER) -->
-    <header class="bg-slate-900 text-white px-6 py-5 rounded-b-3xl shadow-lg flex justify-between items-center mx-3 mt-2">
+    <header class="bg-slate-900 text-white px-4 py-5 rounded-b-3xl shadow-lg flex justify-between items-center mx-3 mt-2">
         <div>
             <h1 class="text-2xl font-black tracking-wide text-amber-400">MESTHRI PRO</h1>
             <p class="text-xs text-slate-400 mt-1" id="dashDate">2026 ജൂലൈ 17</p>
         </div>
-        <!-- LOGOUT BUTTON -->
-        <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl text-sm transition-all duration-200 flex items-center gap-2 active:scale-95 shadow-md">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span>ലോഗ് ഔട്ട്</span>
-        </button>
+        
+        <!-- USER PROFILE & LOGOUT SECTION -->
+        <div class="flex items-center gap-3">
+            <!-- പേരിന്റെ ആദ്യ അക്ഷരം കാണിക്കുന്ന വട്ടം (വലുതാക്കിയത്) -->
+            <div id="userCircle" class="w-14 h-14 rounded-full bg-amber-500 text-slate-900 font-extrabold text-3xl flex items-center justify-center shadow-md overflow-hidden border-2 border-amber-400">
+                മ
+            </div>
+            <!-- LOGOUT BUTTON -->
+            <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-xl text-xs transition-all duration-200 flex items-center gap-1 active:scale-95 shadow-md">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>ലോഗ് ഔട്ട്</span>
+            </button>
+        </div>
     </header>
 
     <!-- MAIN DASHBOARD CONTENT -->
@@ -110,7 +118,6 @@
         // ലോഗ് ഔട്ട് ചെയ്യാനുള്ള ഫങ്ക്ഷൻ
         function handleLogout() {
             if(confirm("നിങ്ങൾക്ക് ലോഗ് ഔട്ട് ചെയ്യണോ മേസ്തിരി?")) {
-                // ലോഗിൻ പേജിലേക്ക് തിരിച്ചു വിടുന്നു
                 window.location.href = "index.html";
             }
         }
@@ -119,20 +126,35 @@
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('dashDate').innerText = new Date().toLocaleDateString('ml-IN', options);
 
-        // കണക്കുകൾ കൂട്ടി കാണിക്കാൻ (Firebase / LocalStorage ഡാറ്റ ഇവിടെ വരും)
+        // പ്രൊഫൈൽ ഫോട്ടോയോ അക്ഷരമോ സെറ്റ് ചെയ്യാനുള്ള ഫങ്ക്ഷൻ
+        function setupUserProfile() {
+            const container = document.getElementById('userCircle');
+            
+            let userPhoto = localStorage.getItem("mesthriPhoto"); 
+            let userName = localStorage.getItem("mesthriName") || "മേസ്തിരി"; 
+
+            if (userPhoto) {
+                container.innerHTML = `<img src="${userPhoto}" class="w-full h-full object-cover" alt="Profile">`;
+            } else {
+                let firstLetter = userName.trim().charAt(0);
+                container.innerText = firstLetter;
+            }
+        }
+
+        // കണക്കുകൾ കൂട്ടി കാണിക്കാൻ
         function calculateCashFlow() {
             let totalIncome = 0;
             let totalExpense = 0;
-
-            // ഭാവിയിൽ ഫയർബേസ് കണക്കുകൾ ഇവിടെ അപ്ഡേറ്റ് ചെയ്യാം
             
             document.getElementById('dashIncome').innerText = '₹' + totalIncome;
             document.getElementById('dashExpense').innerText = '₹' + totalExpense;
             document.getElementById('dashTotalSpent').innerText = '₹' + totalExpense;
         }
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഫങ്ക്ഷൻ റൺ ചെയ്യുക
-        window.onload = calculateCashFlow;
+        window.onload = function() {
+            setupUserProfile();
+            calculateCashFlow();
+        };
     </script>
 </body>
 </html>
