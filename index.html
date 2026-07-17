@@ -8,75 +8,81 @@
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Manjari', sans-serif; }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-slate-100 to-slate-200 min-h-screen pb-12">
 
     <div class="max-w-md mx-auto px-4">
         
-        <!-- പ്രീമിയം ഹെഡർ ബോക്സ് -->
+        <!-- ഹെഡർ ബോക്സ് (അവതാറോടെ) -->
         <div class="mt-6 p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl shadow-xl flex items-center justify-between border border-slate-800/80">
-            <div>
-                <span class="text-amber-400 font-black text-sm tracking-wider block">MESTHRI PRO</span>
-                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest block mt-0.5">കൺസ്ട്രക്ഷൻ മാനേജർ</span>
+            <div class="flex items-center gap-3">
+                <!-- വട്ടത്തിലുള്ള വലിയ ലോഗിൻ അക്ഷരം -->
+                <div id="userAvatar" class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-400 to-amber-500 text-slate-950 font-black text-xl flex items-center justify-center shadow-md border-2 border-slate-800">
+                    M
+                </div>
+                <div>
+                    <span class="text-amber-400 font-black text-base tracking-wider block">MESTHRI PRO</span>
+                    <span id="welcomeUserName" class="text-xs text-slate-300 font-bold block mt-0.5">സ്വാഗതം, മേസ്തിരി</span>
+                </div>
             </div>
             <div class="text-right">
                 <span class="text-slate-300 text-xs font-bold block" id="liveDate"></span>
-                <span class="text-[10px] text-emerald-400 font-black tracking-wide uppercase block mt-0.5">🟢 ACTIVE</span>
+                <span class="text-[11px] text-emerald-400 font-black tracking-wide uppercase block mt-0.5">🟢 ACTIVE</span>
             </div>
         </div>
 
-        <!-- പ്രധാന കാഷ് സ്റ്റാറ്റസ് (റിങ് ഡിസൈൻ അനുഭൂതിയിൽ) -->
+        <!-- പ്രധാന കാഷ് സ്റ്റാറ്റസ് (സംഖ്യകൾ വലുതാക്കിയത്) -->
         <div class="grid grid-cols-2 gap-4 mt-6">
             <div class="bg-gradient-to-br from-emerald-600 to-teal-700 p-5 rounded-[2rem] shadow-lg shadow-emerald-600/10 text-white relative overflow-hidden">
                 <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-white/5 rounded-full"></div>
-                <span class="text-xs font-bold opacity-80 block uppercase tracking-wider">ആകെ വരവ്</span>
-                <span class="text-3xl font-black block mt-2" id="dashIncome">₹0</span>
-                <span class="text-[9px] font-bold block mt-1 opacity-70">കൈവശമുള്ള തുകയടക്കം</span>
+                <span class="text-xs font-bold opacity-90 block uppercase tracking-wider">ആകെ വരവ്</span>
+                <!-- സംഖ്യ text-4xl ആക്കി വലുതാക്കി -->
+                <span class="text-4xl font-black block mt-2 tracking-tight" id="dashIncome">₹0</span>
+                <span class="text-[10px] font-bold block mt-1 opacity-85">കൈവശമുള്ള തുകയടക്കം</span>
             </div>
             <div class="bg-gradient-to-br from-rose-500 to-pink-600 p-5 rounded-[2rem] shadow-lg shadow-rose-600/10 text-white relative overflow-hidden">
                 <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-white/5 rounded-full"></div>
-                <span class="text-xs font-bold opacity-80 block uppercase tracking-wider">ആകെ ചിലവ്</span>
-                <span class="text-3xl font-black block mt-2" id="dashExpense">₹0</span>
-                <span class="text-[9px] font-bold block mt-1 opacity-70">എല്ലാ ചിലവുകളും</span>
+                <span class="text-xs font-bold opacity-90 block uppercase tracking-wider">ആകെ ചിലവ്</span>
+                <!-- സംഖ്യ text-4xl ആക്കി വലുതാക്കി -->
+                <span class="text-4xl font-black block mt-2 tracking-tight" id="dashExpense">₹0</span>
+                <span class="text-[10px] font-bold block mt-1 opacity-85">എല്ലാ ചിലവുകളും</span>
             </div>
         </div>
 
-        <!-- തൊഴിലാളികളുടെ ബാക്കി കൂലി (പ്രത്യേക കാർഡ് ഫീച്ചർ) -->
+        <!-- തൊഴിലാളികളുടെ ബാക്കി കൂലി (വലിയ എഴുത്തിൽ) -->
         <div class="mt-4 p-6 bg-white rounded-[2rem] border border-slate-200/60 shadow-md relative overflow-hidden">
             <div class="absolute top-0 right-0 w-24 h-24 bg-rose-50 rounded-bl-full -z-10"></div>
             <div class="flex justify-between items-start">
                 <div>
                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">തൊഴിലാളികൾക്ക് നൽകാനുള്ളത്</span>
-                    <span class="text-3.5xl font-black text-rose-600 block mt-1" id="dashStaffBalance">₹0</span>
+                    <!-- തുക കാണാൻ നല്ല വലിപ്പമാക്കി (text-4xl) -->
+                    <span class="text-4xl font-black text-rose-600 block mt-1" id="dashStaffBalance">₹0</span>
                 </div>
-                <span class="px-3 py-1 bg-rose-50 text-rose-700 text-[10px] font-bold rounded-full border border-rose-100">Pending</span>
+                <span class="px-3 py-1 bg-rose-50 text-rose-700 text-xs font-bold rounded-full border border-rose-100">Pending</span>
             </div>
             <div class="mt-4 flex items-center gap-2 text-xs text-slate-500 font-bold border-t pt-3">
                 <span>👥 സജീവ ജീവനക്കാരുടെ ആകെ കുടിശ്ശിക തുകയാണിത്.</span>
             </div>
         </div>
 
-        <!-- വാടകയും മെറ്റീരിയൽസ് സ്റ്റാറ്റസും -->
+        <!-- വാടകയും മെറ്റീരിയൽസ് സ്റ്റാറ്റസും (സംഖ്യകൾ വ്യക്തതയോടെ വലുതാക്കിയത്) -->
         <div class="grid grid-cols-2 gap-4 mt-4">
             <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">ഉപകരണ വാടക ബാക്കി</span>
-                <span class="text-xl font-black text-slate-800 block mt-1 text-amber-600" id="dashRentPending">₹0</span>
-                <span class="text-[9px] text-slate-400 font-bold block mt-1">കടകളിലേക്ക് നൽകാൻ</span>
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">ഉപകരണ വാടക ബാക്കി</span>
+                <!-- സംഖ്യ text-2xl ആക്കി -->
+                <span class="text-2xl font-black text-amber-600 block mt-1" id="dashRentPending">₹0</span>
+                <span class="text-[10px] text-slate-400 font-bold block mt-1">കടകളിലേക്ക് നൽകാൻ</span>
             </div>
             <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">ആകെ കഴിഞ്ഞ ചിലവ്</span>
-                <span class="text-xl font-black text-slate-800 block mt-1 text-slate-800" id="dashTotalSpent">₹0</span>
-                <span class="text-[9px] text-slate-400 font-bold block mt-1">കണക്കിൽ എഴുതിയത്</span>
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">ആകെ കഴിഞ്ഞ ചിലവ്</span>
+                <!-- സംഖ്യ text-2xl ആക്കി -->
+                <span class="text-2xl font-black text-slate-800 block mt-1" id="dashTotalSpent">₹0</span>
+                <span class="text-[10px] text-slate-400 font-bold block mt-1">കണക്കിൽ എഴുതിയത്</span>
             </div>
         </div>
 
-        <!-- നാവിഗേഷൻ മെനു (സുന്ദരമായ ബട്ടണുകൾ പുതിയ ഐക്കൺ സ്റ്റൈലിൽ) -->
+        <!-- നാവിഗേഷൻ മെനു -->
         <div class="mt-8 space-y-4">
             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest px-2">പ്രധാന കണക്കുപുസ്തകങ്ങൾ</p>
 
@@ -85,7 +91,7 @@
                     <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-xl shadow-inner">👥</div>
                     <div>
                         <span class="text-base font-black block">ജീവനക്കാരുടെ ശമ്പളം</span>
-                        <span class="text-[10px] text-slate-300 font-bold block">ഹാജറും കൂലിയും രേഖപ്പെടുത്താം</span>
+                        <span class="text-xs text-slate-300 font-bold block">ഹാജറും കൂലിയും രേഖപ്പെടുത്താം</span>
                     </div>
                 </div>
                 <span class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm hover:bg-white/20">→</span>
@@ -96,7 +102,7 @@
                     <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-xl shadow-inner">🛠️</div>
                     <div>
                         <span class="text-base font-black block">വാടക ഉപകരണങ്ങൾ</span>
-                        <span class="text-[10px] text-slate-300 font-bold block">പലക, ജാക്കി വാടക കണക്കുകൾ</span>
+                        <span class="text-xs text-slate-300 font-bold block">പലക, ജാക്കി വാടക കണക്കുകൾ</span>
                     </div>
                 </div>
                 <span class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm hover:bg-white/20">→</span>
@@ -107,13 +113,13 @@
                     <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-xl shadow-inner">📊</div>
                     <div>
                         <span class="text-base font-black block">വരവ് - ചെലവ് കണക്കുകൾ</span>
-                        <span class="text-[10px] text-slate-300 font-bold block">മറ്റു ചിലവുകളും വരുമാനവും</span>
+                        <span class="text-xs text-slate-300 font-bold block">മറ്റു ചിലവുകളും വരുമാനവും</span>
                     </div>
                 </div>
                 <span class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm hover:bg-white/20">→</span>
             </a>
 
-            <!-- വാട്സാപ്പ് സപ്പോർട്ട് ഫീച്ചർ -->
+            <!-- വാട്സാപ്പ് സപ്പോർട്ട് -->
             <a href="https://wa.me/919495315236" class="flex items-center justify-center gap-2.5 p-4.5 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl shadow-md transition duration-200 text-center text-sm active:scale-95">
                 💬 അഭിപ്രായങ്ങൾ അറിയിക്കുക (WhatsApp Support)
             </a>
@@ -125,12 +131,20 @@
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('liveDate').innerText = new Date().toLocaleDateString('ml-IN', options);
             
+            loadLoggedInUser();
+            
             calculateStaffBalance();
             calculateRentPending();
             calculateCashFlow();
         };
 
-        // ജീവനക്കാരുടെ തുക കറക്റ്റ് ആയി ഡാഷ്‌ബോർഡിൽ സിങ്ക് ചെയ്യുന്ന ഫങ്ക്ഷൻ (storage key: 'staff_members')
+        function loadLoggedInUser() {
+            const username = localStorage.getItem('loggedInUser') || localStorage.getItem('userName') || "മേസ്തിരി";
+            const firstLetter = username.trim().charAt(0).toUpperCase();
+            document.getElementById('userAvatar').innerText = firstLetter;
+            document.getElementById('welcomeUserName').innerText = "സ്വാഗതം, " + username;
+        }
+
         function calculateStaffBalance() {
             const staffMembers = JSON.parse(localStorage.getItem('staff_members')) || [];
             let totalPendingToStaff = 0;
@@ -157,7 +171,6 @@
             document.getElementById('dashStaffBalance').innerText = '₹' + totalPendingToStaff;
         }
 
-        // വാടക തുക കറക്റ്റ് ആയി ഡാഷ്‌ബോർഡിൽ സിങ്ക് ചെയ്യുന്ന ഫങ്ക്ഷൻ (storage key: 'rent_items')
         function calculateRentPending() {
             const rentItems = JSON.parse(localStorage.getItem('rent_items')) || [];
             let totalPendingRent = 0;
@@ -185,7 +198,6 @@
             document.getElementById('dashRentPending').innerText = '₹' + totalPendingRent;
         }
 
-        // വരവ് ചിലവ് കറക്റ്റ് ആയി ഡാഷ്‌ബോർഡിൽ സിങ്ക് ചെയ്യുന്ന ഫങ്ക്ഷൻ (storage key: 'transactions')
         function calculateCashFlow() {
             const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
             let totalIncome = 0;
