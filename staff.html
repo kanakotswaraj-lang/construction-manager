@@ -3,33 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ജീവനക്കാരുടെ കണക്ക്</title>
-    <!-- Tailwind CSS for styling -->
+    <title>മേസ്തിരി പ്രോ - ജീവനക്കാർ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- PDF ഡൗൺലോഡ് ചെയ്യാനുള്ള ലൈബ്രറി -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { background-color: #f1f5f9; font-family: sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-100 p-4 font-sans">
-
+<body class="p-4">
     <div class="max-w-md mx-auto">
-        <!-- ലോഗിൻ ഹെഡറും പ്രൊഫൈൽ ഐക്കണും -->
-        <div id="userHeader" class="bg-slate-800 text-white p-3 rounded-2xl shadow-sm mb-4 flex justify-between items-center px-4">
-            <div class="flex items-center gap-2">
-                <div id="userAvatar" class="w-7 h-7 bg-yellow-400 text-slate-900 rounded-full flex items-center justify-center font-black text-sm uppercase">
-                    ..
-                </div>
-                <span class="text-xs font-bold">മേസ്ത്രി: <span id="displayUser" class="text-yellow-400">ലോഡ് ചെയ്യുന്നു...</span></span>
-            </div>
-            <a href="dashboard.html" class="text-[10px] bg-blue-600 px-3 py-1.5 rounded-lg font-bold hover:bg-blue-700 transition">മെയിൻ പേജ്</a>
+        <!-- ടോപ്പ് ഹെഡർ -->
+        <div class="bg-gradient-to-r from-slate-900 to-indigo-950 p-4 rounded-3xl shadow-md border border-slate-800 mb-4 flex items-center justify-between">
+            <a href="dashboard.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl font-bold border border-slate-700 transition active:scale-95">
+                ← മെയിൻ പേജ്
+            </a>
+            <span class="text-xs text-amber-400 font-black tracking-widest uppercase">Mesthri Pro</span>
         </div>
 
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex justify-between items-center mb-4 px-1">
             <h1 class="text-2xl font-black text-slate-800">ജീവനക്കാർ</h1>
-            <!-- മൊത്തം പിഡിഎഫ് റിപ്പോർട്ട് ബട്ടൺ -->
-            <button onclick="downloadAllStaffPDF()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-1">
+            <button id="btnDownloadPDF" class="text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-2 rounded-xl transition shadow-sm flex items-center gap-1">
                 📄 PDF റിപ്പോർട്ട്
             </button>
         </div>
+
+        <!-- ബാക്കി നിങ്ങളുടെ ജീവനക്കാരുടെ ഫോമും സ്ക്രിപ്റ്റും ഇവിടെ തുടരും -->
+    </div>
+
+
         
         <!-- പുതിയ ജീവനക്കാരെ ചേർക്കാൻ -->
         <div class="bg-white p-5 rounded-3xl shadow-sm border mb-4 border-slate-200">
