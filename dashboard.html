@@ -4,180 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mesthri Pro - Dashboard</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manjari:wght=400;700;900&display=swap');
         body { font-family: 'Manjari', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col pb-24">
 
-    <!-- TOP BAR (HEADER) - CENTERED & BALANCED -->
+    <!-- HEADER -->
     <header class="bg-slate-900 text-white px-4 py-5 rounded-b-3xl shadow-lg grid grid-cols-3 items-center mx-3 mt-2">
-        <!-- LEFT: USER PROFILE CIRCLE -->
         <div class="flex justify-start">
             <div id="userCircle" class="w-14 h-14 rounded-full bg-amber-500 text-slate-900 font-black text-3xl flex items-center justify-center shadow-md overflow-hidden border-2 border-amber-400">
                 മ
             </div>
         </div>
-
-        <!-- CENTER: BRAND NAME & DATE -->
         <div class="text-center">
             <h1 class="text-2xl font-black tracking-wide text-amber-400 leading-none">MESTHRI PRO</h1>
             <p class="text-[10px] text-slate-400 mt-1" id="dashDate">2026 ജൂലൈ 17</p>
         </div>
-        
-        <!-- RIGHT: LOGOUT BUTTON -->
         <div class="flex justify-end">
-            <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-xl text-xs transition-all duration-200 flex items-center gap-1 active:scale-95 shadow-md">
+            <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-xl text-xs transition-all duration-200 flex items-center gap-1 shadow-md">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>ലോഗ് ഔട്ട്</span>
             </button>
         </div>
     </header>
 
-    <!-- MAIN DASHBOARD CONTENT -->
+    <!-- MAIN CONTENT -->
     <main class="flex-1 px-4 py-6 max-w-md mx-auto w-full space-y-6">
 
-        <!-- CASH FLOW SUMMARY CARDS -->
+        <!-- CASH FLOW CARDS -->
         <div class="grid grid-cols-2 gap-4">
-            <!-- INCOME CARD -->
             <div class="bg-gradient-to-br from-blue-700 to-blue-900 text-white p-5 rounded-2xl shadow-md border border-blue-600">
                 <p class="text-xs font-bold text-blue-200 uppercase tracking-wider">ഈ മാസത്തെ വരവ്</p>
                 <p class="text-3xl font-black mt-2 tracking-tight" id="dashIncome">₹0</p>
             </div>
-            <!-- EXPENSE CARD -->
             <div class="bg-gradient-to-br from-amber-600 to-amber-800 text-white p-5 rounded-2xl shadow-md border border-amber-500">
                 <p class="text-xs font-bold text-amber-200 uppercase tracking-wider">ഈ മാസത്തെ ചിലവ്</p>
                 <p class="text-3xl font-black mt-2 tracking-tight" id="dashExpense">₹0</p>
             </div>
         </div>
 
-        <!-- TOTAL SPENT CARD -->
+        <!-- TOTAL SPENT CARD (தொழிலாளர்களுக்கு வழங்க வேண்டியது) -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex justify-between items-center">
             <div>
                 <p class="text-sm font-bold text-gray-500">തൊഴിലാളികൾക്ക് നൽകാനുള്ളത്</p>
-                <p class="text-3xl font-black text-gray-900 mt-1" id="dashTotalSpent">₹0</p>
+                <p class="text-3xl font-black text-red-600 mt-1" id="dashTotalSpent">₹0</p>
             </div>
             <div class="bg-red-50 p-3 rounded-xl text-red-600">
                 <i class="fa-solid fa-wallet text-2xl"></i>
             </div>
         </div>
 
-        <!-- QUICK LINKS / NAVIGATION BUTTONS -->
+        <!-- NAVIGATION BUTTONS -->
         <div class="space-y-4">
             <h2 class="text-xl font-black text-gray-800 px-1">പ്രധാന സേവനങ്ങൾ</h2>
             
-            <!-- Link 1: Staff -->
-            <a href="staff.html" class="flex items-center justify-between bg-gradient-to-r from-purple-700 to-indigo-800 text-white p-5 rounded-2xl shadow-md hover:opacity-95 transition-all active:scale-98">
+            <a href="staff.html" class="flex items-center justify-between bg-gradient-to-r from-purple-700 to-indigo-800 text-white p-5 rounded-2xl shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-white/10 p-3 rounded-xl text-xl w-12 h-12 flex items-center justify-center">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
+                    <div class="bg-white/10 p-3 rounded-xl text-xl w-12 h-12 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
                     <div>
                         <span class="text-xl font-black block">ജീവനക്കാരുടെ ശമ്പളം</span>
-                        <span class="text-sm font-bold text-white block mt-1 bg-black/20 px-2 py-0.5 rounded">ഹാജരും ശമ്പള കണക്കുകളും</span>
+                        <span class="text-sm font-bold text-white/80 block mt-1">ഹാജരും ശമ്പള കണക്കുകളും</span>
                     </div>
                 </div>
                 <i class="fa-solid fa-arrow-right text-lg text-white/70"></i>
             </a>
 
-            <!-- Link 2: Rentals -->
-            <a href="rentals.html" class="flex items-center justify-between bg-gradient-to-r from-teal-700 to-emerald-800 text-white p-5 rounded-2xl shadow-md hover:opacity-95 transition-all active:scale-98">
+            <a href="rentals.html" class="flex items-center justify-between bg-gradient-to-r from-teal-700 to-emerald-800 text-white p-5 rounded-2xl shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-white/10 p-3 rounded-xl text-xl w-12 h-12 flex items-center justify-center">
-                        <i class="fa-solid fa-screwdriver-wrench"></i>
-                    </div>
+                    <div class="bg-white/10 p-3 rounded-xl text-xl w-12 h-12 flex items-center justify-center"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                     <div>
                         <span class="text-xl font-black block">വാടക ഉപകരണങ്ങൾ</span>
-                        <span class="text-sm font-bold text-white block mt-1 bg-black/20 px-2 py-0.5 rounded">മിക്സിംഗ് മെഷീൻ, ഷട്ടറിങ്..</span>
+                        <span class="text-sm font-bold text-white/80 block mt-1">മിക്സിംഗ് മെഷീൻ, ഷട്ടറിങ്..</span>
                     </div>
                 </div>
                 <i class="fa-solid fa-arrow-right text-lg text-white/70"></i>
             </a>
 
-            <!-- Link 3: Cash Book -->
-            <a href="cash.html" class="flex items-center justify-between bg-gradient-to-r from-rose-700 to-pink-800 text-white p-5 rounded-2xl shadow-md hover:opacity-95 transition-all active:scale-98">
+            <a href="cash.html" class="flex items-center justify-between bg-gradient-to-r from-rose-700 to-pink-800 text-white p-5 rounded-2xl shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-white/10 p-3 rounded-xl text-xl w-12 h-12 flex items-center justify-center">
-                        <i class="fa-solid fa-chart-simple"></i>
-                    </div>
+                    <div class="bg-white/10 p-3 rounded-xl text-xl w-12 h-12 flex items-center justify-center"><i class="fa-solid fa-chart-simple"></i></div>
                     <div>
                         <span class="text-xl font-black block">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</span>
-                        <span class="text-sm font-bold text-white block mt-1 bg-black/20 px-2 py-0.5 rounded">മറ്റ് നിർമ്മാണ ചിലവുകൾ</span>
+                        <span class="text-sm font-bold text-white/80 block mt-1">മറ്റ് നിർമ്മാണ ചിലവുകൾ</span>
                     </div>
                 </div>
                 <i class="fa-solid fa-arrow-right text-lg text-white/70"></i>
             </a>
         </div>
-
-        <!-- WHATSAPP FEEDBACK SYSTEM -->
-        <div class="pt-4">
-            <button onclick="sendWhatsAppFeedback()" class="w-full flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-5 rounded-2xl shadow-md transition-all active:scale-98 text-lg">
-                <i class="fa-brands fa-whatsapp text-2xl"></i>
-                <span>അഭിപ്രായങ്ങൾ വാട്സാപ്പിൽ അറിയിക്കൂ</span>
-            </button>
-        </div>
-
     </main>
 
-    <!-- JAVASCRIPT FOR DATE, CALCULATIONS & USER PROFILE -->
     <script>
         function handleLogout() {
-            if(confirm("നിങ്ങൾക്ക് ലോഗ് ഔട്ട് ചെയ്യണോ മേസ്തിരി?")) {
-                window.location.href = "index.html";
-            }
-        }
-
-        function sendWhatsAppFeedback() {
-            const myPhoneNumber = "919876543210"; 
-            const message = encodeURIComponent("ഹലോ മേസ്തിരി, 'Mesthri Pro' ആപ്പുമായി ബന്ധപ്പെട്ട എന്റെ അഭിപ്രായം താഴെ നൽകുന്നു:\n\n");
-            window.open(`https://wa.me/${myPhoneNumber}?text=${message}`, '_blank');
+            if(confirm("നിങ്ങൾക്ക് ലോഗ് ഔട്ട് ചെയ്യണോ മേസ്തിരി?")) { window.location.href = "index.html"; }
         }
 
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('dashDate').innerText = new Date().toLocaleDateString('ml-IN', options);
 
-        // തിരുത്തിയ പ്രൊഫൈൽ ഫങ്ക്ഷൻ (കൂടുതൽ ശക്തമാക്കിയത്)
         function setupUserProfile() {
             const container = document.getElementById('userCircle');
-            
-            // ലോഗിൻ പേജിൽ ഉപയോഗിക്കാൻ സാധ്യതയുള്ള എല്ലാ കീകളും പരിശോധിക്കുന്നു
-            let userName = localStorage.getItem("mesthriName") || 
-                           localStorage.getItem("username") || 
-                           localStorage.getItem("name") || 
-                           localStorage.getItem("user") || 
-                           ""; 
-
-            let userPhoto = localStorage.getItem("mesthriPhoto") || localStorage.getItem("userPhoto"); 
-
-            if (userPhoto) {
-                container.innerHTML = `<img src="${userPhoto}" class="w-full h-full object-cover" alt="Profile">`;
-            } else if (userName.trim() !== "") {
-                // പേര് കണ്ടെത്തിയാൽ അതിന്റെ ആദ്യ അക്ഷരം എടുക്കും
-                let firstLetter = userName.trim().charAt(0);
-                container.innerText = firstLetter;
+            let userName = localStorage.getItem("mesthriName") || localStorage.getItem("username") || localStorage.getItem("name") || ""; 
+            if (userName.trim() !== "") {
+                container.innerText = userName.trim().charAt(0);
             } else {
-                // പേര് ഒന്നും കിട്ടിയില്ലെങ്കിൽ മാത്രം 'മ' എന്ന് കാണിക്കും
                 container.innerText = "മ";
             }
         }
 
-        function calculateCashFlow() {
+        // മെമ്മറിയിൽ നിന്ന് തനിയെ കണക്കുകൂട്ടുന്ന ജാവാസ്ക്രിപ്റ്റ് ഫങ്ക്ഷൻ
+        function calculateDashboardData() {
+            // 1. വരവ്-ചെലവ് കണക്കുകൾ കൂട്ടുന്നു (Cash book data)
+            let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
             let totalIncome = 0;
             let totalExpense = 0;
-            
+
+            transactions.forEach(t => {
+                let amount = parseFloat(t.amount) || 0;
+                if (t.type === "income" || t.type === "വരവ്") {
+                    totalIncome += amount;
+                } else if (t.type === "expense" || t.type === "ചെലവ്") {
+                    totalExpense += amount;
+                }
+            });
+
+            // 2. തൊഴിലാളികൾക്ക് നൽകാനുള്ള തുക കൂട്ടുന്നു (Staff page data)
+            let workers = JSON.parse(localStorage.getItem("workers")) || [];
+            let totalPendingToWorkers = 0;
+
+            workers.forEach(w => {
+                let pending = parseFloat(w.pendingAmount) || parseFloat(w.pending) || 0;
+                
+                // ഒരുപക്ഷേ ഹിസ്റ്ററിയിൽ നിന്നാണ് കണക്കെങ്കിൽ അതും നോക്കാം
+                if(w.history && Array.isArray(w.history)) {
+                    let totalEarned = 0;
+                    let totalPaid = 0;
+                    w.history.forEach(h => {
+                        let amt = parseFloat(h.amount) || 0;
+                        if(h.type === "ഹാജർ (കൂലി കൂട്ടുക)" || h.amount > 0) totalEarned += amt;
+                        else if(amt < 0) totalPaid += Math.abs(amt);
+                    });
+                    pending = totalEarned - totalPaid;
+                }
+                if(pending > 0) {
+                    totalPendingToWorkers += pending;
+                }
+            });
+
+            // മുൻപേജിലേക്ക് തുകകൾ മാറ്റുന്നു
             document.getElementById('dashIncome').innerText = '₹' + totalIncome;
             document.getElementById('dashExpense').innerText = '₹' + totalExpense;
-            document.getElementById('dashTotalSpent').innerText = '₹' + totalExpense;
+            document.getElementById('dashTotalSpent').innerText = '₹' + totalPendingToWorkers;
         }
 
         window.onload = function() {
             setupUserProfile();
-            calculateCashFlow();
+            calculateDashboardData();
         };
     </script>
 </body>
