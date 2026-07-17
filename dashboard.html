@@ -12,50 +12,30 @@
     @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap');
     
     body { 
-        font-family: 'Manjari', sans-serif; 
-        background-color: #f3f4f6; /* കുറച്ചുകൂടി കടുപ്പമുള്ള പശ്ചാത്തലം */
-        color: #111827; /* അക്ഷരങ്ങൾക്ക് നല്ല കറുപ്പ് നിറം */
-        font-weight: 700; /* അക്ഷരങ്ങൾക്ക് കട്ടി കൂട്ടുന്നു */
+        font-family: 'Manjari', sans-serif !important; 
+        background-color: #f3f4f6 !important; 
+        color: #000000 !important; /* അക്ഷരങ്ങൾ കടും കറുപ്പാക്കുന്നു */
     }
 
-        /* പ്രധാന സേവനങ്ങളിലെ അക്ഷരങ്ങൾ വെയിലത്ത് വായിക്കാൻ വലുതാക്കുന്നു */
-    .space-y-4 a span {
-        font-size: 1.4rem !important; /* അക്ഷര വലിപ്പം വർദ്ധിപ്പിച്ചു */
-        font-weight: 900 !important;   /* നല്ല കട്ടി നൽകി */
-        display: block;
-        color: white !important;       /* വായന വ്യക്തമാക്കാൻ വെള്ള നിറം */
+    /* എല്ലാ പ്രധാന അക്ഷരങ്ങളും വലുതാക്കുന്നു */
+    h1, h2, p, span, div, a {
+        font-size: 1.3rem !important; /* വലിപ്പം കൂട്ടുന്നു */
+        font-weight: 900 !important;  /* കട്ടി കൂട്ടുന്നു */
+        color: #000000 !important;    /* നിറം കറുപ്പാക്കുന്നു */
     }
 
-    .space-y-4 a span.text-xs {
-        font-size: 1.1rem !important;  /* താഴെയുള്ള വരിയും വലുതാക്കി */
-        opacity: 1 !important;         /* മങ്ങൽ പൂർണ്ണമായും മാറ്റി */
-        font-weight: 700 !important;
-        color: #e5e7eb !important;     /* അല്പം ചാരനിറം */
+    /* കാർഡുകൾക്കുള്ളിലെ അക്ഷരങ്ങൾ വെളുപ്പാക്കുന്നു */
+    .bg-gradient-to-r span, .bg-gradient-to-br span {
+        color: #ffffff !important;
     }
 
-    .text-3xl { 
-        font-size: 2.25rem !important; /* വലിയ അക്ഷരങ്ങൾ */
-        font-weight: 900 !important; 
+    /* ബട്ടണുകൾക്കും കാർഡുകൾക്കും കട്ടി നൽകാൻ */
+    .bg-gradient-to-r, .bg-gradient-to-br, .bg-white { 
+        border: 4px solid #000000 !important; 
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5) !important;
     }
-
-    /* കാർഡുകൾക്ക് കൂടുതൽ ബോൾഡ് ലുക്ക് നൽകുന്നു */
-    .bg-gradient-to-br, .bg-white { 
-        border: 2px solid #374151; /* ബോർഡർ കടുപ്പിക്കുന്നു */
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    }
-       /* പ്രധാന സേവനങ്ങൾ (Service Cards) അക്ഷരങ്ങൾ വലുതാക്കാൻ */
-.space-y-4 a span {
-    font-size: 1.25rem !important; /* അക്ഷര വലിപ്പം കൂട്ടുന്നു */
-    font-weight: 900 !important;   /* നല്ല കട്ടി നൽകുന്നു */
-}
-
-.space-y-4 a span.text-xs {
-    font-size: 0.9rem !important;  /* താഴെയുള്ള ചെറു അക്ഷരങ്ങളും വായനയ്ക്ക് പാകമാക്കുന്നു */
-    opacity: 1 !important;         /* മങ്ങൽ ഒഴിവാക്കുന്നു */
-    font-weight: 700 !important;
-}
- 
 </style>
+
 
 <body class="bg-gray-100 min-h-screen flex flex-col pb-24">
 
