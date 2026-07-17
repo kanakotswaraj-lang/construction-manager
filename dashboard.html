@@ -110,19 +110,20 @@
         const db = getFirestore(app);
 
         // Firestore-ൽ നിന്ന് ഡാറ്റ എടുത്ത് ടാലി ചെയ്യുന്ന കോഡ്
+
+// dashboard.html-ലെ updateDashboard ഫങ്ക്ഷൻ ഇതാക്കി മാറ്റൂ:
 async function updateDashboard() {
     let totalIncome = 0;
     let totalExpense = 0;
-
     const querySnapshot = await getDocs(collection(db, "transactions"));
     querySnapshot.forEach((doc) => {
         let data = doc.data();
         let amount = parseFloat(data.amount) || 0;
-        if (data.type === "income") totalIncome += amount;
-        else totalExpense += amount;
+        
+        // ഇംഗ്ലീഷോ മലയാളമോ ഏതായാലും കണക്ക് കൂട്ടും
+        if (data.type === "income" || data.type === "വരവ്") totalIncome += amount;
+        else if (data.type === "expense" || data.type === "ചെലവ്") totalExpense += amount;
     });
-
-    // സ്ക്രീനിൽ കാണിക്കുന്ന ഭാഗം
     document.getElementById('dashIncome').innerText = '₹' + totalIncome.toLocaleString('en-IN');
     document.getElementById('dashExpense').innerText = '₹' + totalExpense.toLocaleString('en-IN');
 }
