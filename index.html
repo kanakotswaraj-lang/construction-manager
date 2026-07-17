@@ -14,49 +14,45 @@
 
     <div class="max-w-md mx-auto px-4">
         
-        <!-- ഹെഡർ ബോക്സ് (അവതാറോടെ) -->
+        <!-- ഹെഡർ ബോക്സ് -->
         <div class="mt-6 p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl shadow-xl flex items-center justify-between border border-slate-800/80">
             <div class="flex items-center gap-3">
-                <!-- വട്ടത്തിലുള്ള വലിയ ലോഗിൻ അക്ഷരം -->
-                <div id="userAvatar" class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-400 to-amber-500 text-slate-950 font-black text-xl flex items-center justify-center shadow-md border-2 border-slate-800">
-                    M
+                <!-- വട്ടത്തിലുള്ള അവതാർ - ഇതിനുള്ളിലെ 'മ' ഒഴിവാക്കി, പേരിന്റെ ആദ്യ അക്ഷരം സ്ക്രിപ്റ്റ് വഴി ഇവിടെ തനിയെ വരും -->
+                <div onclick="handleLogout()" id="userAvatar" class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-400 to-amber-500 text-slate-950 font-black text-xl flex items-center justify-center shadow-md border-2 border-slate-800 cursor-pointer transition active:scale-90" title="ലോഗ് ഔട്ട് ചെയ്യുക">
                 </div>
                 <div>
                     <span class="text-amber-400 font-black text-base tracking-wider block">MESTHRI PRO</span>
                     <span id="welcomeUserName" class="text-xs text-slate-300 font-bold block mt-0.5">സ്വാഗതം, മേസ്തിരി</span>
                 </div>
             </div>
-            <div class="text-right">
+            <div class="text-right flex flex-col items-end gap-1">
                 <span class="text-slate-300 text-xs font-bold block" id="liveDate"></span>
-                <span class="text-[11px] text-emerald-400 font-black tracking-wide uppercase block mt-0.5">🟢 ACTIVE</span>
+                <button onclick="handleLogout()" class="text-[10px] text-rose-400 hover:text-rose-300 font-bold underline transition">Log Out ↩</button>
             </div>
         </div>
 
-        <!-- പ്രധാന കാഷ് സ്റ്റാറ്റസ് (സംഖ്യകൾ വലുതാക്കിയത്) -->
+        <!-- പ്രധാന കാഷ് സ്റ്റാറ്റസ് -->
         <div class="grid grid-cols-2 gap-4 mt-6">
             <div class="bg-gradient-to-br from-emerald-600 to-teal-700 p-5 rounded-[2rem] shadow-lg shadow-emerald-600/10 text-white relative overflow-hidden">
                 <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-white/5 rounded-full"></div>
                 <span class="text-xs font-bold opacity-90 block uppercase tracking-wider">ആകെ വരവ്</span>
-                <!-- സംഖ്യ text-4xl ആക്കി വലുതാക്കി -->
                 <span class="text-4xl font-black block mt-2 tracking-tight" id="dashIncome">₹0</span>
                 <span class="text-[10px] font-bold block mt-1 opacity-85">കൈവശമുള്ള തുകയടക്കം</span>
             </div>
             <div class="bg-gradient-to-br from-rose-500 to-pink-600 p-5 rounded-[2rem] shadow-lg shadow-rose-600/10 text-white relative overflow-hidden">
                 <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-white/5 rounded-full"></div>
                 <span class="text-xs font-bold opacity-90 block uppercase tracking-wider">ആകെ ചിലവ്</span>
-                <!-- സംഖ്യ text-4xl ആക്കി വലുതാക്കി -->
                 <span class="text-4xl font-black block mt-2 tracking-tight" id="dashExpense">₹0</span>
                 <span class="text-[10px] font-bold block mt-1 opacity-85">എല്ലാ ചിലവുകളും</span>
             </div>
         </div>
 
-        <!-- തൊഴിലാളികളുടെ ബാക്കി കൂലി (വലിയ എഴുത്തിൽ) -->
+        <!-- തൊഴിലാളികളുടെ ബാക്കി കൂലി -->
         <div class="mt-4 p-6 bg-white rounded-[2rem] border border-slate-200/60 shadow-md relative overflow-hidden">
             <div class="absolute top-0 right-0 w-24 h-24 bg-rose-50 rounded-bl-full -z-10"></div>
             <div class="flex justify-between items-start">
                 <div>
                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">തൊഴിലാളികൾക്ക് നൽകാനുള്ളത്</span>
-                    <!-- തുക കാണാൻ നല്ല വലിപ്പമാക്കി (text-4xl) -->
                     <span class="text-4xl font-black text-rose-600 block mt-1" id="dashStaffBalance">₹0</span>
                 </div>
                 <span class="px-3 py-1 bg-rose-50 text-rose-700 text-xs font-bold rounded-full border border-rose-100">Pending</span>
@@ -66,17 +62,15 @@
             </div>
         </div>
 
-        <!-- വാടകയും മെറ്റീരിയൽസ് സ്റ്റാറ്റസും (സംഖ്യകൾ വ്യക്തതയോടെ വലുതാക്കിയത്) -->
+        <!-- വാടകയും മെറ്റീരിയൽസ് സ്റ്റാറ്റസും -->
         <div class="grid grid-cols-2 gap-4 mt-4">
             <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm">
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">ഉപകരണ വാടക ബാക്കി</span>
-                <!-- സംഖ്യ text-2xl ആക്കി -->
                 <span class="text-2xl font-black text-amber-600 block mt-1" id="dashRentPending">₹0</span>
                 <span class="text-[10px] text-slate-400 font-bold block mt-1">കടകളിലേക്ക് നൽകാൻ</span>
             </div>
             <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm">
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">ആകെ കഴിഞ്ഞ ചിലവ്</span>
-                <!-- സംഖ്യ text-2xl ആക്കി -->
                 <span class="text-2xl font-black text-slate-800 block mt-1" id="dashTotalSpent">₹0</span>
                 <span class="text-[10px] text-slate-400 font-bold block mt-1">കണക്കിൽ എഴുതിയത്</span>
             </div>
@@ -128,21 +122,40 @@
 
     <script>
         window.onload = function() {
+            checkUserLoggedIn();
+
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('liveDate').innerText = new Date().toLocaleDateString('ml-IN', options);
             
             loadLoggedInUser();
-            
             calculateStaffBalance();
             calculateRentPending();
             calculateCashFlow();
         };
 
+        function checkUserLoggedIn() {
+            const username = localStorage.getItem('loggedInUser') || localStorage.getItem('userName');
+            if (!username) {
+                window.location.href = "login.html";
+            }
+        }
+
         function loadLoggedInUser() {
             const username = localStorage.getItem('loggedInUser') || localStorage.getItem('userName') || "മേസ്തിരി";
+            // പേരിന്റെ ആദ്യത്തെ അക്ഷരം മാറ്റിയെടുക്കുന്നു
             const firstLetter = username.trim().charAt(0).toUpperCase();
+            
+            // ഹെഡറിലെ വട്ടത്തിൽ ആദ്യ അക്ഷരം കാണിക്കുന്നു
             document.getElementById('userAvatar').innerText = firstLetter;
             document.getElementById('welcomeUserName').innerText = "സ്വാഗതം, " + username;
+        }
+
+        function handleLogout() {
+            if(confirm('കണക്കുകളെല്ലാം സുരക്ഷിതമാണ്. ഈ അക്കൗണ്ടിൽ നിന്നും ലോഗ് ഔട്ട് ചെയ്യണോ?')) {
+                localStorage.removeItem('loggedInUser');
+                localStorage.removeItem('userName');
+                window.location.href = "login.html";
+            }
         }
 
         function calculateStaffBalance() {
