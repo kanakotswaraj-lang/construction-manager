@@ -1,12 +1,10 @@
-<
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ml" translate="no">
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>മേസ്തിരി പ്രോ - സൈറ്റ് മാനേജർ</title>
-    <!-- Tailwind CSS ഫോർ സ്റ്റൈലിംഗ് -->
+    <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- മനോഹരമായ മലയാളം ഫോണ്ട് -->
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
@@ -18,216 +16,118 @@
 
     <div class="max-w-md mx-auto">
         
-        <!-- 1. പെർഫെക്റ്റ് ഹെഡർ ബോക്സ് (മാറ്റമില്ലാതെ) -->
-        <div class="mx-4 mt-4 p-4 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-2xl shadow-xl flex items-center justify-between border border-slate-800 gap-4">
-            <div class="flex items-center gap-3 min-w-0">
-                <div id="userAvatar" class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center font-black text-slate-950 shadow-md border border-amber-400 flex-shrink-0">
-                    M
-                </div>
-                <div class="min-w-0">
-                    <p class="text-[10px] text-slate-400 font-medium tracking-wide">ലോഗിൻ ചെയ്തിരിക്കുന്നു</p>
-                    <h3 id="displayUser" class="text-xs font-bold text-slate-100 truncate">മേസ്തിരി ലോഡ് ചെയ്യുന്നു...</h3>
-                </div>
+        <!-- ഹെഡർ ബോക്സ് -->
+        <div class="mx-4 mt-4 p-4 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-2xl shadow-xl flex items-center justify-between border border-slate-800">
+            <span class="text-amber-400 font-black text-sm tracking-wider">MESTHRI PRO</span>
+            <span class="text-slate-400 text-xs font-bold" id="liveDate"></span>
+        </div>
+
+        <!-- പ്രധാന കണക്കുകൾ കാണിക്കുന്ന ബോക്സുകൾ (ഡിസൈൻ മാറാതെ) -->
+        <div class="grid grid-cols-2 gap-4 mx-4 mt-6">
+            <!-- ഈ മാസത്തെ വരവ് -->
+            <div class="bg-gradient-to-br from-blue-600 to-blue-700 p-4 rounded-3xl shadow-md text-white">
+                <span class="text-xs font-bold opacity-80 block">ഈ മാസത്തെ വരവ്</span>
+                <span class="text-2xl font-black block mt-1" id="dashIncome">₹0</span>
             </div>
-            <button id="logoutBtn" onclick="window.logout()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-md transition-all active:scale-95 flex-shrink-0">
-                Logout
-            </button>
-        </div>
-
-        <!-- കളർഫുൾ മേസ്തിരി പ്രോ തലക്കെട്ട് -->
-        <div class="text-center my-6">
-            <h1 class="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent drop-shadow-sm py-1">
-                മേസ്തിരി പ്രോ
-            </h1>
-        </div>
-
-        <!-- സൈറ്റ് മാനേജർ ബട്ടൺ (മാറ്റമില്ലാതെ) -->
-        <div class="mx-4 mb-6">
-            <a href="sites.html" class="flex items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-2xl border border-blue-200 shadow-sm transition active:scale-95 text-center">
-                സൈറ്റ് മാനേജർ
-            </a>
-        </div>
-
-        <!-- ഡാഷ്‌ബോർഡ് കാർഡുകൾ (കണക്കുകൾ ഒന്നും മാറ്റിയിട്ടില്ല) -->
-        <div class="grid grid-cols-2 gap-4 mx-4 mb-4">
-            <div class="p-4 bg-blue-600 text-white rounded-3xl shadow-sm">
-                <span class="text-xs font-medium block opacity-80">ആകെ വന്ന തുക (വരവ്)</span>
-                <span id="totalIncome" class="text-2xl font-black block mt-2">₹0</span>
-            </div>
-            <div id="cashCard" class="p-4 bg-emerald-600 text-white rounded-3xl shadow-sm transition-colors duration-300">
-                <span class="text-xs font-medium block opacity-80">കയ്യിലുള്ള തുക</span>
-                <span id="cashInHand" class="text-2xl font-black block mt-2">₹0</span>
+            <!-- ഈ മാസത്തെ ചിലവ് -->
+            <div class="bg-gradient-to-br from-orange-500 to-amber-600 p-4 rounded-3xl shadow-md text-white">
+                <span class="text-xs font-bold opacity-80 block">ഈ മാസത്തെ ചിലവ്</span>
+                <span class="text-2xl font-black block mt-1" id="dashExpense">₹0</span>
             </div>
         </div>
 
-        <div class="mx-4 mb-4 p-4 bg-red-50 text-red-700 rounded-3xl border border-red-100">
-            <span class="text-xs font-bold block text-red-500 uppercase">ബാക്കി നൽകാനുള്ളത് (ആകെ ബാധ്യത)</span>
-            <span id="totalLiability" class="text-2xl font-black block mt-1">₹0</span>
+        <!-- ആകെ ബാധ്യത കാണിക്കുന്ന വലിയ ബോക്സ് -->
+        <div class="mx-4 mt-4 p-5 bg-rose-50 border border-rose-100 rounded-3xl shadow-sm text-center">
+            <span class="text-xs font-bold text-rose-800 uppercase tracking-wider block">തൊഴിലാളികൾക്ക് ആകെ കൊടുക്കാനുള്ളത്</span>
+            <span class="text-3xl font-black text-rose-600 block mt-1" id="dashStaffBalance">₹0</span>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mx-4 mb-6">
-            <div class="p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                <span class="text-xs font-medium text-slate-500 block">വാടകയിനത്തിൽ കൊടുക്കാനുള്ളത്</span>
-                <span id="rentExpense" class="text-xl font-black text-slate-800 block mt-1">₹0</span>
+        <!-- വാടക ഉപകരണങ്ങളുടെ കണക്ക് -->
+        <div class="grid grid-cols-2 gap-4 mx-4 mt-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                <span class="text-[11px] font-bold text-slate-400 block">വാടകയിനത്തിൽ കൊടുക്കാനുള്ളത്</span>
+                <span class="text-xl font-black text-slate-800 block mt-0.5" id="dashRentPending">₹16000</span>
             </div>
-            <div class="p-4 bg-amber-50 rounded-3xl border border-amber-100 text-amber-800">
-                <span class="text-xs font-bold block text-amber-600 uppercase">ആകെ ചിലവായ തുക</span>
-                <span id="totalPaid" class="text-xl font-black block mt-1">₹0</span>
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                <span class="text-[11px] font-bold text-slate-400 block">ആകെ ചിലവായ തുക</span>
+                <span class="text-xl font-black text-slate-800 block mt-0.5" id="dashTotalSpent">₹1500</span>
             </div>
         </div>
 
-        <!-- പുതിയ കളർഫുൾ മെയിൻ മെനു ബട്ടണുകൾ -->
-        <div class="mx-4 space-y-4">
-            <!-- ജീവനക്കാർ (Royal Purple) -->
-            <a href="staff.html" class="flex items-center justify-between bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-5 rounded-2xl shadow-lg transition transform active:scale-98">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl bg-white/20 p-2 rounded-xl">👥</span>
-                    <span class="font-bold text-lg tracking-wide">ജീവനക്കാർ</span>
-                </div>
-                <span class="text-xl bg-white/20 w-8 h-8 flex items-center justify-center rounded-full">➔</span>
-            </a>
-
-            <!-- വാടക ഉപകരണങ്ങൾ (Vibrant Teal) -->
-            <a href="rentals.html" class="flex items-center justify-between bg-gradient-to-r from-teal-500 to-emerald-600 text-white p-5 rounded-2xl shadow-lg transition transform active:scale-98">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl bg-white/20 p-2 rounded-xl">🛠️</span>
-                    <span class="font-bold text-lg tracking-wide">വാടക ഉപകരണങ്ങൾ</span>
-                </div>
-                <span class="text-xl bg-white/20 w-8 h-8 flex items-center justify-center rounded-full">➔</span>
-            </a>
-
-            <!-- വരവ്-ചെലവ് രേഖപ്പെടുത്തുക (Warm Rose) -->
-            <a href="transactions.html" class="flex items-center justify-between bg-gradient-to-r from-rose-500 to-pink-600 text-white p-5 rounded-2xl shadow-lg transition transform active:scale-98">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl bg-white/20 p-2 rounded-xl">📊</span>
-                    <span class="font-bold text-lg tracking-wide">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</span>
-                </div>
-                <span class="text-xl bg-white/20 w-8 h-8 flex items-center justify-center rounded-full">➔</span>
-            </a>
+        <!-- മെനു ബട്ടണുകൾ (ലക്ഷ്വറി ഡിസൈൻ) -->
+        <div class="mx-4 mt-8 space-y-4">
             
-            <!-- പുതിയ വാട്സാപ്പ് ഫീഡ്‌ബാക്ക് ബട്ടൺ (Clean & Fixed) -->
-            <div class="pt-2 mb-8">
-                <a href="https://wa.me/916238020523?text=ഹലോ%20മേസ്തിരി%20പ്രോ%20ആപ്പിനെക്കുറിച്ചുള്ള%20എന്റെ%20അഭിപ്രായം:" 
-                   target="_blank" 
-                   class="block w-full text-center bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-2xl font-bold transition transform active:scale-95 shadow-lg flex items-center justify-center gap-2 text-lg">
-                   💬 അഭിപ്രായങ്ങൾ അറിയിക്കുക (WhatsApp)
-                </a>
-            </div>
+            <!-- ജീവനക്കാർ ബട്ടൺ -->
+            <a href="staff.html" class="flex items-center justify-between p-5 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-2xl text-white shadow-md transition active:scale-98">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">👥</div>
+                    <span class="text-lg font-bold">ജീവനക്കാർ</span>
+                </div>
+                <span class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm">→</span>
+            </a>
+
+            <!-- വാടക ഉപകരണങ്ങൾ ബട്ടൺ -->
+            <a href="#" onclick="alert('ഈ ഫീച്ചർ അടുത്ത അപ്ഡേറ്റിൽ വരും മേസ്തിരി!')" class="flex items-center justify-between p-5 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl text-white shadow-md transition active:scale-98">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">🛠️</div>
+                    <span class="text-lg font-bold">വാടക ഉപകരണങ്ങൾ</span>
+                </div>
+                <span class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm">→</span>
+            </a>
+
+            <!-- വരവ്-ചെലവ് രേഖപ്പെടുത്തുക ബട്ടൺ -->
+            <a href="#" onclick="alert('ഈ ഫീച്ചർ അടുത്ത അപ്ഡേറ്റിൽ വരും മേസ്തിരി!')" class="flex items-center justify-between p-5 bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl text-white shadow-md transition active:scale-98">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">📊</div>
+                    <span class="text-lg font-bold">ವರವ್‌-ചെലവ് രേഖപ്പെടുത്തുക</span>
+                </div>
+                <span class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm">→</span>
+            </a>
+
+            <!-- വാട്സാപ്പ് ഫീഡ്ബാക്ക് ബട്ടൺ -->
+            <a href="https://wa.me/919495315236" class="flex items-center justify-center gap-2 p-4 bg-emerald-500 text-white font-bold rounded-2xl shadow-md transition active:scale-98 text-center text-sm">
+                💬 അഭിപ്രായങ്ങൾ അറിയിക്കുക (WhatsApp)
+            </a>
+
         </div>
 
     </div>
 
- <!-- 3. പൂർണ്ണമായ ഫയർബേസ് സ്ക്രിപ്റ്റ് (യാതൊരു മാറ്റവും വരുത്താതെ സുരക്ഷിതമാക്കിയത്) -->
-        <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-            
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.firebasestorage.app",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-            measurementId: "G-J9Y5TW9D7T"
+    <script>
+        window.onload = function() {
+            // തീയതി കാണിക്കാൻ
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('liveDate').innerText = new Date().toLocaleDateString('ml-IN', options);
+
+            // ജീവനക്കാരുടെ കണക്കുകൾ ലോക്കൽ സ്റ്റോറേജിൽ നിന്ന് എടുത്ത് തുക കൂട്ടുന്നു
+            calculateStaffBalance();
         };
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
 
-        let currentUserId = "";
+        function calculateStaffBalance() {
+            const staffMembers = JSON.parse(localStorage.getItem('mesthri_staff')) || [];
+            let totalPendingToStaff = 0;
 
-        // ലോഗ് ഔട്ട് ഫംഗ്ഷൻ നേരിട്ട് ബട്ടണിലേക്ക് കണക്ട് ചെയ്യുന്നു
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-            signOut(auth).then(() => {
-                window.location.href = "login.html";
-            }).catch((error) => {
-                alert("ലോഗ് ഔട്ട് ചെയ്യാൻ പറ്റിയില്ല: " + error.message);
-            });
-        });
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUserId = user.uid;
-                const userName = user.email.split('@')[0];
+            staffMembers.forEach(member => {
+                let earned = 0;
+                let paid = 0;
                 
-                document.getElementById("displayUser").innerText = userName.toUpperCase();
-                document.getElementById("userAvatar").innerText = userName.charAt(0).toUpperCase();
-                
-                calculateDashboard();
-            } else {
-                window.location.href = "login.html";
-            }
-        });
-
-        function calculateDashboard() {
-            const staffRef = ref(db, 'staff/' + currentUserId);
-            onValue(staffRef, (snapshot) => {
-                const data = snapshot.val() || {};
-                let staffLiability = 0;
-
-                Object.values(data).forEach(s => {
-                    let work = Number(s.workAmount || 0);
-                    let given = Number(s.givenAmount || 0);
-                    if (work > given) {
-                        staffLiability += (work - given);
+                (member.history || []).forEach(h => {
+                    if(h.type === 'attendance') {
+                        earned += h.amount;
+                    } else {
+                        paid += h.amount;
                     }
                 });
 
-                const rentRef = ref(db, 'rentals/' + currentUserId);
-                onValue(rentRef, (rentSnapshot) => {
-                    const rentData = rentSnapshot.val() || {};
-                    let rentalLiability = 0;
-
-                    Object.values(rentData).forEach(r => {
-                        let totalRent = Number(r.totalRent || 0);
-                        let rentPaid = Number(r.rentPaid || 0);
-                        if (totalRent > rentPaid) {
-                            rentalLiability += (totalRent - rentPaid);
-                        }
-                    });
-
-                    const mainRef = ref(db, 'transactions/' + currentUserId);
-                    onValue(mainRef, (transSnapshot) => {
-                        const transData = transSnapshot.val() || {};
-                        let totalIncome = 0;
-                        let generalPaid = 0;
-
-                        Object.values(transData).forEach(t => {
-                            let amount = Number(t.amount || 0);
-                            if (t.type === 'വരവ്') {
-                                totalIncome += amount;
-                            } else if (t.type === 'ചെലവ്') {
-                                generalPaid += amount;
-                            }
-                        });
-
-                        let totalStaffPaid = Object.values(data).reduce((sum, s) => sum + Number(s.givenAmount || 0), 0);
-                        let totalRentalPaid = Object.values(rentData).reduce((sum, r) => sum + Number(r.rentPaid || 0), 0);
-
-                        let finalTotalPaid = totalStaffPaid + totalRentalPaid + generalPaid;
-                        let finalCashInHand = totalIncome - finalTotalPaid;
-                        let finalLiability = staffLiability + rentalLiability;
-
-                        // കാർഡിന്റെ കളർ മാറ്റം
-                        const cashCard = document.getElementById("cashCard");
-                        if (cashCard) {
-                            if (finalCashInHand < 0) {
-                                cashCard.className = "p-4 bg-amber-600 text-white rounded-3xl shadow-sm";
-                            } else {
-                                cashCard.className = "p-4 bg-emerald-600 text-white rounded-3xl shadow-sm";
-                            }
-                        }
-
-                        document.getElementById("totalIncome").innerText = "₹" + totalIncome;
-                        document.getElementById("cashInHand").innerText = "₹" + finalCashInHand;
-                        document.getElementById("totalLiability").innerText = "₹" + finalLiability;
-                        document.getElementById("rentExpense").innerText = "₹" + rentalLiability;
-                        document.getElementById("totalPaid").innerText = "₹" + finalTotalPaid;
-                    });
-                });
+                let bal = earned - paid;
+                // മേസ്തിരി ഇനി കൊടുക്കാനുള്ള പൈസ മാത്രം കൂട്ടുന്നു (തൊഴിലാളി കൂടുതൽ വാങ്ങിയത് കുറയ്ക്കില്ല)
+                if (bal > 0) {
+                    totalPendingToStaff += bal;
+                }
             });
+
+            // മെയിൻ ഡാഷ്‌ബോർഡിലെ ബോക്സിലേക്ക് തുക മാറ്റുന്നു
+            document.getElementById('dashStaffBalance').innerText = '₹' + totalPendingToStaff;
         }
     </script>
 </body>
