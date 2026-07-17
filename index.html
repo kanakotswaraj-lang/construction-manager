@@ -1,129 +1,129 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html lang="ml" translate="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>സെറ്റ് മാനേജർ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- മനോഹരമായ മലയാളം ഫോണ്ട് -->
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Manjari', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-100 p-4">
+<body class="bg-gradient-to-b from-slate-50 to-slate-100 min-h-screen p-4">
 
-    <h1 class="text-2xl font-bold text-center mb-6">സെറ്റ് മാനേജർ</h1>
-
-    <!-- പ്രധാന ഡാഷ്‌ബോർഡ് കാർഡുകൾ -->
-    <div class="grid grid-cols-2 gap-4 mb-6">
-        <div class="bg-blue-600 p-4 rounded-xl text-white">
-            <p class="text-sm opacity-80">ആകെ വരുമാനം</p>
-            <p id="totalWork" class="text-xl font-bold">₹0</p>
-        </div>
-        <div class="bg-green-600 p-4 rounded-xl text-white">
-            <p class="text-sm opacity-80">കയ്യിലുള്ളത്</p>
-            <p id="totalBalance" class="text-xl font-bold">₹0</p>
-        </div>
-    </div>
-
-    <!-- ആകെ ബാധ്യത ബോക്സ് -->
-    <div class="bg-red-50 p-4 rounded-xl mb-6 border border-red-100">
-        <p class="text-sm text-red-600 font-bold">ആകെ ബാധ്യത</p>
-        <p id="totalLiability" class="text-2xl font-bold text-red-900">₹0</p>
-    </div>
-
-    <!-- ചെറിയ വിവര ബോക്സുകൾ -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm mb-6">
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-blue-50 p-4 rounded-xl">
-                <p class="text-sm text-gray-600">വാടക വരുമാനം</p>
-                <p id="rentalIncome" class="text-lg font-bold text-blue-900">₹0</p>
-            </div>
-            <div class="bg-orange-50 p-4 rounded-xl">
-                <p class="text-sm text-gray-600">ആകെ നൽകിയത്</p>
-                <p id="sumPaid" class="text-lg font-bold text-orange-900">₹0</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- മെനുകൾ -->
-    <div class="space-y-4">
-        <a href="staff.html" class="block bg-white p-4 text-center font-bold rounded-xl shadow-sm border">ജീവനക്കാർ</a>
-        <a href="rentals.html" class="block bg-white p-4 text-center font-bold rounded-xl shadow-sm border">വാടക ഉപകരണങ്ങൾ</a>
-        <a href="cash.html" class="block bg-white p-4 text-center font-bold rounded-xl shadow-sm border">സെറ്റ് കണക്ക്</a>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-    authDomain: "mesthri-app.firebaseapp.com",
-    projectId: "mesthri-app",
-    storageBucket: "mesthri-app.appspot.com",
-    messagingSenderId: "1060617901864",
-    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-};
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-    
-async function updateDashboard() {
-    try {
-        // 1. ജീവനക്കാരുടെ കണക്കുകൾ
-        const staffSnapshot = await getDocs(collection(db, "staff_entries"));
-        let totalWork = 0;
-        let totalGiven = 0;
+    <div class="max-w-md mx-auto">
         
-        staffSnapshot.forEach((doc) => {
-            let s = doc.data();
-            if (s.history) {
-                s.history.forEach(h => {
-                    if (h.type === 'work') totalWork += Number(h.amount || 0);
-                    if (h.type === 'given') totalGiven += Number(h.amount || 0);
+        <!-- ഹെഡർ ബോക്സ് -->
+        <div class="mx-4 mt-4 p-4 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-2xl shadow-xl flex items-center justify-between border border-slate-800">
+            <span class="text-amber-400 font-black text-sm tracking-wider">MESTHRI PRO</span>
+            <span class="text-slate-400 text-xs font-bold" id="liveDate"></span>
+        </div>
+
+        <!-- പ്രധാന കണക്കുകൾ കാണിക്കുന്ന ബോക്സുകൾ -->
+        <div class="grid grid-cols-2 gap-4 mx-4 mt-6">
+            <!-- ഈ മാസത്തെ വരവ് -->
+            <div class="bg-gradient-to-br from-blue-600 to-blue-700 p-4 rounded-3xl shadow-md text-white">
+                <span class="text-xs font-bold opacity-80 block">ഈ മാസത്തെ വരവ്</span>
+                <span class="text-2xl font-black block mt-1" id="dashIncome">₹0</span>
+            </div>
+            <!-- ഈ മാസത്തെ ചിലവ് -->
+            <div class="bg-gradient-to-br from-orange-500 to-amber-600 p-4 rounded-3xl shadow-md text-white">
+                <span class="text-xs font-bold opacity-80 block">ഈ മാസത്തെ ചിലവ്</span>
+                <span class="text-2xl font-black block mt-1" id="dashExpense">₹0</span>
+            </div>
+        </div>
+
+        <!-- ആകെ ബാധ്യത കാണിക്കുന്ന വലിയ ബോക്സ് -->
+        <div class="mx-4 mt-4 p-5 bg-rose-50 border border-rose-100 rounded-3xl shadow-sm text-center">
+            <span class="text-xs font-bold text-rose-800 uppercase tracking-wider block">തൊഴിലാളികൾക്ക് ആകെ കൊടുക്കാനുള്ളത്</span>
+            <span class="text-3xl font-black text-rose-600 block mt-1" id="dashStaffBalance">₹0</span>
+        </div>
+
+        <!-- വാടക ഉപകരണങ്ങളുടെ കണക്ക് -->
+        <div class="grid grid-cols-2 gap-4 mx-4 mt-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                <span class="text-[11px] font-bold text-slate-400 block">വാടകയിനത്തിൽ കൊടുക്കാനുള്ളത്</span>
+                <span class="text-xl font-black text-slate-800 block mt-0.5" id="dashRentPending">₹16000</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                <span class="text-[11px] font-bold text-slate-400 block">ആകെ ചിലവായ തുക</span>
+                <span class="text-xl font-black text-slate-800 block mt-0.5" id="dashTotalSpent">₹1500</span>
+            </div>
+        </div>
+
+        <!-- മെനു ബട്ടണുകൾ -->
+        <div class="mx-4 mt-8 space-y-4">
+            
+            <!-- ജീവനക്കാർ ബട്ടൺ -->
+            <a href="staff.html" class="flex items-center justify-between p-5 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-2xl text-white shadow-md transition active:scale-98">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">👥</div>
+                    <span class="text-lg font-bold">ജീവനക്കാർ</span>
+                </div>
+                <span class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm">→</span>
+            </a>
+
+            <!-- വാടക ഉപകരണങ്ങൾ ബട്ടൺ -->
+            <a href="#" onclick="alert('ഈ ഫീച്ചർ അടുത്ത അപ്ഡേറ്റിൽ വരും മേസ്തിരി!')" class="flex items-center justify-between p-5 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl text-white shadow-md transition active:scale-98">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">🛠️</div>
+                    <span class="text-lg font-bold">വാടക ഉപകരണങ്ങൾ</span>
+                </div>
+                <span class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm">→</span>
+            </a>
+
+            <!-- വരവ്-ചെലവ് രേഖപ്പെടുത്തുക ബട്ടൺ -->
+            <a href="#" onclick="alert('ഈ ഫീച്ചർ അടുത്ത അപ്ഡേറ്റിൽ വരും മേസ്തിരി!')" class="flex items-center justify-between p-5 bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl text-white shadow-md transition active:scale-98">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">📊</div>
+                    <span class="text-lg font-bold">ವರವ್‌-ചെലവ് രേഖപ്പെടുത്തുക</span>
+                </div>
+                <span class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm">→</span>
+            </a>
+
+            <!-- വാട്സാപ്പ് ഫീഡ്ബാക്ക് ബട്ടൺ -->
+            <a href="https://wa.me/919495315236" class="flex items-center justify-center gap-2 p-4 bg-emerald-500 text-white font-bold rounded-2xl shadow-md transition active:scale-98 text-center text-sm">
+                💬 അഭിപ്രായങ്ങൾ അറിയിക്കുക (WhatsApp)
+            </a>
+
+        </div>
+
+    </div>
+
+    <script>
+        window.onload = function() {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('liveDate').innerText = new Date().toLocaleDateString('ml-IN', options);
+            calculateStaffBalance();
+        };
+
+        function calculateStaffBalance() {
+            const staffMembers = JSON.parse(localStorage.getItem('mesthri_staff')) || [];
+            let totalPendingToStaff = 0;
+
+            staffMembers.forEach(member => {
+                let earned = 0;
+                let paid = 0;
+                
+                (member.history || []).forEach(h => {
+                    if(h.type === 'attendance') {
+                        earned += h.amount;
+                    } else {
+                        paid += h.amount;
+                    }
                 });
-            }
-        });
 
-        // 2. സൈറ്റ് വരവ്-ചെലവ് കണക്കുകൾ
-        const cashSnapshot = await getDocs(collection(db, "cash_entries"));
-        let totalIncome = 0;
-        let totalExpense = 0;
-        
-        cashSnapshot.forEach((doc) => {
-            let c = doc.data();
-            if (c.type === 'income') totalIncome += Number(c.amount || 0);
-            if (c.type === 'expense') totalExpense += Number(c.amount || 0);
-        });
+                let bal = earned - paid;
+                if (bal > 0) {
+                    totalPendingToStaff += bal;
+                }
+            });
 
-        // 3. ശരിക്കുമുള്ള ഫൈനൽ കണക്കുകൂട്ടലുകൾ (ഫിക്സ് ചെയ്തത്)
-        
-        // ആകെ വരുമാനം = സൈറ്റിൽ നിന്ന് കിട്ടിയ പണം മാത്രം (ജീവനക്കാരുടെ കൂലി കൂട്ടരുത്)
-        let finalIncome = totalIncome; 
-        
-        // ജീവനക്കാർക്ക് നൽകാനുള്ളത് (ബാധ്യത) = മൊത്തം കൂലി - കൊടുത്തത്
-        let totalLiability = totalWork - totalGiven; 
-        
-        // കയ്യിലുള്ളത് = സൈറ്റ് വരുമാനത്തിൽ നിന്ന് ജീവനക്കാർക്ക് കൊടുത്തതും മറ്റ് ചെലവുകളും കുറച്ചത്
-        let balanceInHand = totalIncome - totalGiven - totalExpense;
-        
-        // ആകെ ചെലവായത് = ജീവനക്കാർക്ക് കൊടുത്തത് + മറ്റ് ചെലവുകൾ
-        let finalPaid = totalGiven + totalExpense; 
-
-        // 4. ഡിസ്‌പ്ലേ കൃത്യമായ ബോക്സുകളിലേക്ക് മാറ്റുന്നു
-        document.getElementById('totalWork').innerText = '₹' + finalIncome;       // ആകെ വരുമാനം (₹30,000 വരും)
-        document.getElementById('totalBalance').innerText = '₹' + balanceInHand;   // കയ്യിലുള്ളത്
-        document.getElementById('totalLiability').innerText = '₹' + totalLiability; // ജീവനക്കാർക്ക് നൽകാനുള്ളത് (ബാധ്യത)
-        document.getElementById('rentalIncome').innerText = '₹' + totalExpense;     // ആകെ ചെലവുകൾ / വാടക ചെലവ്
-        document.getElementById('sumPaid').innerText = '₹' + totalGiven;           // ജീവനക്കാർക്ക് നൽകിയത്
-        
-    } catch (error) {
-        console.error("Dashboard error: ", error);
-    }
-}
-
-    
-
-    updateDashboard();
-</script>
-
+            document.getElementById('dashStaffBalance').innerText = '₹' + totalPendingToStaff;
+        }
+    </script>
 </body>
 </html>
