@@ -9,26 +9,29 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap');
         body { font-family: 'Manjari', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col pb-24">
 
-    <!-- TOP BAR (HEADER) -->
-    <header class="bg-slate-900 text-white px-4 py-5 rounded-b-3xl shadow-lg flex justify-between items-center mx-3 mt-2">
-        <div>
-            <h1 class="text-2xl font-black tracking-wide text-amber-400">MESTHRI PRO</h1>
-            <p class="text-xs text-slate-400 mt-1" id="dashDate">2026 ജൂലൈ 17</p>
-        </div>
-        
-        <!-- USER PROFILE & LOGOUT SECTION -->
-        <div class="flex items-center gap-3">
-            <!-- പേരിന്റെ ആദ്യ അക്ഷരം കാണിക്കുന്ന വട്ടം (വലുതാക്കിയത്) -->
-            <div id="userCircle" class="w-14 h-14 rounded-full bg-amber-500 text-slate-900 font-extrabold text-3xl flex items-center justify-center shadow-md overflow-hidden border-2 border-amber-400">
+    <!-- TOP BAR (HEADER) - CENTERED & BALANCED -->
+    <header class="bg-slate-900 text-white px-4 py-5 rounded-b-3xl shadow-lg grid grid-cols-3 items-center mx-3 mt-2">
+        <!-- LEFT: USER PROFILE CIRCLE -->
+        <div class="flex justify-start">
+            <div id="userCircle" class="w-14 h-14 rounded-full bg-amber-500 text-slate-900 font-black text-3xl flex items-center justify-center shadow-md overflow-hidden border-2 border-amber-400">
                 മ
             </div>
-            <!-- LOGOUT BUTTON -->
+        </div>
+
+        <!-- CENTER: BRAND NAME & DATE -->
+        <div class="text-center">
+            <h1 class="text-2xl font-black tracking-wide text-amber-400 leading-none">MESTHRI PRO</h1>
+            <p class="text-[10px] text-slate-400 mt-1" id="dashDate">2026 ജൂലൈ 17</p>
+        </div>
+        
+        <!-- RIGHT: LOGOUT BUTTON -->
+        <div class="flex justify-end">
             <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-xl text-xs transition-all duration-200 flex items-center gap-1 active:scale-95 shadow-md">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>ലോഗ് ഔട്ട്</span>
@@ -66,7 +69,7 @@
 
         <!-- QUICK LINKS / NAVIGATION BUTTONS -->
         <div class="space-y-4">
-            <h2 class="text-lg font-bold text-gray-800 px-1">പ്രധാന സേവനങ്ങൾ</h2>
+            <h2 class="text-xl font-black text-gray-800 px-1">പ്രധാന സേവനങ്ങൾ</h2>
             
             <!-- Link 1: Workers -->
             <a href="workers.html" class="flex items-center justify-between bg-gradient-to-r from-purple-700 to-indigo-800 text-white p-5 rounded-2xl shadow-md hover:opacity-95 transition-all active:scale-98">
@@ -75,8 +78,8 @@
                         <i class="fa-solid fa-users"></i>
                     </div>
                     <div>
-                        <span class="text-lg font-bold block">ജീവനക്കാരുടെ ശമ്പളം</span>
-                        <span class="text-xs text-purple-200">ഹാജരും ശമ്പള കണക്കുകളും</span>
+                        <span class="text-xl font-black block">ജീവനക്കാരുടെ ശമ്പളം</span>
+                        <span class="text-sm font-bold text-white block mt-1 bg-black/20 px-2 py-0.5 rounded">ഹാജരും ശമ്പള കണക്കുകളും</span>
                     </div>
                 </div>
                 <i class="fa-solid fa-arrow-right text-lg text-white/70"></i>
@@ -89,8 +92,8 @@
                         <i class="fa-solid fa-screwdriver-wrench"></i>
                     </div>
                     <div>
-                        <span class="text-lg font-bold block">വാടക ഉപകരണങ്ങൾ</span>
-                        <span class="text-xs text-teal-200">മിക്സിംഗ് മെഷീൻ, ഷട്ടറിങ് തുടങ്ങിയവ</span>
+                        <span class="text-xl font-black block">വാടക ഉപകരണങ്ങൾ</span>
+                        <span class="text-sm font-bold text-white block mt-1 bg-black/20 px-2 py-0.5 rounded">മിക്സിംഗ് മെഷീൻ, ഷട്ടറിങ്..</span>
                     </div>
                 </div>
                 <i class="fa-solid fa-arrow-right text-lg text-white/70"></i>
@@ -103,23 +106,39 @@
                         <i class="fa-solid fa-chart-simple"></i>
                     </div>
                     <div>
-                        <span class="text-lg font-bold block">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</span>
-                        <span class="text-xs text-rose-200">മറ്റ് നിർമ്മാണ ചിലവുകൾ</span>
+                        <span class="text-xl font-black block">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</span>
+                        <span class="text-sm font-bold text-white block mt-1 bg-black/20 px-2 py-0.5 rounded">മറ്റ് നിർമ്മാണ ചിലവുകൾ</span>
                     </div>
                 </div>
                 <i class="fa-solid fa-arrow-right text-lg text-white/70"></i>
             </a>
         </div>
 
+        <!-- WHATSAPP FEEDBACK SYSTEM -->
+        <div class="pt-4">
+            <button onclick="sendWhatsAppFeedback()" class="w-full flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-5 rounded-2xl shadow-md transition-all active:scale-98 text-lg">
+                <i class="fa-brands fa-whatsapp text-2xl"></i>
+                <span>അഭിപ്രായങ്ങൾ വാട്സാപ്പിൽ അറിയിക്കൂ</span>
+            </button>
+        </div>
+
     </main>
 
-    <!-- JAVASCRIPT FOR DATE & CALCULATIONS -->
+    <!-- JAVASCRIPT FOR DATE, CALCULATIONS & WHATSAPP -->
     <script>
         // ലോഗ് ഔട്ട് ചെയ്യാനുള്ള ഫങ്ക്ഷൻ
         function handleLogout() {
             if(confirm("നിങ്ങൾക്ക് ലോഗ് ഔട്ട് ചെയ്യണോ മേസ്തിരി?")) {
                 window.location.href = "index.html";
             }
+        }
+
+        // വാട്സാപ്പിലേക്ക് ഫീഡ്‌ബാക്ക് മെസ്സേജ് അയക്കാൻ
+        function sendWhatsAppFeedback() {
+            // ശ്രദ്ധിക്കുക: താഴെയുള്ള നമ്പറിന് പകരം നിങ്ങളുടെ ശരിക്കുള്ള നമ്പർ (ഉദാഹരണം: 919447XXXXXX) ഇവിടെ കൊടുക്കുക
+            const myPhoneNumber = " 916238020523"; 
+            const message = encodeURIComponent("ഹലോ മേസ്തിരി, 'Mesthri Pro' ആപ്പുമായി ബന്ധപ്പെട്ട എന്റെ അഭിപ്രായം താഴെ നൽകുന്നു:\n\n");
+            window.open(`https://wa.me/${myPhoneNumber}?text=${message}`, '_blank');
         }
 
         // തീയതി കാണിക്കാൻ
@@ -131,7 +150,7 @@
             const container = document.getElementById('userCircle');
             
             let userPhoto = localStorage.getItem("mesthriPhoto"); 
-            let userName = localStorage.getItem("mesthriName") || "മേസ്തിരി"; 
+            let userName = localStorage.getItem("mesthriName") || localStorage.getItem("username") || localStorage.getItem("user") || "മേസ്തിരി"; 
 
             if (userPhoto) {
                 container.innerHTML = `<img src="${userPhoto}" class="w-full h-full object-cover" alt="Profile">`;
