@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>കണക്ക് മാനേജർ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-4 bg-slate-100">
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-black text-slate-800 mb-6 text-center">കണക്ക് മാനേജർ</h1>
+
+        <!-- ലാഭനഷ്ടം കാണിക്കുന്ന കാർഡ് -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-emerald-600 text-white p-4 rounded-2xl shadow-lg">
+                <p class="text-xs opacity-80">ആകെ വരവ്</p>
+                <h2 id="totalIncome" class="text-xl font-bold">₹0</h2>
+            </div>
+            <div class="bg-red-600 text-white p-4 rounded-2xl shadow-lg">
+                <p class="text-xs opacity-80">ആകെ ചെലവ്</p>
+                <h2 id="totalExpense" class="text-xl font-bold">₹0</h2>
+            </div>
+            <div class="col-span-2 bg-white p-4 rounded-2xl shadow-sm border text-center">
+                <p class="text-xs text-slate-500">കൈവശം / ലാഭം</p>
+                <h2 id="netBalance" class="text-2xl font-black text-slate-800">₹0</h2>
+            </div>
+        </div>
+
+        <!-- പുതിയ എൻട്രി ഫോം -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
+            <select id="type" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
+                <option value="income">വരവ് (Income)</option>
+                <option value="expense">ചെലവ് (Expense)</option>
+            </select>
+            <input type="text" id="desc" placeholder="എന്തിനാണ്? (വിവരണം)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
+            <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
+            <button id="saveBtn" class="w-full bg-emerald-700 text-white p-4 rounded-xl font-black">സേവ് ചെയ്യുക</button>
+        </div>
+
+        <!-- ലിസ്റ്റ് -->
+        <div id="transactionList" class="space-y-3"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+const firebaseConfig = {
+    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+    authDomain: "mesthri-app.firebaseapp.com",
+    projectId: "mesthri-app",
+    storageBucket: "mesthri-app.appspot.com",
+    messagingSenderId: "1060617901864",
+    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+};
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.getElementById('saveBtn').addEventListener('click', async () => {
+            const data = {
+                type: document.getElementById('type').value,
+                desc: document.getElementById('desc').value,
+                amount: parseFloat(document.getElementById('amount').value) || 0,
+                date: new Date()
+            };
+            await addDoc(collection(db, "accounts"), data);
+            alert("കണക്ക് ചേർത്തു!");
+        });
+
+        onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
+            let income = 0, expense = 0;
+            const list = document.getElementById('transactionList');
+            list.innerHTML = '';
+            snapshot.forEach((d) => {
+                const s = d.data();
+                if(s.type === 'income') income += s.amount;
+                else expense += s.amount;
+                
+                list.innerHTML += `
+                    <div class="bg-white p-4 rounded-xl border flex justify-between items-center shadow-sm">
+                        <div><p class="font-bold">${s.desc}</p></div>
+                        <p class="font-black ${s.type === 'income' ? 'text-emerald-600' : 'text-red-600'}">
+                            ${s.type === 'income' ? '+' : '-'} ₹${s.amount}
+                        </p>
+                    </div>
+                `;
+            });
+            document.getElementById('totalIncome').innerText = '₹' + income;
+            document.getElementById('totalExpense').innerText = '₹' + expense;
+            document.getElementById('netBalance').innerText = '₹' + (income - expense);
+        });
+    </script>
+</body>
+</html>
