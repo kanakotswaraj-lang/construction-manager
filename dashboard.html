@@ -36,23 +36,20 @@
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">പ്രൊഫഷണൽ മാനേജർ</p>
             </div>
         </div>
+<!-- ഈ മാറ്റം നിങ്ങളുടെ കോഡിലെ സ്റ്റാറ്റ്സ് ഭാഗത്ത് വരുത്തുക -->
 
-        <!-- മാസം തിരഞ്ഞെടുക്കാൻ -->
-        <div class="mb-6">
-            <label class="text-[10px] font-black text-slate-400 uppercase px-1">മാസത്തെ കണക്കുകൾ നോക്കാൻ</label>
-            <input type="month" id="monthFilter" class="w-full p-4 bg-white border border-slate-200 rounded-2xl font-black text-slate-800">
-        </div>
+<!-- വരവ് കാർഡ് -->
+<div class="bg-emerald-600 p-5 rounded-3xl shadow-lg shadow-emerald-200">
+    <p class="text-sm text-emerald-100 font-bold uppercase">ഈ മാസത്തെ വരവ്</p> <!-- text-[10px] മാറ്റി text-sm ആക്കി -->
+    <h3 id="mIncome" class="text-3xl font-black text-white mt-1">₹0</h3> <!-- അക്ഷരവലിപ്പം കൂട്ടി -->
+</div>
 
-        <!-- സ്റ്റാറ്റ്സ് -->
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="bg-emerald-600 p-5 rounded-3xl shadow-lg shadow-emerald-200">
-                <p class="text-[10px] text-emerald-100 font-bold uppercase">ഈ മാസത്തെ വരവ്</p>
-                <h3 id="mIncome" class="text-2xl font-black text-white mt-1">₹0</h3>
-            </div>
-            <div class="bg-rose-600 p-5 rounded-3xl shadow-lg shadow-rose-200">
-                <p class="text-[10px] text-rose-100 font-bold uppercase">ഈ മാസത്തെ ചെലവ്</p>
-                <h3 id="mExpense" class="text-2xl font-black text-white mt-1">₹0</h3>
-            </div>
+<!-- ചെലവ് കാർഡ് -->
+<div class="bg-rose-600 p-5 rounded-3xl shadow-lg shadow-rose-200">
+    <p class="text-sm text-rose-100 font-bold uppercase">ഈ മാസത്തെ ചെലവ്</p> <!-- text-[10px] മാറ്റി text-sm ആക്കി -->
+    <h3 id="mExpense" class="text-3xl font-black text-white mt-1">₹0</h3> <!-- അക്ഷരവലിപ്പം കൂട്ടി -->
+</div>
+
         </div>
 
         <!-- നാവിഗേഷൻ -->
