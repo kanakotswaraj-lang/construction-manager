@@ -24,7 +24,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        const firebaseConfig = {
+         const firebaseConfig = {
     apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
     authDomain: "mesthri-app.firebaseapp.com",
     projectId: "mesthri-app",
@@ -46,13 +46,13 @@
             alert("സേവ് ആയി!");
         });
 
-        // വിൻഡോയിൽ ലഭ്യമാക്കാൻ (Global Functions)
+        // ഗ്ലോബൽ ഫങ്ഷനുകൾ (ബട്ടണുകൾ വർക്ക് ചെയ്യാൻ)
         window.deleteStaff = async (id) => await deleteDoc(doc(db, 'staffs', id));
-        window.viewHistory = (name) => alert(name + "-ന്റെ ഹിസ്റ്ററി വിവരങ്ങൾ ഉടൻ വരുന്നു!");
         window.editStaff = (id, name) => {
             const newName = prompt("പുതിയ പേര് നൽകുക:", name);
             if (newName) updateDoc(doc(db, 'staffs', id), { name: newName });
         };
+        window.viewHistory = (name) => alert(name + "-ന്റെ ഹിസ്റ്ററി ഉടൻ വരുന്നു!");
 
         // ലിസ്റ്റ് ചെയ്യൽ
         onSnapshot(collection(db, "staffs"), (snapshot) => {
