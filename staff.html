@@ -18,23 +18,21 @@
 
         <!-- ജീവനക്കാരെ ചേർക്കുന്ന ഫോം -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
-            <input type="file" id="staffPhoto" class="hidden" accept="image/*" onchange="previewImage(event)">
-            <label for="staffPhoto" class="block w-24 h-24 bg-slate-50 rounded-full mb-6 mx-auto flex items-center justify-center cursor-pointer border-2 border-dashed border-slate-200 overflow-hidden">
-                <img id="photoPreview" class="w-full h-full object-cover hidden">
-                <span id="photoText" class="text-[10px] text-slate-400 font-bold">ഫോട്ടോ</span>
+            <input type="file" id="staffPhoto" class="hidden" accept="image/*">
+            <label for="staffPhoto" class="block w-20 h-20 bg-slate-50 rounded-full mb-6 mx-auto flex items-center justify-center cursor-pointer border-2 border-dashed border-slate-200">
+                <span class="text-[10px] text-slate-400 font-bold">ഫോട്ടോ</span>
             </label>
-            
             <div class="space-y-4">
                 <input type="text" id="staffName" placeholder="പേര്" class="w-full p-4 bg-slate-50 rounded-2xl font-bold border">
                 <div class="grid grid-cols-2 gap-4">
                     <input type="number" id="staffWage" placeholder="ദിവസക്കൂലി (₹)" class="w-full p-4 bg-slate-50 rounded-2xl font-bold border">
-                    <input type="tel" id="staffPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-50 rounded-2xl font-bold border">
+                    <input type="tel" id="staffPhone" placeholder="നമ്പർ" class="w-full p-4 bg-slate-50 rounded-2xl font-bold border">
                 </div>
                 <button class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black">ജീവനക്കാരനെ ചേർക്കുക</button>
             </div>
         </div>
 
-        <!-- ജീവനക്കാരന്റെ കാർഡ് -->
+        <!-- ജീവനക്കാരന്റെ കാർഡ് (ഹിസ്റ്ററി & വാട്‌സാപ്പ് ഫീച്ചർ) -->
         <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
             <div class="flex items-center gap-4 mb-4">
                 <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center font-black text-emerald-600">രാ</div>
@@ -44,7 +42,7 @@
                 </div>
             </div>
 
-            <!-- ഹാജർ & അഡ്വാൻസ് തീയതി സഹിതം -->
+            <!-- ഹാജർ & പണം നൽകൽ -->
             <div class="space-y-3 border-t pt-4">
                 <div class="flex gap-2">
                     <input type="date" class="bg-slate-50 p-2 rounded-xl text-xs font-bold w-full border">
@@ -60,21 +58,16 @@
             <div class="flex gap-2 mt-4">
                 <button class="flex-1 bg-slate-100 py-2 rounded-xl text-[10px] font-black">എഡിറ്റ്</button>
                 <button class="flex-1 bg-orange-50 text-orange-600 py-2 rounded-xl text-[10px] font-black">ഹിസ്റ്ററി</button>
-                <button class="flex-1 bg-red-50 text-red-600 py-2 rounded-xl text-[10px] font-black">ഡിലീറ്റ്</button>
+                <button onclick="sendToWhatsApp('രാഘവൻ', 1200)" class="flex-1 bg-green-50 text-green-700 py-2 rounded-xl text-[10px] font-black">WhatsApp</button>
             </div>
         </div>
     </div>
 
     <script>
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function(){
-                const output = document.getElementById('photoPreview');
-                output.src = reader.result;
-                output.classList.remove('hidden');
-                document.getElementById('photoText').classList.add('hidden');
-            };
-            reader.readAsDataURL(event.target.files[0]);
+        function sendToWhatsApp(name, amount) {
+            const message = `ഹലോ ${name}, നിങ്ങളുടെ ഈ ദിവസത്തെ കൂലി ₹${amount} ആണ്. - മേസ്തിരി പ്രോ`;
+            const phone = "919876543210"; // ഇവിടെ ആ ജീവനക്കാരന്റെ നമ്പർ ഡൈനാമിക് ആയി കൊടുക്കാം
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
         }
     </script>
 </body>
