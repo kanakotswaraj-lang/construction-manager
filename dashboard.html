@@ -11,13 +11,17 @@
         <!-- ഹെഡർ -->
         <div class="bg-slate-900 p-6 rounded-3xl text-white mb-6 shadow-xl">
             <div class="flex justify-between items-center mb-4">
-                <img id="preview" src="https://ui-avatars.com/api/?name=M" class="w-14 h-14 rounded-full border-2 border-slate-600 object-cover">
+                <!-- ഫോട്ടോ അപ്‌ലോഡ് സെക്ഷൻ -->
+                <label for="photoUpload" class="cursor-pointer">
+                    <img id="preview" src="https://ui-avatars.com/api/?name=M" class="w-16 h-16 rounded-full border-2 border-slate-600 object-cover">
+                    <input type="file" id="photoUpload" class="hidden" accept="image/*">
+                </label>
                 <a href="login.html" class="text-xs font-bold bg-slate-800 px-4 py-2 rounded-xl">Log Out →</a>
             </div>
             <h1 class="text-2xl font-black">MESHTRI PRO</h1>
             <p class="text-md font-bold opacity-90">സ്വാഗതം, മേസ്തിരി</p>
             <div class="text-center text-sm font-bold opacity-60 border-t border-slate-700 pt-3 mt-3">
-                ഇന്ന്: <span id="date"></span>
+                ഇന്ന്: 2026 ജൂലൈ 18
             </div>
         </div>
 
@@ -32,37 +36,40 @@
             <a href="materials.html" class="bg-indigo-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
                 <p class="text-xl font-black">🧱 മെറ്റീരിയൽസ്</p>
             </a>
-            <a href="cash.html" class="bg-rose-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
+            <a href="transactions.html" class="bg-rose-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
                 <p class="text-xl font-black">📊 വരവ് - ചെലവ്</p>
             </a>
         </div>
 
-        <!-- വാട്സാപ്പ് സപ്പോർട്ട് (പുതിയ നമ്പർ ചേർത്തു) -->
+        <!-- വാട്സാപ്പ് സപ്പോർട്ട് -->
         <a href="https://wa.me/916238020523" class="mt-8 bg-emerald-600 text-white p-5 rounded-2xl flex items-center justify-center font-black shadow-lg">
             💬 വാട്സാപ്പിൽ ബന്ധപ്പെടുക (916238020523)
         </a>
     </div>
 
-    <!-- Firebase സ്ക്രിപ്റ്റ് -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    <!-- ഫോട്ടോ അപ്‌ലോഡ് സ്ക്രിപ്റ്റ് -->
+    <script>
+        const photoUpload = document.getElementById('photoUpload');
+        const preview = document.getElementById('preview');
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.appspot.com",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-        };
+        photoUpload.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    localStorage.setItem('profilePhoto', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
-        // തീയതി സെറ്റ് ചെയ്യാൻ
-        const date = new Date();
-        document.getElementById('date').innerText = date.toLocaleDateString('ml-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+        window.onload = function() {
+            const savedPhoto = localStorage.getItem('profilePhoto');
+            if (savedPhoto) {
+                preview.src = savedPhoto;
+            }
+        }
     </script>
 </body>
 </html>
