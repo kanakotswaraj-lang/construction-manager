@@ -2,61 +2,54 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <title>കണക്ക് മാനേജർ പ്രോ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>കണക്ക് മാനേജർ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-<body class="bg-slate-50 p-4">
-    
-      <!-- ഈ മാറ്റം വരുത്തുക -->
-<div class="w-full max-w-full px-2"> 
-
-    <!-- ബാക്കി കാര്യങ്ങൾ എല്ലാം അതുപോലെ തന്നെ വെക്കുക -->
-  <h1 class="text-2xl font-black text-slate-800 mb-3 text-center">കണക്ക് മാനേജർ പ്രോ</h1>
+<body class="bg-slate-100 p-2">
+    <!-- ഇവിടെ w-full ആണ് കൊടുത്തിരിക്കുന്നത്, അത് സ്ക്രീനിൽ നിറഞ്ഞു നിൽക്കും -->
+    <div class="w-full">
+        <h1 class="text-2xl font-bold text-center mb-4">കണക്ക് മാനേജർ പ്രോ</h1>
 
         <!-- ഡാഷ്ബോർഡ് -->
-        <div class="bg-white p-3 rounded-3xl shadow-sm border mb-3">
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div class="bg-emerald-600 text-white p-4 rounded-2xl text-center">
-                    <p class="text-xs opacity-80">വരവ്</p>
-                    <h2 id="totalIncome" class="text-xl font-bold">₹0</h2>
+        <div class="bg-white p-3 rounded-xl shadow mb-4">
+            <div class="grid grid-cols-2 gap-2 mb-2">
+                <div class="bg-emerald-600 text-white p-3 rounded-lg text-center">
+                    <p class="text-[10px]">വരവ്</p>
+                    <h2 id="totalIncome" class="text-lg font-bold">₹0</h2>
                 </div>
-                <div class="bg-red-600 text-white p-4 rounded-2xl text-center">
-                    <p class="text-xs opacity-80">ചെലവ്</p>
-                    <h2 id="totalExpense" class="text-xl font-bold">₹0</h2>
+                <div class="bg-red-600 text-white p-3 rounded-lg text-center">
+                    <p class="text-[10px]">ചെലവ്</p>
+                    <h2 id="totalExpense" class="text-lg font-bold">₹0</h2>
                 </div>
             </div>
-            <div class="bg-slate-800 text-white p-4 rounded-2xl text-center">
-                <p class="text-xs opacity-70">ലാഭം / ബാക്കി</p>
-                <h2 id="netBalance" class="text-2xl font-black">₹0</h2>
+            <div class="bg-slate-800 text-white p-3 rounded-lg text-center">
+                <p class="text-[10px]">ബാക്കി</p>
+                <h2 id="netBalance" class="text-xl font-bold">₹0</h2>
             </div>
         </div>
 
         <!-- ഫോം -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
-            <input type="text" id="ownerName" placeholder="മുതലാളിയുടെ പേര്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="tel" id="ownerPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="text" id="siteName" placeholder="സൈറ്റിന്റെ സ്ഥലം/പേര്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <select id="type" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-                <option value="income">വരവ് (Income)</option>
-                <option value="expense">ചെലവ് (Expense)</option>
+        <div class="bg-white p-3 rounded-xl shadow mb-4">
+            <input type="text" id="ownerName" placeholder="മുതലാളിയുടെ പേര്" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+            <input type="tel" id="ownerPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+            <input type="text" id="siteName" placeholder="സൈറ്റ്/സ്ഥലം" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+            <select id="type" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+                <option value="income">വരവ്</option>
+                <option value="expense">ചെലവ്</option>
             </select>
-            <input type="text" id="desc" placeholder="വിവരണം" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
+            <input type="text" id="desc" placeholder="വിവരണം" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+            <input type="number" id="amount" placeholder="തുക" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
             
-            <button id="saveBtn" class="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold mb-2">സേവ് ചെയ്യുക</button>
-            <button onclick="window.print()" class="w-full bg-blue-700 text-white p-4 rounded-xl font-bold">PDF ആയി സേവ് ചെയ്യുക</button>
+            <button id="saveBtn" class="w-full bg-emerald-700 text-white p-3 rounded-lg font-bold mb-2">സേവ് ചെയ്യുക</button>
+            <button onclick="window.print()" class="w-full bg-blue-700 text-white p-3 rounded-lg font-bold">PDF സേവ്</button>
         </div>
-
-        <!-- സെർച്ച് ബാർ -->
-        <input type="text" id="searchInput" placeholder="തിരയുക (പേര്/സൈറ്റ്/വിവരണം)..." class="w-full p-4 rounded-xl border mb-6 shadow-sm">
-
-        <div id="transactionList" class="space-y-3"></div>
     </div>
-
+    
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
 const firebaseConfig = {
     apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
     authDomain: "mesthri-app.firebaseapp.com",
@@ -65,22 +58,13 @@ const firebaseConfig = {
     messagingSenderId: "1060617901864",
     appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
 };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
 
-        // സേവ് ചെയ്യൽ
-        document.getElementById('saveBtn').onclick = async () => {
-            await addDoc(collection(db, "accounts"), {
-                name: document.getElementById('ownerName').value,
-                phone: document.getElementById('ownerPhone').value,
-                site: document.getElementById('siteName').value,
-                type: document.getElementById('type').value,
-                desc: document.getElementById('desc').value,
-                amount: parseFloat(document.getElementById('amount').value) || 0,
-                date: new Date().toLocaleDateString()
-            });
-            alert("കണക്ക് ചേർത്തു!");
-        };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function updateDashboard() {
+    try {
+        // ബാക്കി ലോജിക് ഇവിടെ തുടരുക...
     </script>
 </body>
 </html>
