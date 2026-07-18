@@ -4,94 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-    /* മൊത്തത്തിലുള്ള ഫോണ്ട് വലിപ്പം വർദ്ധിപ്പിക്കുന്നു */
-    body { font-family: 'Manjari', sans-serif; background-color: #f8fafc; font-size: 18px !important; } 
-    
-    /* ഹെഡിംഗും ബട്ടണുകളും വലുതാക്കുന്നു */
-    h1 { font-size: 28px !important; line-height: 1.2; }
-    h3 { font-size: 24px !important; }
-    button, a { font-size: 18px !important; font-weight: 700 !important; }
-    
-    /* ചെറിയ ലേബലുകൾക്ക് അല്പം വലിപ്പം നൽകുന്നു */
-    .text-[10px] { font-size: 13px !important; }
-</style>
-
-    <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
+    <title>മെസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
 </head>
-<body class="p-4">
+<body class="bg-slate-100 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <!-- മേസ്തിരി പ്രൊഫൈൽ -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6 flex items-center gap-4">
-            <div id="mesthriAvatar" class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center border-4 border-slate-50 shadow-inner overflow-hidden">
-                <span class="text-xs font-bold text-slate-400">ഫോട്ടോ</span>
-            </div>
-            <div>
-                <!-- മേസ്തിരി പ്രൊഫൈൽ പേര് കളർഫുൾ ആക്കാൻ -->
-<h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-sky-600" id="userName">
-    മേസ്തിരി പ്രോ
-</h1>
-
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">പ്രൊഫഷണൽ മാനേജർ</p>
-            </div>
-        </div>
-<!-- ഈ മാറ്റം നിങ്ങളുടെ കോഡിലെ സ്റ്റാറ്റ്സ് ഭാഗത്ത് വരുത്തുക -->
-
-<!-- വരവ് കാർഡ് -->
-<div class="bg-emerald-600 p-5 rounded-3xl shadow-lg shadow-emerald-200">
-    <p class="text-sm text-emerald-100 font-bold uppercase">ഈ മാസത്തെ വരവ്</p> <!-- text-[10px] മാറ്റി text-sm ആക്കി -->
-    <h3 id="mIncome" class="text-3xl font-black text-white mt-1">₹0</h3> <!-- അക്ഷരവലിപ്പം കൂട്ടി -->
-</div>
-
-<!-- ചെലവ് കാർഡ് -->
-<div class="bg-rose-600 p-5 rounded-3xl shadow-lg shadow-rose-200">
-    <p class="text-sm text-rose-100 font-bold uppercase">ഈ മാസത്തെ ചെലവ്</p> <!-- text-[10px] മാറ്റി text-sm ആക്കി -->
-    <h3 id="mExpense" class="text-3xl font-black text-white mt-1">₹0</h3> <!-- അക്ഷരവലിപ്പം കൂട്ടി -->
-</div>
-
+        <!-- ഹെഡർ -->
+        <div class="bg-slate-900 p-6 rounded-3xl text-white mb-6">
+            <h1 class="text-2xl font-black">MESHTRI PRO</h1>
+            <p class="text-sm opacity-80">സ്വാഗതം, മേസ്തിരി</p>
         </div>
 
-        <!-- നാവിഗേഷൻ -->
-        <div class="grid grid-cols-2 gap-3">
-            <a href="transactions.html" class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm text-center font-black text-slate-700">വരവ്-ചെലവ്</a>
-            <a href="staff.html" class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm text-center font-black text-slate-700">ജീവനക്കാർ</a>
-            <a href="rentals.html" class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm text-center font-black text-slate-700">ഉപകരണങ്ങൾ</a>
-            <!-- ഡാഷ്‌ബോർഡ് മെനുവിൽ മെറ്റീരിയൽസ് കൂടി ചേർത്തു -->
-<div class="grid grid-cols-2 gap-4">
-    <!-- വാടക ഉപകരണങ്ങൾ -->
-    <a href="rentals.html" class="bg-white p-6 rounded-3xl border shadow-sm text-center">
-        <p class="text-4xl mb-2">🏗️</p>
-        <p class="font-black text-slate-800">വാടക ഉപകരണങ്ങൾ</p>
-    </a>
-    
-    <!-- മെറ്റീരിയൽസ് -->
-    <a href="materials.html" class="bg-white p-6 rounded-3xl border shadow-sm text-center">
-        <p class="text-4xl mb-2">🧱</p>
-        <p class="font-black text-slate-800">മെറ്റീരിയൽസ്</p>
-    </a>
-</div>
+        <!-- പ്രധാന ബട്ടണുകൾ -->
+        <div class="space-y-4">
             
-            <button onclick="logout()" class="bg-slate-900 p-5 rounded-2xl text-white font-black text-center">ലോഗൗട്ട്</button>
+            <!-- ജീവനക്കാരുടെ ശമ്പളം -->
+            <a href="salary.html" class="bg-indigo-900 p-8 rounded-3xl border shadow-lg flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <p class="text-4xl">👥</p>
+                    <p class="text-xl font-black text-white">ജീവനക്കാരുടെ ശമ്പളം</p>
+                </div>
+                <p class="text-white text-2xl">→</p>
+            </a>
+
+            <!-- വാടക ഉപകരണങ്ങൾ -->
+            <a href="rentals.html" class="bg-emerald-900 p-8 rounded-3xl border shadow-lg flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <p class="text-4xl">🏗️</p>
+                    <p class="text-xl font-black text-white">വാടക ഉപകരണങ്ങൾ</p>
+                </div>
+                <p class="text-white text-2xl">→</p>
+            </a>
             
-            <!-- വാട്‌സാപ്പ് ഷെയർ ബട്ടൺ -->
-            <button onclick="openWhatsApp()" class="col-span-2 bg-emerald-500 p-5 rounded-2xl text-white font-black text-center shadow-lg">
-                WhatsApp-ൽ കണക്കുകൾ അയക്കുക 📲
-            </button>
+            <!-- മെറ്റീരിയൽസ് -->
+            <a href="materials.html" class="bg-indigo-800 p-8 rounded-3xl border shadow-lg flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <p class="text-4xl">🧱</p>
+                    <p class="text-xl font-black text-white">മെറ്റീരിയൽസ്</p>
+                </div>
+                <p class="text-white text-2xl">→</p>
+            </a>
+
+            <!-- വരവ്-ചെലവ് കണക്കുകൾ -->
+            <a href="accounts.html" class="bg-rose-800 p-8 rounded-3xl border shadow-lg flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <p class="text-4xl">📊</p>
+                    <p class="text-xl font-black text-white">വരവ് - ചെലവ്</p>
+                </div>
+                <p class="text-white text-2xl">→</p>
+            </a>
+        </div>
+
+        <!-- വാട്സാപ്പ് സപ്പോർട്ട് -->
+        <div class="mt-8 bg-emerald-500 text-white p-4 rounded-2xl text-center font-black">
+            <p>💬 അഭിപ്രായങ്ങൾ അറിയിക്കുക (WhatsApp)</p>
         </div>
     </div>
-
-    <script>
-        function openWhatsApp() {
-            const message = "മേസ്തിരി പ്രോ: ഈ മാസത്തെ വരവ്-ചെലവ് കണക്കുകൾ പരിശോധിക്കൂ.";
-            const url = "https://wa.me/?text=" + encodeURIComponent(message);
-            window.open(url, '_blank');
-        }
-        
-        function logout() {
-            // ലോഗൗട്ട് പ്രവർത്തനങ്ങൾ ഇവിടെ നൽകുക
-            alert("ലോഗൗട്ട് ചെയ്തു!");
-        }
-    </script>
 </body>
 </html>
