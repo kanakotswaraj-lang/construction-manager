@@ -9,13 +9,11 @@
 </head>
 <body class="p-4">
     <div class="max-w-md mx-auto">
-        <!-- ഹെഡർ -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
             <h1 class="text-2xl font-black text-emerald-600 mb-4">ജീവനക്കാർ</h1>
             <input type="text" id="searchStaff" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-4 bg-slate-100 rounded-2xl font-bold border">
         </div>
 
-        <!-- പുതിയ ജീവനക്കാരനെ ചേർക്കാൻ -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
             <h2 class="font-black text-lg mb-4 text-slate-700">പുതിയ ജീവനക്കാരൻ</h2>
             <div class="space-y-3">
@@ -25,50 +23,13 @@
                 <button id="saveStaffBtn" class="w-full bg-slate-900 text-white p-4 rounded-xl font-black">സേവ് ചെയ്യുക</button>
             </div>
         </div>
-
-        <!-- ജീവനക്കാരന്റെ കാർഡ് -->
-        <div class="bg-white p-5 rounded-3xl border shadow-sm">
-            <div class="flex items-center gap-4 mb-4">
-                <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center font-black text-emerald-700">രാ</div>
-                <div>
-                    <h3 class="font-bold text-lg">രാഘവൻ</h3>
-                    <p class="text-xs text-slate-500 font-bold">സൈറ്റ്: <span id="displaySite">പാറക്കൽ</span> | കൂലി: ₹800</p>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-2 mt-4">
-                <button onclick="openPaymentModal()" class="bg-blue-50 text-blue-700 py-3 rounded-xl text-xs font-bold">പണം നൽകി</button>
-                <button class="bg-orange-50 text-orange-600 py-3 rounded-xl text-xs font-bold">ഹിസ്റ്ററി</button>
-                <button class="bg-purple-50 text-purple-700 py-3 rounded-xl text-xs font-bold">PDF</button>
-                <button onclick="sendWhatsApp()" class="bg-green-50 text-green-700 py-3 rounded-xl text-xs font-bold">WhatsApp</button>
-            </div>
-        </div>
     </div>
 
-    <!-- പേയ്‌മെന്റ് മോഡൽ -->
-    <div id="paymentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white p-6 rounded-3xl w-full max-w-sm">
-            <h2 class="font-black text-lg mb-4 text-slate-800">പണം നൽകിയ രീതി</h2>
-            <select id="payMode" class="w-full p-4 bg-slate-100 rounded-2xl mb-4 font-bold">
-                <option value="Cash">കാഷ് (Cash)</option>
-                <option value="UPI">ഗൂഗിൾ പേ/UPI</option>
-                <option value="Bank">ബാങ്ക് ട്രാൻസ്ഫർ</option>
-            </select>
-            <button onclick="closePaymentModal()" class="w-full bg-emerald-600 text-white p-4 rounded-2xl font-black">സേവ് ചെയ്യുക</button>
-        </div>
-    </div>
-
-    <script type="module">
-        // WhatsApp ഫങ്ഷൻ
-        window.sendWhatsApp = () => {
-            const msg = "ഹലോ, നിങ്ങളുടെ കൂലി കണക്ക് വിവരങ്ങൾ ഇവിടെയുണ്ട്...";
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        window.openPaymentModal = () => document.getElementById('paymentModal').classList.remove('hidden');
-        window.closePaymentModal = () => document.getElementById('paymentModal').classList.add('hidden');
-        
-        // ബാക്കി Firebase സേവിംഗ് ലോജിക് ഇവിടെ ചേർക്കുക
+    <script>
+        // ലളിതമായ സ്ക്രിപ്റ്റ് മാത്രം ഇവിടെ ഉപയോഗിക്കുക
+        document.getElementById('saveStaffBtn').addEventListener('click', () => {
+            alert("ജീവനക്കാരനെ സേവ് ചെയ്യാൻ Firebase കണക്ട് ചെയ്യണം!");
+        });
     </script>
 </body>
 </html>
