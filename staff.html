@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Manjari', sans-serif; background-color: #f8fafc; }
-        input, button { font-size: 16px !important; }
     </style>
     <title>ജീവനക്കാർ - മേസ്തിരി പ്രോ</title>
 </head>
@@ -19,37 +18,50 @@
             <a href="dashboard.html" class="font-bold bg-slate-100 px-4 py-2 rounded-xl text-sm">← മെയിൻ</a>
         </div>
 
-        <!-- ജീവനക്കാരെ ചേർക്കാൻ -->
+        <!-- ജീവനക്കാരെ ചേർക്കുന്ന ഫോം -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
             <input type="file" id="staffPhoto" class="hidden" accept="image/*">
-            <label for="staffPhoto" class="block w-24 h-24 bg-slate-50 rounded-full mb-6 mx-auto flex items-center justify-center cursor-pointer border-2 border-dashed border-slate-200">
-                <span class="text-xs text-slate-400 font-bold">ഫോട്ടോ</span>
+            <label for="staffPhoto" class="block w-20 h-20 bg-slate-50 rounded-full mb-6 mx-auto flex items-center justify-center cursor-pointer border-2 border-dashed border-slate-200">
+                <span class="text-[10px] text-slate-400 font-bold">ഫോട്ടോ</span>
             </label>
             
-            <!-- ജീവനക്കാരെ ചേർക്കുന്ന ഫോമിൽ ഒരു ഫോൺ നമ്പർ കൂടി ചേർക്കാം -->
-<label class="text-[10px] font-black text-slate-400 uppercase px-2">ഫോൺ നമ്പർ</label>
-<input type="tel" id="staffPhone" placeholder="നമ്പർ" class="w-full p-4 mb-3 mt-1 bg-slate-50 rounded-2xl font-bold border">
-
-<!-- ലിസ്റ്റ് ഭാഗത്ത് എഡിറ്റ്, ഡിലീറ്റ്, ഹിസ്റ്ററി ബട്ടണുകൾ -->
-<div class="bg-white p-4 rounded-3xl border border-slate-100 flex items-center justify-between shadow-sm">
-    <div class="flex items-center gap-3">
-        <div class="w-12 h-12 bg-slate-100 rounded-full"></div>
-        <div>
-            <h3 class="font-black text-slate-800">രാഘവൻ</h3>
-            <p class="text-xs text-slate-500 font-bold">₹ 1200 / ദിവസം</p>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase px-2">പേര്</label>
+                    <input type="text" id="staffName" placeholder="പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-4 mt-1 bg-slate-50 rounded-2xl font-bold border">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase px-2">ദിവസക്കൂലി</label>
+                        <input type="number" id="staffWage" placeholder="₹" class="w-full p-4 mt-1 bg-slate-50 rounded-2xl font-bold border">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase px-2">ഫോൺ നമ്പർ</label>
+                        <input type="tel" id="staffPhone" placeholder="നമ്പർ" class="w-full p-4 mt-1 bg-slate-50 rounded-2xl font-bold border">
+                    </div>
+                </div>
+                <button class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black hover:bg-black">ജീവനക്കാരനെ ചേർക്കുക</button>
+            </div>
         </div>
-    </div>
-    <div class="flex gap-2">
-        <button class="bg-blue-50 text-blue-600 p-2 rounded-xl text-xs font-black">എഡിറ്റ്</button>
-        <button class="bg-orange-50 text-orange-600 p-2 rounded-xl text-xs font-black">ഹിസ്റ്ററി</button>
-        <button class="bg-red-50 text-red-600 p-2 rounded-xl text-xs font-black">ഡിലീറ്റ്</button>
-    </div>
-</div>
-            
 
-        <!-- ലിസ്റ്റ് -->
-        <div id="staffList" class="space-y-3">
-            <p class="text-center text-slate-400 font-bold py-10">ജീവനക്കാരുടെ പട്ടിക ഇവിടെ കാണാം...</p>
+        <!-- ജീവനക്കാരുടെ ലിസ്റ്റ് (ആധുനിക കാർഡ് ഡിസൈൻ) -->
+        <div id="staffList" class="space-y-4">
+            <!-- രാഘവന്റെ ഉദാഹരണം -->
+            <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-black">ര</div>
+                    <div class="flex-grow">
+                        <h3 class="text-lg font-black text-slate-800">രാഘവൻ</h3>
+                        <p class="text-xs font-bold text-slate-400">ഫോൺ: 9876543210</p>
+                        <span class="inline-block bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-[10px] font-black mt-1">₹ 1200 / ദിവസം</span>
+                    </div>
+                </div>
+                <div class="flex gap-2 mt-5 border-t pt-4">
+                    <button class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-xl text-[10px] font-black">എഡിറ്റ്</button>
+                    <button class="flex-1 bg-orange-50 text-orange-600 py-2 rounded-xl text-[10px] font-black">ഹിസ്റ്ററി</button>
+                    <button class="flex-1 bg-red-50 text-red-600 py-2 rounded-xl text-[10px] font-black">ഡിലീറ്റ്</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>
