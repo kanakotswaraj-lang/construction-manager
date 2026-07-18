@@ -4,18 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Manjari', sans-serif; background-color: #f8fafc; }</style>
-    <title>വാടക ഉപകരണങ്ങൾ - മേസ്തിരി പ്രോ</title>
+    <title>മേസ്തിരി പ്രോ - അൾട്ടിമേറ്റ് ആപ്പ്</title>
 </head>
-<body class="p-4">
-    <div class="max-w-md mx-auto">
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6 flex justify-between items-center">
-            <h1 class="text-xl font-black text-slate-900">വാടക ഉപകരണങ്ങൾ</h1>
-            <a href="dashboard.html" class="text-xs font-bold bg-slate-100 px-4 py-2 rounded-xl">← മെയിൻ</a>
+<body class="bg-slate-50 p-4 font-sans">
+    <div class="max-w-md mx-auto space-y-6">
+        <!-- ഹെഡർ -->
+        <header class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+            <h1 class="text-2xl font-black text-emerald-700">മേസ്തിരി പ്രോ</h1>
+        </header>
+
+        <!-- ഡാഷ്ബോർഡ് കാർഡുകൾ -->
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border text-center">
+                <div class="text-2xl">👷‍♂️</div>
+                <p class="text-[10px] font-bold mt-2">ജീവനക്കാർ</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border text-center">
+                <div class="text-2xl">🏗️</div>
+                <p class="text-[10px] font-bold mt-2">വാടക</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border text-center col-span-2">
+                <div class="text-2xl">📦</div>
+                <p class="text-[10px] font-bold mt-2">മെറ്റീരിയൽ സ്റ്റോക്ക്</p>
+            </div>
         </div>
-        <!-- ഇവിടെ ഉപകരണങ്ങളുടെ വിവരങ്ങൾ വരുന്നു -->
-        <div id="rentalList" class="space-y-3"></div>
+
+        <!-- സ്റ്റോക്ക് മാനേജ്മെന്റ് സെക്ഷൻ -->
+        <section class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+            <h2 class="font-black text-lg mb-4 text-slate-800">മെറ്റീരിയൽ സ്റ്റോക്ക്</h2>
+            <div class="space-y-3">
+                <input type="text" placeholder="സാധനത്തിന്റെ പേര് (ഉദാ: സിമന്റ്)" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="number" placeholder="എണ്ണം/ക്വാണ്ടിറ്റി" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
+                    <button class="bg-emerald-600 text-white rounded-xl font-black">ചേർക്കുക</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- സ്റ്റോക്ക് ലിസ്റ്റ് -->
+        <div class="bg-white p-5 rounded-3xl border shadow-sm">
+            <div class="flex justify-between items-center">
+                <p class="font-bold">സിമന്റ്</p>
+                <span class="bg-slate-100 px-3 py-1 rounded-lg font-black">50 ചാക്ക്</span>
+            </div>
+            <button class="w-full mt-3 text-[10px] bg-red-50 text-red-600 py-2 rounded-xl font-black">ഉപയോഗിച്ചു (കുറയ്ക്കുക)</button>
+        </div>
     </div>
 </body>
 </html>
