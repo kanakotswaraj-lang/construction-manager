@@ -141,14 +141,19 @@
         }
 
         function loadLoggedInUser() {
-            const username = localStorage.getItem('loggedInUser') || localStorage.getItem('userName') || "മേസ്തിരി";
-            // പേരിന്റെ ആദ്യത്തെ അക്ഷരം മാറ്റിയെടുക്കുന്നു
-            const firstLetter = username.trim().charAt(0).toUpperCase();
-            
-            // ഹെഡറിലെ വട്ടത്തിൽ ആദ്യ അക്ഷരം കാണിക്കുന്നു
-            document.getElementById('userAvatar').innerText = firstLetter;
-            document.getElementById('welcomeUserName').innerText = "സ്വാഗതം, " + username;
-        }
+    // ലോഗിൻ ചെയ്ത പേര് എടുക്കുന്നു
+    const username = localStorage.getItem('loggedInUser') || localStorage.getItem('userName') || "മേസ്തിരി";
+    
+    // പേരിന്റെ ആദ്യത്തെ അക്ഷരം മാറ്റിയെടുക്കുന്നു
+    const firstLetter = username.trim().charAt(0).toUpperCase();
+    
+    // ഡാഷ്‌ബോർഡിലെ 'userInitial' എന്ന ഐഡിയിലേക്ക് അയക്കുന്നു
+    const userElement = document.getElementById('userInitial');
+    if (userElement) {
+        userElement.innerText = firstLetter;
+    }
+}
+
 
         function handleLogout() {
             if(confirm('കണക്കുകളെല്ലാം സുരക്ഷിതമാണ്. ഈ അക്കൗണ്ടിൽ നിന്നും ലോഗ് ഔട്ട് ചെയ്യണോ?')) {
