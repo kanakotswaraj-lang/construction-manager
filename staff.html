@@ -4,25 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>body { font-family: sans-serif; background-color: #f8fafc; }</style>
 </head>
-<body class="p-4">
+<body class="p-4 bg-slate-100">
     <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-black text-emerald-700 mb-6">നിർമ്മാണ മാനേജർ</h1>
+        
+        <!-- ഇൻപുട്ട് ഫോം -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
-            <h1 class="text-2xl font-black text-emerald-600 mb-4">ജീവനക്കാർ</h1>
-            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
+            <input type="text" id="staffName" placeholder="ജീവനക്കാരന്റെ പേര്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
             <input type="text" id="siteName" placeholder="സൈറ്റ്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="number" id="dailyWage" placeholder="കൂലി" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="tel" id="phoneNumber" placeholder="ഫോൺ" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
+            <input type="number" id="dailyWage" placeholder="ദിവസക്കൂലി" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
+            <input type="tel" id="phoneNumber" placeholder="WhatsApp നമ്പർ (ഉദാ: 919876543210)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
             <button id="saveStaffBtn" class="w-full bg-slate-900 text-white p-4 rounded-xl font-black">സേവ് ചെയ്യുക</button>
+        </div>
+
+        <div id="staffList" class="space-y-4"></div>
+    </div>
+
+    <!-- പേയ്‌മെന്റ് മോഡൽ -->
+    <div id="paymentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-3xl w-full max-w-sm">
+            <h2 class="font-black text-lg mb-4">പണം നൽകി</h2>
+            <select id="payMode" class="w-full p-3 bg-slate-100 rounded-xl mb-4">
+                <option value="Cash">Cash</option>
+                <option value="Google Pay">Google Pay</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+            </select>
+            <button onclick="closeModal()" class="w-full bg-emerald-600 text-white p-3 rounded-xl font-bold">സേവ് ചെയ്യുക</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // ഇവിടെ മേസ്തിരിയുടെ ശരിയായ Firebase Config ചേർക്കുക
         const firebaseConfig = {
     apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
     authDomain: "mesthri-app.firebaseapp.com",
@@ -31,24 +46,43 @@
     messagingSenderId: "1060617901864",
     appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
 };
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // സേവ് ചെയ്യൽ
         document.getElementById('saveStaffBtn').addEventListener('click', async () => {
-            const name = document.getElementById('staffName').value;
-            const site = document.getElementById('siteName').value;
-            const wage = document.getElementById('dailyWage').value;
-            const phone = document.getElementById('phoneNumber').value;
-
-            try {
-                await addDoc(collection(db, "staffs"), { name, site, wage, phone });
-                alert("സേവ് ആയി!");
-            } catch (e) {
-                console.error("Error adding document: ", e);
-                alert("സേവ് ആയില്ല, കോൺസോൾ നോക്കുക!");
-            }
+            await addDoc(collection(db, "staffs"), {
+                name: document.getElementById('staffName').value,
+                site: document.getElementById('siteName').value,
+                wage: document.getElementById('dailyWage').value,
+                phone: document.getElementById('phoneNumber').value
+            });
+            alert("ജീവനക്കാരനെ ചേർത്തു!");
         });
+
+        // ലിസ്റ്റ് ചെയ്യൽ
+        onSnapshot(collection(db, "staffs"), (snapshot) => {
+            const list = document.getElementById('staffList');
+            list.innerHTML = '';
+            snapshot.forEach((d) => {
+                const s = d.data();
+                list.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl border shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <div><h3 class="font-bold">${s.name}</h3><p class="text-xs text-slate-500">${s.site} | ₹${s.wage}</p></div>
+                            <button onclick="deleteDoc(doc(db, 'staffs', '${d.id}'))" class="text-red-500 text-xs font-bold">Delete</button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-3">
+                            <a href="https://wa.me/${s.phone}?text=ഹലോ ${s.name}, നിങ്ങളുടെ കൂലി ₹${s.wage} ആണ്." class="bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
+                            <button onclick="openModal()" class="bg-blue-100 text-blue-700 p-2 rounded-lg text-xs font-bold">Payment</button>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        window.openModal = () => document.getElementById('paymentModal').classList.remove('hidden');
+        window.closeModal = () => document.getElementById('paymentModal').classList.add('hidden');
     </script>
 </body>
 </html>
