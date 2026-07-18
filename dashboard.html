@@ -1,47 +1,89 @@
-<!DOCTYPE html>
+
+    <!DOCTYPE html>
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mesthri Pro - Dashboard</title>
+    <title>Mesthri Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-</head>
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap');
-    
-    body { 
-        font-family: 'Manjari', sans-serif !important; 
-        background-color: #f3f4f6 !important; 
-        color: #000000 !important; /* അക്ഷരങ്ങൾ കടും കറുപ്പാക്കുന്നു */
-    }
-// പേജ് ലോഡ് ആകുമ്പോൾ പേര് സെറ്റ് ചെയ്യുന്നു
-window.addEventListener('DOMContentLoaded', (event) => {
-    // ലോഗിൻ ചെയ്യുമ്പോൾ 'mesthriName' എന്ന പേരിൽ പേര് സേവ് ചെയ്തിട്ടുണ്ടെന്ന് ഉറപ്പാക്കുക
-    const userName = localStorage.getItem('mesthriName') || 'മ'; 
-    const firstLetter = userName.charAt(0).toUpperCase();
-    document.getElementById('userInitial').innerText = firstLetter;
-});
+        @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap');
+        body { font-family: 'Manjari', sans-serif; background-color: #f3f4f6; }
         
-    /* എല്ലാ പ്രധാന അക്ഷരങ്ങളും വലുതാക്കുന്നു */
-    h1, h2, p, span, div, a {
-        font-size: 1.3rem !important; /* വലിപ്പം കൂട്ടുന്നു */
-        font-weight: 900 !important;  /* കട്ടി കൂട്ടുന്നു */
-        color: #000000 !important;    /* നിറം കറുപ്പാക്കുന്നു */
-    }
+        /* കാർഡ് സ്റ്റൈൽ */
+        .card { border: 3px solid #000; border-radius: 20px; box-shadow: 5px 5px 0px #000; }
+        
+        /* അക്ഷരങ്ങളുടെ വലുപ്പം */
+        .big-text { font-size: 1.5rem !important; font-weight: 900 !important; }
+        .small-text { font-size: 1rem !important; font-weight: 700 !important; }
+    </style>
+</head>
+<body class="p-4">
 
-    /* കാർഡുകൾക്കുള്ളിലെ അക്ഷരങ്ങൾ വെളുപ്പാക്കുന്നു */
-    .bg-gradient-to-r span, .bg-gradient-to-br span {
-        color: #ffffff !important;
-    }
+    <!-- HEADER -->
+    <header class="card bg-black text-white p-4 flex items-center justify-between mb-6">
+        <div class="w-14 h-14 bg-amber-400 rounded-full flex items-center justify-center text-black font-black text-2xl" id="userInitial">മ</div>
+        <h1 class="text-xl font-black text-amber-400 text-center">MESTHRI<br>PRO</h1>
+        <button onclick="handleLogout()" class="bg-red-600 px-3 py-2 rounded-xl text-sm font-bold">ലോഗ് ഔട്ട്</button>
+    </header>
 
-    /* ബട്ടണുകൾക്കും കാർഡുകൾക്കും കട്ടി നൽകാൻ */
-    .bg-gradient-to-r, .bg-gradient-to-br, .bg-white { 
-        border: 4px solid #000000 !important; 
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5) !important;
-    }
-</style>
+    <!-- INCOME/EXPENSE -->
+    <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="card bg-blue-700 text-white p-4">
+            <p class="small-text opacity-80">വരവ്</p>
+            <p class="big-text" id="dashIncome">₹16,673</p>
+        </div>
+        <div class="card bg-orange-700 text-white p-4">
+            <p class="small-text opacity-80">ചിലവ്</p>
+            <p class="big-text" id="dashExpense">₹7,695</p>
+        </div>
+    </div>
+
+    <!-- TOTAL PENDING -->
+    <div class="card bg-white p-4 mb-6">
+        <p class="small-text text-gray-600">തൊഴിലാളികൾക്ക് നൽകാനുള്ളത്</p>
+        <p class="big-text text-red-600" id="dashTotalSpent">₹0</p>
+    </div>
+
+    <!-- SERVICES -->
+    <h2 class="text-lg font-black mb-4">പ്രധാന സേവനങ്ങൾ</h2>
+    <div class="space-y-4">
+        <a href="staff.html" class="card block bg-purple-700 text-white p-5">
+            <p class="big-text">ജീവനക്കാരുടെ ശമ്പളം</p>
+            <p class="small-text opacity-80">ഹാജരും ശമ്പള കണക്കുകളും</p>
+        </a>
+        <a href="rentals.html" class="card block bg-teal-700 text-white p-5">
+            <p class="big-text">വാടക ഉപകരണങ്ങൾ</p>
+            <p class="small-text opacity-80">മിക്സിംഗ് മെഷീൻ, ഷട്ടറിങ്..</p>
+        </a>
+    </div>
+<!-- SERVICES -->
+<h2 class="text-lg font-black mb-4">പ്രധാന സേവനങ്ങൾ</h2>
+<div class="space-y-4">
+    <a href="staff.html" class="card block bg-purple-700 text-white p-5">
+        <p class="big-text">ജീവനക്കാരുടെ ശമ്പളം</p>
+        <p class="small-text opacity-80">ഹാജരും ശമ്പള കണക്കുകളും</p>
+    </a>
+    <a href="rentals.html" class="card block bg-teal-700 text-white p-5">
+        <p class="big-text">വാടക ഉപകരണങ്ങൾ</p>
+        <p class="small-text opacity-80">മിക്സിംഗ് മെഷീൻ, ഷട്ടറിങ്..</p>
+    </a>
+    <!-- ഇത് കൂട്ടി ചേർക്കുക -->
+    <a href="cash.html" class="card block bg-rose-700 text-white p-5">
+        <p class="big-text">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</p>
+        <p class="small-text opacity-80">മറ്റ് നിർമ്മാണ ചിലവുകൾ</p>
+    </a>
+</div>
+    <!-- വാട്സാപ്പ് സന്ദേശം അയക്കാനുള്ള കാർഡ് -->
+<a href="https://wa.me/916238020523" class="card block bg-green-600 text-white p-5 mt-4 flex items-center justify-between">
+    <div>
+        <p class="big-text">അഭിപ്രായങ്ങൾ വാട്സാപ്പിൽ</p>
+        <p class="small-text opacity-90">ഞങ്ങൾക്ക് അയക്കൂ</p>
+    </div>
+    <!-- വാട്സാപ്പ് ഐക്കൺ പോലെ തോന്നിക്കാൻ -->
+    <span class="text-3xl">💬</span>
+</a>
+
 
 
 <body class="bg-gray-100 min-h-screen flex flex-col pb-24">
@@ -62,48 +104,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     
     
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 px-4 py-6 max-w-md mx-auto w-full space-y-6">
-        <!-- CASH FLOW CARDS -->
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-gradient-to-br from-blue-700 to-blue-900 text-white p-5 rounded-2xl shadow-md">
-                <p class="text-xs font-bold text-blue-200 uppercase">ഈ മാസത്തെ വരവ്</p>
-                <p class="text-3xl font-black mt-2" id="dashIncome">₹0</p>
-            </div>
-            <div class="bg-gradient-to-br from-amber-600 to-amber-800 text-white p-5 rounded-2xl shadow-md">
-                <p class="text-xs font-bold text-amber-200 uppercase">ഈ മാസത്തെ ചിലവ്</p>
-                <p class="text-3xl font-black mt-2" id="dashExpense">₹0</p>
-            </div>
-        </div>
-
-        <!-- TOTAL SPENT CARD -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-            <p class="text-sm font-bold text-gray-500">തൊഴിലാളികൾക്ക് നൽകാനുള്ളത്</p>
-            <p class="text-3xl font-black text-red-600 mt-1" id="dashTotalSpent">₹0</p>
-        </div>
-
-        <!-- NAVIGATION -->
-        <div class="space-y-4">
-            <h2 class="text-xl font-black text-gray-800">പ്രധാന സേവനങ്ങൾ</h2>
-            <a href="staff.html" class="flex items-center justify-between bg-gradient-to-r from-purple-700 to-indigo-800 text-white p-5 rounded-2xl shadow-md">
-                <div><span class="block font-black">ജീവനക്കാരുടെ ശമ്പളം</span><span class="text-xs opacity-80">ഹാജരും ശമ്പള കണക്കുകളും</span></div>
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
-            <a href="rentals.html" class="flex items-center justify-between bg-gradient-to-r from-teal-700 to-emerald-800 text-white p-5 rounded-2xl shadow-md">
-                <div><span class="block font-black">വാടക ഉപകരണങ്ങൾ</span><span class="text-xs opacity-80">മിക്സിംഗ് മെഷീൻ, ഷട്ടറിങ്..</span></div>
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
-            <a href="cash.html" class="flex items-center justify-between bg-gradient-to-r from-rose-700 to-pink-800 text-white p-5 rounded-2xl shadow-md">
-                <div><span class="block font-black">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</span><span class="text-xs opacity-80">മറ്റ് നിർമ്മാണ ചിലവുകൾ</span></div>
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
-
-        <!-- WHATSAPP BUTTON -->
-        <button onclick="sendWhatsAppFeedback()" class="w-full flex items-center justify-center gap-3 bg-emerald-600 text-white font-black py-4 rounded-2xl shadow-lg">
-            <i class="fa-brands fa-whatsapp text-2xl"></i> അഭിപ്രായങ്ങൾ വാട്സാപ്പിൽ അറിയിക്കൂ
-        </button>
-    </main>
+    lock font-black">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</span><span c
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
