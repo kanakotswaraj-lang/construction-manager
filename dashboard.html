@@ -9,22 +9,20 @@
 <body class="bg-slate-100 p-4 font-sans">
     <div class="max-w-md mx-auto">
         
-        <!-- ഹെഡർ: മേസ്തിരിയുടെ ഫോട്ടോ, പേര്, ലോഗ് ഔട്ട്, ഡേറ്റ് -->
+        <!-- ഹെഡർ -->
         <div class="bg-slate-900 p-6 rounded-3xl text-white mb-6 shadow-xl">
             <div class="flex justify-between items-center mb-4">
-                <!-- ഇടതുവശം: മേസ്തിരിയുടെ ഫോട്ടോ (Placeholder) -->
-                <div class="w-14 h-14 bg-slate-700 rounded-full flex items-center justify-center text-2xl">👷</div>
-                <!-- വലതുവശം: ലോഗ് ഔട്ട് -->
-                <a href="login.html" class="text-sm font-bold bg-slate-800 px-4 py-2 rounded-xl">Log Out ⇥</a>
+                <!-- ഫോട്ടോ അപ്‌ലോഡ് ഓപ്ഷൻ -->
+                <label for="profilePic" class="cursor-pointer">
+                    <img id="preview" src="https://ui-avatars.com/api/?name=M" class="w-14 h-14 rounded-full border-2 border-slate-600 object-cover">
+                    <input type="file" id="profilePic" class="hidden" accept="image/*" onchange="previewImage(event)">
+                </label>
+                <a href="login.html" class="text-xs font-bold bg-slate-800 px-4 py-2 rounded-xl">Log Out →</a>
             </div>
-            
-            <!-- സെൻറർ: മെസ്തിരി പ്രോ & സ്വാഗതം -->
-            <div class="text-center mb-4">
-                <h1 class="text-3xl font-black tracking-tight">MESHTRI PRO</h1>
-                <p class="text-lg font-bold opacity-90">സ്വാഗതം, മേസ്തിരി</p>
+            <div class="text-center mb-2">
+                <h1 class="text-2xl font-black">MESHTRI PRO</h1>
+                <p class="text-md font-bold opacity-90">സ്വാഗതം, മേസ്തിരി</p>
             </div>
-            
-            <!-- ഇന്നത്തെ തീയതി -->
             <div class="text-center text-sm font-bold opacity-60 border-t border-slate-700 pt-3">
                 ഇന്ന്: <span id="date"></span>
             </div>
@@ -32,42 +30,42 @@
 
         <!-- പ്രധാന ബട്ടണുകൾ -->
         <div class="space-y-4">
+            <!-- (മറ്റ് ബട്ടണുകൾ പഴയതുപോലെ തന്നെ തുടരുന്നു...) -->
             <a href="salary.html" class="bg-indigo-900 p-8 rounded-3xl shadow-lg flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <p class="text-4xl">👥</p>
-                    <p class="text-xl font-black text-white">ജീവനക്കാരുടെ ശമ്പളം</p>
-                </div>
-                <p class="text-white text-2xl">→</p>
+                <p class="text-xl font-black text-white">👥 ജീവനക്കാരുടെ ശമ്പളം</p>
             </a>
             <a href="rentals.html" class="bg-emerald-900 p-8 rounded-3xl shadow-lg flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <p class="text-4xl">🏗️</p>
-                    <p class="text-xl font-black text-white">വാടക ഉപകരണങ്ങൾ</p>
-                </div>
-                <p class="text-white text-2xl">→</p>
+                <p class="text-xl font-black text-white">🏗️ വാടക ഉപകരണങ്ങൾ</p>
             </a>
             <a href="materials.html" class="bg-indigo-800 p-8 rounded-3xl shadow-lg flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <p class="text-4xl">🧱</p>
-                    <p class="text-xl font-black text-white">മെറ്റീരിയൽസ്</p>
-                </div>
-                <p class="text-white text-2xl">→</p>
+                <p class="text-xl font-black text-white">🧱 മെറ്റീരിയൽസ്</p>
             </a>
             <a href="accounts.html" class="bg-rose-800 p-8 rounded-3xl shadow-lg flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <p class="text-4xl">📊</p>
-                    <p class="text-xl font-black text-white">വരവ് - ചെലവ്</p>
-                </div>
-                <p class="text-white text-2xl">→</p>
+                <p class="text-xl font-black text-white">📊 വരവ് - ചെലവ്</p>
             </a>
         </div>
+
+        <!-- വാട്സാപ്പ് സപ്പോർട്ട് -->
+        <a href="https://wa.me/919876543210" class="mt-8 bg-emerald-600 text-white p-5 rounded-2xl flex items-center justify-center font-black shadow-lg">
+            💬 അഭിപ്രായങ്ങൾ അറിയിക്കുക (WhatsApp)
+        </a>
     </div>
 
-    <!-- തീയതി മാറാനുള്ള സ്ക്രിപ്റ്റ് -->
     <script>
+        // തീയതി സെറ്റ് ചെയ്യാൻ
         const date = new Date();
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
         document.getElementById('date').innerText = date.toLocaleDateString('ml-IN', options);
+
+        // ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യാൻ
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('preview');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
     </script>
 </body>
 </html>
