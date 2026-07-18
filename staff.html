@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <style>body { font-family: 'Manjari', sans-serif; background-color: #f8fafc; }</style>
 </head>
@@ -13,73 +12,54 @@
         <!-- ഹെഡർ & സെർച്ച് ബാർ -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
             <h1 class="text-2xl font-black text-emerald-600 mb-4">ജീവനക്കാർ</h1>
-            <input type="text" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-4 bg-slate-100 rounded-2xl font-bold">
+            <input type="text" id="searchStaff" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-4 bg-slate-100 rounded-2xl font-bold border">
         </div>
 
-        <!-- പുതിയ ജീവനക്കാരനെ ചേർക്കാൻ (ഫോട്ടോ അപ്‌ലോഡ് ഫീച്ചർ ഉൾപ്പെടെ) -->
+        <!-- പുതിയ ജീവനക്കാരനെ ചേർക്കാൻ -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
-            <input type="file" id="staffPhoto" class="hidden" accept="image/*" onchange="previewImage(event)">
-            <label for="staffPhoto" class="block w-24 h-24 bg-slate-50 rounded-full mb-6 mx-auto flex items-center justify-center cursor-pointer border-2 border-dashed border-slate-300 overflow-hidden relative">
-                <img id="photoPreview" class="w-full h-full object-cover hidden">
-                <span id="photoText" class="text-[10px] text-slate-400 font-bold">ഫോട്ടോ</span>
-            </label>
+            <h2 class="font-black text-lg mb-4 text-slate-700">പുതിയ ജീവനക്കാരൻ</h2>
             <div class="space-y-3">
-                <input type="text" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="number" placeholder="ദിവസക്കൂലി" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
-                    <input type="tel" placeholder="നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
-                </div>
-                <button class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ജീവനക്കാരനെ ചേർക്കുക</button>
+                <input type="text" id="staffName" placeholder="ജീവനക്കാരന്റെ പേര്" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
+                <input type="text" id="siteName" placeholder="സൈറ്റ് പേര്" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
+                <input type="number" id="dailyWage" placeholder="ദിവസക്കൂലി" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
+                <button onclick="saveStaff()" class="w-full bg-slate-900 text-white p-4 rounded-xl font-black">സേവ് ചെയ്യുക</button>
             </div>
         </div>
 
-        <!-- ജീവനക്കാരന്റെ കാർഡ് -->
+        <!-- ജീവനക്കാരന്റെ കാർഡ് (ഉദാഹരണം) -->
         <div class="bg-white p-5 rounded-3xl border shadow-sm">
             <div class="flex items-center gap-4 mb-4">
-                <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center font-black">രാ</div>
+                <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center font-black text-emerald-700">രാ</div>
                 <div>
-                    <h3 class="font-bold">രാഘവൻ</h3>
-                    <p class="text-xs text-slate-500">ആകെ കൊടുത്തത്: ₹5000 | ബാലൻസ്: ₹1200</p>
+                    <h3 class="font-bold text-lg">രാഘവൻ</h3>
+                    <p class="text-xs text-slate-500 font-bold">സൈറ്റ്: പാറക്കൽ | കൂലി: ₹800</p>
                 </div>
             </div>
-
-            <div class="space-y-2 border-t pt-3">
-                <input type="date" class="w-full p-2 bg-slate-50 rounded-xl text-xs">
-                <input type="text" placeholder="പണിയുടെ വിശേഷം (നോട്ട്)" class="w-full p-2 bg-slate-50 rounded-xl text-xs border">
-                <div class="flex gap-2">
-                    <button class="flex-1 bg-emerald-50 text-emerald-700 py-2 rounded-xl text-xs font-bold">ഹാജർ</button>
-                    <button class="flex-1 bg-blue-50 text-blue-700 py-2 rounded-xl text-xs font-bold">പണം നൽകി</button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 mt-4">
-                <button class="bg-orange-50 text-orange-600 py-2 rounded-xl text-xs font-bold">ഹിസ്റ്ററി</button>
-                <button onclick="downloadPDF()" class="bg-purple-50 text-purple-700 py-2 rounded-xl text-xs font-bold">PDF ഡൗൺലോഡ്</button>
-                <button class="bg-green-50 text-green-700 py-2 rounded-xl text-xs font-bold col-span-2">WhatsApp കണക്ക് അയക്കുക</button>
+            <div class="flex gap-2 mt-4">
+                <button onclick="openPaymentModal()" class="flex-1 bg-blue-50 text-blue-700 py-3 rounded-xl text-xs font-bold">പണം നൽകി</button>
+                <button class="bg-purple-50 text-purple-700 px-4 py-3 rounded-xl text-xs font-bold">PDF</button>
             </div>
         </div>
     </div>
 
+    <!-- പേയ്‌മെന്റ് മോഡൽ -->
+    <div id="paymentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white p-6 rounded-3xl w-full max-w-sm">
+            <h2 class="font-black text-lg mb-4 text-slate-800">പണം നൽകിയ രീതി</h2>
+            <select id="payMode" class="w-full p-4 bg-slate-100 rounded-2xl mb-4 font-bold">
+                <option value="Cash">കാഷ് (Cash)</option>
+                <option value="UPI">ഗൂഗിൾ പേ/UPI</option>
+                <option value="Bank">ബാങ്ക് ട്രാൻസ്ഫർ</option>
+            </select>
+            <button onclick="closePaymentModal()" class="w-full bg-emerald-600 text-white p-4 rounded-2xl font-black">സേവ് ചെയ്യുക</button>
+        </div>
+    </div>
+
     <script>
-        // ഫോട്ടോ പ്രിവ്യൂ കാണിക്കാൻ
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function(){
-                const output = document.getElementById('photoPreview');
-                output.src = reader.result;
-                output.classList.remove('hidden');
-                document.getElementById('photoText').classList.add('hidden');
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-        // PDF ഡൗൺലോഡ് ചെയ്യാൻ
-        function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.text("ജീവനക്കാരന്റെ കണക്ക് റിപ്പോർട്ട്", 10, 10);
-            doc.text("പേര്: രാഘവൻ", 10, 20);
-            doc.save("Raghavan_Report.pdf");
-        }
+        function openPaymentModal() { document.getElementById('paymentModal').classList.remove('hidden'); }
+        function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
+        
+        // ഇവിടെ നമുക്ക് Firebase വഴിയുള്ള സേവിംഗ് ഫങ്ഷനുകൾ ചേർക്കാം
     </script>
 </body>
 </html>
