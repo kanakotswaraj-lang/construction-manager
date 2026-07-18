@@ -26,14 +26,26 @@
                 <span class="text-xs text-slate-400 font-bold">ഫോട്ടോ</span>
             </label>
             
-            <label class="text-[10px] font-black text-slate-400 uppercase px-2">പേര്</label>
-            <input type="text" id="staffName" placeholder="പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-4 mb-3 mt-1 bg-slate-50 rounded-2xl font-bold border">
-            
-            <label class="text-[10px] font-black text-slate-400 uppercase px-2">ദിവസക്കൂലി</label>
-            <input type="number" id="staffWage" placeholder="₹ തുക" class="w-full p-4 mb-6 mt-1 bg-slate-50 rounded-2xl font-bold border">
-            
-            <button id="addStaffBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black hover:bg-black">ജീവനക്കാരനെ ചേർക്കുക</button>
+            <!-- ജീവനക്കാരെ ചേർക്കുന്ന ഫോമിൽ ഒരു ഫോൺ നമ്പർ കൂടി ചേർക്കാം -->
+<label class="text-[10px] font-black text-slate-400 uppercase px-2">ഫോൺ നമ്പർ</label>
+<input type="tel" id="staffPhone" placeholder="നമ്പർ" class="w-full p-4 mb-3 mt-1 bg-slate-50 rounded-2xl font-bold border">
+
+<!-- ലിസ്റ്റ് ഭാഗത്ത് എഡിറ്റ്, ഡിലീറ്റ്, ഹിസ്റ്ററി ബട്ടണുകൾ -->
+<div class="bg-white p-4 rounded-3xl border border-slate-100 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-3">
+        <div class="w-12 h-12 bg-slate-100 rounded-full"></div>
+        <div>
+            <h3 class="font-black text-slate-800">രാഘവൻ</h3>
+            <p class="text-xs text-slate-500 font-bold">₹ 1200 / ദിവസം</p>
         </div>
+    </div>
+    <div class="flex gap-2">
+        <button class="bg-blue-50 text-blue-600 p-2 rounded-xl text-xs font-black">എഡിറ്റ്</button>
+        <button class="bg-orange-50 text-orange-600 p-2 rounded-xl text-xs font-black">ഹിസ്റ്ററി</button>
+        <button class="bg-red-50 text-red-600 p-2 rounded-xl text-xs font-black">ഡിലീറ്റ്</button>
+    </div>
+</div>
+            
 
         <!-- ലിസ്റ്റ് -->
         <div id="staffList" class="space-y-3">
