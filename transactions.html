@@ -22,25 +22,32 @@
 
         <!-- ഫോം -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
-            <h2 class="text-xl font-black mb-4 text-slate-800">പുതിയ കണക്ക് ചേർക്കുക</h2>
-            <input type="date" id="date" class="w-full p-4 mb-3 border rounded-2xl font-bold">
-            <input type="text" id="item" placeholder="ഇനം (ഉദാ: സിമന്റ്)" class="w-full p-4 mb-3 border rounded-2xl font-bold">
-            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-4 mb-3 border rounded-2xl font-bold">
-            <input type="text" id="name" placeholder="ആളുടെ പേര്" class="w-full p-4 mb-3 border rounded-2xl font-bold">
-            <input type="tel" id="phone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 mb-4 border rounded-2xl font-bold">
             
-            <div class="grid grid-cols-2 gap-3">
-                <button class="bg-emerald-600 p-4 rounded-2xl text-white font-black">സേവ് ചെയ്യുക</button>
-                <button onclick="shareWhatsApp()" class="bg-sky-600 p-4 rounded-2xl text-white font-black">WhatsApp PDF</button>
-            </div>
-            <button class="w-full mt-3 bg-slate-900 text-white p-4 rounded-2xl font-black">📄 PDF റിപ്പോർട്ട്</button>
-        </div>
+    </div><!-- പേജിന്റെ ഉള്ളിൽ, ആ ഫോം ബോക്സിനുള്ളിൽ ഇങ്ങനെ ചേർക്കുക -->
 
-        <!-- ലിസ്റ്റ് -->
-        <div id="historyList" class="space-y-3">
-            <p class="text-center text-slate-400 font-bold py-10">കണക്കുകൾ ഇവിടെ കാണാം...</p>
-        </div>
+<h2 class="text-xl font-black mb-4 text-slate-800">പുതിയ കണക്ക് ചേർക്കുക</h2>
+
+<!-- തീയതി -->
+<label class="text-[10px] font-black text-slate-400 uppercase px-1">തീയതി</label>
+<input type="date" id="date" class="w-full p-4 mb-3 border rounded-2xl font-bold">
+
+<!-- ഇനം -->
+<label class="text-[10px] font-black text-slate-400 uppercase px-1">ഇനം</label>
+<input type="text" id="item" placeholder="ഉദാ: സിമന്റ്" class="w-full p-4 mb-3 border rounded-2xl font-bold">
+
+<!-- തുക -->
+<label class="text-[10px] font-black text-slate-400 uppercase px-1">തുക</label>
+<input type="number" id="amount" placeholder="₹ തുക നൽകുക" class="w-full p-4 mb-3 border rounded-2xl font-bold">
+
+<!-- ആളുടെ പേര് -->
+<label class="text-[10px] font-black text-slate-400 uppercase px-1">ആളുടെ പേര്</label>
+<input type="text" id="name" placeholder="പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-4 mb-3 border rounded-2xl font-bold">
+
+<!-- ഫോൺ നമ്പർ -->
+<label class="text-[10px] font-black text-slate-400 uppercase px-1">ഫോൺ നമ്പർ</label>
+<input type="tel" id="phone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 mb-4 border rounded-2xl font-bold">
     </div>
+</div>
 
     <script>
         function shareWhatsApp() {
