@@ -64,13 +64,19 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        
         document.getElementById("btnLogin").addEventListener("click", async () => {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
             if(!user || !pass) return alert("വിവരങ്ങൾ നൽകുക!");
             
             signInWithEmailAndPassword(auth, `${user}@mesthri.com`, pass)
-                .then(() => window.location.href = "dashboard.html")
+                .then(() => {
+                    // ലോഗിൻ ചെയ്യുമ്പോൾ പേര് സേവ് ചെയ്യുന്നു
+                    localStorage.setItem('userName', user); 
+                    // ഡാഷ്‌ബോർഡിലേക്ക് പോകുന്നു
+                    window.location.href = "dashboard.html";
+                })
                 .catch(() => alert("ലോഗിൻ പരാജയപ്പെട്ടു!"));
         });
 
