@@ -8,33 +8,39 @@
 </head>
 <body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <!-- തിരികെ പോകാനുള്ള ലിങ്ക് -->
         <a href="dashboard.html" class="text-sm font-bold text-slate-500 mb-4 block">← തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
         
         <h1 class="text-2xl font-black text-slate-800 mb-6">വാടക ഉപകരണങ്ങൾ</h1>
         
         <!-- വാടക ചേർക്കാനുള്ള ഫോം -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-8">
-            <input type="text" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold mb-3">
-            <input type="number" placeholder="ദിവസ വാടക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold mb-3">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-8 space-y-3">
+            <input type="text" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+            <input type="text" placeholder="കടയുടെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+            <input type="tel" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+            <div class="grid grid-cols-2 gap-3">
+                <input type="date" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold" title="എടുത്ത തീയതി">
+                <input type="date" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold" title="തിരികെ നൽകേണ്ട തീയതി">
+            </div>
+            <input type="number" placeholder="ദിവസ വാടക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             <button class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
-        <!-- വാടക ലിസ്റ്റ് സെക്ഷൻ -->
+        <!-- വാടക ലിസ്റ്റ് -->
         <section class="space-y-4">
             <h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങൾ</h2>
             
-            <!-- ലിസ്റ്റ് ഐറ്റം (ഇത് ഓരോ പ്രാവശ്യവും പുതിയത് വരുമ്പോൾ ആവർത്തിക്കാം) -->
             <div class="bg-white p-5 rounded-2xl border shadow-sm">
                 <div class="flex justify-between items-start mb-3">
                     <div>
                         <p class="font-black text-slate-800">മിക്സർ മെഷീൻ</p>
-                        <p class="text-[11px] text-slate-600 font-bold">ദിവസ വാടക: ₹500</p>
+                        <p class="text-[11px] text-slate-600 font-bold">കട: ABCD റെന്റൽസ് (Ph: 9876543210)</p>
+                        <div class="flex gap-2 mt-1">
+                            <span class="bg-slate-100 px-2 py-1 rounded-lg font-bold text-[10px] text-slate-600">എടുത്തത്: 18-07-2026</span>
+                            <span class="bg-slate-100 px-2 py-1 rounded-lg font-bold text-[10px] text-slate-600">തിരികെ: 20-07-2026</span>
+                        </div>
+                        <p class="text-sm font-black text-emerald-600 mt-2">ദിവസ വാടക: ₹500</p>
                     </div>
-                    <!-- ഓർമ്മപ്പെടുത്തൽ സ്റ്റാറ്റസ് -->
-                    <div class="text-right">
-                        <span class="bg-red-50 text-red-600 px-2 py-1 rounded-lg font-black text-[10px]">ഇന്ന് നൽകണം</span>
-                    </div>
+                    <span class="bg-red-50 text-red-600 px-2 py-1 rounded-lg font-black text-[10px]">ഇന്ന് നൽകണം</span>
                 </div>
                 
                 <div class="flex gap-2">
