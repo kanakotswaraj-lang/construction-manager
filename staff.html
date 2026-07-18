@@ -20,15 +20,51 @@
                 <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
                 <input type="text" id="siteName" placeholder="ജോലി ചെയ്യുന്ന സൈറ്റ്" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
                 <input type="number" id="dailyWage" placeholder="ദിവസക്കൂലി" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
+                <input type="tel" id="phoneNumber" placeholder="ഫോൺ നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
                 <button id="saveStaffBtn" class="w-full bg-slate-900 text-white p-4 rounded-xl font-black">സേവ് ചെയ്യുക</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // ലളിതമായ സ്ക്രിപ്റ്റ് മാത്രം ഇവിടെ ഉപയോഗിക്കുക
-        document.getElementById('saveStaffBtn').addEventListener('click', () => {
-            alert("ജീവനക്കാരനെ സേവ് ചെയ്യാൻ Firebase കണക്ട് ചെയ്യണം!");
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // മേസ്തിരിയുടെ Firebase ക്രഡൻഷ്യലുകൾ ഇവിടെ നൽകുക
+        
+            const firebaseConfig = {
+    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+    authDomain: "mesthri-app.firebaseapp.com",
+    projectId: "mesthri-app",
+    storageBucket: "mesthri-app.appspot.com",
+    messagingSenderId: "1060617901864",
+    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.getElementById('saveStaffBtn').addEventListener('click', async () => {
+            const name = document.getElementById('staffName').value;
+            const site = document.getElementById('siteName').value;
+            const wage = document.getElementById('dailyWage').value;
+            const phone = document.getElementById('phoneNumber').value;
+
+            if (name && site && wage && phone) {
+                try {
+                    await addDoc(collection(db, "staffs"), { name, site, wage, phone });
+                    alert("ജീവനക്കാരനെ വിജയകരമായി സേവ് ചെയ്തു!");
+                    // ബോക്സുകൾ ക്ലിയർ ചെയ്യാൻ
+                    document.getElementById('staffName').value = '';
+                    document.getElementById('siteName').value = '';
+                    document.getElementById('dailyWage').value = '';
+                    document.getElementById('phoneNumber').value = '';
+                } catch (e) {
+                    alert("സേവ് ചെയ്യാൻ പറ്റിയില്ല: " + e.message);
+                }
+            } else {
+                alert("എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
+            }
         });
     </script>
 </body>
