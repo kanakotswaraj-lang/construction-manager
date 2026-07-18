@@ -7,7 +7,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <style>body { font-family: 'Manjari', sans-serif; background-color: #f8fafc; }</style>
-    <title>മേസ്തിരി പ്രോ - സ്റ്റാഫ് മാനേജ്മെന്റ്</title>
 </head>
 <body class="p-4">
     <div class="max-w-md mx-auto">
@@ -17,21 +16,24 @@
             <input type="text" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-4 bg-slate-100 rounded-2xl font-bold">
         </div>
 
-        <!-- പുതിയ ജീവനക്കാരനെ ചേർക്കാൻ (ഫോട്ടോ അടക്കം) -->
+        <!-- പുതിയ ജീവനക്കാരനെ ചേർക്കാൻ (ഫോട്ടോ അപ്‌ലോഡ് ഫീച്ചർ ഉൾപ്പെടെ) -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
-            <input type="file" id="staffPhoto" class="hidden" accept="image/*">
-            <label for="staffPhoto" class="block w-20 h-20 bg-slate-50 rounded-full mb-6 mx-auto flex items-center justify-center cursor-pointer border-2 border-dashed">ഫോട്ടോ</label>
+            <input type="file" id="staffPhoto" class="hidden" accept="image/*" onchange="previewImage(event)">
+            <label for="staffPhoto" class="block w-24 h-24 bg-slate-50 rounded-full mb-6 mx-auto flex items-center justify-center cursor-pointer border-2 border-dashed border-slate-300 overflow-hidden relative">
+                <img id="photoPreview" class="w-full h-full object-cover hidden">
+                <span id="photoText" class="text-[10px] text-slate-400 font-bold">ഫോട്ടോ</span>
+            </label>
             <div class="space-y-3">
-                <input type="text" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border">
+                <input type="text" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="number" placeholder="ദിവസക്കൂലി" class="w-full p-3 bg-slate-50 rounded-xl border">
-                    <input type="tel" placeholder="നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border">
+                    <input type="number" placeholder="ദിവസക്കൂലി" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
+                    <input type="tel" placeholder="നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border font-bold">
                 </div>
                 <button class="w-full bg-slate-900 text-white p-3 rounded-xl font-bold">ജീവനക്കാരനെ ചേർക്കുക</button>
             </div>
         </div>
 
-        <!-- ജീവനക്കാരന്റെ കാർഡ് (സമ്മറി & നോട്ട്സ്) -->
+        <!-- ജീവനക്കാരന്റെ കാർഡ് -->
         <div class="bg-white p-5 rounded-3xl border shadow-sm">
             <div class="flex items-center gap-4 mb-4">
                 <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center font-black">രാ</div>
@@ -41,7 +43,6 @@
                 </div>
             </div>
 
-            <!-- ഹാജർ & പണം (തീയതി & നോട്ട്സ്) -->
             <div class="space-y-2 border-t pt-3">
                 <input type="date" class="w-full p-2 bg-slate-50 rounded-xl text-xs">
                 <input type="text" placeholder="പണിയുടെ വിശേഷം (നോട്ട്)" class="w-full p-2 bg-slate-50 rounded-xl text-xs border">
@@ -51,7 +52,6 @@
                 </div>
             </div>
 
-            <!-- ബട്ടണുകൾ (PDF & WhatsApp) -->
             <div class="grid grid-cols-2 gap-2 mt-4">
                 <button class="bg-orange-50 text-orange-600 py-2 rounded-xl text-xs font-bold">ഹിസ്റ്ററി</button>
                 <button onclick="downloadPDF()" class="bg-purple-50 text-purple-700 py-2 rounded-xl text-xs font-bold">PDF ഡൗൺലോഡ്</button>
@@ -61,6 +61,18 @@
     </div>
 
     <script>
+        // ഫോട്ടോ പ്രിവ്യൂ കാണിക്കാൻ
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const output = document.getElementById('photoPreview');
+                output.src = reader.result;
+                output.classList.remove('hidden');
+                document.getElementById('photoText').classList.add('hidden');
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+        // PDF ഡൗൺലോഡ് ചെയ്യാൻ
         function downloadPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
