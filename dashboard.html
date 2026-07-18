@@ -3,33 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <!-- Tailwind CSS ലിങ്ക് -->
+    <title>Mesthri Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="p-4 bg-gray-100">
+<body class="bg-gray-100 p-4">
 
-    <div class="bg-white p-4 rounded-xl shadow mb-4">
-        <h1 class="text-2xl font-black">MESTHRI PRO</h1>
-        <button onclick="localStorage.clear(); window.location.href='index.html';" class="bg-red-500 text-white px-2 py-1 rounded">ലോഗ് ഔട്ട്</button>
+    <!-- ഹെഡർ -->
+    <div class="bg-black text-white p-4 rounded-2xl flex justify-between items-center mb-4">
+        <h1 class="text-xl font-bold">MESTHRI PRO</h1>
+        <button onclick="localStorage.clear(); window.location.href='index.html';" class="bg-red-600 px-3 py-1 rounded-lg">ലോഗ് ഔട്ട്</button>
     </div>
 
-    <div class="space-y-4">
-        <div class="bg-blue-500 text-white p-4 rounded-xl">
+    <!-- വരവ് ചെലവ് ബോക്സുകൾ -->
+    <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="bg-blue-600 text-white p-4 rounded-2xl">
             <p>വരവ്</p>
-            <p id="dashIncome" class="text-2xl font-bold">₹0</p>
+            <p id="dashIncome" class="text-xl font-bold">₹0</p>
         </div>
-        <div class="bg-orange-500 text-white p-4 rounded-xl">
+        <div class="bg-red-600 text-white p-4 rounded-2xl">
             <p>ചിലവ്</p>
-            <p id="dashExpense" class="text-2xl font-bold">₹0</p>
+            <p id="dashExpense" class="text-xl font-bold">₹0</p>
         </div>
+    </div>
+
+    <!-- മറ്റ് ബട്ടണുകൾ -->
+    <div class="space-y-3">
+        <a href="work-entry.html" class="block bg-green-700 text-white p-4 rounded-2xl text-center font-bold">വരവ് - ചെലവ് രേഖപ്പെടുത്തുക</a>
+        <a href="staff.html" class="block bg-purple-700 text-white p-4 rounded-2xl text-center font-bold">ജീവനക്കാരുടെ ശമ്പളം</a>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        // നിങ്ങളുടെ Firebase Config ഇവിടെ കൃത്യമായി നൽകുക
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -38,26 +44,20 @@
             messagingSenderId: "1060617901864",
             appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         async function updateDashboard() {
-            try {
-                let totalIncome = 0;
-                let totalExpense = 0;
-                const querySnapshot = await getDocs(collection(db, "transactions"));
-                querySnapshot.forEach((doc) => {
-                    let data = doc.data();
-                    let amount = parseFloat(data.amount) || 0;
-                    if (data.type === "income" || data.type === "വരവ്") totalIncome += amount;
-                    else if (data.type === "expense" || data.type === "ചെലവ്") totalExpense += amount;
-                });
-                document.getElementById('dashIncome').innerText = '₹' + totalIncome.toLocaleString('en-IN');
-                document.getElementById('dashExpense').innerText = '₹' + totalExpense.toLocaleString('en-IN');
-            } catch (error) {
-                console.error("Error loading data: ", error);
-            }
+            let totalIncome = 0, totalExpense = 0;
+            const querySnapshot = await getDocs(collection(db, "transactions"));
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                let amount = parseFloat(data.amount) || 0;
+                if (data.type === "income" || data.type === "വരവ്") totalIncome += amount;
+                else if (data.type === "expense" || data.type === "ചെലവ്") totalExpense += amount;
+            });
+            document.getElementById('dashIncome').innerText = '₹' + totalIncome.toLocaleString('en-IN');
+            document.getElementById('dashExpense').innerText = '₹' + totalExpense.toLocaleString('en-IN');
         }
         updateDashboard();
     </script>
