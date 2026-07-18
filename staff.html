@@ -52,20 +52,31 @@
 
             if (name && site && wage && phone) {
                 try {
-                    await addDoc(collection(db, "staffs"), { name, site, wage, phone });
-                    alert("ജീവനക്കാരനെ വിജയകരമായി സേവ് ചെയ്തു!");
-                    // ബോക്സുകൾ ക്ലിയർ ചെയ്യാൻ
-                    document.getElementById('staffName').value = '';
-                    document.getElementById('siteName').value = '';
-                    document.getElementById('dailyWage').value = '';
-                    document.getElementById('phoneNumber').value = '';
-                } catch (e) {
-                    alert("സേവ് ചെയ്യാൻ പറ്റിയില്ല: " + e.message);
-                }
-            } else {
-                alert("എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
-            }
-        });
+                    await 
+        });// പഴയ കോഡിലെ ആ addDoc ഭാഗം ഇതിലേക്ക് മാറ്റുക
+document.getElementById('saveStaffBtn').addEventListener('click', async () => {
+    const name = document.getElementById('staffName').value;
+    const site = document.getElementById('siteName').value;
+    const wage = document.getElementById('dailyWage').value;
+    const phone = document.getElementById('phoneNumber').value;
+
+    if (name && site && wage && phone) {
+        try {
+            await addDoc(collection(db, "staffs"), { 
+                name: name, 
+                site: site, 
+                wage: wage, 
+                phone: phone 
+            });
+            alert("ജീവനക്കാരനെ വിജയകരമായി സേവ് ചെയ്തു!");
+        } catch (e) {
+            alert("എന്തോ പ്രശ്നം സംഭവിച്ചു!");
+        }
+    } else {
+        alert("എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
+    }
+});
+
     </script>
 </body>
 </html>
