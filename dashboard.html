@@ -1,5 +1,4 @@
-
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
@@ -14,132 +13,37 @@
         .small-text { font-size: 1rem !important; font-weight: 700 !important; }
     </style>
 </head>
-<body class="p-4 pb-24">
+<body class="p-4">
 
-    <!-- HEADER -->
-    <header class="card bg-black text-white p-4 flex items-center justify-between mb-6 border-b-4 border-amber-400">
-        <div id="userInitial" class="w-14 h-14 bg-amber-400 rounded-full flex items-center justify-center text-black font-black text-2xl shadow-lg border-2 border-white"></div>
-        <h1 class="text-xl font-black text-amber-400 text-center leading-none">MESTHRI<br>PRO</h1>
-        <button onclick="handleLogout()" class="bg-red-600 px-3 py-3 rounded-xl text-sm font-black text-white border-2 border-white">ലോഗ് ഔട്ട്</button>
+    <!-- Header -->
+    <header class="card bg-black text-white p-4 flex items-center justify-between mb-6">
+        <div id="userInitial" class="w-14 h-14 bg-amber-400 rounded-full flex items-center justify-center text-black font-black text-2xl">മ</div>
+        <h1 class="text-xl font-black text-amber-400 text-center">MESTHRI<br>PRO</h1>
+        <button onclick="localStorage.clear(); window.location.href='index.html';" class="bg-red-600 px-3 py-2 rounded-xl text-sm font-bold">ലോഗ് ഔട്ട്</button>
     </header>
 
-    <!-- INCOME/EXPENSE -->
+    <!-- Cards -->
     <div class="grid grid-cols-2 gap-4 mb-4">
         <div class="card bg-blue-700 text-white p-4">
             <p class="small-text opacity-80">വരവ്</p>
-            <p class="big-text" id="dashIncome">₹16,673</p>
+            <p class="big-text" id="dashIncome">₹0</p>
         </div>
         <div class="card bg-orange-700 text-white p-4">
             <p class="small-text opacity-80">ചിലവ്</p>
-            <p class="big-text" id="dashExpense">₹7,695</p>
+            <p class="big-text" id="dashExpense">₹0</p>
         </div>
     </div>
-
-    <!-- TOTAL PENDING -->
     <div class="card bg-white p-4 mb-6">
         <p class="small-text text-gray-600">തൊഴിലാളികൾക്ക് നൽകാനുള്ളത്</p>
         <p class="big-text text-red-600" id="dashTotalSpent">₹0</p>
     </div>
 
-    <!-- SERVICES -->
-    <h2 class="text-lg font-black mb-4">പ്രധാന സേവനങ്ങൾ</h2>
+    <!-- Links -->
     <div class="space-y-4">
-        <a href="staff.html" class="card block bg-purple-700 text-white p-5">
-            <p class="big-text">ജീവനക്കാരുടെ ശമ്പളം</p>
-            <p class="small-text opacity-80">ഹാജരും ശമ്പള കണക്കുകളും</p>
-        </a>
-        <a href="rentals.html" class="card block bg-teal-700 text-white p-5">
-            <p class="big-text">വാടക ഉപകരണങ്ങൾ</p>
-            <p class="small-text opacity-80">മിക്സിംഗ് മെഷീൻ, ഷട്ടറിങ്..</p>
-        </a>
-        <a href="cash.html" class="card block bg-rose-700 text-white p-5">
-            <p class="big-text">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</p>
-            <p class="small-text opacity-80">മറ്റ് നിർമ്മാണ ചിലവുകൾ</p>
-        </a>
-        <!-- WhatsApp Card -->
-        <a href="https://wa.me/916238020523" class="card block bg-green-600 text-white p-5 flex items-center justify-between">
-            <div>
-                <p class="big-text">അഭിപ്രായങ്ങൾ വാട്സാപ്പിൽ</p>
-                <p class="small-text opacity-90">ഞങ്ങൾക്ക് അയക്കൂ</p>
-            </div>
-            <span class="text-3xl">💬</span>
-        </a>
+        <a href="staff.html" class="card block bg-purple-700 text-white p-5">ജീവനക്കാരുടെ ശമ്പളം</a>
+        <a href="rentals.html" class="card block bg-teal-700 text-white p-5">വാടക ഉപകരണങ്ങൾ</a>
+        <a href="cash.html" class="card block bg-rose-700 text-white p-5">വരവ്-ചിലവ് രേഖപ്പെടുത്തുക</a>
     </div>
 
-    <script>
-        // ലോഗിൻ ചെയ്ത പേര് കാണിക്കാൻ
-        const userName = localStorage.getItem('mesthriName') || 'മ';
-        document.getElementById('userInitial').innerText = userName.charAt(0).toUpperCase();
-
-        function handleLogout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
-    <
-
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.appspot.com",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Firestore-ൽ നിന്ന് ഡാറ്റ എടുത്ത് ടാലി ചെയ്യുന്ന കോഡ്
-
-// dashboard.html-ലെ updateDashboard ഫങ്ക്ഷൻ ഇതാക്കി മാറ്റൂ:
-async function updateDashboard() {
-    let totalIncome = 0;
-    let totalExpense = 0;
-    const querySnapshot = await getDocs(collection(db, "transactions"));
-    querySnapshot.forEach((doc) => {
-        let data = doc.data();
-        let amount = parseFloat(data.amount) || 0;
-        
-        // ഇംഗ്ലീഷോ മലയാളമോ ഏതായാലും കണക്ക് കൂട്ടും
-        if (data.type === "income" || data.type === "വരവ്") totalIncome += amount;
-        else if (data.type === "expense" || data.type === "ചെലവ്") totalExpense += amount;
-    });
-    document.getElementById('dashIncome').innerText = '₹' + totalIncome.toLocaleString('en-IN');
-    document.getElementById('dashExpense').innerText = '₹' + totalExpense.toLocaleString('en-IN');
-}
-
-        window.sendWhatsAppFeedback = () => { 
-            window.open("https://wa.me/916238020523?text=ഹലോ+മേസ്തിരി,+Mesthri+Pro+ആപ്പിനെക്കുറിച്ച്...", '_blank');
-        };
-
-        window.handleLogout = () => { window.location.href = "index.html"; };
-<script>
-    // പേജ് ലോഡ് ആകുമ്പോൾ ഈ ഫങ്ക്ഷൻ പ്രവർത്തിക്കണം
-    window.onload = function() {
-        // ലോഗിൻ ചെയ്ത പേര് എടുക്കുന്നു (ലോഗിൻ പേജിൽ നൽകിയ അതേ കീ ഉപയോഗിക്കണം)
-        const username = localStorage.getItem('loggedInUser') || localStorage.getItem('userName') || "മേസ്തിരി";
-        
-        // ആദ്യ അക്ഷരം എടുത്ത് വട്ടത്തിൽ കാണിക്കുന്നു
-        const firstLetter = username.trim().charAt(0).toUpperCase();
-        const userElement = document.getElementById('userInitial');
-        
-        if (userElement) {
-            userElement.innerText = firstLetter;
-        }
-    };
-
-    function handleLogout() {
-        localStorage.clear();
-        window.location.href = 'index.html';
-    }
-
-    
-        updateDashboard();
-    </script>
 </body>
 </html>
