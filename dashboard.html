@@ -8,64 +8,61 @@
 </head>
 <body class="bg-slate-100 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        
         <!-- ഹെഡർ -->
         <div class="bg-slate-900 p-6 rounded-3xl text-white mb-6 shadow-xl">
             <div class="flex justify-between items-center mb-4">
-                <!-- ഫോട്ടോ അപ്‌ലോഡ് ഓപ്ഷൻ -->
-                <label for="profilePic" class="cursor-pointer">
-                    <img id="preview" src="https://ui-avatars.com/api/?name=M" class="w-14 h-14 rounded-full border-2 border-slate-600 object-cover">
-                    <input type="file" id="profilePic" class="hidden" accept="image/*" onchange="previewImage(event)">
-                </label>
+                <img id="preview" src="https://ui-avatars.com/api/?name=M" class="w-14 h-14 rounded-full border-2 border-slate-600 object-cover">
                 <a href="login.html" class="text-xs font-bold bg-slate-800 px-4 py-2 rounded-xl">Log Out →</a>
             </div>
-            <div class="text-center mb-2">
-                <h1 class="text-2xl font-black">MESHTRI PRO</h1>
-                <p class="text-md font-bold opacity-90">സ്വാഗതം, മേസ്തിരി</p>
-            </div>
-            <div class="text-center text-sm font-bold opacity-60 border-t border-slate-700 pt-3">
+            <h1 class="text-2xl font-black">MESHTRI PRO</h1>
+            <p class="text-md font-bold opacity-90">സ്വാഗതം, മേസ്തിരി</p>
+            <div class="text-center text-sm font-bold opacity-60 border-t border-slate-700 pt-3 mt-3">
                 ഇന്ന്: <span id="date"></span>
             </div>
         </div>
 
-        <!-- പ്രധാന ബട്ടണുകൾ -->
+        <!-- ബട്ടണുകൾ -->
         <div class="space-y-4">
-            <!-- (മറ്റ് ബട്ടണുകൾ പഴയതുപോലെ തന്നെ തുടരുന്നു...) -->
-            <a href="salary.html" class="bg-indigo-900 p-8 rounded-3xl shadow-lg flex items-center justify-between">
-                <p class="text-xl font-black text-white">👥 ജീവനക്കാരുടെ ശമ്പളം</p>
+            <a href="salary.html" class="bg-indigo-900 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
+                <p class="text-xl font-black">👥 ജീവനക്കാരുടെ ശമ്പളം</p>
             </a>
-            <a href="rentals.html" class="bg-emerald-900 p-8 rounded-3xl shadow-lg flex items-center justify-between">
-                <p class="text-xl font-black text-white">🏗️ വാടക ഉപകരണങ്ങൾ</p>
+            <a href="rentals.html" class="bg-emerald-900 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
+                <p class="text-xl font-black">🏗️ വാടക ഉപകരണങ്ങൾ</p>
             </a>
-            <a href="materials.html" class="bg-indigo-800 p-8 rounded-3xl shadow-lg flex items-center justify-between">
-                <p class="text-xl font-black text-white">🧱 മെറ്റീരിയൽസ്</p>
+            <a href="materials.html" class="bg-indigo-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
+                <p class="text-xl font-black">🧱 മെറ്റീരിയൽസ്</p>
             </a>
-            <a href="accounts.html" class="bg-rose-800 p-8 rounded-3xl shadow-lg flex items-center justify-between">
-                <p class="text-xl font-black text-white">📊 വരവ് - ചെലവ്</p>
+            <a href="cash.html" class="bg-rose-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
+                <p class="text-xl font-black">📊 വരവ് - ചെലവ്</p>
             </a>
         </div>
 
-        <!-- വാട്സാപ്പ് സപ്പോർട്ട് -->
-        <a href="https://wa.me/919876543210" class="mt-8 bg-emerald-600 text-white p-5 rounded-2xl flex items-center justify-center font-black shadow-lg">
-            💬 അഭിപ്രായങ്ങൾ അറിയിക്കുക (WhatsApp)
+        <!-- വാട്സാപ്പ് സപ്പോർട്ട് (പുതിയ നമ്പർ ചേർത്തു) -->
+        <a href="https://wa.me/916238020523" class="mt-8 bg-emerald-600 text-white p-5 rounded-2xl flex items-center justify-center font-black shadow-lg">
+            💬 വാട്സാപ്പിൽ ബന്ധപ്പെടുക (916238020523)
         </a>
     </div>
 
-    <script>
+    <!-- Firebase സ്ക്രിപ്റ്റ് -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.appspot.com",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
         // തീയതി സെറ്റ് ചെയ്യാൻ
         const date = new Date();
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        document.getElementById('date').innerText = date.toLocaleDateString('ml-IN', options);
-
-        // ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യാൻ
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const output = document.getElementById('preview');
-                output.src = reader.result;
-            }
-            reader.readAsDataURL(event.target.files[0]);
-        }
+        document.getElementById('date').innerText = date.toLocaleDateString('ml-IN', { day: 'numeric', month: 'long', year: 'numeric' });
     </script>
 </body>
 </html>
