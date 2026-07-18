@@ -4,19 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mesthri Pro</title>
-    <script src="https://cdn.tailwindcss.com">
-    // പേജ് ലോഡ് ആകുമ്പോൾ തന്നെ പേര് വരാൻ
+
+<script>
+    // ലോഗിൻ ചെയ്ത പേര് കാണിക്കാൻ
     window.onload = function() {
         const storedName = localStorage.getItem('userName');
         const userDiv = document.getElementById('userInitial');
         
-        if (storedName && storedName.length > 0) {
+        if (storedName) {
             userDiv.innerText = storedName.charAt(0).toUpperCase();
         } else {
-            userDiv.innerText = 'മ'; // പേര് ഇല്ലെങ്കിൽ 'മ' എന്ന് കാണിക്കും
+            userDiv.innerText = 'മ'; 
         }
     };
-    </script>
+</script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap');
