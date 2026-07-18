@@ -2,36 +2,32 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <title>വരവ്-ചെലവ് - മേസ്തിരി പ്രോ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <title>വരവ്-ചെലവ്</title>
 </head>
-<body class="bg-slate-100 p-4">
-    
-<!-- പ്രധാന കണ്ടെയ്നർ കോഡ് ഇങ്ങനെ മാറ്റുക -->
-<div class="w-full max-w-lg mx-auto p-4"> 
-    <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
-        <h1 class="text-3xl font-black mb-8 text-slate-800">പുതിയ കണക്ക് ചേർക്കുക</h1>
+<body class="bg-slate-100 p-2">
+    <!-- ഇവിടെ w-full എന്ന് കൊടുത്തിട്ടുണ്ട്, ഇത് സ്ക്രീൻ മുഴുവൻ എടുക്കും -->
+    <div class="w-full max-w-lg mx-auto bg-white p-6 rounded-3xl shadow-xl mt-4">
+        <h1 class="text-2xl font-black mb-6 text-slate-800">പുതിയ കണക്ക് ചേർക്കുക</h1>
         
-        <!-- ഇൻപുട്ട് ഫീൽഡുകളിൽ p-5 എന്ന് നൽകി വലിപ്പം കൂട്ടി -->
-        <input type="date" id="date" class="w-full p-5 mb-4 border-2 rounded-2xl font-bold text-lg">
-        <input type="text" id="item" placeholder="ഇനം" class="w-full p-5 mb-4 border-2 rounded-2xl font-bold text-lg">
-        <input type="number" id="amount" placeholder="തുക" class="w-full p-5 mb-4 border-2 rounded-2xl font-bold text-lg">
-        <input type="text" id="name" placeholder="പേര്" class="w-full p-5 mb-4 border-2 rounded-2xl font-bold text-lg">
+        <input type="date" id="date" class="w-full p-4 mb-4 border-2 rounded-2xl font-bold text-lg">
+        <input type="text" id="item" placeholder="ഇനം" class="w-full p-4 mb-4 border-2 rounded-2xl font-bold text-lg">
+        <input type="number" id="amount" placeholder="തുക" class="w-full p-4 mb-4 border-2 rounded-2xl font-bold text-lg">
+        <input type="text" id="name" placeholder="പേര്" class="w-full p-4 mb-4 border-2 rounded-2xl font-bold text-lg">
         
-        <select id="type" class="w-full p-5 mb-4 border-2 rounded-2xl font-bold text-lg">
+        <select id="type" class="w-full p-4 mb-4 border-2 rounded-2xl font-bold text-lg">
             <option value="Income">മുതലാളിയിൽ നിന്ന് വാങ്ങിയത് (Income)</option>
             <option value="Expense">ചെലവ് (Expense)</option>
         </select>
-        <select id="mode" class="w-full p-5 mb-6 border-2 rounded-2xl font-bold text-lg">
+        <select id="mode" class="w-full p-4 mb-6 border-2 rounded-2xl font-bold text-lg">
             <option value="Cash">കാഷ് (Cash)</option>
             <option value="UPI">ഗൂഗിൾ പേ/UPI</option>
             <option value="Bank">ബാങ്ക് ട്രാൻസ്ഫർ</option>
         </select>
         
-        <!-- ബട്ടൺ വലിപ്പം കൂട്ടി -->
-        <button id="saveBtn" class="w-full bg-emerald-600 p-6 rounded-2xl text-white font-black text-xl shadow-lg">സേവ് ചെയ്യുക</button>
+        <button id="saveBtn" class="w-full bg-emerald-600 p-5 rounded-2xl text-white font-black text-xl shadow-lg">സേവ് ചെയ്യുക</button>
     </div>
-</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -58,8 +54,12 @@
                 type: document.getElementById('type').value,
                 mode: document.getElementById('mode').value
             };
-            await addDoc(collection(db, "transactions"), data);
-            alert("സേവ് ആയി!");
+            try {
+                await addDoc(collection(db, "transactions"), data);
+                alert("സേവ് ആയി!");
+            } catch (e) {
+                alert("എന്തോ പ്രശ്നം!");
+            }
         });
     </script>
 </body>
