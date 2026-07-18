@@ -3,61 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mesthri Pro</title>
-
-<script>
-    // ലോഗിൻ ചെയ്ത പേര് കാണിക്കാൻ
-    window.onload = function() {
-        const storedName = localStorage.getItem('userName');
-        const userDiv = document.getElementById('userInitial');
-        
-        if (storedName) {
-            userDiv.innerText = storedName.charAt(0).toUpperCase();
-        } else {
-            userDiv.innerText = 'മ'; 
-        }
-    };
-</script>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap');
-        body { font-family: 'Manjari', sans-serif; background-color: #f3f4f6; }
-        .card { border: 3px solid #000; border-radius: 20px; box-shadow: 5px 5px 0px #000; }
-        .big-text { font-size: 1.5rem !important; font-weight: 900 !important; }
-        .small-text { font-size: 1rem !important; font-weight: 700 !important; }
-    </style>
+    <title>Dashboard</title>
+    <!-- Tailwind CSS ലിങ്ക് -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="p-4">
+<body class="p-4 bg-gray-100">
 
-    <!-- Header -->
-    <header class="card bg-black text-white p-4 flex items-center justify-between mb-6">
-        <div id="userInitial" class="w-14 h-14 bg-amber-400 rounded-full flex items-center justify-center text-black font-black text-2xl">മ</div>
-        <h1 class="text-xl font-black text-amber-400 text-center">MESTHRI<br>PRO</h1>
-        <button onclick="localStorage.clear(); window.location.href='index.html';" class="bg-red-600 px-3 py-2 rounded-xl text-sm font-bold">ലോഗ് ഔട്ട്</button>
-    </header>
-
-    <!-- Cards -->
-    <div class="grid grid-cols-2 gap-4 mb-4">
-        <div class="card bg-blue-700 text-white p-4">
-            <p class="small-text opacity-80">വരവ്</p>
-            <p class="big-text" id="dashIncome">₹0</p>
-        </div>
-        <div class="card bg-orange-700 text-white p-4">
-            <p class="small-text opacity-80">ചിലവ്</p>
-            <p class="big-text" id="dashExpense">₹0</p>
-        </div>
-    </div>
-    <div class="card bg-white p-4 mb-6">
-        <p class="small-text text-gray-600">തൊഴിലാളികൾക്ക് നൽകാനുള്ളത്</p>
-        <p class="big-text text-red-600" id="dashTotalSpent">₹0</p>
+    <div class="bg-white p-4 rounded-xl shadow mb-4">
+        <h1 class="text-2xl font-black">MESTHRI PRO</h1>
+        <button onclick="localStorage.clear(); window.location.href='index.html';" class="bg-red-500 text-white px-2 py-1 rounded">ലോഗ് ഔട്ട്</button>
     </div>
 
-    <!-- Links -->
     <div class="space-y-4">
-        <a href="staff.html" class="card block bg-purple-700 text-white p-5">ജീവനക്കാരുടെ ശമ്പളം</a>
-        <a href="rentals.html" class="card block bg-teal-700 text-white p-5">വാടക ഉപകരണങ്ങൾ</a>
-        <a href="cash.html" class="card block bg-rose-700 text-white p-5">വരവ്-ചിലവ് രേഖപ്പെടുത്തുക</a>
+        <div class="bg-blue-500 text-white p-4 rounded-xl">
+            <p>വരവ്</p>
+            <p id="dashIncome" class="text-2xl font-bold">₹0</p>
+        </div>
+        <div class="bg-orange-500 text-white p-4 rounded-xl">
+            <p>ചിലവ്</p>
+            <p id="dashExpense" class="text-2xl font-bold">₹0</p>
+        </div>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        // നിങ്ങളുടെ Firebase Config ഇവിടെ കൃത്യമായി നൽകുക
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function updateDashboard() {
+            try {
+                let totalIncome = 0;
+                let totalExpense = 0;
+                const querySnapshot = await getDocs(collection(db, "transactions"));
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    let amount = parseFloat(data.amount) || 0;
+                    if (data.type === "income" || data.type === "വരവ്") totalIncome += amount;
+                    else if (data.type === "expense" || data.type === "ചെലവ്") totalExpense += amount;
+                });
+                document.getElementById('dashIncome').innerText = '₹' + totalIncome.toLocaleString('en-IN');
+                document.getElementById('dashExpense').innerText = '₹' + totalExpense.toLocaleString('en-IN');
+            } catch (error) {
+                console.error("Error loading data: ", error);
+            }
+        }
+        updateDashboard();
+    </script>
 </body>
 </html>
