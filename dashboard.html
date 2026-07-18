@@ -9,22 +9,18 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap');
         body { font-family: 'Manjari', sans-serif; background-color: #f3f4f6; }
-        
-        /* കാർഡ് സ്റ്റൈൽ */
         .card { border: 3px solid #000; border-radius: 20px; box-shadow: 5px 5px 0px #000; }
-        
-        /* അക്ഷരങ്ങളുടെ വലുപ്പം */
         .big-text { font-size: 1.5rem !important; font-weight: 900 !important; }
         .small-text { font-size: 1rem !important; font-weight: 700 !important; }
     </style>
 </head>
-<body class="p-4">
+<body class="p-4 pb-24">
 
     <!-- HEADER -->
-    <header class="card bg-black text-white p-4 flex items-center justify-between mb-6">
-        <div class="w-14 h-14 bg-amber-400 rounded-full flex items-center justify-center text-black font-black text-2xl" id="userInitial">മ</div>
-        <h1 class="text-xl font-black text-amber-400 text-center">MESTHRI<br>PRO</h1>
-        <button onclick="handleLogout()" class="bg-red-600 px-3 py-2 rounded-xl text-sm font-bold">ലോഗ് ഔട്ട്</button>
+    <header class="card bg-black text-white p-4 flex items-center justify-between mb-6 border-b-4 border-amber-400">
+        <div id="userInitial" class="w-14 h-14 bg-amber-400 rounded-full flex items-center justify-center text-black font-black text-2xl shadow-lg border-2 border-white"></div>
+        <h1 class="text-xl font-black text-amber-400 text-center leading-none">MESTHRI<br>PRO</h1>
+        <button onclick="handleLogout()" class="bg-red-600 px-3 py-3 rounded-xl text-sm font-black text-white border-2 border-white">ലോഗ് ഔട്ട്</button>
     </header>
 
     <!-- INCOME/EXPENSE -->
@@ -56,55 +52,31 @@
             <p class="big-text">വാടക ഉപകരണങ്ങൾ</p>
             <p class="small-text opacity-80">മിക്സിംഗ് മെഷീൻ, ഷട്ടറിങ്..</p>
         </a>
+        <a href="cash.html" class="card block bg-rose-700 text-white p-5">
+            <p class="big-text">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</p>
+            <p class="small-text opacity-80">മറ്റ് നിർമ്മാണ ചിലവുകൾ</p>
+        </a>
+        <!-- WhatsApp Card -->
+        <a href="https://wa.me/916238020523" class="card block bg-green-600 text-white p-5 flex items-center justify-between">
+            <div>
+                <p class="big-text">അഭിപ്രായങ്ങൾ വാട്സാപ്പിൽ</p>
+                <p class="small-text opacity-90">ഞങ്ങൾക്ക് അയക്കൂ</p>
+            </div>
+            <span class="text-3xl">💬</span>
+        </a>
     </div>
-<!-- SERVICES -->
-<h2 class="text-lg font-black mb-4">പ്രധാന സേവനങ്ങൾ</h2>
-<div class="space-y-4">
-    <a href="staff.html" class="card block bg-purple-700 text-white p-5">
-        <p class="big-text">ജീവനക്കാരുടെ ശമ്പളം</p>
-        <p class="small-text opacity-80">ഹാജരും ശമ്പള കണക്കുകളും</p>
-    </a>
-    <a href="rentals.html" class="card block bg-teal-700 text-white p-5">
-        <p class="big-text">വാടക ഉപകരണങ്ങൾ</p>
-        <p class="small-text opacity-80">മിക്സിംഗ് മെഷീൻ, ഷട്ടറിങ്..</p>
-    </a>
-    <!-- ഇത് കൂട്ടി ചേർക്കുക -->
-    <a href="cash.html" class="card block bg-rose-700 text-white p-5">
-        <p class="big-text">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</p>
-        <p class="small-text opacity-80">മറ്റ് നിർമ്മാണ ചിലവുകൾ</p>
-    </a>
-</div>
-    <!-- വാട്സാപ്പ് സന്ദേശം അയക്കാനുള്ള കാർഡ് -->
-<a href="https://wa.me/916238020523" class="card block bg-green-600 text-white p-5 mt-4 flex items-center justify-between">
-    <div>
-        <p class="big-text">അഭിപ്രായങ്ങൾ വാട്സാപ്പിൽ</p>
-        <p class="small-text opacity-90">ഞങ്ങൾക്ക് അയക്കൂ</p>
-    </div>
-    <!-- വാട്സാപ്പ് ഐക്കൺ പോലെ തോന്നിക്കാൻ -->
-    <span class="text-3xl">💬</span>
-</a>
 
+    <script>
+        // ലോഗിൻ ചെയ്ത പേര് കാണിക്കാൻ
+        const userName = localStorage.getItem('mesthriName') || 'മ';
+        document.getElementById('userInitial').innerText = userName.charAt(0).toUpperCase();
 
+        function handleLogout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+    <
 
-<body class="bg-gray-100 min-h-screen flex flex-col pb-24">
-
-    <!-- HEADER -->
-    <header class="bg-black text-white px-4 py-6 rounded-b-3xl shadow-lg grid grid-cols-3 items-center mx-3 mt-2 border-b-4 border-amber-400">
-    <div class="flex justify-start">
-        <!-- ലോഗിൻ ചെയ്ത ആളുടെ പേരിന്റെ ആദ്യ അക്ഷരം വരാൻ -->
-        <div id="userInitial" class="w-16 h-16 rounded-full bg-amber-400 text-black font-black text-4xl flex items-center justify-center shadow-lg border-2 border-white"></div>
-    </div>
-    <div class="text-center">
-        <h1 class="text-2xl font-black tracking-widest text-amber-400 leading-none">MESTHRI<br>PRO</h1>
-    </div>
-    <div class="flex justify-end">
-        <button onclick="handleLogout()" class="bg-red-600 text-white font-black py-3 px-4 rounded-xl text-sm border-2 border-white">ലോഗ് ഔട്ട്</button>
-    </div>
-    </header>
-    
-    
-
-    lock font-black">വരവ്-ചെലവ് രേഖപ്പെടുത്തുക</span><span c
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
