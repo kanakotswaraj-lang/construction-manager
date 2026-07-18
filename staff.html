@@ -16,19 +16,21 @@
             <input type="text" id="siteName" placeholder="സൈറ്റ്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
             <input type="number" id="dailyWage" placeholder="കൂലി" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
             <input type="tel" id="phoneNumber" placeholder="WhatsApp നമ്പർ (91...)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="text" id="jobType" placeholder="ജോലി (മേസ്തിരി/പണിക്കാർ)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
+            <input type="text" id="jobType" placeholder="ജോലി" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
             <input type="text" id="bankDetails" placeholder="ബാങ്ക് / GPay നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <button id="saveStaffBtn" class="w-full bg-emerald-700 text-white p-4 rounded-xl font-black hover:bg-emerald-800 transition">സേവ് ചെയ്യുക</button>
+            <button id="saveStaffBtn" class="w-full bg-emerald-700 text-white p-4 rounded-xl font-black">സേവ് ചെയ്യുക</button>
         </div>
+
+        <!-- സെർച്ച് ബാർ -->
+        <input type="text" id="searchInput" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-3 bg-white rounded-xl border mb-4 shadow-sm">
 
         <div id="staffList" class="space-y-4"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        const firebaseConfig = {
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+const firebaseConfig = {
     apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
     authDomain: "mesthri-app.firebaseapp.com",
     projectId: "mesthri-app",
@@ -36,6 +38,7 @@
     messagingSenderId: "1060617901864",
     appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
 };
+        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
@@ -51,6 +54,14 @@
             alert("വിവരങ്ങൾ സേവ് ആയി!");
         });
 
+        // സെർച്ച് ഫങ്ഷൻ
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            document.querySelectorAll('#staffList > div').forEach(div => {
+                div.style.display = div.innerText.toLowerCase().includes(val) ? '' : 'none';
+            });
+        });
+
         onSnapshot(collection(db, "staffs"), (snapshot) => {
             const list = document.getElementById('staffList');
             list.innerHTML = '';
@@ -60,13 +71,11 @@
                 div.className = "bg-white p-4 rounded-2xl border shadow-sm";
                 div.innerHTML = `
                     <div class="flex justify-between items-center mb-3">
-                        <div>
-                            <h3 class="font-bold text-lg">${s.name}</h3>
-                            <p class="text-xs text-slate-500">${s.site} | ₹${s.wage}/ദിവസം</p>
-                        </div>
+                        <div><h3 class="font-bold text-lg">${s.name}</h3><p class="text-xs text-slate-500">${s.site} | ₹${s.wage}/ദിവസം</p></div>
                         <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
+                        <button id="edit-${d.id}" class="bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit</button>
                         <button id="hist-${d.id}" class="bg-slate-100 p-2 rounded-lg text-xs font-bold text-slate-700">History</button>
                         <a href="https://wa.me/${s.phone}" class="bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
                         <button id="pay-${d.id}" class="bg-blue-100 text-blue-700 p-2 rounded-lg text-xs font-bold col-span-2">Payment Details</button>
@@ -75,6 +84,10 @@
                 list.appendChild(div);
 
                 document.getElementById(`del-${d.id}`).onclick = () => deleteDoc(doc(db, 'staffs', d.id));
+                document.getElementById(`edit-${d.id}`).onclick = () => {
+                    const newWage = prompt("പുതിയ കൂലി നൽകുക:", s.wage);
+                    if(newWage) updateDoc(doc(db, 'staffs', d.id), { wage: newWage });
+                };
                 document.getElementById(`pay-${d.id}`).onclick = () => alert("ജോലി: " + (s.job || "വിവരമില്ല") + "\nബാങ്ക്/GPay: " + (s.bank || "വിവരമില്ല"));
                 document.getElementById(`hist-${d.id}`).onclick = () => alert(s.name + "-ന്റെ ഹിസ്റ്ററി ഉടൻ വരുന്നു!");
             });
