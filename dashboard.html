@@ -118,7 +118,27 @@ async function updateDashboard() {
         };
 
         window.handleLogout = () => { window.location.href = "index.html"; };
+<script>
+    // പേജ് ലോഡ് ആകുമ്പോൾ ഈ ഫങ്ക്ഷൻ പ്രവർത്തിക്കണം
+    window.onload = function() {
+        // ലോഗിൻ ചെയ്ത പേര് എടുക്കുന്നു (ലോഗിൻ പേജിൽ നൽകിയ അതേ കീ ഉപയോഗിക്കണം)
+        const username = localStorage.getItem('loggedInUser') || localStorage.getItem('userName') || "മേസ്തിരി";
+        
+        // ആദ്യ അക്ഷരം എടുത്ത് വട്ടത്തിൽ കാണിക്കുന്നു
+        const firstLetter = username.trim().charAt(0).toUpperCase();
+        const userElement = document.getElementById('userInitial');
+        
+        if (userElement) {
+            userElement.innerText = firstLetter;
+        }
+    };
 
+    function handleLogout() {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+
+    
         updateDashboard();
     </script>
 </body>
