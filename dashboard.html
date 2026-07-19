@@ -77,27 +77,39 @@
 
     <!-- ഫോട്ടോ അപ്‌ലോഡ് സ്ക്രിപ്റ്റ് -->
     <script>
-        const photoUpload = document.getElementById('photoUpload');
-        const preview = document.getElementById('preview');
+    const photoUpload = document.getElementById('photoUpload');
+    const profileImage = document.getElementById('profileImage');
 
-        photoUpload.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    localStorage.setItem('profilePhoto', e.target.result);
-                }
-                reader.readAsDataURL(file);
+    // ഫോട്ടോ സെലക്ട് ചെയ്യുമ്പോൾ
+    photoUpload.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profileImage.src = e.target.result; // ഇവിടെ ID മാറ്റി
+                localStorage.setItem('profilePhoto', e.target.result);
             }
-        });
-
-        window.onload = function() {
-            const savedPhoto = localStorage.getItem('profilePhoto');
-            if (savedPhoto) {
-                preview.src = savedPhoto;
-            }
+            reader.readAsDataURL(file);
         }
-    </script>
+    });
+
+    // പേജ് ലോഡ് ആകുമ്പോൾ
+    window.onload = function() {
+        // 1. ഫോട്ടോ ലോഡ് ചെയ്യാൻ
+        const savedPhoto = localStorage.getItem('profilePhoto');
+        if (savedPhoto) {
+            profileImage.src = savedPhoto;
+        }
+
+        // 2. തീയതി ഓട്ടോമാറ്റിക് ആക്കാൻ
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const dateElement = document.getElementById('currentDate');
+        if(dateElement) {
+            dateElement.innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
+        }
+    }
+</script>
+
 </body>
 </html>
