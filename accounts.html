@@ -61,12 +61,20 @@
     
     <button id="saveBtn" class="w-full bg-emerald-700 text-white p-3 rounded-lg font-bold">സേവ് ചെയ്യുക</button>
 </div>
+<!-- സെർച്ച് ബോക്സ് -->
+<div class="mt-6 mb-4">
+    <input type="text" id="searchInput" placeholder="പേര് വെച്ച് തിരയുക..." class="w-full p-3 border rounded-lg">
+</div>
 
+<!-- കണക്കുകൾ കാണാനുള്ള ലിസ്റ്റ് -->
+<div id="transactionList" class="space-y-3">
+    <!-- ഡാറ്റ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
+</div>
+        
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // Firebase Config (അത് തന്നെ ഉപയോഗിക്കാം)
     const firebaseConfig = {
         apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
         authDomain: "mesthri-app.firebaseapp.com",
@@ -79,6 +87,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // 1. സേവ് ചെയ്യുന്ന ലോജിക്
     document.getElementById('saveBtn').addEventListener('click', async () => {
         const data = {
             date: document.getElementById('transDate').value || new Date().toISOString().split('T')[0],
@@ -92,7 +101,7 @@
         };
 
         if (!data.name || !data.amount) {
-            alert("പേരും തുകയും നിർബന്ധമാണ്!");
+            alert("പേരും തുകയും നൽകുക!");
             return;
         }
 
@@ -100,10 +109,53 @@
             await addDoc(collection(db, "transactions"), data);
             alert("വിവരങ്ങൾ സേവ് ചെയ്തു!");
         } catch (e) {
-            alert("സേവ് ചെയ്യാൻ പറ്റിയില്ല, കണക്ഷൻ പരിശോധിക്കൂ.");
+            alert("സേവ് ആയില്ല!");
         }
     });
+
+    // 2. ഡാറ്റ ലിസ്റ്റ് ചെയ്യുകയും ടോട്ടൽ കാണിക്കുകയും ചെയ്യുന്ന ലോജിക്
+    const listContainer = document.getElementById('transactionList');
+    
+    onSnapshot(collection(db, "transactions"), (snapshot) => {
+        let income = 0;
+        let expense = 0;
+        listContainer.innerHTML = '';
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.type === 'income') income += data.amount;
+            else expense += data.amount;
+
+            const div = document.createElement('div');
+            div.className = "bg-white p-3 rounded-lg shadow flex justify-between items-center";
+            div.innerHTML = `
+                <div>
+                    <p class="font-bold">${data.name}</p>
+                    <p class="text-xs text-gray-500">${data.site} | ${data.payment}</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold ${data.type === 'income' ? 'text-emerald-600' : 'text-red-600'}">₹${data.amount}</p>
+                </div>
+            `;
+            listContainer.appendChild(div);
+        });
+
+        document.getElementById('totalIncome').innerText = `₹${income}`;
+        document.getElementById('totalExpense').innerText = `₹${expense}`;
+        document.getElementById('netBalance').innerText = `₹${income - expense}`;
+    });
+
+    // 3. സെർച്ച് ലോജിക്
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const items = document.querySelectorAll('#transactionList > div');
+        items.forEach(item => {
+            const name = item.querySelector('p').innerText.toLowerCase();
+            item.style.display = name.includes(term) ? 'flex' : 'none';
+        });
+    });
 </script>
+
  
     
 </body>
