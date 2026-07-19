@@ -8,7 +8,9 @@
 </head>
 <body class="bg-slate-100 p-2">
 
-    <div class="w-full max-w-md mx-auto">
+<div class="w-full h-screen p-2">
+    
+    
         <h1 class="text-2xl font-bold text-center mb-4">കണക്ക് മാനേജർ പ്രോ</h1>
 
         <!-- ഡാഷ്ബോർഡ് -->
@@ -45,7 +47,9 @@
             <input type="number" id="amount" placeholder="തുക" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
             <button id="saveBtn" class="w-full bg-emerald-700 text-white p-3 rounded-lg font-bold">സേവ് ചെയ്യുക</button>
         </div>
-
+<!-- ഇത് ഫോമിന് താഴെ അല്ലെങ്കിൽ ലിസ്റ്റിന് മുകളിൽ ചേർക്കുക -->
+<button onclick="downloadPDF()" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold mb-4">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
+    
         <!-- ലിസ്റ്റ് -->
         <div id="transactionList" class="space-y-3"></div>
     </div>
@@ -117,7 +121,10 @@
             document.getElementById('amount').value = amt;
             document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
         };
-
+window.downloadPDF = () => {
+    window.print(); // ഇത് സിമ്പിൾ ആയിട്ട് പേജ് പ്രിന്റ് / PDF സേവ് ചെയ്യാൻ സഹായിക്കും
+};
+        
         window.del = async (id) => { if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "accounts", id)); };
     </script>
 </body>
