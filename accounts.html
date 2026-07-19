@@ -31,42 +31,80 @@
             </div>
         </div>
 
-        <!-- ഫോം -->
-        <div class="bg-white p-3 rounded-xl shadow mb-4">
-            <input type="text" id="ownerName" placeholder="മുതലാളിയുടെ പേര്" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-            <input type="tel" id="ownerPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-            <input type="text" id="siteName" placeholder="സൈറ്റ്/സ്ഥലം" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-            <select id="type" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-                <option value="income">വരവ്</option>
-                <option value="expense">ചെലവ്</option>
-            </select>
-            <input type="text" id="desc" placeholder="വിവരണം" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-            <input type="number" id="amount" placeholder="തുക" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-            
-            <button id="saveBtn" class="w-full bg-emerald-700 text-white p-3 rounded-lg font-bold mb-2">സേവ് ചെയ്യുക</button>
-            <button onclick="window.print()" class="w-full bg-blue-700 text-white p-3 rounded-lg font-bold">PDF സേവ്</button>
-        </div>
-    </div>
+       <!-- ഫോം ഭാഗം -->
+<div class="bg-white p-4 rounded-xl shadow-lg mb-4">
+    <h2 class="text-lg font-bold mb-3">പുതിയ കണക്ക് ചേർക്കുക</h2>
     
-    <script type="module">
-     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    <!-- തീയതി -->
+    <input type="date" id="transDate" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+    
+    <!-- വിവരങ്ങൾ -->
+    <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+    <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+    
+    <!-- ടൈപ്പ് -->
+    <select id="type" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+        <option value="income">വരവ്</option>
+        <option value="expense">ചെലവ്</option>
+    </select>
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-    authDomain: "mesthri-app.firebaseapp.com",
-    projectId: "mesthri-app",
-    storageBucket: "mesthri-app.appspot.com",
-    messagingSenderId: "1060617901864",
-    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-};
+    <!-- പെയ്മെന്റ് രീതി -->
+    <select id="paymentMethod" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+        <option value="cash">ക്യാഷ് (Cash)</option>
+        <option value="gpay">ഗൂഗിൾ പേ (GPay)</option>
+        <option value="bank">ബാങ്ക് ട്രാൻസ്ഫർ</option>
+        <option value="upi">മറ്റ് UPI ആപ്പുകൾ</option>
+    </select>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    <input type="text" id="desc" placeholder="വിവരണം" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+    <input type="number" id="amount" placeholder="തുക" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
+    
+    <button id="saveBtn" class="w-full bg-emerald-700 text-white p-3 rounded-lg font-bold">സേവ് ചെയ്യുക</button>
+</div>
 
-async function updateDashboard() {
-    try {
-        // ബാക്കി ലോജിക് ഇവിടെ തുടരുക...
-    </script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // Firebase Config (അത് തന്നെ ഉപയോഗിക്കാം)
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.appspot.com",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+        const data = {
+            date: document.getElementById('transDate').value || new Date().toISOString().split('T')[0],
+            name: document.getElementById('ownerName').value,
+            site: document.getElementById('siteName').value,
+            type: document.getElementById('type').value,
+            payment: document.getElementById('paymentMethod').value,
+            desc: document.getElementById('desc').value,
+            amount: parseFloat(document.getElementById('amount').value),
+            createdAt: new Date()
+        };
+
+        if (!data.name || !data.amount) {
+            alert("പേരും തുകയും നിർബന്ധമാണ്!");
+            return;
+        }
+
+        try {
+            await addDoc(collection(db, "transactions"), data);
+            alert("വിവരങ്ങൾ സേവ് ചെയ്തു!");
+        } catch (e) {
+            alert("സേവ് ചെയ്യാൻ പറ്റിയില്ല, കണക്ഷൻ പരിശോധിക്കൂ.");
+        }
+    });
+</script>
+ 
+    
 </body>
 </html>
