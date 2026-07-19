@@ -30,6 +30,12 @@
         </div>
 
         <!-- ഫോം -->
+        <!-- തീയതി ഫിൽട്ടർ ബോക്സ് -->
+<div class="bg-white p-3 rounded-xl shadow mb-4">
+    <label class="text-xs font-bold text-gray-500">തീയതി വെച്ച് തിരയുക:</label>
+    <input type="date" id="filterDate" onchange="filterList()" class="w-full p-2 bg-slate-50 border rounded-lg mt-1">
+</div>
+
         <div class="bg-white p-4 rounded-xl shadow-lg mb-4">
             <h2 class="text-lg font-bold mb-3">പുതിയ കണക്ക് ചേർക്കുക</h2>
             <input type="date" id="transDate" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
@@ -49,6 +55,11 @@
         </div>
 
         <button onclick="window.print()" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold mb-4">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
+        <!-- തീയതി ഫിൽട്ടർ -->
+<div class="bg-white p-3 rounded-xl shadow mb-4">
+    <label class="text-xs font-bold text-gray-500">ഈ തീയതിയിലെ മാത്രം കാണുക:</label>
+    <input type="date" id="filterDate" onchange="filterList()" class="w-full p-2 bg-slate-50 border rounded-lg mt-1 text-base">
+</div>
         
         <div id="transactionList" class="space-y-3"></div>
     </div>
@@ -130,6 +141,21 @@
         };
 
         window.del = async (id) => { if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "accounts", id)); };
+        window.filterList = () => {
+    const selectedDate = document.getElementById('filterDate').value;
+    const items = document.querySelectorAll('#transactionList > div');
+    
+    items.forEach(item => {
+        // ഡേറ്റിലെ തീയതി എടുക്കുന്നു
+        const itemDate = item.querySelector('.text-[10px]').innerText.split(' | ')[0];
+        
+        if (!selectedDate || itemDate === selectedDate) {
+            item.style.display = 'flex'; // കാണിക്കുക
+        } else {
+            item.style.display = 'none'; // മറയ്ക്കുക
+        }
+    });
+};
         
         window.shareWhatsApp = (name, amount) => {
             const message = `കണക്ക് വിശദാംശം:\nപേര്: ${name}\nതുക: ₹${amount}`;
