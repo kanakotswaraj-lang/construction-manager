@@ -6,11 +6,9 @@
     <title>കണക്ക് മാനേജർ പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 p-2">
+<body class="bg-slate-100 p-4">
 
-<div class="w-full h-screen p-2">
-    
-    
+    <div class="w-full">
         <h1 class="text-2xl font-bold text-center mb-4">കണക്ക് മാനേജർ പ്രോ</h1>
 
         <!-- ഡാഷ്ബോർഡ് -->
@@ -33,28 +31,25 @@
 
         <!-- ഫോം -->
         <div class="bg-white p-4 rounded-xl shadow-lg mb-4">
-            <h2 class="text-lg font-bold mb-3" id="formTitle">പുതിയ കണക്ക് ചേർക്കുക</h2>
-            <!-- തീയതിയുടെ ബോക്സ് -->
-<input type="date" id="transDate" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
-
-            <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
-            <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
-            <select id="type" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
+            <h2 class="text-lg font-bold mb-3">പുതിയ കണക്ക് ചേർക്കുക</h2>
+            <input type="date" id="transDate" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
+            <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
+            <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
+            <select id="type" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
                 <option value="income">വരവ്</option>
                 <option value="expense">ചെലവ്</option>
             </select>
-            <select id="paymentMethod" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
+            <select id="paymentMethod" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
                 <option value="cash">ക്യാഷ് (Cash)</option>
                 <option value="gpay">GPay</option>
+                   
             </select>
-            <input type="number" id="amount" placeholder="തുക" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
-            <button id="saveBtn" class="w-full bg-emerald-700 text-white p-3 rounded-lg font-bold">സേവ് ചെയ്യുക</button>
+            <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
+            <button id="saveBtn" class="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold text-base">സേവ് ചെയ്യുക</button>
         </div>
-    
-<!-- ഇത് ഫോമിന് താഴെ അല്ലെങ്കിൽ ലിസ്റ്റിന് മുകളിൽ ചേർക്കുക -->
-<button onclick="downloadPDF()" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold mb-4">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
-    
-        <!-- ലിസ്റ്റ് -->
+
+        <button onclick="window.print()" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold mb-4">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
+        
         <div id="transactionList" class="space-y-3"></div>
     </div>
 
@@ -76,23 +71,14 @@
 
         let editId = null;
 
-        // സേവ് / അപ്ഡേറ്റ് ഫങ്ക്ഷൻ
         document.getElementById('saveBtn').onclick = async () => {
-            // സേവ് ചെയ്യുന്ന ഡാറ്റയിൽ ഇത് കൂടി ചേർക്കണം
-const data = {
-    name: document.getElementById('ownerName').value,
-    site: document.getElementById('siteName').value,
-    type: document.getElementById('type').value,
-    payment: document.getElementById('paymentMethod').value,
-    amount: parseFloat(document.getElementById('amount').value) || 0,
-    date: document.getElementById('transDate').value // തീയതി ഇവിടെ വരുന്നു
-};
-            
+            const data = {
                 name: document.getElementById('ownerName').value,
                 site: document.getElementById('siteName').value,
                 type: document.getElementById('type').value,
                 payment: document.getElementById('paymentMethod').value,
-                amount: parseFloat(document.getElementById('amount').value) || 0
+                amount: parseFloat(document.getElementById('amount').value) || 0,
+                date: document.getElementById('transDate').value
             };
 
             if (editId) {
@@ -100,13 +86,12 @@ const data = {
                 editId = null;
                 document.getElementById('saveBtn').innerText = "സേവ് ചെയ്യുക";
             } else {
-                await addDoc(collection(db, "accounts"), { ...data, date: new Date() });
+                await addDoc(collection(db, "accounts"), data);
             }
             document.getElementById('ownerName').value = '';
             document.getElementById('amount').value = '';
         };
 
-        // ലിസ്റ്റ് ചെയ്യൽ
         onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
             const list = document.getElementById('transactionList');
             list.innerHTML = '';
@@ -115,53 +100,41 @@ const data = {
                 const d = doc.data();
                 if(d.type === 'income') inc += d.amount; else exp += d.amount;
                 list.innerHTML += `
-                    <div class="bg-white p-3 rounded-lg shadow flex justify-between">
-                        <div><b>${d.name}</b><br>${d.site}</div>
-                        <div class="text-right">₹${d.amount}<br>
-                            <button onclick="window.edit('${doc.id}', '${d.name}', ${d.amount})" class="text-blue-500 text-xs mr-2">എഡിറ്റ്</button>
-                            <button onclick="window.del('${doc.id}')" class="text-red-500 text-xs">ഡിലീറ്റ്</button>
+                    <div class="bg-white p-4 rounded-xl shadow-sm mb-3 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-base">${d.name}</p>
+                            <p class="text-[10px] text-gray-500">${d.date || ''} | ${d.site}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-base text-gray-800">₹${d.amount}</p>
+                            <div class="flex gap-2 mt-1">
+                                <button onclick="window.edit('${doc.id}', '${d.name}', ${d.amount}, '${d.date}')" class="text-blue-600 text-xs font-bold">എഡിറ്റ്</button>
+                                <button onclick="window.del('${doc.id}')" class="text-red-600 text-xs font-bold">ഡിലീറ്റ്</button>
+                                <button onclick="window.shareWhatsApp('${d.name}', ${d.amount})" class="text-green-600 text-xs font-bold">WhatsApp</button>
+                            </div>
                         </div>
                     </div>`;
             });
-            // ലിസ്റ്റിലെ വിവരങ്ങൾ കാണിക്കുന്ന ഭാഗം മാത്രം
-list.innerHTML += `
-    <div class="bg-white p-4 rounded-xl shadow-sm mb-3 flex justify-between items-center">
-        <div>
-            <p class="font-bold text-base">${d.name}</p>
-            <p class="text-[10px] text-gray-500">${d.date || 'തീയതി ഇല്ല'} | ${d.site}</p>
-        </div>
-        <div class="text-right">
-            <p class="font-bold text-base text-gray-800">₹${d.amount}</p>
-            <div class="flex gap-2 mt-1">
-                <button onclick="window.edit('${doc.id}', '${d.name}', ${d.amount})" class="text-blue-600 text-xs font-semibold">എഡിറ്റ്</button>
-                <button onclick="window.del('${doc.id}')" class="text-red-600 text-xs font-semibold">ഡിലീറ്റ്</button>
-                <button onclick="window.shareWhatsApp('${d.name}', ${d.amount})" class="text-green-600 text-xs font-semibold">WhatsApp</button>
-            </div>
-        </div>
-    </div>`;
-            
             document.getElementById('totalIncome').innerText = "₹" + inc;
             document.getElementById('totalExpense').innerText = "₹" + exp;
             document.getElementById('netBalance').innerText = "₹" + (inc - exp);
         });
 
-        window.edit = (id, name, amt) => {
+        window.edit = (id, name, amt, date) => {
             editId = id;
             document.getElementById('ownerName').value = name;
             document.getElementById('amount').value = amt;
+            document.getElementById('transDate').value = date;
             document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
+            window.scrollTo(0, 0);
         };
-window.downloadPDF = () => {
-    window.print(); // ഇത് സിമ്പിൾ ആയിട്ട് പേജ് പ്രിന്റ് / PDF സേവ് ചെയ്യാൻ സഹായിക്കും
-    window.shareWhatsApp = (name, amount) => {
-    const message = `കണക്ക് വിശദാംശം:\nപേര്: ${name}\nതുക: ₹${amount}`;
-    const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-};
-    
-};
-        
+
         window.del = async (id) => { if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "accounts", id)); };
+        
+        window.shareWhatsApp = (name, amount) => {
+            const message = `കണക്ക് വിശദാംശം:\nപേര്: ${name}\nതുക: ₹${amount}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        };
     </script>
 </body>
 </html>
