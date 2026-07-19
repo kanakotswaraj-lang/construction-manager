@@ -6,65 +6,62 @@
     <title>കണക്ക് മാനേജർ പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 p-4">
+<body class="bg-slate-50 p-4">
 
-    <div class="w-full">
-        <h1 class="text-2xl font-bold text-center mb-4">കണക്ക് മാനേജർ പ്രോ</h1>
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-bold text-center mb-6 text-slate-800">കണക്ക് മാനേജർ പ്രോ</h1>
 
         <!-- ഡാഷ്ബോർഡ് -->
-        <div class="bg-white p-3 rounded-xl shadow mb-4">
-            <div class="grid grid-cols-2 gap-2 mb-2">
-                <div class="bg-emerald-600 text-white p-3 rounded-lg text-center">
-                    <p class="text-[10px]">വരവ്</p>
-                    <h2 id="totalIncome" class="text-lg font-bold">₹0</h2>
-                </div>
-                <div class="bg-red-600 text-white p-3 rounded-lg text-center">
-                    <p class="text-[10px]">ചെലവ്</p>
-                    <h2 id="totalExpense" class="text-lg font-bold">₹0</h2>
-                </div>
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="bg-emerald-600 text-white p-4 rounded-2xl shadow-md text-center">
+                <p class="text-[10px] opacity-80 uppercase tracking-widest">വരവ്</p>
+                <h2 id="totalIncome" class="text-xl font-bold">₹0</h2>
             </div>
-            <div class="bg-slate-800 text-white p-3 rounded-lg text-center">
-                <p class="text-[10px]">ബാക്കി</p>
-                <h2 id="netBalance" class="text-xl font-bold">₹0</h2>
+            <div class="bg-red-600 text-white p-4 rounded-2xl shadow-md text-center">
+                <p class="text-[10px] opacity-80 uppercase tracking-widest">ചെലവ്</p>
+                <h2 id="totalExpense" class="text-xl font-bold">₹0</h2>
+            </div>
+            <div class="col-span-2 bg-slate-800 text-white p-4 rounded-2xl shadow-md text-center">
+                <p class="text-[10px] opacity-80 uppercase tracking-widest">ബാക്കി</p>
+                <h2 id="netBalance" class="text-2xl font-bold">₹0</h2>
             </div>
         </div>
 
-        <!-- ഫോം -->
-        <!-- തീയതി ഫിൽട്ടർ ബോക്സ് -->
-<div class="bg-white p-3 rounded-xl shadow mb-4">
-    <label class="text-xs font-bold text-gray-500">തീയതി വെച്ച് തിരയുക:</label>
-    <input type="date" id="filterDate" onchange="filterList()" class="w-full p-2 bg-slate-50 border rounded-lg mt-1">
-</div>
-
-        <div class="bg-white p-4 rounded-xl shadow-lg mb-4">
-            <h2 class="text-lg font-bold mb-3">പുതിയ കണക്ക് ചേർക്കുക</h2>
-            <input type="date" id="transDate" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
-            <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
-            <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
-            <select id="type" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
-                <option value="income">വരവ്</option>
-                <option value="expense">ചെലവ്</option>
-            </select>
-            <select id="paymentMethod" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
-                <option value="cash">ക്യാഷ് (Cash)</option>
-                <option value="gpay">GPay</option>
-                   
-            </select>
-            <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 border rounded-xl mb-3 text-base">
-            <button id="saveBtn" class="w-full bg-emerald-700 text-white p-4 rounded-xl font-bold text-base">സേവ് ചെയ്യുക</button>
-        </div>
-
-        <button onclick="window.print()" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold mb-4">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
         <!-- തീയതി ഫിൽട്ടർ -->
-<div class="bg-white p-3 rounded-xl shadow mb-4">
-    <label class="text-xs font-bold text-gray-500">ഈ തീയതിയിലെ മാത്രം കാണുക:</label>
-    <input type="date" id="filterDate" onchange="filterList()" class="w-full p-2 bg-slate-50 border rounded-lg mt-1 text-base">
-</div>
-        
-        <div id="transactionList" class="space-y-3"></div>
-    </div>
+        <div class="bg-white p-4 rounded-2xl shadow-sm mb-6 border border-slate-100">
+            <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">തീയതി വെച്ച് തിരയുക</label>
+            <input type="date" id="filterDate" onchange="filterList()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
 
-    <script type="module">
+        <!-- പുതിയ കണക്ക് ഫോം -->
+        <div class="bg-white p-6 rounded-3xl shadow-lg mb-6 border border-slate-100">
+            <h2 class="text-lg font-bold mb-4 text-slate-700">പുതിയ കണക്ക് ചേർക്കുക</h2>
+            <input type="date" id="transDate" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+            <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+            <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+            
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <select id="type" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-base">
+                    <option value="income">വരവ്</option>
+                    <option value="expense">ചെലവ്</option>
+                </select>
+                <select id="paymentMethod" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-base">
+                    <option value="cash">ക്യാഷ്</option>
+                    <option value="gpay">GPay</option>
+                </select>
+            </div>
+            
+            <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl mb-4 text-base">
+            <button id="saveBtn" class="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold text-base hover:bg-emerald-700 transition">സേവ് ചെയ്യുക</button>
+        </div>
+
+        <!-- PDF ഡൗൺലോഡ് -->
+        <button onclick="window.print()" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-bold mb-6 hover:bg-blue-700 transition">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
+        
+        <!-- ലിസ്റ്റ് ഭാഗം -->
+        <div id="transactionList" class="space-y-3 pb-10"></div>
+    </div>
+<script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
