@@ -96,21 +96,33 @@ snapshot.forEach((d) => {
     // സേവ് ഫങ്ഷൻ
     
 document.getElementById('saveStaffBtn').addEventListener('click', async () => {
+    // ഇൻപുട്ട് ബോക്സിലെ വാല്യൂസ് എടുക്കുന്നു
+    const name = document.getElementById('staffName').value;
+    const site = document.getElementById('siteName').value;
+    const wage = document.getElementById('dailyWage').value;
+    const phone = document.getElementById('phoneNumber').value;
+    const job = document.getElementById('jobType').value;
+    const bank = document.getElementById('bankDetails').value;
+
+    if (!name) {
+        alert("ദയവായി പേര് നൽകുക!");
+        return;
+    }
+
     try {
         await addDoc(collection(db, "staffs"), {
-            name: document.getElementById('staffName').value,
-            site: document.getElementById('siteName').value,
-            wage: document.getElementById('dailyWage').value,
-            phone: document.getElementById('phoneNumber').value,
-            job: document.getElementById('jobType').value,
-            bank: document.getElementById('bankDetails').value,
-            // പുതിയ ഫീൽഡുകൾ ഇവിടെ ഡിഫോൾട്ട് ആയി നൽകുന്നു
-            lastSite: "",
+            name: name,
+            site: site,
+            wage: wage,
+            phone: phone,
+            job: job,
+            bank: bank,
+            lastSite: site,
             lastAttendance: true,
-            lastPayment: ""
+            lastPayment: 0
         });
         alert("വിവരങ്ങൾ സേവ് ആയി!");
-        // സേവ് ആയ ശേഷം ബോക്സുകൾ ക്ലിയർ ചെയ്യാൻ
+        // ഫോം ക്ലിയർ ചെയ്യുന്നു
         document.getElementById('staffName').value = '';
         document.getElementById('siteName').value = '';
         document.getElementById('dailyWage').value = '';
@@ -118,7 +130,8 @@ document.getElementById('saveStaffBtn').addEventListener('click', async () => {
         document.getElementById('jobType').value = '';
         document.getElementById('bankDetails').value = '';
     } catch (e) {
-        alert("സേവ് ചെയ്യാൻ പറ്റിയില്ല: " + e.message);
+        console.error("Error adding document: ", e);
+        alert("സേവ് ചെയ്യാൻ പറ്റിയില്ല, വീണ്ടും ശ്രമിക്കുക.");
     }
 });
 
