@@ -45,10 +45,14 @@
                     <option value="income">വരവ്</option>
                     <option value="expense">ചെലവ്</option>
                 </select>
-                <select id="paymentMethod" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-base">
-                    <option value="cash">ക്യാഷ്</option>
-                    <option value="gpay">GPay</option>
+                <select id="type" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+    <option value="income">വരവ്</option>
+    <option value="wage">ജീവനക്കാരുടെ കൂലി</option>
+    <option value="material">മെറ്റീരിയൽസ്</option>
+    <option value="rent">വാടക</option>
+    <option value="other">മറ്റ് ചെലവുകൾ</option>
                 </select>
+                
             </div>
             
             <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl mb-4 text-base">
@@ -106,15 +110,18 @@
             let inc = 0, exp = 0;
             snapshot.forEach(doc => {
                 const d = doc.data();
-                if(d.type === 'income') inc += d.amount; else exp += d.amount;
-                list.innerHTML += `
-                    <div class="bg-white p-4 rounded-xl shadow-sm mb-3 flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-base">${d.name}</p>
-                            <p class="text-[10px] text-gray-500">${d.date || ''} | ${d.site}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold text-base text-gray-800">₹${d.amount}</p>
+                // snapshot.forEach ലൂപ്പിനുള്ളിൽ ഇത് ചേർക്കുക
+let categoryColor = "";
+if(d.type === 'income') categoryColor = "text-emerald-600";
+else if(d.type === 'wage') categoryColor = "text-blue-600";
+else if(d.type === 'material') categoryColor = "text-orange-600";
+else if(d.type === 'rent') categoryColor = "text-purple-600";
+else categoryColor = "text-red-600";
+
+// ലിസ്റ്റ് HTML-ൽ തുകയുടെ വരിയിൽ താഴെ പറയുന്ന പോലെ മാറ്റുക:
+// പഴയ ₹${d.amount} മാറ്റി പകരം ഇങ്ങനെ എഴുതുക:
+<p class="font-bold text-base ${categoryColor}">₹${d.amount}</p>
+
                             <div class="flex gap-2 mt-1">
                                 <button onclick="window.edit('${doc.id}', '${d.name}', ${d.amount}, '${d.date}')" class="text-blue-600 text-xs font-bold">എഡിറ്റ്</button>
                                 <button onclick="window.del('${doc.id}')" class="text-red-600 text-xs font-bold">ഡിലീറ്റ്</button>
