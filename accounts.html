@@ -33,28 +33,35 @@
             <input type="date" id="filterDate" onchange="filterList()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-blue-500 outline-none">
         </div>
 
-      <!-- ഫോം ഭാഗം -->
-<h2 class="text-lg font-bold mb-3">പുതിയ കണക്ക് ചേർക്കുക</h2>
-<input type="date" id="transDate" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
-<input type="text" id="ownerName" placeholder="പേര്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
-<input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
-
-<div class="grid grid-cols-2 gap-3 mb-3">
-    <!-- ടൈപ്പ് ബോക്സ് -->
-    <select id="type" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
-        <option value="income">വരവ്</option>
-        <option value="wage">കൂലി</option>
-        <option value="material">മെറ്റീരിയൽസ്</option>
-        <option value="rent">വാടക</option>
-        <option value="other">മറ്റ് ചെലവ്</option>
-    </select>
+      <!-- പുതിയ കണക്ക് ഫോം മാത്രം -->
+<div class="bg-white p-6 rounded-3xl shadow-lg mb-6 border border-slate-100">
+    <h2 class="text-lg font-bold mb-4 text-slate-700">പുതിയ കണക്ക് ചേർക്കുക</h2>
     
-    <!-- പേയ്മെന്റ് ബോക്സ് -->
-    <select id="paymentMethod" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
-        <option value="cash">ക്യാഷ്</option>
-        <option value="gpay">GPay</option>
-    </select>
+    <input type="date" id="transDate" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+    <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+    <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+
+    <div class="grid grid-cols-2 gap-3 mb-3">
+        <select id="type" class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
+            <option value="income">വരവ്</option>
+            <option value="wage">കൂലി</option>
+            <option value="material">മെറ്റീരിയൽസ്</option>
+            <option value="rent">വാടക</option>
+            <option value="other">മറ്റ് ചെലവ്</option>
+        </select>
+        <select id="paymentMethod" class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
+            <option value="cash">ക്യാഷ്</option>
+            <option value="gpay">GPay</option>
+            <option value="UPI">യുപിഐ</option>
+            <option value="bank">ബാങ്ക്</option>
+        </select>
+    </div>
+
+    <input type="number" id="amount" placeholder="തുക" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4 text-base">
+    
+    <button id="saveBtn" class="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold text-base hover:bg-emerald-700 transition">സേവ് ചെയ്യുക</button>
 </div>
+
 <input type="number" id="amount" placeholder="തുക" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4 text-base">
 <button id="saveBtn" class="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold text-base hover:bg-emerald-700 transition">സേവ് ചെയ്യുക</button>
       </div>
