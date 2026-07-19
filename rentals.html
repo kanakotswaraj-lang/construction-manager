@@ -18,21 +18,20 @@
             <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             
             <div class="grid grid-cols-2 gap-3">
-                <div>
-                    
-<input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-<input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-<input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold mb-4">
-
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-500 ml-1">എടുത്ത തീയതി</label>
+                    <input type="date" id="startDate" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
                 </div>
-                <div>
-                    <label class="text-[10px] font-black text-slate-500 ml-2">തിരികെ നൽകേണ്ടത്</label>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-500 ml-1">തിരികെ നൽകേണ്ടത്</label>
                     <input type="date" id="endDate" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
                 </div>
             </div>
             
+            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+            
             <button id="saveRentBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
@@ -57,24 +56,19 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // സേവ് ചെയ്യുമ്പോൾ unitRent കൂടി എടുക്കാൻ
-document.getElementById('saveRentBtn').addEventListener('click', async () => {
-    await addDoc(collection(db, "rentals"), {
-        item: document.getElementById('itemName').value,
-        shop: document.getElementById('shopName').value,
-        phone: document.getElementById('shopPhone').value,
-        start: document.getElementById('startDate').value,
-        end: document.getElementById('endDate').value,
-        unitRent: document.getElementById('unitRent').value, // പുതിയ കള്ളി
-        total: parseFloat(document.getElementById('totalRent').value) || 0,
-        paid: parseFloat(document.getElementById('paidRent').value) || 0
-    });
-    alert("സേവ് ആയി!");
-});
-
-// ലിസ്റ്റിൽ അത് കാണിക്കാൻ (innerHTML-ന്റെ ഉള്ളിൽ)
-<p class="text-xs text-slate-500 font-bold">കട: ${r.shop} | വാടക/എണ്ണം: ₹${r.unitRent || 0}</p>
-
+        document.getElementById('saveRentBtn').addEventListener('click', async () => {
+            await addDoc(collection(db, "rentals"), {
+                item: document.getElementById('itemName').value,
+                shop: document.getElementById('shopName').value,
+                phone: document.getElementById('shopPhone').value,
+                start: document.getElementById('startDate').value,
+                end: document.getElementById('endDate').value,
+                unitRent: document.getElementById('unitRent').value,
+                total: parseFloat(document.getElementById('totalRent').value) || 0,
+                paid: parseFloat(document.getElementById('paidRent').value) || 0
+            });
+            alert("വിവരങ്ങൾ സേവ് ആയി!");
+        });
 
         onSnapshot(collection(db, "rentals"), (snapshot) => {
             const list = document.getElementById('rentList');
@@ -88,6 +82,7 @@ document.getElementById('saveRentBtn').addEventListener('click', async () => {
                     <div class="mb-3">
                         <p class="font-black text-slate-800 text-lg">${r.item}</p>
                         <p class="text-xs text-slate-500 font-bold">കട: ${r.shop} | 📞 ${r.phone}</p>
+                        <p class="text-xs text-blue-600 font-black">വാടക/എണ്ണം: ₹${r.unitRent}</p>
                     </div>
                     <div class="grid grid-cols-2 gap-2 mb-3">
                         <div class="bg-slate-50 p-2 rounded-xl text-center"><p class="text-[9px] text-slate-400 font-black uppercase">തുടക്കം</p><p class="text-xs font-black">${r.start}</p></div>
