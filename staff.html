@@ -94,23 +94,32 @@ snapshot.forEach((d) => {
     list.appendChild(div);
 
     // സേവ് ഫങ്ഷൻ
-    document.getElementById(`save-${d.id}`).onclick = async () => {
-        await updateDoc(doc(db, 'staffs', d.id), {
-            lastSite: document.getElementById(`site-${d.id}`).value,
-            lastAttendance: document.getElementById(`attend-${d.id}`).checked,
-            lastPayment: document.getElementById(`pay-${d.id}`).value
+    
+document.getElementById('saveStaffBtn').addEventListener('click', async () => {
+    try {
+        await addDoc(collection(db, "staffs"), {
+            name: document.getElementById('staffName').value,
+            site: document.getElementById('siteName').value,
+            wage: document.getElementById('dailyWage').value,
+            phone: document.getElementById('phoneNumber').value,
+            job: document.getElementById('jobType').value,
+            bank: document.getElementById('bankDetails').value,
+            // പുതിയ ഫീൽഡുകൾ ഇവിടെ ഡിഫോൾട്ട് ആയി നൽകുന്നു
+            lastSite: "",
+            lastAttendance: true,
+            lastPayment: ""
         });
-        alert("വിവരങ്ങൾ അപ്‌ഡേറ്റ് ചെയ്തു!");
-    };
-
-    // ഡിലീറ്റ് ഫങ്ഷൻ
-    document.getElementById(`del-${d.id}`).onclick = () => deleteDoc(doc(db, 'staffs', d.id));
-
-    // എഡിറ്റ് കൂലി ഫങ്ഷൻ
-    document.getElementById(`edit-${d.id}`).onclick = () => {
-        const newWage = prompt("പുതിയ കൂലി നൽകുക:", s.wage);
-        if(newWage) updateDoc(doc(db, 'staffs', d.id), { wage: newWage });
-    };
+        alert("വിവരങ്ങൾ സേവ് ആയി!");
+        // സേവ് ആയ ശേഷം ബോക്സുകൾ ക്ലിയർ ചെയ്യാൻ
+        document.getElementById('staffName').value = '';
+        document.getElementById('siteName').value = '';
+        document.getElementById('dailyWage').value = '';
+        document.getElementById('phoneNumber').value = '';
+        document.getElementById('jobType').value = '';
+        document.getElementById('bankDetails').value = '';
+    } catch (e) {
+        alert("സേവ് ചെയ്യാൻ പറ്റിയില്ല: " + e.message);
+    }
 });
 
         list.appendChild(div);
