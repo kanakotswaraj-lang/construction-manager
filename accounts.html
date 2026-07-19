@@ -33,27 +33,31 @@
             <input type="date" id="filterDate" onchange="filterList()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-blue-500 outline-none">
         </div>
 
-        <!-- പുതിയ കണക്ക് ഫോം -->
-        <div class="bg-white p-6 rounded-3xl shadow-lg mb-6 border border-slate-100">
-            <h2 class="text-lg font-bold mb-4 text-slate-700">പുതിയ കണക്ക് ചേർക്കുക</h2>
-            <input type="date" id="transDate" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
-            <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
-            <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
-            
-            <div class="grid grid-cols-2 gap-3 mb-3">
-                <select id="type" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-base">
-                    <option value="income">വരവ്</option>
-                    <option value="expense">ചെലവ്</option>
-                </select>
-                <select id="type" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
-    <option value="income">വരവ്</option>
-    <option value="wage">ജീവനക്കാരുടെ കൂലി</option>
-    <option value="material">മെറ്റീരിയൽസ്</option>
-    <option value="rent">വാടക</option>
-    <option value="other">മറ്റ് ചെലവുകൾ</option>
-                </select>
-                
-            </div>
+      <!-- ഫോം ഭാഗം -->
+<h2 class="text-lg font-bold mb-3">പുതിയ കണക്ക് ചേർക്കുക</h2>
+<input type="date" id="transDate" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+<input type="text" id="ownerName" placeholder="പേര്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+<input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+
+<div class="grid grid-cols-2 gap-3 mb-3">
+    <!-- ടൈപ്പ് ബോക്സ് -->
+    <select id="type" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
+        <option value="income">വരവ്</option>
+        <option value="wage">കൂലി</option>
+        <option value="material">മെറ്റീരിയൽസ്</option>
+        <option value="rent">വാടക</option>
+        <option value="other">മറ്റ് ചെലവ്</option>
+    </select>
+    
+    <!-- പേയ്മെന്റ് ബോക്സ് -->
+    <select id="paymentMethod" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
+        <option value="cash">ക്യാഷ്</option>
+        <option value="gpay">GPay</option>
+    </select>
+</div>
+<input type="number" id="amount" placeholder="തുക" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4 text-base">
+<button id="saveBtn" class="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold text-base hover:bg-emerald-700 transition">സേവ് ചെയ്യുക</button>
+      </div>
             
             <input type="number" id="amount" placeholder="തുക" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl mb-4 text-base">
             <button id="saveBtn" class="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold text-base hover:bg-emerald-700 transition">സേവ് ചെയ്യുക</button>
@@ -104,36 +108,45 @@
             document.getElementById('amount').value = '';
         };
 
-        onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
-            const list = document.getElementById('transactionList');
-            list.innerHTML = '';
-            let inc = 0, exp = 0;
-            snapshot.forEach(doc => {
-                const d = doc.data();
-                // snapshot.forEach ലൂപ്പിനുള്ളിൽ ഇത് ചേർക്കുക
-let categoryColor = "";
-if(d.type === 'income') categoryColor = "text-emerald-600";
-else if(d.type === 'wage') categoryColor = "text-blue-600";
-else if(d.type === 'material') categoryColor = "text-orange-600";
-else if(d.type === 'rent') categoryColor = "text-purple-600";
-else categoryColor = "text-red-600";
+     onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
+    const list = document.getElementById('transactionList');
+    list.innerHTML = '';
+    let inc = 0, exp = 0;
+    
+    snapshot.forEach(doc => {
+        const d = doc.data();
+        
+        // ഓരോ വിഭാഗത്തിനും ഓരോ നിറം
+        let categoryColor = "text-red-600"; // ഡിഫോൾട്ട് ചെലവ്
+        if(d.type === 'income') {
+            categoryColor = "text-emerald-600";
+            inc += parseFloat(d.amount);
+        } else {
+            exp += parseFloat(d.amount);
+        }
 
-// ലിസ്റ്റ് HTML-ൽ തുകയുടെ വരിയിൽ താഴെ പറയുന്ന പോലെ മാറ്റുക:
-// പഴയ ₹${d.amount} മാറ്റി പകരം ഇങ്ങനെ എഴുതുക:
-<p class="font-bold text-base ${categoryColor}">₹${d.amount}</p>
-
-                            <div class="flex gap-2 mt-1">
-                                <button onclick="window.edit('${doc.id}', '${d.name}', ${d.amount}, '${d.date}')" class="text-blue-600 text-xs font-bold">എഡിറ്റ്</button>
-                                <button onclick="window.del('${doc.id}')" class="text-red-600 text-xs font-bold">ഡിലീറ്റ്</button>
-                                <button onclick="window.shareWhatsApp('${d.name}', ${d.amount})" class="text-green-600 text-xs font-bold">WhatsApp</button>
-                            </div>
-                        </div>
-                    </div>`;
-            });
-            document.getElementById('totalIncome').innerText = "₹" + inc;
-            document.getElementById('totalExpense').innerText = "₹" + exp;
-            document.getElementById('netBalance').innerText = "₹" + (inc - exp);
-        });
+        list.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 border border-slate-100 flex justify-between items-center">
+                <div>
+                    <p class="font-bold text-base text-slate-800">${d.name}</p>
+                    <p class="text-xs text-slate-500">${d.date || ''} • ${d.site} • <span class="capitalize font-bold">${d.type}</span></p>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold text-base ${categoryColor}">₹${d.amount}</p>
+                    <div class="flex gap-2 mt-1">
+                        <button onclick="window.edit('${doc.id}', '${d.name}', ${d.amount}, '${d.date}')" class="text-blue-600 text-xs font-bold">എഡിറ്റ്</button>
+                        <button onclick="window.del('${doc.id}')" class="text-red-600 text-xs font-bold">ഡിലീറ്റ്</button>
+                    </div>
+                </div>
+            </div>`;
+    });
+    
+    // ഡാഷ്ബോർഡ് അപ്ഡേറ്റ്
+    document.getElementById('totalIncome').innerText = "₹" + inc;
+    document.getElementById('totalExpense').innerText = "₹" + exp;
+    document.getElementById('netBalance').innerText = "₹" + (inc - exp);
+});
+            
 
         window.edit = (id, name, amt, date) => {
             editId = id;
