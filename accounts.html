@@ -1,133 +1,94 @@
-<!DOCTYPE html>
-<html lang="ml">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>കണക്ക് മാനേജർ</title>
-    
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-100 p-2">
-    <!-- ഇവിടെ w-full ആണ് കൊടുത്തിരിക്കുന്നത്, അത് സ്ക്രീനിൽ നിറഞ്ഞു നിൽക്കും -->
-    <div class="w-full">
-        <h1 class="text-2xl font-bold text-center mb-4">കണക്ക് മാനേജർ പ്രോ</h1>
-
-        <!-- ഡാഷ്ബോർഡ് -->
-        <div class="bg-white p-3 rounded-xl shadow mb-4">
-            <div class="grid grid-cols-2 gap-2 mb-2">
-                <div class="bg-emerald-600 text-white p-3 rounded-lg text-center">
-                    <p class="text-[10px]">വരവ്</p>
-                    <h2 id="totalIncome" class="text-lg font-bold">₹0</h2>
-                </div>
-                <div class="bg-red-600 text-white p-3 rounded-lg text-center">
-                    <p class="text-[10px]">ചെലവ്</p>
-                    <h2 id="totalExpense" class="text-lg font-bold">₹0</h2>
-                </div>
-            </div>
-            <div class="bg-slate-800 text-white p-3 rounded-lg text-center">
-                <p class="text-[10px]">ബാക്കി</p>
-                <h2 id="netBalance" class="text-xl font-bold">₹0</h2>
-            </div>
-        </div>
-
-       <!-- ഫോം ഭാഗം -->
-<div class="bg-white p-4 rounded-xl shadow-lg mb-4">
-    <h2 class="text-lg font-bold mb-3">പുതിയ കണക്ക് ചേർക്കുക</h2>
-    
-    <!-- തീയതി -->
-    <input type="date" id="transDate" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-    
-    <!-- വിവരങ്ങൾ -->
-    <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-    <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-    
-    <!-- ടൈപ്പ് -->
-    <select id="type" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-        <option value="income">വരവ്</option>
-        <option value="expense">ചെലവ്</option>
-    </select>
-
-    <!-- പെയ്മെന്റ് രീതി -->
-    <select id="paymentMethod" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-        <option value="cash">ക്യാഷ് (Cash)</option>
-        <option value="gpay">ഗൂഗിൾ പേ (GPay)</option>
-        <option value="bank">ബാങ്ക് ട്രാൻസ്ഫർ</option>
-        <option value="upi">മറ്റ് UPI ആപ്പുകൾ</option>
-    </select>
-
-    <input type="text" id="desc" placeholder="വിവരണം" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-    <input type="number" id="amount" placeholder="തുക" class="w-full p-2 bg-slate-50 border rounded-lg mb-2 text-sm">
-    
-    <button id="saveBtn" class="w-full bg-emerald-700 text-white p-3 rounded-lg font-bold">സേവ് ചെയ്യുക</button>
-</div>
-<!-- സെർച്ച് ബോക്സ് -->
-<div class="mt-6 mb-4">
-    <input type="text" id="searchInput" placeholder="പേര് വെച്ച് തിരയുക..." class="w-full p-3 border rounded-lg">
-</div>
-
-<!-- കണക്കുകൾ കാണാനുള്ള ലിസ്റ്റ് -->
-<div id="transactionList" class="space-y-3">
-    <!-- ഡാറ്റ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
-</div>
-        
 <script type="module">
-     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-    authDomain: "mesthri-app.firebaseapp.com",
-    projectId: "mesthri-app",
-    storageBucket: "mesthri-app.appspot.com",
-    messagingSenderId: "1060617901864",
-    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.appspot.com",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+    };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-async function updateDashboard() {
-    try {
+    let editId = null;
 
-    let editId = null; // എഡിറ്റ് ചെയ്യാൻ വേണ്ടി
-
-    // സേവ് / അപ്ഡേറ്റ് ലോജിക്
+    // സേവ് / അപ്ഡേറ്റ് ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
     document.getElementById('saveBtn').addEventListener('click', async () => {
         const data = {
             name: document.getElementById('ownerName').value,
             site: document.getElementById('siteName').value,
             type: document.getElementById('type').value,
             payment: document.getElementById('paymentMethod').value,
-            amount: parseFloat(document.getElementById('amount').value) || 0
+            desc: document.getElementById('desc').value,
+            amount: parseFloat(document.getElementById('amount').value) || 0,
+            date: document.getElementById('transDate').value || new Date().toISOString().split('T')[0]
         };
 
+        if (!data.name || data.amount === 0) { alert("പേരും തുകയും നൽകുക!"); return; }
+
         if (editId) {
-            await updateDoc(doc(db, "", editId), data);
+            await updateDoc(doc(db, "accounts", editId), data);
             alert("അപ്ഡേറ്റ് ചെയ്തു!");
             editId = null;
+            document.getElementById('saveBtn').innerText = "സേവ് ചെയ്യുക";
         } else {
-            await addDoc(collection(db, "accounts"), { ...data, createdAt: new Date() });
+            await addDoc(collection(db, "accounts"), data);
             alert("സേവ് ചെയ്തു!");
         }
+        // ഫോം ക്ലിയർ ചെയ്യുക
+        document.getElementById('ownerName').value = '';
+        document.getElementById('amount').value = '';
     });
 
-    // ലിസ്റ്റ് ചെയ്യുന്ന ഭാഗത്ത് എഡിറ്റ് ബട്ടൺ കൂടി ചേർക്കാം
-    onSnapshot(collection(db, "accounts"), (snapshot) => {
-        // ... (നേരത്തെ പോലെ ലൂപ്പ് ചെയ്ത് ലിസ്റ്റ് ചെയ്യുക)
-        // എഡിറ്റ് ബട്ടൺ ഇങ്ങനെ ചേർക്കുക:
-        // <button onclick="editItem('${doc.id}', '${data.name}', ${data.amount})" class="text-blue-500 text-[10px] mr-2">എഡിറ്റ്</button>
+    // ഡാറ്റ ലോഡ് ചെയ്യുക
+    const q = query(collection(db, "accounts"), orderBy("date", "desc"));
+    onSnapshot(q, (snapshot) => {
+        let income = 0, expense = 0;
+        const listContainer = document.getElementById('transactionList');
+        listContainer.innerHTML = '';
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.type === 'income') income += data.amount;
+            else expense += data.amount;
+
+            const div = document.createElement('div');
+            div.className = "bg-white p-3 rounded-lg shadow flex justify-between items-center";
+            div.innerHTML = `
+                <div>
+                    <p class="font-bold text-sm">${data.name}</p>
+                    <p class="text-[10px] text-gray-500">${data.site} | ${data.payment}</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold ${data.type === 'income' ? 'text-emerald-600' : 'text-red-600'}">₹${data.amount}</p>
+                    <button onclick="editItem('${doc.id}', '${data.name}', ${data.amount}, '${data.site}')" class="text-blue-500 text-[10px] mr-2">എഡിറ്റ്</button>
+                    <button onclick="deleteItem('${doc.id}')" class="text-red-500 text-[10px]">❌</button>
+                </div>
+            `;
+            listContainer.appendChild(div);
+        });
+
+        document.getElementById('totalIncome').innerText = `₹${income}`;
+        document.getElementById('totalExpense').innerText = `₹${expense}`;
+        document.getElementById('netBalance').innerText = `₹${income - expense}`;
     });
 
     // എഡിറ്റ് ഫങ്ക്ഷൻ
-    window.editItem = (id, name, amount) => {
+    window.editItem = (id, name, amount, site) => {
         editId = id;
         document.getElementById('ownerName').value = name;
         document.getElementById('amount').value = amount;
+        document.getElementById('siteName').value = site;
+        document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
+        window.scrollTo(0, 300);
+    };
+
+    // ഡിലീറ്റ് ഫങ്ക്ഷൻ
+    window.deleteItem = async (id) => {
+        if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "accounts", id));
     };
 </script>
-
-
-    
-</body>
-</html>
