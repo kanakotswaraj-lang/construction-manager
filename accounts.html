@@ -92,17 +92,17 @@
         };
 
         if (editId) {
-            await updateDoc(doc(db, "transactions", editId), data);
+            await updateDoc(doc(db, "", editId), data);
             alert("അപ്ഡേറ്റ് ചെയ്തു!");
             editId = null;
         } else {
-            await addDoc(collection(db, "transactions"), { ...data, createdAt: new Date() });
+            await addDoc(collection(db, "accounts"), { ...data, createdAt: new Date() });
             alert("സേവ് ചെയ്തു!");
         }
     });
 
     // ലിസ്റ്റ് ചെയ്യുന്ന ഭാഗത്ത് എഡിറ്റ് ബട്ടൺ കൂടി ചേർക്കാം
-    onSnapshot(collection(db, "transactions"), (snapshot) => {
+    onSnapshot(collection(db, "accounts"), (snapshot) => {
         // ... (നേരത്തെ പോലെ ലൂപ്പ് ചെയ്ത് ലിസ്റ്റ് ചെയ്യുക)
         // എഡിറ്റ് ബട്ടൺ ഇങ്ങനെ ചേർക്കുക:
         // <button onclick="editItem('${doc.id}', '${data.name}', ${data.amount})" class="text-blue-500 text-[10px] mr-2">എഡിറ്റ്</button>
