@@ -8,65 +8,98 @@
 </head>
 <body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <a href="dashboard.html" class="text-sm font-bold text-slate-500 mb-4 block">← തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
+        <a href="index.html" class="text-sm font-bold text-slate-500 mb-4 block">← തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
         
         <h1 class="text-2xl font-black text-slate-800 mb-6">വാടക ഉപകരണങ്ങൾ</h1>
         
         <!-- വാടക ചേർക്കാനുള്ള ഫോം -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-8 space-y-3">
-            <input type="text" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-            <input type="text" placeholder="കടയുടെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-            <input type="tel" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+            <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+            <input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+            <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="text-[10px] font-black text-slate-500 ml-1">എടുത്ത തീയതി</label>
-                    <input type="date" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+                    <input type="date" id="startDate" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
                 </div>
                 <div class="space-y-1">
                     <label class="text-[10px] font-black text-slate-500 ml-1">തിരികെ നൽകേണ്ടത്</label>
-                    <input type="date" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+                    <input type="date" id="endDate" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
                 </div>
             </div>
             
-            <input type="number" placeholder="ദിവസ വാടക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-            <button class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
+            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold mb-2">
+            <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+            <button id="saveRentBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
-        <!-- വാടക ലിസ്റ്റ് ഹിസ്റ്ററി -->
-        <section class="space-y-4">
+        <section id="rentList" class="space-y-4">
             <h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>
-            
-            <div class="bg-white p-5 rounded-2xl border shadow-sm">
-                <div class="flex justify-between items-start mb-3">
-                    <div>
-                        <p class="font-black text-slate-800 text-lg">മിക്സർ മെഷീൻ</p>
-                        <p class="text-[12px] text-slate-500 font-bold">കട: ABCD റെന്റൽസ്</p>
-                        <a href="tel:9876543210" class="text-[12px] text-blue-600 font-black underline">📞 9876543210</a>
-                    </div>
-                    <span class="bg-red-50 text-red-600 px-2 py-1 rounded-lg font-black text-[10px]">ഇന്ന് നൽകണം</span>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 mb-4">
-                    <div class="bg-slate-50 p-2 rounded-xl text-center">
-                        <p class="text-[9px] text-slate-400 font-black uppercase">എടുത്ത തീയതി</p>
-                        <p class="text-xs font-black text-slate-800">18-07-2026</p>
-                    </div>
-                    <div class="bg-slate-50 p-2 rounded-xl text-center">
-                        <p class="text-[9px] text-slate-400 font-black uppercase">തിരികെ നൽകേണ്ടത്</p>
-                        <p class="text-xs font-black text-slate-800">20-07-2026</p>
-                    </div>
-                </div>
-
-                <div class="border-t pt-3 flex justify-between items-center">
-                    <div>
-                        <p class="text-[10px] text-slate-500 font-bold">ആകെ വാടക: ₹1500</p>
-                        <p class="text-[10px] text-emerald-600 font-black">നൽകിയത്: ₹500 | ബാലൻസ്: ₹1000</p>
-                    </div>
-                    <button class="bg-slate-900 text-white px-4 py-2 rounded-xl font-black text-xs">പേയ്മെന്റ്</button>
-                </div>
-            </div>
         </section>
     </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.appspot.com",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // ഡാറ്റ സേവ് ചെയ്യാൻ
+        document.getElementById('saveRentBtn').addEventListener('click', async () => {
+            await addDoc(collection(db, "rentals"), {
+                item: document.getElementById('itemName').value,
+                shop: document.getElementById('shopName').value,
+                phone: document.getElementById('shopPhone').value,
+                start: document.getElementById('startDate').value,
+                end: document.getElementById('endDate').value,
+                total: parseFloat(document.getElementById('totalRent').value),
+                paid: parseFloat(document.getElementById('paidRent').value)
+            });
+            alert("സേവ് ചെയ്തു!");
+        });
+
+        // ഡാറ്റ കാണിക്കാൻ
+        onSnapshot(collection(db, "rentals"), (snapshot) => {
+            const list = document.getElementById('rentList');
+            list.innerHTML = '<h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>';
+            snapshot.forEach((d) => {
+                const r = d.data();
+                const bal = r.total - r.paid;
+                const div = document.createElement('div');
+                div.className = "bg-white p-5 rounded-2xl border shadow-sm";
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <p class="font-black text-slate-800 text-lg">${r.item}</p>
+                            <p class="text-[12px] text-slate-500 font-bold">കട: ${r.shop}</p>
+                            <a href="tel:${r.phone}" class="text-[12px] text-blue-600 font-black underline">📞 ${r.phone}</a>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mb-4">
+                        <div class="bg-slate-50 p-2 rounded-xl text-center"><p class="text-[9px] text-slate-400 font-black uppercase">എടുത്ത തീയതി</p><p class="text-xs font-black">${r.start}</p></div>
+                        <div class="bg-slate-50 p-2 rounded-xl text-center"><p class="text-[9px] text-slate-400 font-black uppercase">തിരികെ നൽകേണ്ടത്</p><p class="text-xs font-black">${r.end}</p></div>
+                    </div>
+                    <div class="border-t pt-3 flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] text-slate-500 font-bold">ആകെ വാടക: ₹${r.total}</p>
+                            <p class="text-[10px] text-emerald-600 font-black">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        });
+    </script>
 </body>
 </html>
