@@ -42,7 +42,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -55,6 +55,17 @@
         
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // പെയ്മെന്റ് അപ്ഡേറ്റ് ഫംഗ്ഷൻ
+        window.editRent = async (id, currentPaid) => {
+            const extraPaid = prompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?");
+            if(extraPaid) {
+                const newTotalPaid = parseFloat(currentPaid) + parseFloat(extraPaid);
+                await updateDoc(doc(db, "rentals", id), {
+                    paid: newTotalPaid
+                });
+            }
+        };
 
         document.getElementById('saveRentBtn').addEventListener('click', async () => {
             await addDoc(collection(db, "rentals"), {
@@ -70,46 +81,33 @@
             alert("വിവരങ്ങൾ സേവ് ആയി!");
         });
 
-    
-
-    onSnapshot(collection(db, "rentals"), (snapshot) => {
-        const list = document.getElementById('rentList');
-        list.innerHTML = '<h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>';
-        
-        const today = new Date().toISOString().split('T')[0]; // ഇന്നത്തെ തീയതി
-
-        snapshot.forEach((d) => {
-            const r = d.data();
-            const bal = r.total - r.paid;
-            const isOverdue = r.end < today && bal > 0;
-            
-            const div = document.createElement('div');
-            // കളർഫുൾ ബോർഡർ ലോജിക്
-            div.className = `bg-white p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-sm mb-4`;
-            
-            div.innerHTML = `
-                <div class="mb-3">
-                    <div class="flex justify-between">
+        onSnapshot(collection(db, "rentals"), (snapshot) => {
+            const list = document.getElementById('rentList');
+            list.innerHTML = '<h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>';
+            snapshot.forEach((d) => {
+                const r = d.data();
+                const bal = r.total - r.paid;
+                const div = document.createElement('div');
+                div.className = `bg-white p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-sm mb-4`;
+                
+                div.innerHTML = `
+                    <div class="mb-3">
                         <p class="font-black text-slate-800 text-lg">${r.item}</p>
-                        ${isOverdue ? '<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-black">വൈകി!</span>' : ''}
+                        <p class="text-xs text-slate-500 font-bold">കട: ${r.shop} | 📞 ${r.phone}</p>
+                        <p class="text-xs text-blue-600 font-black">വാടക/എണ്ണം: ₹${r.unitRent || 0}</p>
                     </div>
-                    <p class="text-xs text-slate-500 font-bold">കട: ${r.shop} | 📞 ${r.phone}</p>
-                    <p class="text-xs text-blue-600 font-black">വാടക/എണ്ണം: ₹${r.unitRent}</p>
-                </div>
-                <div class="grid grid-cols-2 gap-2 mb-3">
-                    <div class="bg-slate-50 p-2 rounded-xl text-center"><p class="text-[9px] text-slate-400 font-black uppercase">തുടക്കം</p><p class="text-xs font-black">${r.start}</p></div>
-                    <div class="bg-slate-50 p-2 rounded-xl text-center"><p class="text-[9px] text-slate-400 font-black uppercase">അവസാനം</p><p class="text-xs font-black ${isOverdue ? 'text-red-600' : ''}">${r.end}</p></div>
-                </div>
-                <div class="border-t pt-2 flex justify-between">
-                    <p class="text-xs font-black text-slate-700">ആകെ: ₹${r.total} | നൽകിയത്: ₹${r.paid}</p>
-                    <p class="text-xs font-black ${bal > 0 ? 'text-red-600' : 'text-green-600'}">ബാലൻസ്: ₹${bal}</p>
-                </div>
-            `;
-            list.appendChild(div);
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <div class="bg-slate-50 p-2 rounded-xl text-center"><p class="text-[9px] text-slate-400 font-black uppercase">തുടക്കം</p><p class="text-xs font-black">${r.start}</p></div>
+                        <div class="bg-slate-50 p-2 rounded-xl text-center"><p class="text-[9px] text-slate-400 font-black uppercase">അവസാനം</p><p class="text-xs font-black">${r.end}</p></div>
+                    </div>
+                    <div class="border-t pt-2 flex justify-between items-center">
+                        <p class="text-xs font-black text-slate-700">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
+                        <button onclick="editRent('${d.id}', ${r.paid})" class="bg-slate-900 text-white px-3 py-1 rounded-lg text-[10px] font-black">പെയ്മെന്റ്</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
         });
-    });
-</script>
-
     </script>
 </body>
 </html>
