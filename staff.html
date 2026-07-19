@@ -62,36 +62,43 @@ const firebaseConfig = {
             });
         });
 
-        onSnapshot(collection(db, "staffs"), (snapshot) => {
-            const list = document.getElementById('staffList');
-            list.innerHTML = '';
-            snapshot.forEach((d) => {
-                const s = d.data();
-                const div = document.createElement('div');
-                div.className = "bg-white p-4 rounded-2xl border shadow-sm";
-                div.innerHTML = `
-                    <div class="flex justify-between items-center mb-3">
-                        <div><h3 class="font-bold text-lg">${s.name}</h3><p class="text-xs text-slate-500">${s.site} | ₹${s.wage}/ദിവസം</p></div>
-                        <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button id="edit-${d.id}" class="bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit</button>
-                        <button id="hist-${d.id}" class="bg-slate-100 p-2 rounded-lg text-xs font-bold text-slate-700">History</button>
-                        <a href="https://wa.me/${s.phone}" class="bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
-                        <button id="pay-${d.id}" class="bg-blue-100 text-blue-700 p-2 rounded-lg text-xs font-bold col-span-2">Payment Details</button>
-                    </div>
-                `;
-                list.appendChild(div);
+        // സ്റ്റാഫ് ലിസ്റ്റ് കാണിക്കുന്ന ഭാഗം
+onSnapshot(collection(db, "staffs"), (snapshot) => {
+    const list = document.getElementById('staffList');
+    list.innerHTML = '';
+    snapshot.forEach((d) => {
+        const s = d.data();
+        const div = document.createElement('div');
+        div.className = "bg-white p-4 rounded-2xl border shadow-sm";
+        div.innerHTML = `
+            <div class="flex justify-between items-center mb-3">
+                <div>
+                    <h3 class="font-bold text-lg">${s.name}</h3>
+                    <p class="text-xs text-slate-500">${s.site} | ₹${s.wage}/ദിവസം</p>
+                </div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl mb-3">
+                <input type="text" id="site-${d.id}" placeholder="സൈറ്റ്" class="w-full p-2 border rounded mb-1 text-sm">
+                <label class="flex items-center gap-2 mb-1 text-sm">
+                    <input type="checkbox" id="attend-${d.id}" checked> ഹാജർ
+                </label>
+                <input type="number" id="pay-${d.id}" placeholder="ഇന്നത്തെ പെയ്‌മെന്റ്" class="w-full p-2 border rounded text-sm">
+                <button id="save-${d.id}" class="w-full bg-blue-600 text-white mt-2 p-2 rounded-lg text-xs font-bold">വിവരങ്ങൾ അപ്‌ഡേറ്റ് ചെയ്യുക</button>
+            </div>
+        `;
+        list.appendChild(div);
 
-                document.getElementById(`del-${d.id}`).onclick = () => deleteDoc(doc(db, 'staffs', d.id));
-                document.getElementById(`edit-${d.id}`).onclick = () => {
-                    const newWage = prompt("പുതിയ കൂലി നൽകുക:", s.wage);
-                    if(newWage) updateDoc(doc(db, 'staffs', d.id), { wage: newWage });
-                };
-                document.getElementById(`pay-${d.id}`).onclick = () => alert("ജോലി: " + (s.job || "വിവരമില്ല") + "\nബാങ്ക്/GPay: " + (s.bank || "വിവരമില്ല"));
-                document.getElementById(`hist-${d.id}`).onclick = () => alert(s.name + "-ന്റെ ഹിസ്റ്ററി ഉടൻ വരുന്നു!");
-            });
-        });
+        // സേവ് ചെയ്യുമ്പോൾ വരുന്ന വിവരങ്ങൾ
+        document.getElementById(`save-${d.id}`).onclick = async () => {
+            const site = document.getElementById(`site-${d.id}`).value;
+            const attended = document.getElementById(`attend-${d.id}`).checked;
+            const payment = document.getElementById(`pay-${d.id}`).value;
+            
+            alert(`${s.name} - സൈറ്റ്: ${site}, ഹാജർ: ${attended ? 'ഉണ്ട്' : 'ഇല്ല'}, പെയ്‌മെന്റ്: ₹${payment} എന്ന് സേവ് ചെയ്തു.`);
+        };
+    });
+});
+
     </script>
 </body>
 </html>
