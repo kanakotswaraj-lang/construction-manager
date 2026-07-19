@@ -65,49 +65,71 @@
                 div.style.display = div.innerText.toLowerCase().includes(val) ? '' : 'none';
             });
         });
+// സ്റ്റാഫ് ലിസ്റ്റ് റെൻഡർ ചെയ്യുന്ന ഭാഗം
+onSnapshot(collection(db, "staffs"), (snapshot) => {
+    const list = document.getElementById('staffList');
+    list.innerHTML = '';
+    snapshot.forEach((d) => {
+        const s = d.data();
+        const div = document.createElement('div');
+        div.className = "bg-white p-4 rounded-2xl border shadow-sm";
+        // ഫോൺ നമ്പർ ക്ലീൻ ചെയ്യുന്നു
+        const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
+        
+        div.innerHTML = `
+            <div class="flex justify-between items-center mb-3">
+                <div><h3 class="font-bold text-lg">${s.name}</h3><p class="text-xs text-slate-500">${s.site || ''} | ₹${s.wage || 0}/ദിവസം</p></div>
+                <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl mb-3">
+                <input type="text" id="site-${d.id}" value="${s.lastSite || ''}" placeholder="സൈറ്റ്" class="w-full p-2 border rounded mb-1 text-sm">
+                <label class="flex items-center gap-2 mb-1 text-sm"><input type="checkbox" id="attend-${d.id}" ${s.lastAttendance ? 'checked' : ''}> ഹാജർ</label>
+                <input type="number" id="pay-${d.id}" value="${s.lastPayment || ''}" placeholder="ഇന്നത്തെ പെയ്‌മെന്റ്" class="w-full p-2 border rounded text-sm">
+                <button id="save-${d.id}" class="w-full bg-blue-600 text-white mt-2 p-2 rounded-lg text-xs font-bold">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
+            </div>
+            <div class="flex gap-2">
+                <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit Wage</button>
+                <a href="https://wa.me/${cleanPhone}" target="_blank" class="flex-1 bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
+            </div>
+        `;
+        list.appendChild(div);
 
-        // ലിസ്റ്റ് അപ്‌ഡേറ്റ് ചെയ്യുന്ന ഭാഗം
-        onSnapshot(collection(db, "staffs"), (snapshot) => {
-            const list = document.getElementById('staffList');
-            list.innerHTML = '';
-            snapshot.forEach((d) => {
-                const s = d.data();
-                const div = document.createElement('div');
-                div.className = "bg-white p-4 rounded-2xl border shadow-sm";
-                div.innerHTML = `
-                    <div class="flex justify-between items-center mb-3">
-                        <div><h3 class="font-bold text-lg">${s.name}</h3><p class="text-xs text-slate-500">${s.site || ''} | ₹${s.wage || 0}/ദിവസം</p></div>
-                        <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
-                    </div>
-                    <div class="p-3 bg-slate-50 rounded-xl mb-3">
-                        <input type="text" id="site-${d.id}" value="${s.lastSite || ''}" placeholder="സൈറ്റ്" class="w-full p-2 border rounded mb-1 text-sm">
-                        <label class="flex items-center gap-2 mb-1 text-sm"><input type="checkbox" id="attend-${d.id}" ${s.lastAttendance ? 'checked' : ''}> ഹാജർ</label>
-                        <input type="number" id="pay-${d.id}" value="${s.lastPayment || ''}" placeholder="ഇന്നത്തെ പെയ്‌മെന്റ്" class="w-full p-2 border rounded text-sm">
-                        <button id="save-${d.id}" class="w-full bg-blue-600 text-white mt-2 p-2 rounded-lg text-xs font-bold">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
-                    </div>
-                    <div class="flex gap-2">
-                        <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit Wage</button>
-                        
-                `;<!-- ഈ രീതിയിൽ ഒന്ന് മാറ്റി നോക്കുക -->
-<a href="https://wa.me/${s.phone.replace(/\s+/g, '')}" target="_blank" class="flex-1 bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
+        // സേവ് ഫങ്ഷൻ
+        document.getElementById(`save-${d.id}`).onclick = async () => {
+            try {
+                await updateDoc(doc(db, 'staffs', d.id), {
+                    lastSite: document.getElementById(`site-${d.id}`).value,
+                    lastAttendance: document.getElementById(`attend-${d.id}`).checked,
+                    lastPayment: document.getElementById(`pay-${d.id}`).value
+                });
+                alert("അപ്‌ഡേറ്റ് ചെയ്തു!");
+            } catch (e) {
+                alert("സേവ് ആയില്ല, വീണ്ടും ശ്രമിക്കുക.");
+            }
+        };
 
-                list.appendChild(div);
+        // ഡിലീറ്റ് ഫങ്ഷൻ
+        document.getElementById(`del-${d.id}`).onclick = () => deleteDoc(doc(db, 'staffs', d.id));
 
-                document.getElementById(`save-${d.id}`).onclick = async () => {
-                    await updateDoc(doc(db, 'staffs', d.id), {
-                        lastSite: document.getElementById(`site-${d.id}`).value,
-                        lastAttendance: document.getElementById(`attend-${d.id}`).checked,
-                        lastPayment: document.getElementById(`pay-${d.id}`).value
-                    });
-                    alert("അപ്‌ഡേറ്റ് ചെയ്തു!");
-                };
-                document.getElementById(`del-${d.id}`).onclick = () => deleteDoc(doc(db, 'staffs', d.id));
-                document.getElementById(`edit-${d.id}`).onclick = () => {
-                    const newWage = prompt("പുതിയ കൂലി:", s.wage);
-                    if(newWage) updateDoc(doc(db, 'staffs', d.id), { wage: newWage });
-                };
-            });
-        });
+        // കൂലി എഡിറ്റ് ഫങ്ഷൻ
+        document.getElementById(`edit-${d.id}`).onclick = () => {
+            // 'Edit Name & Wage' എന്ന പേരിൽ പുതിയ ബട്ടൺ വരും
+<button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit Name & Wage</button>
+
+// ഇതിന്റെ ഫങ്ഷൻ ഇങ്ങനെ മാറ്റി എഴുതുക
+document.getElementById(`edit-${d.id}`).onclick = () => {
+    const newName = prompt("പേര് മാറ്റുക:", s.name);
+    if (newName === null) return; // ക്യാൻസൽ ചെയ്താൽ ഒന്നും ചെയ്യില്ല
+    
+    const newWage = prompt("പുതിയ കൂലി നൽകുക:", s.wage);
+    if (newWage === null) return;
+
+    updateDoc(doc(db, 'staffs', d.id), { 
+        name: newName,
+        wage: newWage 
+    });
+};
+
     </script>
 </body>
 </html>
