@@ -1,6 +1,6 @@
 const CACHE_NAME = 'mesthri-cache-v1';
 const urlsToCache = [
-  'accounts.html',
+  'dashboard.html',
   'manifest.json'
 ];
 
