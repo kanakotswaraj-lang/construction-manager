@@ -87,9 +87,10 @@
                     </div>
                     <div class="flex gap-2">
                         <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit Wage</button>
-                        <a href="https://wa.me/${s.phone}" class="flex-1 bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
-                    </div>
-                `;
+                        
+                `;<!-- ഈ രീതിയിൽ ഒന്ന് മാറ്റി നോക്കുക -->
+<a href="https://wa.me/${s.phone.replace(/\s+/g, '')}" target="_blank" class="flex-1 bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
+
                 list.appendChild(div);
 
                 document.getElementById(`save-${d.id}`).onclick = async () => {
