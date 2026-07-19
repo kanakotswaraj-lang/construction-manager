@@ -71,9 +71,10 @@
     <!-- ഡാറ്റ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
 </div>
         
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -90,51 +91,64 @@
     // 1. സേവ് ചെയ്യുന്ന ലോജിക്
     document.getElementById('saveBtn').addEventListener('click', async () => {
         const data = {
-            date: document.getElementById('transDate').value || new Date().toISOString().split('T')[0],
             name: document.getElementById('ownerName').value,
             site: document.getElementById('siteName').value,
             type: document.getElementById('type').value,
             payment: document.getElementById('paymentMethod').value,
             desc: document.getElementById('desc').value,
-            amount: parseFloat(document.getElementById('amount').value),
+            amount: parseFloat(document.getElementById('amount').value) || 0,
             createdAt: new Date()
         };
 
-        if (!data.name || !data.amount) {
-            alert("പേരും തുകയും നൽകുക!");
+        if (!data.name || data.amount === 0) {
+            alert("പേരും തുകയും നിർബന്ധമാണ്!");
             return;
         }
 
         try {
             await addDoc(collection(db, "transactions"), data);
-            alert("വിവരങ്ങൾ സേവ് ചെയ്തു!");
+            alert("സേവ് ചെയ്തു!");
+            // ബോക്സുകൾ ക്ലിയർ ചെയ്യാൻ
+            document.getElementById('ownerName').value = '';
+            document.getElementById('amount').value = '';
         } catch (e) {
-            alert("സേവ് ആയില്ല!");
+            alert("എറർ: സേവ് ആയില്ല!");
         }
     });
 
-    // 2. ഡാറ്റ ലിസ്റ്റ് ചെയ്യുകയും ടോട്ടൽ കാണിക്കുകയും ചെയ്യുന്ന ലോജിക്
-    const listContainer = document.getElementById('transactionList');
-    
+    // 2. ലിസ്റ്റ് ചെയ്യുകയും ഡിലീറ്റ് ചെയ്യുകയും ചെയ്യുന്ന ലോജിക്
+    window.deleteItem = async (id) => {
+        if(confirm("ഈ കണക്ക് ഡിലീറ്റ് ചെയ്യണോ?")) {
+            await deleteDoc(doc(db, "transactions", id));
+        }
+    };
+
     onSnapshot(collection(db, "transactions"), (snapshot) => {
         let income = 0;
         let expense = 0;
+        const listContainer = document.getElementById('transactionList');
         listContainer.innerHTML = '';
 
         snapshot.forEach((doc) => {
             const data = doc.data();
+            // 'undefined' വരാതിരിക്കാൻ ഡിഫോൾട്ട് വാല്യൂ
+            const name = data.name || "പേരില്ല";
+            const site = data.site || "സ്ഥലമില്ല";
+            const payment = data.payment || "Cash";
+            
             if (data.type === 'income') income += data.amount;
             else expense += data.amount;
 
             const div = document.createElement('div');
-            div.className = "bg-white p-3 rounded-lg shadow flex justify-between items-center";
+            div.className = "bg-white p-3 rounded-lg shadow flex justify-between items-center mb-2";
             div.innerHTML = `
                 <div>
-                    <p class="font-bold">${data.name}</p>
-                    <p class="text-xs text-gray-500">${data.site} | ${data.payment}</p>
+                    <p class="font-bold text-sm">${name}</p>
+                    <p class="text-[10px] text-gray-500">${site} | ${payment}</p>
                 </div>
                 <div class="text-right">
                     <p class="font-bold ${data.type === 'income' ? 'text-emerald-600' : 'text-red-600'}">₹${data.amount}</p>
+                    <button onclick="deleteItem('${doc.id}')" class="text-red-500 text-[10px]">ഡിലീറ്റ്</button>
                 </div>
             `;
             listContainer.appendChild(div);
