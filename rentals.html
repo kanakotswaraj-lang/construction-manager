@@ -14,6 +14,7 @@
         
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-8 space-y-4">
             <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold"> <!-- പുതിയ കള്ളി -->
             <input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             
@@ -56,36 +57,40 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ഓട്ടോമാറ്റിക് കണക്കുകൂട്ടൽ
+        // ഓട്ടോമാറ്റിക് കാൽക്കുലേഷൻ
         function calculateTotal() {
             const start = new Date(document.getElementById('startDate').value);
             const end = new Date(document.getElementById('endDate').value);
             const unitRent = parseFloat(document.getElementById('unitRent').value) || 0;
+            const qty = parseFloat(document.getElementById('itemQty').value) || 1;
             if (start && end && end >= start) {
                 const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
-                document.getElementById('totalRent').value = diffDays * unitRent;
+                document.getElementById('totalRent').value = diffDays * unitRent * qty;
             }
         }
-        document.getElementById('unitRent').addEventListener('input', calculateTotal);
-        document.getElementById('startDate').addEventListener('input', calculateTotal);
-        document.getElementById('endDate').addEventListener('input', calculateTotal);
+        document.querySelectorAll('input').forEach(input => input.addEventListener('input', calculateTotal));
 
-        window.editRent = async (id, currentPaid) => {
-            const extraPaid = prompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?");
-            if(extraPaid) {
-                await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
+        window.editDetails = async (id, r) => {
+            const newName = prompt("പുതിയ പേര്:", r.item);
+            const newQty = prompt("പുതിയ എണ്ണം:", r.qty);
+            if(newName) {
+                await updateDoc(doc(db, "rentals", id), { item: newName, qty: newQty });
             }
         };
 
+        window.editRent = async (id, currentPaid) => {
+            const extraPaid = prompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?");
+            if(extraPaid) await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
+        };
+
         window.deleteRent = async (id) => {
-            if(confirm("ഈ എൻട്രി ഡിലീറ്റ് ചെയ്യണോ?")) {
-                await deleteDoc(doc(db, "rentals", id));
-            }
+            if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "rentals", id));
         };
 
         document.getElementById('saveRentBtn').addEventListener('click', async () => {
             await addDoc(collection(db, "rentals"), {
                 item: document.getElementById('itemName').value,
+                qty: document.getElementById('itemQty').value,
                 shop: document.getElementById('shopName').value,
                 phone: document.getElementById('shopPhone').value,
                 start: document.getElementById('startDate').value,
@@ -106,13 +111,14 @@
                 const div = document.createElement('div');
                 div.className = `bg-white p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-sm mb-4`;
                 div.innerHTML = `
-                    <p class="font-black text-slate-800 text-lg">${r.item}</p>
+                    <p class="font-black text-slate-800 text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
                     <p class="text-xs text-slate-500 font-bold mb-2">കട: ${r.shop} | 📞 ${r.phone}</p>
                     <div class="border-t pt-2 flex justify-between items-center">
                         <p class="text-xs font-black text-slate-700">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
-                        <div class="flex gap-2">
-                            <button onclick="editRent('${d.id}', ${r.paid})" class="bg-slate-900 text-white px-3 py-1 rounded-lg text-[10px] font-black">പെയ്മെന്റ്</button>
-                            <button onclick="deleteRent('${d.id}')" class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-[10px] font-black">ഡിലീറ്റ്</button>
+                        <div class="flex gap-1">
+                            <button onclick="editDetails('${d.id}', ${JSON.stringify(r).replace(/"/g, '&quot;')})" class="bg-blue-100 text-blue-600 px-2 py-1 rounded-lg text-[9px] font-black">എഡിറ്റ്</button>
+                            <button onclick="editRent('${d.id}', ${r.paid})" class="bg-slate-900 text-white px-2 py-1 rounded-lg text-[9px] font-black">പെയ്മെന്റ്</button>
+                            <button onclick="deleteRent('${d.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded-lg text-[9px] font-black">ഡിലീറ്റ്</button>
                         </div>
                     </div>
                 `;
