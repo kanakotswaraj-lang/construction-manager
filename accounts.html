@@ -1,56 +1,124 @@
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, addDoc, doc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>കണക്ക് മാനേജർ പ്രോ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 p-2">
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-        authDomain: "mesthri-app.firebaseapp.com",
-        projectId: "mesthri-app",
-        storageBucket: "mesthri-app.appspot.com",
-        messagingSenderId: "1060617901864",
-        appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-    };
+    <div class="w-full max-w-md mx-auto">
+        <h1 class="text-2xl font-bold text-center mb-4">കണക്ക് മാനേജർ പ്രോ</h1>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+        <!-- ഡാഷ്ബോർഡ് -->
+        <div class="bg-white p-3 rounded-xl shadow mb-4">
+            <div class="grid grid-cols-2 gap-2 mb-2">
+                <div class="bg-emerald-600 text-white p-3 rounded-lg text-center">
+                    <p class="text-[10px]">വരവ്</p>
+                    <h2 id="totalIncome" class="text-lg font-bold">₹0</h2>
+                </div>
+                <div class="bg-red-600 text-white p-3 rounded-lg text-center">
+                    <p class="text-[10px]">ചെലവ്</p>
+                    <h2 id="totalExpense" class="text-lg font-bold">₹0</h2>
+                </div>
+            </div>
+            <div class="bg-slate-800 text-white p-3 rounded-lg text-center">
+                <p class="text-[10px]">ബാക്കി</p>
+                <h2 id="netBalance" class="text-xl font-bold">₹0</h2>
+            </div>
+        </div>
 
-    // സേവ് ചെയ്യുമ്പോൾ
-    document.getElementById('saveBtn').onclick = async () => {
-        const name = document.getElementById('ownerName').value;
-        const amount = parseFloat(document.getElementById('amount').value);
-        if(!name || !amount) return alert("പേരും തുകയും വേണം!");
-        
-        await addDoc(collection(db, "accounts"), {
-            name: name,
-            site: document.getElementById('siteName').value,
-            type: document.getElementById('type').value,
-            payment: document.getElementById('paymentMethod').value,
-            amount: amount,
-            date: new Date().toISOString()
+        <!-- ഫോം -->
+        <div class="bg-white p-4 rounded-xl shadow-lg mb-4">
+            <h2 class="text-lg font-bold mb-3" id="formTitle">പുതിയ കണക്ക് ചേർക്കുക</h2>
+            <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
+            <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
+            <select id="type" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
+                <option value="income">വരവ്</option>
+                <option value="expense">ചെലവ്</option>
+            </select>
+            <select id="paymentMethod" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
+                <option value="cash">ക്യാഷ് (Cash)</option>
+                <option value="gpay">GPay</option>
+            </select>
+            <input type="number" id="amount" placeholder="തുക" class="w-full p-2 bg-slate-50 border rounded-lg mb-2">
+            <button id="saveBtn" class="w-full bg-emerald-700 text-white p-3 rounded-lg font-bold">സേവ് ചെയ്യുക</button>
+        </div>
+
+        <!-- ലിസ്റ്റ് -->
+        <div id="transactionList" class="space-y-3"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.appspot.com",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let editId = null;
+
+        // സേവ് / അപ്ഡേറ്റ് ഫങ്ക്ഷൻ
+        document.getElementById('saveBtn').onclick = async () => {
+            const data = {
+                name: document.getElementById('ownerName').value,
+                site: document.getElementById('siteName').value,
+                type: document.getElementById('type').value,
+                payment: document.getElementById('paymentMethod').value,
+                amount: parseFloat(document.getElementById('amount').value) || 0
+            };
+
+            if (editId) {
+                await updateDoc(doc(db, "accounts", editId), data);
+                editId = null;
+                document.getElementById('saveBtn').innerText = "സേവ് ചെയ്യുക";
+            } else {
+                await addDoc(collection(db, "accounts"), { ...data, date: new Date() });
+            }
+            document.getElementById('ownerName').value = '';
+            document.getElementById('amount').value = '';
+        };
+
+        // ലിസ്റ്റ് ചെയ്യൽ
+        onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
+            const list = document.getElementById('transactionList');
+            list.innerHTML = '';
+            let inc = 0, exp = 0;
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                if(d.type === 'income') inc += d.amount; else exp += d.amount;
+                list.innerHTML += `
+                    <div class="bg-white p-3 rounded-lg shadow flex justify-between">
+                        <div><b>${d.name}</b><br>${d.site}</div>
+                        <div class="text-right">₹${d.amount}<br>
+                            <button onclick="window.edit('${doc.id}', '${d.name}', ${d.amount})" class="text-blue-500 text-xs mr-2">എഡിറ്റ്</button>
+                            <button onclick="window.del('${doc.id}')" class="text-red-500 text-xs">ഡിലീറ്റ്</button>
+                        </div>
+                    </div>`;
+            });
+            document.getElementById('totalIncome').innerText = "₹" + inc;
+            document.getElementById('totalExpense').innerText = "₹" + exp;
+            document.getElementById('netBalance').innerText = "₹" + (inc - exp);
         });
-        alert("സേവ് ചെയ്തു!");
-    };
 
-    // ഡാറ്റ കാണിക്കുമ്പോൾ
-    onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
-        const list = document.getElementById('transactionList');
-        list.innerHTML = '';
-        let income = 0, expense = 0;
+        window.edit = (id, name, amt) => {
+            editId = id;
+            document.getElementById('ownerName').value = name;
+            document.getElementById('amount').value = amt;
+            document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
+        };
 
-        snapshot.forEach((doc) => {
-            const d = doc.data();
-            if(d.type === 'income') income += d.amount; else expense += d.amount;
-            
-            list.innerHTML += `
-                <div class="bg-white p-3 rounded-lg shadow mb-2 flex justify-between">
-                    <div><b>${d.name}</b><br><small>${d.site}</small></div>
-                    <div class="text-right">₹${d.amount}<br>
-                        <button onclick="deleteDoc(doc(db, 'accounts', '${doc.id}'))" class="text-red-500 text-xs">ഡിലീറ്റ്</button>
-                    </div>
-                </div>`;
-        });
-        document.getElementById('totalIncome').innerText = "₹" + income;
-        document.getElementById('totalExpense').innerText = "₹" + expense;
-        document.getElementById('netBalance').innerText = "₹" + (income - expense);
-    });
-</script>
+        window.del = async (id) => { if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "accounts", id)); };
+    </script>
+</body>
+</html>
