@@ -64,8 +64,8 @@
             document.querySelectorAll('#staffList > div').forEach(div => {
                 div.style.display = div.innerText.toLowerCase().includes(val) ? '' : 'none';
             });
-        });
-// സ്റ്റാഫ് ലിസ്റ്റ് റെൻഡർ ചെയ്യുന്ന ഭാഗം
+        
+// ലിസ്റ്റ് അപ്‌ഡേറ്റ് ചെയ്യുന്ന ഭാഗം
 onSnapshot(collection(db, "staffs"), (snapshot) => {
     const list = document.getElementById('staffList');
     list.innerHTML = '';
@@ -73,7 +73,6 @@ onSnapshot(collection(db, "staffs"), (snapshot) => {
         const s = d.data();
         const div = document.createElement('div');
         div.className = "bg-white p-4 rounded-2xl border shadow-sm";
-        // ഫോൺ നമ്പർ ക്ലീൻ ചെയ്യുന്നു
         const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
         
         div.innerHTML = `
@@ -88,7 +87,7 @@ onSnapshot(collection(db, "staffs"), (snapshot) => {
                 <button id="save-${d.id}" class="w-full bg-blue-600 text-white mt-2 p-2 rounded-lg text-xs font-bold">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
             </div>
             <div class="flex gap-2">
-                <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit Wage</button>
+                <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit Name & Wage</button>
                 <a href="https://wa.me/${cleanPhone}" target="_blank" class="flex-1 bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
             </div>
         `;
@@ -96,39 +95,27 @@ onSnapshot(collection(db, "staffs"), (snapshot) => {
 
         // സേവ് ഫങ്ഷൻ
         document.getElementById(`save-${d.id}`).onclick = async () => {
-            try {
-                await updateDoc(doc(db, 'staffs', d.id), {
-                    lastSite: document.getElementById(`site-${d.id}`).value,
-                    lastAttendance: document.getElementById(`attend-${d.id}`).checked,
-                    lastPayment: document.getElementById(`pay-${d.id}`).value
-                });
-                alert("അപ്‌ഡേറ്റ് ചെയ്തു!");
-            } catch (e) {
-                alert("സേവ് ആയില്ല, വീണ്ടും ശ്രമിക്കുക.");
-            }
+            await updateDoc(doc(db, 'staffs', d.id), {
+                lastSite: document.getElementById(`site-${d.id}`).value,
+                lastAttendance: document.getElementById(`attend-${d.id}`).checked,
+                lastPayment: document.getElementById(`pay-${d.id}`).value
+            });
+            alert("അപ്‌ഡേറ്റ് ചെയ്തു!");
         };
 
         // ഡിലീറ്റ് ഫങ്ഷൻ
         document.getElementById(`del-${d.id}`).onclick = () => deleteDoc(doc(db, 'staffs', d.id));
 
-        // കൂലി എഡിറ്റ് ഫങ്ഷൻ
+        // എഡിറ്റ് ഫങ്ഷൻ
         document.getElementById(`edit-${d.id}`).onclick = () => {
-            // 'Edit Name & Wage' എന്ന പേരിൽ പുതിയ ബട്ടൺ വരും
-<button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit Name & Wage</button>
-
-// ഇതിന്റെ ഫങ്ഷൻ ഇങ്ങനെ മാറ്റി എഴുതുക
-document.getElementById(`edit-${d.id}`).onclick = () => {
-    const newName = prompt("പേര് മാറ്റുക:", s.name);
-    if (newName === null) return; // ക്യാൻസൽ ചെയ്താൽ ഒന്നും ചെയ്യില്ല
-    
-    const newWage = prompt("പുതിയ കൂലി നൽകുക:", s.wage);
-    if (newWage === null) return;
-
-    updateDoc(doc(db, 'staffs', d.id), { 
-        name: newName,
-        wage: newWage 
+            const newName = prompt("പേര് മാറ്റുക:", s.name);
+            if (newName === null) return;
+            const newWage = prompt("പുതിയ കൂലി നൽകുക:", s.wage);
+            if (newWage === null) return;
+            updateDoc(doc(db, 'staffs', d.id), { name: newName, wage: newWage });
+        };
     });
-};
+});
 
     </script>
 </body>
