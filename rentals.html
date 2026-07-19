@@ -39,84 +39,86 @@
             <h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>
         </section>
     </div>
-<!-- ഈ സ്ക്രിപ്റ്റ് ഭാഗം പഴയതിന് പകരം ഉപയോഗിക്കുക -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-    
-    // ... (firebaseConfig അതേപടി നിലനിർത്തുക) ...
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.appspot.com",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    // ആകെ വാടക ഓട്ടോമാറ്റിക് ആക്കാൻ
-    function calculateTotal() {
-        const start = new Date(document.getElementById('startDate').value);
-        const end = new Date(document.getElementById('endDate').value);
-        const unitRent = parseFloat(document.getElementById('unitRent').value) || 0;
-        if (start && end && end >= start) {
-            const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
-            document.getElementById('totalRent').value = diffDays * unitRent;
+        // ഓട്ടോമാറ്റിക് കണക്കുകൂട്ടൽ
+        function calculateTotal() {
+            const start = new Date(document.getElementById('startDate').value);
+            const end = new Date(document.getElementById('endDate').value);
+            const unitRent = parseFloat(document.getElementById('unitRent').value) || 0;
+            if (start && end && end >= start) {
+                const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById('totalRent').value = diffDays * unitRent;
+            }
         }
-    }
-    document.getElementById('unitRent').addEventListener('input', calculateTotal);
-    document.getElementById('startDate').addEventListener('input', calculateTotal);
-    document.getElementById('endDate').addEventListener('input', calculateTotal);
+        document.getElementById('unitRent').addEventListener('input', calculateTotal);
+        document.getElementById('startDate').addEventListener('input', calculateTotal);
+        document.getElementById('endDate').addEventListener('input', calculateTotal);
 
-    // പെയ്മെന്റ് അപ്ഡേറ്റ്
-    window.editRent = async (id, currentPaid) => {
-        const extraPaid = prompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?");
-        if(extraPaid) {
-            await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
-        }
-    };
+        window.editRent = async (id, currentPaid) => {
+            const extraPaid = prompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?");
+            if(extraPaid) {
+                await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
+            }
+        };
 
-    // ഡിലീറ്റ് ഫംഗ്ഷൻ
-    window.deleteRent = async (id) => {
-        if(confirm("ഈ എൻട്രി ഡിലീറ്റ് ചെയ്യണോ?")) {
-            await deleteDoc(doc(db, "rentals", id));
-        }
-    };
+        window.deleteRent = async (id) => {
+            if(confirm("ഈ എൻട്രി ഡിലീറ്റ് ചെയ്യണോ?")) {
+                await deleteDoc(doc(db, "rentals", id));
+            }
+        };
 
-    document.getElementById('saveRentBtn').addEventListener('click', async () => {
-        await addDoc(collection(db, "rentals"), {
-            item: document.getElementById('itemName').value,
-            shop: document.getElementById('shopName').value,
-            phone: document.getElementById('shopPhone').value,
-            start: document.getElementById('startDate').value,
-            end: document.getElementById('endDate').value,
-            unitRent: document.getElementById('unitRent').value,
-            total: parseFloat(document.getElementById('totalRent').value) || 0,
-            paid: parseFloat(document.getElementById('paidRent').value) || 0
+        document.getElementById('saveRentBtn').addEventListener('click', async () => {
+            await addDoc(collection(db, "rentals"), {
+                item: document.getElementById('itemName').value,
+                shop: document.getElementById('shopName').value,
+                phone: document.getElementById('shopPhone').value,
+                start: document.getElementById('startDate').value,
+                end: document.getElementById('endDate').value,
+                unitRent: document.getElementById('unitRent').value,
+                total: parseFloat(document.getElementById('totalRent').value) || 0,
+                paid: parseFloat(document.getElementById('paidRent').value) || 0
+            });
+            alert("സേവ് ആയി!");
         });
-        alert("സേവ് ആയി!");
-    });
 
-    onSnapshot(collection(db, "rentals"), (snapshot) => {
-        const list = document.getElementById('rentList');
-        list.innerHTML = '<h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>';
-        snapshot.forEach((d) => {
-            const r = d.data();
-            const bal = r.total - r.paid;
-            const div = document.createElement('div');
-            div.className = `bg-white p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-sm mb-4`;
-            div.innerHTML = `
-                <p class="font-black text-slate-800 text-lg">${r.item}</p>
-                <p class="text-xs text-slate-500 font-bold mb-2">കട: ${r.shop} | 📞 ${r.phone}</p>
-                <div class="border-t pt-2 flex justify-between items-center">
-                    <p class="text-xs font-black text-slate-700">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
-                    <div class="flex gap-2">
-                        <button onclick="editRent('${d.id}', ${r.paid})" class="bg-slate-900 text-white px-3 py-1 rounded-lg text-[10px] font-black">പെയ്മെന്റ്</button>
-                        <button onclick="deleteRent('${d.id}')" class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-[10px] font-black">ഡിലീറ്റ്</button>
+        onSnapshot(collection(db, "rentals"), (snapshot) => {
+            const list = document.getElementById('rentList');
+            list.innerHTML = '<h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>';
+            snapshot.forEach((d) => {
+                const r = d.data();
+                const bal = r.total - r.paid;
+                const div = document.createElement('div');
+                div.className = `bg-white p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-sm mb-4`;
+                div.innerHTML = `
+                    <p class="font-black text-slate-800 text-lg">${r.item}</p>
+                    <p class="text-xs text-slate-500 font-bold mb-2">കട: ${r.shop} | 📞 ${r.phone}</p>
+                    <div class="border-t pt-2 flex justify-between items-center">
+                        <p class="text-xs font-black text-slate-700">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
+                        <div class="flex gap-2">
+                            <button onclick="editRent('${d.id}', ${r.paid})" class="bg-slate-900 text-white px-3 py-1 rounded-lg text-[10px] font-black">പെയ്മെന്റ്</button>
+                            <button onclick="deleteRent('${d.id}')" class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-[10px] font-black">ഡിലീറ്റ്</button>
+                        </div>
                     </div>
-                </div>
-            `;
-            list.appendChild(div);
+                `;
+                list.appendChild(div);
+            });
         });
-    });
-</script>
-
-    
-
+    </script>
 </body>
 </html>
