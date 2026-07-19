@@ -71,13 +71,24 @@
     <!-- ഡാറ്റ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
 </div>
         
-
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    const app = initializeApp({ /* firebaseConfig details */ });
-    const db = getFirestore(app);
+const firebaseConfig = {
+    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+    authDomain: "mesthri-app.firebaseapp.com",
+    projectId: "mesthri-app",
+    storageBucket: "mesthri-app.appspot.com",
+    messagingSenderId: "1060617901864",
+    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function updateDashboard() {
+    try {
 
     let editId = null; // എഡിറ്റ് ചെയ്യാൻ വേണ്ടി
 
