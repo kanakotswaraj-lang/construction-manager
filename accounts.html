@@ -9,7 +9,15 @@
 <body class="bg-slate-50 p-4">
 
     <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-bold text-center mb-6 text-slate-800">കണക്ക് മാനേജർ പ്രോ</h1>
+        
+        <!-- ഹെഡർ: ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് കാണിക്കാൻ -->
+        <div class="bg-slate-900 p-4 rounded-2xl text-white mb-6 flex justify-between items-center shadow-lg">
+            <div>
+                <h1 class="text-xl font-black">വരവ് - ചെലവ്</h1>
+                <p id="loggedInMeshtri" class="text-xs text-blue-400 font-bold mt-1">മേസ്തിരി: ലോഡിങ്...</p>
+            </div>
+            <a href="dashboard.html" class="bg-slate-800 text-xs px-3 py-2 rounded-xl text-slate-300 font-bold hover:bg-slate-700">ഡാഷ്‌ബോർഡ്</a>
+        </div>
 
         <!-- ഡാഷ്ബോർഡ് -->
         <div class="grid grid-cols-2 gap-3 mb-6">
@@ -33,37 +41,34 @@
             <input type="date" id="filterDate" onchange="filterList()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-blue-500 outline-none">
         </div>
 
-      <!-- പുതിയ കണക്ക് ഫോം മാത്രം -->
-<div class="bg-white p-6 rounded-3xl shadow-lg mb-6 border border-slate-100">
-    <h2 class="text-lg font-bold mb-4 text-slate-700">പുതിയ കണക്ക് ചേർക്കുക</h2>
-    
-    <input type="date" id="transDate" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
-    <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
-    <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
-
-    <div class="grid grid-cols-2 gap-3 mb-3">
-        <select id="type" class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
-            <option value="income">വരവ്</option>
-            <option value="wage">കൂലി</option>
-            <option value="material">മെറ്റീരിയൽസ്</option>
-            <option value="rent">വാടക</option>
-            <option value="other">മറ്റ് ചെലവ്</option>
-        </select>
-        <select id="paymentMethod" class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
-            <option value="cash">ക്യാഷ്</option>
-            <option value="gpay">GPay</option>
-            <option value="UPI">യുപിഐ</option>
-            <option value="bank">ബാങ്ക്</option>
-        </select>
-    </div>
-
-    <input type="number" id="amount" placeholder="തുക" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4 text-base">
-    
-    <button id="saveBtn" class="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold text-base hover:bg-emerald-700 transition">സേവ് ചെയ്യുക</button>
-</div>
-
-
+        <!-- പുതിയ കണക്ക് ഫോം -->
+        <div class="bg-white p-6 rounded-3xl shadow-lg mb-6 border border-slate-100">
+            <h2 class="text-lg font-bold mb-4 text-slate-700">പുതിയ കണക്ക് ചേർക്കുക</h2>
             
+            <input type="date" id="transDate" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+            <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+            <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base">
+
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <select id="type" class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
+                    <option value="income">വരവ്</option>
+                    <option value="wage">കൂലി</option>
+                    <option value="material">മെറ്റീരിയൽസ്</option>
+                    <option value="rent">വാടക</option>
+                    <option value="other">മറ്റ് ചെലവ്</option>
+                </select>
+                <select id="paymentMethod" class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
+                    <option value="cash">ക്യാഷ്</option>
+                    <option value="gpay">GPay</option>
+                    <option value="UPI">യുപിഐ</option>
+                    <option value="bank">ബാങ്ക്</option>
+                </select>
+            </div>
+
+            <input type="number" id="amount" placeholder="തുക" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-4 text-base">
+            
+            <button id="saveBtn" class="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold text-base hover:bg-emerald-700 transition">സേവ് ചെയ്യുക</button>
+        </div>
 
         <!-- PDF ഡൗൺലോഡ് -->
         <button onclick="window.print()" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-bold mb-6 hover:bg-blue-700 transition">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
@@ -71,7 +76,8 @@
         <!-- ലിസ്റ്റ് ഭാഗം -->
         <div id="transactionList" class="space-y-3 pb-10"></div>
     </div>
-<script type="module">
+
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
@@ -87,10 +93,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് എടുക്കുന്നു
+        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+
         let editId = null;
 
         document.getElementById('saveBtn').onclick = async () => {
             const data = {
+                meshtriOwner: currentMeshtri,
                 name: document.getElementById('ownerName').value,
                 site: document.getElementById('siteName').value,
                 type: document.getElementById('type').value,
@@ -99,6 +110,8 @@
                 date: document.getElementById('transDate').value
             };
 
+            if (!data.name) return alert("പേര് നൽകുക!");
+
             if (editId) {
                 await updateDoc(doc(db, "accounts", editId), data);
                 editId = null;
@@ -106,89 +119,96 @@
             } else {
                 await addDoc(collection(db, "accounts"), data);
             }
+            
+            // ഫോം ക്ലിയർ ചെയ്യുന്നു
             document.getElementById('ownerName').value = '';
+            document.getElementById('siteName').value = '';
             document.getElementById('amount').value = '';
+            document.getElementById('transDate').value = '';
+            alert("വിവരങ്ങൾ സേവ് ആയി!");
         };
 
-     onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
-    const list = document.getElementById('transactionList');
-    list.innerHTML = '';
-    let inc = 0, exp = 0;
-    
-    snapshot.forEach(doc => {
-        const d = doc.data();
-        
-        let categoryColor = "text-red-600";
-        if(d.type === 'income') {
-            categoryColor = "text-emerald-600";
-            inc += parseFloat(d.amount);
-        } else {
-            exp += parseFloat(d.amount);
-        }
-
-        // ലിസ്റ്റിലെ മലയാളം മാറ്റങ്ങൾ
-        let typeName = d.type === 'income' ? 'വരവ്' : 
-                       d.type === 'wage' ? 'കൂലി' : 
-                       d.type === 'material' ? 'മെറ്റീരിയൽസ്' : 
-                       d.type === 'rent' ? 'വാടക' : 'മറ്റ് ചെലവ്';
-// ആ `list.innerHTML +=` എന്ന ഭാഗം പൂർണ്ണമായും ഡിലീറ്റ് ചെയ്ത് ഇത് പകരം വെക്കുക:
-
-list.innerHTML += `
-    <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 border border-slate-100 flex justify-between items-center">
-        <div>
-            <p class="font-bold text-base text-slate-800">${d.name}</p>
-            <p class="text-xs text-slate-500">${d.date || ''} • ${d.site} • 
-               <span class="font-bold text-slate-600">${d.paymentMethod === 'cash' ? '💵 ക്യാഷ്' : '📱 GPay'}</span> • 
-               <span class="capitalize font-bold">${typeName}</span>
-            </p>
-        </div>
-        <div class="text-right">
-            <p class="font-bold text-base ${categoryColor}">₹${d.amount}</p>
-            <div class="flex gap-2 mt-1">
-                <button onclick="window.editTransaction('${doc.id}', '${d.name}', '${d.site}', '${d.type}', '${d.paymentMethod}', ${d.amount}, '${d.date}')" class="text-blue-600 text-xs font-bold">എഡിറ്റ്</button>
-                <button onclick="window.del('${doc.id}')" class="text-red-600 text-xs font-bold">ഡിലീറ്റ്</button>
-            </div>
-        </div>
-    </div>`;
-
-    });
-    
-    document.getElementById('totalIncome').innerText = "₹" + inc;
-    document.getElementById('totalExpense').innerText = "₹" + exp;
-    document.getElementById('netBalance').innerText = "₹" + (inc - exp);
-});
-
+        onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
+            const list = document.getElementById('transactionList');
+            list.innerHTML = '';
+            let inc = 0, exp = 0;
             
+            snapshot.forEach(docSnap => {
+                const d = docSnap.data();
+                
+                // ഫിൽട്ടറിംഗ്: ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ ഡാറ്റ മാത്രം എടുക്കുന്നു
+                if (d.meshtriOwner === currentMeshtri) {
+                    let categoryColor = "text-red-600";
+                    if(d.type === 'income') {
+                        categoryColor = "text-emerald-600";
+                        inc += parseFloat(d.amount);
+                    } else {
+                        exp += parseFloat(d.amount);
+                    }
 
-        window.edit = (id, name, amt, date) => {
+                    let typeName = d.type === 'income' ? 'വരവ്' : 
+                                   d.type === 'wage' ? 'കൂലി' : 
+                                   d.type === 'material' ? 'മെറ്റീരിയൽസ്' : 
+                                   d.type === 'rent' ? 'വാടക' : 'മറ്റ് ചെലവ്';
+
+                    let paymentText = d.payment === 'cash' ? '💵 ക്യാഷ്' : 
+                                      d.payment === 'gpay' ? '📱 GPay' : 
+                                      d.payment === 'UPI' ? '📱 യുപിഐ' : '🏦 ബാങ്ക്';
+
+                    list.innerHTML += `
+                        <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 border border-slate-100 flex justify-between items-center">
+                            <div>
+                                <p class="font-bold text-base text-slate-800">${d.name}</p>
+                                <p class="text-xs text-slate-500">${d.date || ''} • ${d.site || ''} • 
+                                   <span class="font-bold text-slate-600">${paymentText}</span> • 
+                                   <span class="capitalize font-bold">${typeName}</span>
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold text-base ${categoryColor}">₹${d.amount}</p>
+                                <div class="flex gap-2 mt-1 justify-end">
+                                    <button onclick="window.editTransaction('${docSnap.id}', '${d.name}', '${d.site || ''}', '${d.type}', '${d.payment}', ${d.amount}, '${d.date}')" class="text-blue-600 text-xs font-bold">എഡിറ്റ്</button>
+                                    <button onclick="window.del('${docSnap.id}')" class="text-red-600 text-xs font-bold">ഡിലീറ്റ്</button>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+            });
+            
+            document.getElementById('totalIncome').innerText = "₹" + inc;
+            document.getElementById('totalExpense').innerText = "₹" + exp;
+            document.getElementById('netBalance').innerText = "₹" + (inc - exp);
+        });
+
+        // തിരുത്തിയ എഡിറ്റ് ഫംഗ്ഷൻ (എല്ലാ ഫീൽഡുകളും കൃത്യമായി ലോഡ് ആകാൻ)
+        window.editTransaction = (id, name, site, type, payment, amount, date) => {
             editId = id;
             document.getElementById('ownerName').value = name;
-            document.getElementById('amount').value = amt;
+            document.getElementById('siteName').value = site;
+            document.getElementById('type').value = type;
+            document.getElementById('paymentMethod').value = payment;
+            document.getElementById('amount').value = amount;
             document.getElementById('transDate').value = date;
             document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
             window.scrollTo(0, 0);
         };
 
-        window.del = async (id) => { if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "accounts", id)); };
+        window.del = async (id) => { 
+            if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "accounts", id)); 
+        };
+
         window.filterList = () => {
-    const selectedDate = document.getElementById('filterDate').value;
-    const items = document.querySelectorAll('#transactionList > div');
-    
-    items.forEach(item => {
-        // ഡേറ്റിലെ തീയതി എടുക്കുന്നു
-        const itemDate = item.querySelector('.text-[10px]').innerText.split(' | ')[0];
-        
-        if (!selectedDate || itemDate === selectedDate) {
-            item.style.display = 'flex'; // കാണിക്കുക
-        } else {
-            item.style.display = 'none'; // മറയ്ക്കുക
-        }
-    });
-};
-        
-        window.shareWhatsApp = (name, amount) => {
-            const message = `കണക്ക് വിശദാംശം:\nപേര്: ${name}\nതുക: ₹${amount}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+            const selectedDate = document.getElementById('filterDate').value;
+            const items = document.querySelectorAll('#transactionList > div');
+            
+            items.forEach(item => {
+                const itemText = item.innerText;
+                if (!selectedDate || itemText.includes(selectedDate)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         };
     </script>
 </body>
