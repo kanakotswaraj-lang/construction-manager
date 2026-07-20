@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>നിർമ്മാണ മാനേജർ</title>
+    <title>നിർമ്മാണ മാനേജർ - ജീവനക്കാരുടെ ശമ്പളം</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="p-4 bg-slate-100">
+<body class="p-4 bg-slate-100 font-sans">
     <div class="max-w-md mx-auto">
         
         <!-- ഹെഡർ: ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് കാണിക്കാൻ -->
@@ -20,19 +20,20 @@
         
         <!-- ഇൻപുട്ട് ഫോം -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
-            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="text" id="siteName" placeholder="സൈറ്റ്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="number" id="dailyWage" placeholder="കൂലി" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="tel" id="phoneNumber" placeholder="WhatsApp നമ്പർ (91...)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="text" id="jobType" placeholder="ജോലി" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <input type="text" id="bankDetails" placeholder="ബാങ്ക് / GPay നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <button id="saveStaffBtn" class="w-full bg-emerald-700 text-white p-4 rounded-xl font-black shadow-md">സേവ് ചെയ്യുക</button>
+            <h2 class="font-bold text-slate-700 mb-3 text-sm">പുതിയ തൊഴിലാളിയെ ചേർക്കുക</h2>
+            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
+            <input type="text" id="siteName" placeholder="സൈറ്റ്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
+            <input type="number" id="dailyWage" placeholder="ഒരു ദിവസത്തെ കൂലി (₹)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
+            <input type="tel" id="phoneNumber" placeholder="WhatsApp നമ്പർ (91...)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
+            <input type="text" id="jobType" placeholder="ജോലി (ഉദാ: മേസ്തിരി / പണിക്കാരൻ)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
+            <input type="text" id="bankDetails" placeholder="ബാങ്ക് / GPay നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border mb-3 text-sm font-bold">
+            <button id="saveStaffBtn" class="w-full bg-emerald-700 text-white p-3.5 rounded-xl font-black shadow-md text-sm">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
         </div>
 
         <!-- സെർച്ച് ബാർ -->
-        <input type="text" id="searchInput" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-3 bg-white rounded-xl border mb-4 shadow-sm">
+        <input type="text" id="searchInput" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-3 bg-white rounded-xl border mb-4 shadow-sm text-sm font-bold">
 
-        <div id="staffList" class="space-y-4"></div>
+        <div id="staffList" class="space-y-4 pb-12"></div>
     </div>
 
     <script type="module">
@@ -55,26 +56,25 @@
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
-        // സേവ് സ്റ്റാഫ് (മേസ്തിരിയുടെ പേര് സഹിതം ഡാറ്റാബേസിൽ സേവ് ചെയ്യുന്നു)
+        // സേവ് സ്റ്റാഫ്
         document.getElementById('saveStaffBtn').addEventListener('click', async () => {
             const name = document.getElementById('staffName').value;
             if (!name) return alert("പേര് നൽകുക!");
             
             await addDoc(collection(db, "staffs"), {
-                meshtriOwner: currentMeshtri, // ആര് സേവ് ചെയ്തു എന്നറിയാൻ
+                meshtriOwner: currentMeshtri,
                 name: name,
                 site: document.getElementById('siteName').value,
-                wage: document.getElementById('dailyWage').value,
+                wage: parseFloat(document.getElementById('dailyWage').value) || 0,
                 phone: document.getElementById('phoneNumber').value,
                 job: document.getElementById('jobType').value,
                 bank: document.getElementById('bankDetails').value,
-                lastSite: "",
-                lastAttendance: false,
-                lastPayment: ""
+                workedDays: 0,
+                advance: 0,
+                paidAmount: 0
             });
             alert("വിവരങ്ങൾ സേവ് ആയി!");
             
-            // ഫോം ഫീൽഡുകൾ ക്ലിയർ ചെയ്യുന്നു
             document.getElementById('staffName').value = '';
             document.getElementById('siteName').value = '';
             document.getElementById('dailyWage').value = '';
@@ -91,7 +91,7 @@
             });
         });
 
-        // ലിസ്റ്റ് അപ്‌ഡേറ്റ് (ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ ഡാറ്റ മാത്രം ഫിൽട്ടർ ചെയ്ത് കാണിക്കുന്നു)
+        // ലിസ്റ്റ് അപ്‌ഡേറ്റ്
         onSnapshot(collection(db, "staffs"), (snapshot) => {
             const list = document.getElementById('staffList');
             list.innerHTML = '';
@@ -99,45 +99,68 @@
             snapshot.forEach((d) => {
                 const s = d.data();
                 
-                // ഫിൽട്ടറിംഗ്: ഈ മേസ്തിരി ചേർത്ത സ്റ്റാഫുകൾ മാത്രം ലോഡ് ചെയ്യുന്നു
                 if (s.meshtriOwner === currentMeshtri) {
                     const div = document.createElement('div');
                     div.className = "bg-white p-4 rounded-2xl border shadow-sm";
                     const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
                     
+                    const workedDays = parseFloat(s.workedDays) || 0;
+                    const dailyWage = parseFloat(s.wage) || 0;
+                    const totalEarned = workedDays * dailyWage;
+                    const advance = parseFloat(s.advance) || 0;
+                    const balanceDue = totalEarned - advance;
+
                     div.innerHTML = `
                         <div class="flex justify-between items-center mb-3">
                             <div>
-                                <h3 class="font-bold text-lg">${s.name}</h3>
-                                <p class="text-xs text-slate-500">${s.site || ''} | ₹${s.wage || 0}/ദിവസം</p>
+                                <h3 class="font-black text-base text-slate-800">${s.name} <span class="text-xs font-normal text-slate-500">(${s.job || 'പണിക്കാരൻ'})</span></h3>
+                                <p class="text-xs text-slate-500 font-bold">${s.site || ''} | കൂലി: ₹${dailyWage}/ദിവസം</p>
                             </div>
                             <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
                         </div>
-                        <div class="p-3 bg-slate-50 rounded-xl mb-3">
-                            <input type="text" id="site-${d.id}" value="${s.lastSite || ''}" placeholder="സൈറ്റ്" class="w-full p-2 border rounded mb-1 text-sm">
-                            <label class="flex items-center gap-2 mb-1 text-sm"><input type="checkbox" id="attend-${d.id}" ${s.lastAttendance ? 'checked' : ''}> ഹാജർ</label>
-                            <input type="number" id="pay-${d.id}" value="${s.lastPayment || ''}" placeholder="ഇന്നത്തെ പെയ്‌മെന്റ്" class="w-full p-2 border rounded text-sm">
-                            <button id="save-${d.id}" class="w-full bg-blue-600 text-white mt-2 p-2 rounded-lg text-xs font-bold">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
+
+                        <div class="p-3 bg-slate-50 rounded-xl mb-3 space-y-2 border border-slate-100">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-500 block">ആകെ പണിയെടുത്ത ദിവസം</label>
+                                    <input type="number" id="days-${d.id}" value="${s.workedDays || 0}" class="w-full p-2 border rounded text-sm font-bold bg-white">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-500 block">വാങ്ങിയ അഡ്വാൻസ് (₹)</label>
+                                    <input type="number" id="adv-${d.id}" value="${s.advance || 0}" class="w-full p-2 border rounded text-sm font-bold bg-white">
+                                </div>
+                            </div>
+                            
+                            <div class="text-xs font-bold text-slate-700 pt-1 flex justify-between bg-blue-50 p-2 rounded-lg">
+                                <span>ആകെ കൂലി: ₹${totalEarned}</span>
+                                <span class="text-emerald-700 font-black">ബാക്കി കൊടുക്കാനുള്ളത്: ₹${balanceDue}</span>
+                            </div>
+
+                            <button id="save-${d.id}" class="w-full bg-slate-900 text-white mt-1 p-2.5 rounded-xl text-xs font-bold shadow-sm">கണക്കുകൾ സേവ് ചെയ്യുക</button>
                         </div>
+
                         <div class="flex gap-2">
-                            <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit Name & Wage</button>
-                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം, ഇന്ന് ജോലിയുണ്ട്. സ്ഥലം: ${s.lastSite || 'അറിയിക്കാം'}" target="_blank" class="flex-1 bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
+                            <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2.5 rounded-xl text-xs font-bold text-amber-800">Edit Name/Wage</button>
+                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aഈ ആഴ്ചത്തെ കണക്ക്:%0A- പണിയെടുത്ത ദിവസങ്ങൾ: ${workedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${balanceDue}" target="_blank" class="flex-1 bg-emerald-600 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp കണക്ക് അയക്കുക</a>
                         </div>
                     `;
                     list.appendChild(div);
 
-                    // വിവരങ്ങൾ അപ്‌ഡേറ്റ് ചെയ്യാനുള്ള കോഡ്
+                    // കണക്കുകൾ അപ്ഡേറ്റ് ചെയ്യാനുള്ള കോഡ്
                     document.getElementById(`save-${d.id}`).onclick = async () => {
                         await updateDoc(doc(db, 'staffs', d.id), {
-                            lastSite: document.getElementById(`site-${d.id}`).value,
-                            lastAttendance: document.getElementById(`attend-${d.id}`).checked,
-                            lastPayment: document.getElementById(`pay-${d.id}`).value
+                            workedDays: parseFloat(document.getElementById(`days-${d.id}`).value) || 0,
+                            advance: parseFloat(document.getElementById(`adv-${d.id}`).value) || 0
                         });
-                        alert("അപ്‌ഡേറ്റ് ചെയ്തു!");
+                        alert("കണക്കുകൾ അപ്‌ഡേറ്റ് ചെയ്തു!");
                     };
 
                     // ഡിലീറ്റ് ചെയ്യാനുള്ള കോഡ്
-                    document.getElementById(`del-${d.id}`).onclick = () => deleteDoc(doc(db, 'staffs', d.id));
+                    document.getElementById(`del-${d.id}`).onclick = () => {
+                        if(confirm("ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
+                            deleteDoc(doc(db, 'staffs', d.id));
+                        }
+                    };
                     
                     // എഡിറ്റ് ചെയ്യാനുള്ള കോഡ്
                     document.getElementById(`edit-${d.id}`).onclick = () => {
@@ -145,7 +168,7 @@
                         if(newName === null) return;
                         const newWage = prompt("പുതിയ കൂലി:", s.wage);
                         if(newWage === null) return;
-                        updateDoc(doc(db, 'staffs', d.id), { name: newName, wage: newWage });
+                        updateDoc(doc(db, 'staffs', d.id), { name: newName, wage: parseFloat(newWage) || 0 });
                     };
                 }
             });
