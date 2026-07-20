@@ -8,7 +8,15 @@
 </head>
 <body class="p-4 bg-slate-100">
     <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-black text-slate-800 mb-6 text-center">നിർമ്മാണ മാനേജർ</h1>
+        
+        <!-- ഹെഡർ: ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് കാണിക്കാൻ -->
+        <div class="bg-slate-900 p-4 rounded-2xl text-white mb-6 flex justify-between items-center shadow-lg">
+            <div>
+                <h1 class="text-xl font-black">ജീവനക്കാരുടെ ശമ്പളം</h1>
+                <p id="loggedInMeshtri" class="text-xs text-blue-400 font-bold mt-1">മേസ്തിരി: ലോഡിങ്...</p>
+            </div>
+            <a href="dashboard.html" class="bg-slate-800 text-xs px-3 py-2 rounded-xl text-slate-300 font-bold hover:bg-slate-700">ഡാഷ്‌ബോർഡ്</a>
+        </div>
         
         <!-- ഇൻപുട്ട് ഫോം -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
@@ -18,7 +26,7 @@
             <input type="tel" id="phoneNumber" placeholder="WhatsApp നമ്പർ (91...)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
             <input type="text" id="jobType" placeholder="ജോലി" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
             <input type="text" id="bankDetails" placeholder="ബാങ്ക് / GPay നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border mb-2">
-            <button id="saveStaffBtn" class="w-full bg-emerald-700 text-white p-4 rounded-xl font-black">സേവ് ചെയ്യുക</button>
+            <button id="saveStaffBtn" class="w-full bg-emerald-700 text-white p-4 rounded-xl font-black shadow-md">സേവ് ചെയ്യുക</button>
         </div>
 
         <!-- സെർച്ച് ബാർ -->
@@ -43,22 +51,39 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // സേവ് സ്റ്റാഫ്
+        // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് എടുക്കുന്നു
+        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+
+        // സേവ് സ്റ്റാഫ് (മേസ്തിരിയുടെ പേര് സഹിതം ഡാറ്റാബേസിൽ സേവ് ചെയ്യുന്നു)
         document.getElementById('saveStaffBtn').addEventListener('click', async () => {
             const name = document.getElementById('staffName').value;
             if (!name) return alert("പേര് നൽകുക!");
+            
             await addDoc(collection(db, "staffs"), {
+                meshtriOwner: currentMeshtri, // ആര് സേവ് ചെയ്തു എന്നറിയാൻ
                 name: name,
                 site: document.getElementById('siteName').value,
                 wage: document.getElementById('dailyWage').value,
                 phone: document.getElementById('phoneNumber').value,
                 job: document.getElementById('jobType').value,
-                bank: document.getElementById('bankDetails').value
+                bank: document.getElementById('bankDetails').value,
+                lastSite: "",
+                lastAttendance: false,
+                lastPayment: ""
             });
             alert("വിവരങ്ങൾ സേവ് ആയി!");
+            
+            // ഫോം ഫീൽഡുകൾ ക്ലിയർ ചെയ്യുന്നു
+            document.getElementById('staffName').value = '';
+            document.getElementById('siteName').value = '';
+            document.getElementById('dailyWage').value = '';
+            document.getElementById('phoneNumber').value = '';
+            document.getElementById('jobType').value = '';
+            document.getElementById('bankDetails').value = '';
         });
 
-        // സെർച്ച്
+        // സെർച്ച് ഫംഗ്ഷൻ
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const val = e.target.value.toLowerCase();
             document.querySelectorAll('#staffList > div').forEach(div => {
@@ -66,53 +91,63 @@
             });
         });
 
-        // ലിസ്റ്റ് അപ്‌ഡേറ്റ്
+        // ലിസ്റ്റ് അപ്‌ഡേറ്റ് (ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ ഡാറ്റ മാത്രം ഫിൽട്ടർ ചെയ്ത് കാണിക്കുന്നു)
         onSnapshot(collection(db, "staffs"), (snapshot) => {
             const list = document.getElementById('staffList');
             list.innerHTML = '';
+            
             snapshot.forEach((d) => {
                 const s = d.data();
-                const div = document.createElement('div');
-                div.className = "bg-white p-4 rounded-2xl border shadow-sm";
-                const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
                 
-                div.innerHTML = `
-                    <div class="flex justify-between items-center mb-3">
-                        <div><h3 class="font-bold text-lg">${s.name}</h3><p class="text-xs text-slate-500">${s.site || ''} | ₹${s.wage || 0}/ദിവസം</p></div>
-                        <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
-                    </div>
-                    <div class="p-3 bg-slate-50 rounded-xl mb-3">
-                        <input type="text" id="site-${d.id}" value="${s.lastSite || ''}" placeholder="സൈറ്റ്" class="w-full p-2 border rounded mb-1 text-sm">
-                        <label class="flex items-center gap-2 mb-1 text-sm"><input type="checkbox" id="attend-${d.id}" ${s.lastAttendance ? 'checked' : ''}> ഹാജർ</label>
-                        <input type="number" id="pay-${d.id}" value="${s.lastPayment || ''}" placeholder="ഇന്നത്തെ പെയ്‌മെന്റ്" class="w-full p-2 border rounded text-sm">
-                        <button id="save-${d.id}" class="w-full bg-blue-600 text-white mt-2 p-2 rounded-lg text-xs font-bold">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
-                    </div>
-                    <div class="flex gap-2">
-                        <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit Name & Wage</button>
-                        
-
-<a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം, ഇന്ന് ജോലിയുണ്ട്. സ്ഥലം: ${s.lastSite || 'അറിയിക്കാം'}" target="_blank" class="flex-1 bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
-
+                // ഫിൽട്ടറിംഗ്: ഈ മേസ്തിരി ചേർത്ത സ്റ്റാഫുകൾ മാത്രം ലോഡ് ചെയ്യുന്നു
+                if (s.meshtriOwner === currentMeshtri) {
+                    const div = document.createElement('div');
+                    div.className = "bg-white p-4 rounded-2xl border shadow-sm";
+                    const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
+                    
+                    div.innerHTML = `
+                        <div class="flex justify-between items-center mb-3">
+                            <div>
+                                <h3 class="font-bold text-lg">${s.name}</h3>
+                                <p class="text-xs text-slate-500">${s.site || ''} | ₹${s.wage || 0}/ദിവസം</p>
+                            </div>
+                            <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
                         </div>
-                `;
-                list.appendChild(div);
+                        <div class="p-3 bg-slate-50 rounded-xl mb-3">
+                            <input type="text" id="site-${d.id}" value="${s.lastSite || ''}" placeholder="സൈറ്റ്" class="w-full p-2 border rounded mb-1 text-sm">
+                            <label class="flex items-center gap-2 mb-1 text-sm"><input type="checkbox" id="attend-${d.id}" ${s.lastAttendance ? 'checked' : ''}> ഹാജർ</label>
+                            <input type="number" id="pay-${d.id}" value="${s.lastPayment || ''}" placeholder="ഇന്നത്തെ പെയ്‌മെന്റ്" class="w-full p-2 border rounded text-sm">
+                            <button id="save-${d.id}" class="w-full bg-blue-600 text-white mt-2 p-2 rounded-lg text-xs font-bold">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2 rounded-lg text-xs font-bold text-amber-800">Edit Name & Wage</button>
+                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം, ഇന്ന് ജോലിയുണ്ട്. സ്ഥലം: ${s.lastSite || 'അറിയിക്കാം'}" target="_blank" class="flex-1 bg-green-100 text-green-700 p-2 text-center rounded-lg text-xs font-bold">WhatsApp</a>
+                        </div>
+                    `;
+                    list.appendChild(div);
 
-                document.getElementById(`save-${d.id}`).onclick = async () => {
-                    await updateDoc(doc(db, 'staffs', d.id), {
-                        lastSite: document.getElementById(`site-${d.id}`).value,
-                        lastAttendance: document.getElementById(`attend-${d.id}`).checked,
-                        lastPayment: document.getElementById(`pay-${d.id}`).value
-                    });
-                    alert("അപ്‌ഡേറ്റ് ചെയ്തു!");
-                };
-                document.getElementById(`del-${d.id}`).onclick = () => deleteDoc(doc(db, 'staffs', d.id));
-                document.getElementById(`edit-${d.id}`).onclick = () => {
-                    const newName = prompt("പേര് മാറ്റുക:", s.name);
-                    if(newName === null) return;
-                    const newWage = prompt("പുതിയ കൂലി:", s.wage);
-                    if(newWage === null) return;
-                    updateDoc(doc(db, 'staffs', d.id), { name: newName, wage: newWage });
-                };
+                    // വിവരങ്ങൾ അപ്‌ഡേറ്റ് ചെയ്യാനുള്ള കോഡ്
+                    document.getElementById(`save-${d.id}`).onclick = async () => {
+                        await updateDoc(doc(db, 'staffs', d.id), {
+                            lastSite: document.getElementById(`site-${d.id}`).value,
+                            lastAttendance: document.getElementById(`attend-${d.id}`).checked,
+                            lastPayment: document.getElementById(`pay-${d.id}`).value
+                        });
+                        alert("അപ്‌ഡേറ്റ് ചെയ്തു!");
+                    };
+
+                    // ഡിലീറ്റ് ചെയ്യാനുള്ള കോഡ്
+                    document.getElementById(`del-${d.id}`).onclick = () => deleteDoc(doc(db, 'staffs', d.id));
+                    
+                    // എഡിറ്റ് ചെയ്യാനുള്ള കോഡ്
+                    document.getElementById(`edit-${d.id}`).onclick = () => {
+                        const newName = prompt("പേര് മാറ്റുക:", s.name);
+                        if(newName === null) return;
+                        const newWage = prompt("പുതിയ കൂലി:", s.wage);
+                        if(newWage === null) return;
+                        updateDoc(doc(db, 'staffs', d.id), { name: newName, wage: newWage });
+                    };
+                }
             });
         });
     </script>
