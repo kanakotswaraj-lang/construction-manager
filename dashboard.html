@@ -5,53 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="manifest" href="manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('Service Worker Registered'))
-        .catch(err => console.log('Service Worker Failed', err));
-    });
-  }
-</script>
+    <script>
+        // ലോഗിൻ ചെയ്തിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുന്നു
+        if (!localStorage.getItem('userName')) {
+            window.location.href = "login.html";
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker Registered'))
+                    .catch(err => console.log('Service Worker Failed', err));
+            });
+        }
+    </script>
 
     <title>മെസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
 </head>
 <body class="bg-slate-100 p-4 font-sans">
     <div class="max-w-md mx-auto">
         <!-- ഹെഡർ -->
-        
-<!-- ഹെഡർ ഭാഗം: കുറച്ചുകൂടി റൗണ്ട് ആക്കിയത് -->
-<div class="bg-slate-900 p-6 rounded-[2rem] shadow-xl text-white mb-6 border-b-4 border-slate-700">
-    <!-- ടോപ്പ് ബാർ -->
-    <div class="flex justify-between items-center mb-6">
-        <label for="photoUpload" class="cursor-pointer">
-            <img id="profileImage" src="https://ui-avatars.com/api/?name=M" class="w-12 h-12 rounded-full border-2 border-white object-cover">
-            <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="previewImage(event)">
-        </label>
+        <div class="bg-slate-900 p-6 rounded-[2rem] shadow-xl text-white mb-6 border-b-4 border-slate-700">
+            <!-- ടോപ്പ് ബാർ -->
+            <div class="flex justify-between items-center mb-6">
+                <label for="photoUpload" class="cursor-pointer">
+                    <img id="profileImage" src="https://ui-avatars.com/api/?name=M" class="w-12 h-12 rounded-full border-2 border-white object-cover">
+                    <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="previewImage(event)">
+                </label>
 
-        <!-- "MESHTRI PRO" ഭാഗം ഒരു ബോക്സിനുള്ളിൽ -->
-        <div class="bg-slate-800 px-4 py-1 rounded-full border border-slate-700">
-            <h1 class="font-bold text-lg tracking-widest text-blue-400">MESHTRI PRO</h1>
+                <div class="bg-slate-800 px-4 py-1 rounded-full border border-slate-700">
+                    <h1 class="font-bold text-lg tracking-widest text-blue-400">MESHTRI PRO</h1>
+                </div>
+
+                <!-- ലോഗ് ഔട്ട് ബട്ടൺ -->
+                <a href="#" onclick="logoutUser()" class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-xs shadow-lg hover:bg-red-700 transition">✕</a>
+            </div>
+
+            <!-- സ്വാഗതവും തീയതിയും -->
+            <div class="text-center">
+                <p class="text-xl font-semibold">സ്വാഗതം, മേസ്തിരി</p>
+                <p id="currentDate" class="text-sm opacity-70 mt-2 font-medium"></p>
+            </div>
         </div>
-
-        <a href="login.html" class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-xs shadow-lg hover:bg-red-700 transition">✕</a>
-    </div>
-
-    <!-- സ്വാഗതവും തീയതിയും -->
-    <div class="text-center">
-        <p class="text-xl font-semibold">സ്വാഗതം, മേസ്തിരി</p>
-        <p id="currentDate" class="text-sm opacity-70 mt-2 font-medium"></p>
-    </div>
-</div>
-
-<!-- ജാവാസ്ക്രിപ്റ്റ് ഡേറ്റിനായി -->
-<script>
-    const today = new Date();
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('currentDate').innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
-</script>
-
 
         <!-- ബട്ടണുകൾ -->
         <div class="space-y-4">
@@ -75,41 +70,41 @@
         </a>
     </div>
 
-    <!-- ഫോട്ടോ അപ്‌ലോഡ് സ്ക്രിപ്റ്റ് -->
     <script>
-    const photoUpload = document.getElementById('photoUpload');
-    const profileImage = document.getElementById('profileImage');
+        // ലോഗ് ഔട്ട് ഫംഗ്‌ഷൻ
+        function logoutUser() {
+            localStorage.removeItem('userName'); 
+            window.location.href = "login.html";
+        }
 
-    // ഫോട്ടോ സെലക്ട് ചെയ്യുമ്പോൾ
-    photoUpload.addEventListener('change', function() {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                profileImage.src = e.target.result; // ഇവിടെ ID മാറ്റി
-                localStorage.setItem('profilePhoto', e.target.result);
+        const photoUpload = document.getElementById('photoUpload');
+        const profileImage = document.getElementById('profileImage');
+
+        photoUpload.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImage.src = e.target.result;
+                    localStorage.setItem('profilePhoto', e.target.result);
+                }
+                reader.readAsDataURL(file);
             }
-            reader.readAsDataURL(file);
-        }
-    });
+        });
 
-    // പേജ് ലോഡ് ആകുമ്പോൾ
-    window.onload = function() {
-        // 1. ഫോട്ടോ ലോഡ് ചെയ്യാൻ
-        const savedPhoto = localStorage.getItem('profilePhoto');
-        if (savedPhoto) {
-            profileImage.src = savedPhoto;
-        }
+        window.onload = function() {
+            const savedPhoto = localStorage.getItem('profilePhoto');
+            if (savedPhoto) {
+                profileImage.src = savedPhoto;
+            }
 
-        // 2. തീയതി ഓട്ടോമാറ്റിക് ആക്കാൻ
-        const today = new Date();
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        const dateElement = document.getElementById('currentDate');
-        if(dateElement) {
-            dateElement.innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const dateElement = document.getElementById('currentDate');
+            if(dateElement) {
+                dateElement.innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
+            }
         }
-    }
-</script>
-
+    </script>
 </body>
 </html>
