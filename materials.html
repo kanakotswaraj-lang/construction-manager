@@ -39,32 +39,32 @@
         
         <!-- മെറ്റീരിയൽസ് ഫോം -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 mb-6 space-y-3.5 no-print">
-            <h2 class="text-base font-black text-slate-800">പുതിയ മെറ്റീരിയൽ ചേർക്കുക</h2>
+            <h2 class="text-base font-black text-slate-800">പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക</h2>
             
             <div>
                 <label class="block text-[11px] font-bold text-slate-500 mb-1">തീയതി</label>
                 <input type="date" id="matDate" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             </div>
             
-            <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ്)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
-            <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ് / കമ്പി / മെറ്റൽ)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: Edumba)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             
             <div class="grid grid-cols-2 gap-3">
                 <input type="number" id="matQty" placeholder="വാങ്ങിയ അളവ്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
                 <input type="number" id="matUsed" placeholder="ഉപയോഗിച്ചത്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             </div>
 
-            <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / എണ്ണം)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / കിലോ / എണ്ണം)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             <input type="number" id="matPrice" placeholder="ആകെ വില (₹)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             <input type="tel" id="matPhone" placeholder="സപ്ലയർ ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             
-            <!-- ബിൽ ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യാനുള്ള പുതിയ ഫീച്ചർ -->
+            <!-- ബിൽ ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യാനുള്ള ഫീച്ചർ -->
             <div>
                 <label class="block text-[11px] font-black text-slate-600 mb-1">ബില്ലിന്റെ ഫോട്ടോ (ചിത്രം തിരഞ്ഞെടുക്കുക)</label>
                 <input type="file" id="matBillPhoto" accept="image/*" class="w-full p-3 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-slate-900 file:text-white hover:file:bg-slate-800">
             </div>
 
-            <button id="saveBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black hover:bg-slate-800 transition shadow-md text-sm mt-2">പുതിയ മെറ്റീരിയൽ ചേർക്കുക</button>
+            <button id="saveBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black hover:bg-slate-800 transition shadow-md text-sm mt-2">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
         </div>
 
         <!-- PDF ഡൗൺലോഡ് ബട്ടൺ -->
@@ -72,7 +72,7 @@
 
         <!-- ലിസ്റ്റ് വിത്ത് ആക്ഷൻ ബട്ടൺസ് -->
         <section class="space-y-4 pb-12">
-            <h2 class="font-black text-slate-800 text-base mb-2">സ്റ്റോക്ക് നിലവാരം (ബാക്കി കണക്ക്)</h2>
+            <h2 class="font-black text-slate-800 text-base mb-2">സ്റ്റോക്ക് നിലവാരവും ബില്ലുകളും</h2>
             <div id="materialList" class="space-y-4">
                 <!-- ഡാറ്റ ഇവിടെ ഫയർബേസിൽ നിന്നും ലോഡ് ആകും -->
             </div>
@@ -101,8 +101,8 @@
         document.getElementById('matDate').valueAsDate = new Date();
 
         let editId = null;
+        let existingPhotoUrl = "";
 
-        // ഫോട്ടോ കോഡ് റീഡ് ചെയ്യാൻ സഹായിക്കുന്ന ഫംഗ്ഷൻ (Base64)
         const getBase64 = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -114,9 +114,12 @@
 
         document.getElementById('saveBtn').onclick = async () => {
             const name = document.getElementById('matName').value;
+            const site = document.getElementById('matSite').value;
+            
             if (!name) return alert("മെറ്റീരിയൽ പേര് നൽകുക!");
+            if (!site) return alert("സൈറ്റിന്റെ പേര് നൽകുക!");
 
-            let billPhotoUrl = "";
+            let billPhotoUrl = existingPhotoUrl;
             const fileInput = document.getElementById('matBillPhoto');
             if (fileInput.files && fileInput.files[0]) {
                 billPhotoUrl = await getBase64(fileInput.files[0]);
@@ -126,7 +129,7 @@
                 meshtriOwner: currentMeshtri,
                 date: document.getElementById('matDate').value,
                 name: name,
-                site: document.getElementById('matSite').value,
+                site: site,
                 qty: parseFloat(document.getElementById('matQty').value) || 0,
                 used: parseFloat(document.getElementById('matUsed').value) || 0,
                 unit: document.getElementById('matUnit').value,
@@ -135,27 +138,30 @@
                 billPhoto: billPhotoUrl
             };
 
-            if (editId) {
-                // പഴയ ഫോട്ടോ ഉണ്ടെങ്കിൽ അത് നിലനിർത്താൻ (പുതിയത് സെലക്ട് ചെയ്തില്ലെങ്കിൽ)
-                if (!billPhotoUrl) {
-                    delete data.billPhoto; 
+            try {
+                if (editId) {
+                    await updateDoc(doc(db, "materials", editId), data);
+                    editId = null;
+                    existingPhotoUrl = "";
+                    document.getElementById('saveBtn').innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
+                } else {
+                    await addDoc(collection(db, "materials"), data);
                 }
-                await updateDoc(doc(db, "materials", editId), data);
-                editId = null;
-                document.getElementById('saveBtn').innerText = "പുതിയ മെറ്റീരിയൽ ചേർക്കുക";
-            } else {
-                await addDoc(collection(db, "materials"), data);
-            }
 
-            document.getElementById('matName').value = '';
-            document.getElementById('matSite').value = '';
-            document.getElementById('matQty').value = '';
-            document.getElementById('matUsed').value = '';
-            document.getElementById('matUnit').value = '';
-            document.getElementById('matPrice').value = '';
-            document.getElementById('matPhone').value = '';
-            document.getElementById('matBillPhoto').value = '';
-            alert("വിവരങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
+                document.getElementById('matName').value = '';
+                document.getElementById('matSite').value = '';
+                document.getElementById('matQty').value = '';
+                document.getElementById('matUsed').value = '';
+                document.getElementById('matUnit').value = '';
+                document.getElementById('matPrice').value = '';
+                document.getElementById('matPhone').value = '';
+                document.getElementById('matBillPhoto').value = '';
+                existingPhotoUrl = "";
+                alert("വിവരങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
+            } catch (error) {
+                alert("സേവ് ചെയ്യുന്നതിൽ ചെറിയ തടസ്സമുണ്ടായി. വീണ്ടും ശ്രമിക്കുക.");
+                console.error(error);
+            }
         };
 
         onSnapshot(query(collection(db, "materials"), orderBy("date", "desc")), (snapshot) => {
@@ -197,11 +203,11 @@
                             
                             <div class="bg-slate-50 p-4 rounded-2xl mb-3 border border-slate-100">
                                 <div class="flex justify-between text-xs font-bold text-slate-500 mb-1">
-                                    <span>വാങ്ങിയത്: ${totalQty} ${d.unit}</span>
-                                    <span>ഉപയോഗിച്ചത്: ${usedQty} ${d.unit}</span>
+                                    <span>വാങ്ങിയത്: ${totalQty} ${d.unit || ''}</span>
+                                    <span>ഉപയോഗിച്ചത്: ${usedQty} ${d.unit || ''}</span>
                                 </div>
                                 <div class="text-sm font-black text-emerald-700">
-                                    ബാക്കി സ്റ്റോക്ക്: ${remainingQty} ${d.unit}
+                                    ബാക്കി സ്റ്റോക്ക്: ${remainingQty} ${d.unit || ''}
                                 </div>
                             </div>
 
@@ -210,7 +216,7 @@
                             <p class="text-xs font-black text-slate-700 mb-4 bg-slate-100/70 p-2.5 rounded-xl inline-block">ആകെ വില: ₹${d.price}</p>
                             
                             <div class="flex gap-2.5 no-print">
-                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.name}', '${d.site || ''}', ${totalQty}, ${usedQty}, '${d.unit}', ${d.price}, '${d.phone}')" class="flex-1 bg-amber-500 text-white py-3 rounded-2xl font-black text-xs hover:bg-amber-600 transition shadow-sm">എഡിറ്റ്</button>
+                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.name}', '${d.site || ''}', ${totalQty}, ${usedQty}, '${d.unit || ''}', ${d.price}, '${d.phone}', '${d.billPhoto || ''}')" class="flex-1 bg-amber-500 text-white py-3 rounded-2xl font-black text-xs hover:bg-amber-600 transition shadow-sm">എഡിറ്റ്</button>
                                 <button onclick="window.delMat('${docSnap.id}')" class="bg-red-50 text-red-600 px-4 py-3 rounded-2xl font-black text-xs hover:bg-red-100 transition shadow-sm">ഡിലീറ്റ്</button>
                             </div>
                         </div>`;
@@ -234,8 +240,9 @@
             });
         };
 
-        window.editMat = (id, date, name, site, qty, used, unit, price, phone) => {
+        window.editMat = (id, date, name, site, qty, used, unit, price, phone, billPhoto) => {
             editId = id;
+            existingPhotoUrl = billPhoto;
             document.getElementById('matDate').value = date;
             document.getElementById('matName').value = name;
             document.getElementById('matSite').value = site;
