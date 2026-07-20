@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ml">
 <head>
@@ -8,13 +9,19 @@
 </head>
 <body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <a href="index.html" class="text-sm font-bold text-slate-500 mb-4 block">← തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
         
-        <h1 class="text-2xl font-black text-slate-800 mb-6">വാടക ഉപകരണങ്ങൾ</h1>
+        <!-- ഹെഡർ: ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് കാണിക്കാൻ -->
+        <div class="bg-slate-900 p-4 rounded-2xl text-white mb-6 flex justify-between items-center shadow-lg">
+            <div>
+                <h1 class="text-xl font-black">വാടക ഉപകരണങ്ങൾ</h1>
+                <p id="loggedInMeshtri" class="text-xs text-blue-400 font-bold mt-1">മേസ്തിരി: ലോഡിങ്...</p>
+            </div>
+            <a href="dashboard.html" class="bg-slate-800 text-xs px-3 py-2 rounded-xl text-slate-300 font-bold hover:bg-slate-700">ഡാഷ്‌ബോർഡ്</a>
+        </div>
         
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-8 space-y-4">
             <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold"> <!-- പുതിയ കള്ളി -->
+            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             <input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             
@@ -57,6 +64,10 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് എടുക്കുന്നു
+        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+
         // ഓട്ടോമാറ്റിക് കാൽക്കുലേഷൻ
         function calculateTotal() {
             const start = new Date(document.getElementById('startDate').value);
@@ -87,9 +98,14 @@
             if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "rentals", id));
         };
 
+        // സേവ് ചെയ്യുമ്പോൾ മേസ്തിരിയുടെ പേര് കൂടി ഡാറ്റാബേസിൽ ചേർക്കുന്നു
         document.getElementById('saveRentBtn').addEventListener('click', async () => {
+            const itemName = document.getElementById('itemName').value;
+            if (!itemName) return alert("ഉപകരണത്തിന്റെ പേര് നൽകുക!");
+
             await addDoc(collection(db, "rentals"), {
-                item: document.getElementById('itemName').value,
+                meshtriOwner: currentMeshtri, // ആരുടെ ഡാറ്റയാണെന്ന് തിരിച്ചറിയാൻ
+                item: itemName,
                 qty: document.getElementById('itemQty').value,
                 shop: document.getElementById('shopName').value,
                 phone: document.getElementById('shopPhone').value,
@@ -102,27 +118,33 @@
             alert("സേവ് ആയി!");
         });
 
+        // ഈ മേസ്തിരിയുടെ ഡാറ്റ മാത്രം ഫിൽട്ടർ ചെയ്ത് കാണിക്കുന്നു
         onSnapshot(collection(db, "rentals"), (snapshot) => {
             const list = document.getElementById('rentList');
             list.innerHTML = '<h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>';
+            
             snapshot.forEach((d) => {
                 const r = d.data();
-                const bal = r.total - r.paid;
-                const div = document.createElement('div');
-                div.className = `bg-white p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-sm mb-4`;
-                div.innerHTML = `
-                    <p class="font-black text-slate-800 text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
-                    <p class="text-xs text-slate-500 font-bold mb-2">കട: ${r.shop} | 📞 ${r.phone}</p>
-                    <div class="border-t pt-2 flex justify-between items-center">
-                        <p class="text-xs font-black text-slate-700">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
-                        <div class="flex gap-1">
-                            <button onclick="editDetails('${d.id}', ${JSON.stringify(r).replace(/"/g, '&quot;')})" class="bg-blue-100 text-blue-600 px-2 py-1 rounded-lg text-[9px] font-black">എഡിറ്റ്</button>
-                            <button onclick="editRent('${d.id}', ${r.paid})" class="bg-slate-900 text-white px-2 py-1 rounded-lg text-[9px] font-black">പെയ്മെന്റ്</button>
-                            <button onclick="deleteRent('${d.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded-lg text-[9px] font-black">ഡിലീറ്റ്</button>
+                
+                // ഫിൽട്ടറിംഗ് പരിശോധന
+                if (r.meshtriOwner === currentMeshtri) {
+                    const bal = r.total - r.paid;
+                    const div = document.createElement('div');
+                    div.className = `bg-white p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-sm mb-4`;
+                    div.innerHTML = `
+                        <p class="font-black text-slate-800 text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
+                        <p class="text-xs text-slate-500 font-bold mb-2">കട: ${r.shop} | 📞 ${r.phone}</p>
+                        <div class="border-t pt-2 flex justify-between items-center">
+                            <p class="text-xs font-black text-slate-700">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
+                            <div class="flex gap-1">
+                                <button onclick="editDetails('${d.id}', ${JSON.stringify(r).replace(/"/g, '&quot;')})" class="bg-blue-100 text-blue-600 px-2 py-1 rounded-lg text-[9px] font-black">എഡിറ്റ്</button>
+                                <button onclick="editRent('${d.id}', ${r.paid})" class="bg-slate-900 text-white px-2 py-1 rounded-lg text-[9px] font-black">പെയ്മെന്റ്</button>
+                                <button onclick="deleteRent('${d.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded-lg text-[9px] font-black">ഡിലീറ്റ്</button>
+                            </div>
                         </div>
-                    </div>
-                `;
-                list.appendChild(div);
+                    `;
+                    list.appendChild(div);
+                }
             });
         });
     </script>
