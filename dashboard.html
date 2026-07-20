@@ -24,35 +24,80 @@
 </head>
 <body class="bg-slate-100 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        
-<!-- ഹെഡർ ഭാഗം: പുതിയ സ്റ്റൈലിൽ -->
-<div class="bg-slate-900 p-6 rounded-[2rem] shadow-2xl text-white mb-6 border border-slate-700 relative">
+
+<!-- ഹെഡർ ഭാഗം: ലേറ്റസ്റ്റ് മോഡൽ -->
+<div class="bg-slate-900 p-6 rounded-[2rem] shadow-2xl text-white mb-6 border border-slate-700 relative overflow-hidden">
     
-    <!-- മുകൾ ഭാഗം: പ്രൊഫൈൽ ഫോട്ടോയും ലോഗ് ഔട്ടും -->
-    <div class="flex justify-between items-center mb-4">
-        <label for="photoUpload" class="cursor-pointer">
-            <img id="profileImage" src="https://ui-avatars.com/api/?name=M" class="w-12 h-12 rounded-full border-2 border-white object-cover">
-            <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="previewImage(event)">
+    <!-- ഫോട്ടോയും ലോഗ് ഔട്ടും -->
+    <div class="flex justify-between items-center mb-6">
+        <!-- ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം -->
+        <label for="photoUpload" class="cursor-pointer group">
+            <div class="relative">
+                <img id="profileImage" src="https://ui-avatars.com/api/?name=User" class="w-16 h-16 rounded-2xl border-2 border-slate-700 shadow-lg object-cover transition group-hover:opacity-75">
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                    <span class="text-[10px] font-bold bg-black/50 px-2 py-1 rounded">മാറ്റുക</span>
+                </div>
+            </div>
+            <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
         </label>
         
-        <!-- റൗണ്ട് ലോഗ് ഔട്ട് ബട്ടൺ -->
-        <button onclick="logoutUser()" class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold shadow-lg hover:bg-red-700 transition">✕</button>
+        <button onclick="logoutUser()" class="w-10 h-10 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-bold hover:bg-red-500 hover:text-white transition">✕</button>
     </div>
 
-    <!-- സെൻട്രൽ ഭാഗം: ടൈറ്റിലും സ്വാഗതവും -->
-    <div class="text-center">
-        <!-- തിളങ്ങുന്ന നീല നിറത്തിലുള്ള മെസ്തിരി പ്രോ -->
-        <h1 class="text-4xl font-black text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)] mb-1">
-            MESHTRI PRO
-        </h1>
-        <p class="text-lg font-semibold text-slate-300">സ്വാഗതം, മേസ്തിരി</p>
+    <!-- മെയിൻ ടൈറ്റിൽ -->
+    <div class="text-center space-y-1">
+        <h1 class="text-3xl font-black text-white tracking-tight">MESHTRI <span class="text-blue-500">PRO</span></h1>
+        <!-- ഇവിടെയാണ് ലോഗിൻ ചെയ്ത ആളുടെ പേര് വരുന്നത് -->
+        <p id="meshtriNameDisplay" class="text-blue-400 font-bold text-lg italic">സ്വാഗതം, മേസ്തിരി</p>
     </div>
 
-    <!-- തീയതി: നടുവിൽ -->
-    <div class="mt-4 text-center">
-        <p id="currentDate" class="text-sm font-bold text-blue-400 bg-blue-900/30 inline-block px-4 py-1 rounded-full"></p>
+    <!-- തീയതി ബോക്സ് -->
+    <div class="mt-6 flex justify-center">
+        <div class="bg-slate-800 border border-slate-700 px-6 py-2 rounded-full flex items-center gap-2 shadow-inner">
+            <p id="currentDate" class="text-xs font-bold text-slate-300"></p>
+        </div>
     </div>
 </div>
+
+<script>
+    // പേജ് ലോഡ് ആകുമ്പോൾ പേരും ഫോട്ടോയും സെറ്റ് ചെയ്യുന്നു
+    window.onload = function() {
+        // 1. പേര് സെറ്റ് ചെയ്യുന്നു
+        const userName = localStorage.getItem('userName');
+        if (userName) {
+            document.getElementById('meshtriNameDisplay').innerText = "സ്വാഗതം, " + userName;
+        }
+
+        // 2. തീയതി സെറ്റ് ചെയ്യുന്നു
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
+
+        // 3. സേവ് ചെയ്ത ഫോട്ടോ ഉണ്ടെങ്കിൽ അത് കാണിക്കുന്നു
+        const savedPhoto = localStorage.getItem('profilePhoto');
+        if (savedPhoto) {
+            document.getElementById('profileImage').src = savedPhoto;
+        }
+    };
+
+    // ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുമ്പോൾ
+    function updateProfilePhoto(event) {
+        const reader = new FileReader();
+        reader.onload = function(){
+            const imgElement = document.getElementById('profileImage');
+            imgElement.src = reader.result;
+            localStorage.setItem('profilePhoto', reader.result); // ഫോട്ടോ സേവ് ചെയ്യുന്നു
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    // ലോഗ് ഔട്ട്
+    function logoutUser() {
+        localStorage.removeItem('userName');
+        localStorage.removeItem('profilePhoto');
+        window.location.href = "login.html";
+    }
+</script>
 
         <!-- ബട്ടണുകൾ -->
         <div class="space-y-4">
