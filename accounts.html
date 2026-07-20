@@ -15,51 +15,57 @@
 </head>
 <body class="bg-slate-50 p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <div class="flex justify-between items-center mb-4 no-print">
-            <a href="dashboard.html" class="text-sm font-bold text-slate-500">← തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
-            <p id="loggedInMeshtri" class="text-xs text-blue-600 font-bold">സ്വാഗതം, ലോഡിങ്...</p>
+        <!-- മുകളിലെ ഹെഡർ ബാർ (കള്ളിയിലാക്കിയത് & മേസ്തിരിയുടെ പേര് കൃത്യമായി വരുന്നത്) -->
+        <div class="flex justify-between items-center mb-4 no-print bg-white p-3.5 rounded-2xl shadow-sm border border-slate-100">
+            <a href="dashboard.html" class="text-xs font-bold text-slate-500 hover:text-slate-800">← തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
+            <p id="loggedInMeshtri" class="text-xs text-blue-600 font-extrabold bg-blue-50 px-3 py-1.5 rounded-xl">സ്വാഗതം, ലോഡിങ്...</p>
         </div>
         
-        <h1 class="text-2xl font-black text-slate-800 mb-4">മെറ്റീരിയൽസ്</h1>
+        <h1 class="text-2xl font-black text-slate-800 mb-4">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</h1>
         
         <!-- ആകെ തുക കാണിക്കുന്ന ബോക്സ് -->
-        <div class="bg-slate-900 text-white p-4 rounded-2xl shadow-md mb-6 text-center">
-            <p class="text-[10px] opacity-80 uppercase tracking-widest">ആകെ മെറ്റീരിയൽ ചെലവ്</p>
-            <h2 id="totalMaterialCost" class="text-2xl font-bold">₹0</h2>
+        <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-md mb-6 text-center">
+            <p class="text-[10px] opacity-80 uppercase tracking-widest font-bold">ആകെ മെറ്റീരിയൽ ചെലവ്</p>
+            <h2 id="totalMaterialCost" class="text-2xl font-extrabold mt-1">₹0</h2>
         </div>
 
         <!-- സൈറ്റ് പേര് വെച്ച് ഫിൽട്ടർ ചെയ്യാനുള്ള ബോക്സ് -->
         <div class="bg-white p-4 rounded-2xl shadow-sm mb-6 border border-slate-100 no-print">
             <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">സൈറ്റ് പേര് വെച്ച് തിരയുക</label>
-            <input type="text" id="filterSite" placeholder="സൈറ്റിന്റെ പേര് നൽകുക..." oninput="filterMaterials()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-slate-900 outline-none font-bold">
+            <input type="text" id="filterSite" placeholder="സൈറ്റിന്റെ പേര് നൽകുക..." oninput="filterMaterials()" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 outline-none font-bold">
         </div>
         
         <!-- മെറ്റീരിയൽസ് ഫോം -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6 space-y-3 no-print">
-            <h2 class="text-base font-bold text-slate-700">പുതിയ മെറ്റീരിയൽ ചേർക്കുക</h2>
+        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6 space-y-3.5 no-print">
+            <h2 class="text-base font-extrabold text-slate-700">പുതിയ മെറ്റീരിയൽ ചേർക്കുക</h2>
             
-            <input type="date" id="matDate" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold outline-none focus:ring-2 focus:ring-slate-900">
-            <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ്)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold outline-none focus:ring-2 focus:ring-slate-900">
-            <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold outline-none focus:ring-2 focus:ring-slate-900">
-            
-            <div class="grid grid-cols-2 gap-3">
-                <input type="number" id="matQty" placeholder="അളവ് (Qty)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold outline-none focus:ring-2 focus:ring-slate-900">
-                <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക്/ടൺ)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold outline-none focus:ring-2 focus:ring-slate-900">
+            <div>
+                <label class="block text-[11px] font-bold text-slate-400 mb-1">തീയതി</label>
+                <input type="date" id="matDate" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             </div>
             
-            <input type="number" id="matPrice" placeholder="ആകെ വില (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold outline-none focus:ring-2 focus:ring-slate-900">
-            <input type="tel" id="matPhone" placeholder="സപ്ലയർ ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ്)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             
-            <button id="saveBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black hover:bg-slate-800 transition">പുതിയ മെറ്റീരിയൽ ചേർക്കുക</button>
+            <div class="grid grid-cols-2 gap-3">
+                <input type="number" id="matQty" placeholder="വാങ്ങിയ അളവ് (Qty)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+                <input type="number" id="matUsed" placeholder="ഉപയോഗിച്ചത് (Used)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            </div>
+
+            <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / എണ്ണം)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="number" id="matPrice" placeholder="ആകെ വില (₹)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="tel" id="matPhone" placeholder="സപ്ലയർ ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            
+            <button id="saveBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black hover:bg-slate-800 transition shadow-sm">പുതിയ മെറ്റീരിയൽ ചേർക്കുക</button>
         </div>
 
         <!-- PDF ഡൗൺലോഡ് ബട്ടൺ -->
         <button onclick="window.print()" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-bold mb-6 hover:bg-blue-700 transition no-print shadow-md">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
 
         <!-- ലിസ്റ്റ് വിത്ത് ആക്ഷൻ ബട്ടൺസ് -->
-        <section class="space-y-4 pb-10">
-            <h2 class="font-black text-slate-800 mb-2">സ്റ്റോക്ക് നിലവാരം</h2>
-            <div id="materialList" class="space-y-3">
+        <section class="space-y-4 pb-12">
+            <h2 class="font-black text-slate-800 text-lg mb-2">സ്റ്റോക്ക് നിലവാരം (ബാക്കി കണക്ക്)</h2>
+            <div id="materialList" class="space-y-3.5">
                 <!-- ഡാറ്റ ഇവിടെ ഫയർബേസിൽ നിന്നും ലോഡ് ആകും -->
             </div>
         </section>
@@ -81,13 +87,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് എടുക്കുന്നു
-        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ യഥാർത്ഥ പേര് ലോക്കൽ സ്റ്റോറേജിൽ നിന്ന് എടുക്കുന്നു
+        const currentMeshtri = localStorage.getItem('userName') || "മേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+
+        // ഇപ്പോഴത്തെ തീയതി ഓട്ടോമാറ്റിക്കായി ഡേറ്റ് ഫീൽഡിൽ കൊടുക്കാൻ
+        document.getElementById('matDate').valueAsDate = new Date();
 
         let editId = null;
 
-        // സേവ് / അപ്ഡേറ്റ് ബട്ടൺ ഫങ്ഷൻ
         document.getElementById('saveBtn').onclick = async () => {
             const data = {
                 meshtriOwner: currentMeshtri,
@@ -95,6 +103,7 @@
                 name: document.getElementById('matName').value,
                 site: document.getElementById('matSite').value,
                 qty: parseFloat(document.getElementById('matQty').value) || 0,
+                used: parseFloat(document.getElementById('matUsed').value) || 0,
                 unit: document.getElementById('matUnit').value,
                 price: parseFloat(document.getElementById('matPrice').value) || 0,
                 phone: document.getElementById('matPhone').value
@@ -110,18 +119,16 @@
                 await addDoc(collection(db, "materials"), data);
             }
 
-            // ഫോം ക്ലിയർ ചെയ്യുന്നു
-            document.getElementById('matDate').value = '';
             document.getElementById('matName').value = '';
             document.getElementById('matSite').value = '';
             document.getElementById('matQty').value = '';
+            document.getElementById('matUsed').value = '';
             document.getElementById('matUnit').value = '';
             document.getElementById('matPrice').value = '';
             document.getElementById('matPhone').value = '';
-            alert("വിവരങ്ങൾ സേവ് ആയി!");
+            alert("വിവരങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
         };
 
-        // റിയൽ ടൈം ഡാറ്റ ഫെച്ച് ചെയ്ത് കാണിക്കാൻ
         onSnapshot(query(collection(db, "materials"), orderBy("date", "desc")), (snapshot) => {
             const list = document.getElementById('materialList');
             list.innerHTML = '';
@@ -130,24 +137,38 @@
             snapshot.forEach(docSnap => {
                 const d = docSnap.data();
                 
-                // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ ഡാറ്റ മാത്രം ഫിൽട്ടർ ചെയ്യുന്നു
                 if (d.meshtriOwner === currentMeshtri) {
                     totalCost += parseFloat(d.price) || 0;
+                    
+                    const totalQty = parseFloat(d.qty) || 0;
+                    const usedQty = parseFloat(d.used) || 0;
+                    const remainingQty = totalQty - usedQty;
 
                     list.innerHTML += `
-                        <div class="bg-white p-5 rounded-2xl border shadow-sm material-item" data-site="${(d.site || '').toLowerCase()}">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm material-item" data-site="${(d.site || '').toLowerCase()}">
                             <div class="flex justify-between items-start mb-1">
                                 <p class="font-black text-slate-800 text-lg">${d.name}</p>
-                                <a href="tel:${d.phone}" class="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg font-black text-[10px] no-print">വിളിക്കുക</a>
+                                <a href="tel:${d.phone}" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-xl font-black text-xs no-print">വിളിക്കുക</a>
                             </div>
-                            <p class="text-xs text-slate-500 font-bold mb-2">
+                            <p class="text-xs text-slate-400 font-bold mb-3">
                                 ${d.date || ''} ${d.site ? '• ' + d.site : ''}
                             </p>
-                            <p class="text-[13px] text-slate-700 font-bold mb-3">അളവ്: ${d.qty} ${d.unit} | വില: ₹${d.price}</p>
                             
-                            <div class="flex gap-2 no-print">
-                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.name}', '${d.site || ''}', ${d.qty}, '${d.unit}', ${d.price}, '${d.phone}')" class="flex-1 bg-amber-500 text-white py-2 rounded-xl font-black text-xs">എഡിറ്റ്</button>
-                                <button onclick="window.delMat('${docSnap.id}')" class="bg-red-100 text-red-600 px-4 py-2 rounded-xl font-black text-xs">ഡിലീറ്റ്</button>
+                            <div class="bg-slate-50 p-3.5 rounded-2xl mb-3 border border-slate-100">
+                                <div class="flex justify-between text-xs font-bold text-slate-500 mb-1">
+                                    <span>വാങ്ങിയത്: ${totalQty} ${d.unit}</span>
+                                    <span>ഉപയോഗിച്ചത്: ${usedQty} ${d.unit}</span>
+                                </div>
+                                <div class="text-sm font-black text-emerald-700">
+                                    ബാക്കി സ്റ്റോക്ക്: ${remainingQty} ${d.unit}
+                                </div>
+                            </div>
+                            
+                            <p class="text-xs text-slate-600 font-bold mb-4">ആകെ വില: ₹${d.price}</p>
+                            
+                            <div class="flex gap-2.5 no-print">
+                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.name}', '${d.site || ''}', ${totalQty}, ${usedQty}, '${d.unit}', ${d.price}, '${d.phone}')" class="flex-1 bg-amber-500 text-white py-2.5 rounded-xl font-black text-xs hover:bg-amber-600 transition">എഡിറ്റ്</button>
+                                <button onclick="window.delMat('${docSnap.id}')" class="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl font-black text-xs hover:bg-red-100 transition">ഡിലീറ്റ്</button>
                             </div>
                         </div>`;
                 }
@@ -156,7 +177,6 @@
             document.getElementById('totalMaterialCost').innerText = "₹" + totalCost;
         });
 
-        // സൈറ്റ് വെച്ച് ഫിൽട്ടർ ചെയ്യുന്ന ഫങ്ഷൻ
         window.filterMaterials = () => {
             const searchTerm = document.getElementById('filterSite').value.toLowerCase();
             const items = document.querySelectorAll('.material-item');
@@ -171,23 +191,22 @@
             });
         };
 
-        // എഡിറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ
-        window.editMat = (id, date, name, site, qty, unit, price, phone) => {
+        window.editMat = (id, date, name, site, qty, used, unit, price, phone) => {
             editId = id;
             document.getElementById('matDate').value = date;
             document.getElementById('matName').value = name;
             document.getElementById('matSite').value = site;
             document.getElementById('matQty').value = qty;
+            document.getElementById('matUsed').value = used;
             document.getElementById('matUnit').value = unit;
             document.getElementById('matPrice').value = price;
             document.getElementById('matPhone').value = phone;
             document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
-            window.scrollTo(0, 0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        // ഡിലീറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ
         window.delMat = async (id) => {
-            if (confirm("ഡിലീറ്റ് ചെയ്യണോ?")) {
+            if (confirm("ഈ വിവരങ്ങൾ ഡിലീറ്റ് ചെയ്യണോ?")) {
                 await deleteDoc(doc(db, "materials", id));
             }
         };
