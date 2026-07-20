@@ -26,27 +26,35 @@
     <div class="max-w-md mx-auto">
         <!-- ഹെഡർ -->
         <div class="bg-slate-900 p-6 rounded-[2rem] shadow-xl text-white mb-6 border-b-4 border-slate-700">
-            <!-- ടോപ്പ് ബാർ -->
-            <div class="flex justify-between items-center mb-6">
-                <label for="photoUpload" class="cursor-pointer">
-                    <img id="profileImage" src="https://ui-avatars.com/api/?name=M" class="w-12 h-12 rounded-full border-2 border-white object-cover">
-                    <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="previewImage(event)">
-                </label>
+        
+<!-- ഹെഡർ ഭാഗം: പുതിയ സ്റ്റൈലിൽ -->
+<div class="bg-slate-900 p-6 rounded-[2rem] shadow-2xl text-white mb-6 border border-slate-700 relative">
+    
+    <!-- മുകൾ ഭാഗം: പ്രൊഫൈൽ ഫോട്ടോയും ലോഗ് ഔട്ടും -->
+    <div class="flex justify-between items-center mb-4">
+        <label for="photoUpload" class="cursor-pointer">
+            <img id="profileImage" src="https://ui-avatars.com/api/?name=M" class="w-12 h-12 rounded-full border-2 border-white object-cover">
+            <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="previewImage(event)">
+        </label>
+        
+        <!-- റൗണ്ട് ലോഗ് ഔട്ട് ബട്ടൺ -->
+        <button onclick="logoutUser()" class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold shadow-lg hover:bg-red-700 transition">✕</button>
+    </div>
 
-                <div class="bg-slate-800 px-4 py-1 rounded-full border border-slate-700">
-                    <h1 class="font-bold text-lg tracking-widest text-blue-400">MESHTRI PRO</h1>
-                </div>
+    <!-- സെൻട്രൽ ഭാഗം: ടൈറ്റിലും സ്വാഗതവും -->
+    <div class="text-center">
+        <!-- തിളങ്ങുന്ന നീല നിറത്തിലുള്ള മെസ്തിരി പ്രോ -->
+        <h1 class="text-4xl font-black text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)] mb-1">
+            MESHTRI PRO
+        </h1>
+        <p class="text-lg font-semibold text-slate-300">സ്വാഗതം, മേസ്തിരി</p>
+    </div>
 
-                <!-- ലോഗ് ഔട്ട് ബട്ടൺ -->
-                <a href="#" onclick="logoutUser()" class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-xs shadow-lg hover:bg-red-700 transition">✕</a>
-            </div>
-
-            <!-- സ്വാഗതവും തീയതിയും -->
-            <div class="text-center">
-                <p class="text-xl font-semibold">സ്വാഗതം, മേസ്തിരി</p>
-                <p id="currentDate" class="text-sm opacity-70 mt-2 font-medium"></p>
-            </div>
-        </div>
+    <!-- തീയതി: നടുവിൽ -->
+    <div class="mt-4 text-center">
+        <p id="currentDate" class="text-sm font-bold text-blue-400 bg-blue-900/30 inline-block px-4 py-1 rounded-full"></p>
+    </div>
+</div>
 
         <!-- ബട്ടണുകൾ -->
         <div class="space-y-4">
