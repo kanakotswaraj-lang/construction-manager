@@ -51,7 +51,7 @@
             
             <div class="grid grid-cols-2 gap-3">
                 <input type="number" id="matQty" placeholder="വാങ്ങിയ അളവ്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
-                <input type="number" id="matUsed" placeholder="ഉപയോഗിച്ചത്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+                <input type="number" id="matUsed" placeholder="ഉപയോഗിച്ചത് (ഓപ്ഷണൽ)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             </div>
 
             <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / കിലോ / എണ്ണം)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
@@ -103,7 +103,6 @@
         let editId = null;
         let existingPhotoUrl = "";
 
-        // ഫോട്ടോയുടെ സൈസ് കുറച്ച് കംപ്രസ് ചെയ്യാൻ സഹായിക്കുന്ന ഫങ്ഷൻ
         const compressImage = (file) => {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -113,8 +112,8 @@
                     img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800;
-                        const MAX_HEIGHT = 800;
+                        const MAX_WIDTH = 700;
+                        const MAX_HEIGHT = 700;
                         let width = img.width;
                         let height = img.height;
 
@@ -134,18 +133,22 @@
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7)); // 70% ക്വാളിറ്റിയിൽ സൈസ് കുറയ്ക്കുന്നു
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
                     };
                 };
             });
         };
 
         document.getElementById('saveBtn').onclick = async () => {
-            const name = document.getElementById('matName').value;
-            const site = document.getElementById('matSite').value;
+            const name = document.getElementById('matName').value.trim();
+            const site = document.getElementById('matSite').value.trim();
             
             if (!name) return alert("മെറ്റീരിയൽ പേര് നൽകുക!");
             if (!site) return alert("സൈറ്റിന്റെ പേര് നൽകുക!");
+
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.innerText = "സേവ് ആകുന്നുണ്ട്, കാത്തിരിക്കൂ...";
+            saveBtn.disabled = true;
 
             let billPhotoUrl = existingPhotoUrl;
             const fileInput = document.getElementById('matBillPhoto');
@@ -164,9 +167,9 @@
                 site: site,
                 qty: parseFloat(document.getElementById('matQty').value) || 0,
                 used: parseFloat(document.getElementById('matUsed').value) || 0,
-                unit: document.getElementById('matUnit').value,
+                unit: document.getElementById('matUnit').value.trim(),
                 price: parseFloat(document.getElementById('matPrice').value) || 0,
-                phone: document.getElementById('matPhone').value,
+                phone: document.getElementById('matPhone').value.trim(),
                 billPhoto: billPhotoUrl
             };
 
@@ -175,11 +178,13 @@
                     await updateDoc(doc(db, "materials", editId), data);
                     editId = null;
                     existingPhotoUrl = "";
-                    document.getElementById('saveBtn').innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
+                    saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
                 } else {
                     await addDoc(collection(db, "materials"), data);
+                    saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
                 }
 
+                saveBtn.disabled = false;
                 document.getElementById('matName').value = '';
                 document.getElementById('matSite').value = '';
                 document.getElementById('matQty').value = '';
@@ -191,6 +196,8 @@
                 existingPhotoUrl = "";
                 alert("വിവരങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
             } catch (error) {
+                saveBtn.disabled = false;
+                saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
                 alert("സേവ് ചെയ്യുന്നതിൽ ചെറിയ തടസ്സമുണ്ടായി. വീണ്ടും ശ്രമിക്കുക.");
                 console.error(error);
             }
