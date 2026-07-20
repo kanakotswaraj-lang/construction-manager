@@ -4,68 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <title>മെറ്റീരിയൽസ് മാനേജ്മെന്റ്</title>
     <style>
+        body { font-family: 'Manjari', sans-serif; }
         @media print {
-            .no-print {
-                display: none !important;
-            }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
-<body class="bg-slate-50 p-4 font-sans">
+<body class="bg-gradient-to-b from-slate-100 to-slate-200 min-h-screen pb-12 p-4">
     <div class="max-w-md mx-auto">
-        <!-- മുകളിലെ ഹെഡർ ബാർ (സ്ഥലം തികയാൻ കോളം രൂപത്തിലാക്കി മാറ്റിയത്) -->
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mb-4 no-print bg-white p-3.5 rounded-2xl shadow-sm border border-slate-100">
-            <a href="dashboard.html" class="text-xs font-bold text-slate-500 hover:text-slate-800">← തിരികെ ഡാഷ്ബോർഡിലേക്ക്</a>
-            <p id="loggedInMeshtri" class="text-xs text-blue-600 font-extrabold bg-blue-50 px-3 py-1.5 rounded-xl text-center">സ്വാഗതം, ലോഡിങ്...</p>
+        
+        <!-- ഹെഡർ ബോക്സ് -->
+        <div class="mt-2 p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl text-white mb-6 flex justify-between items-center shadow-xl border border-slate-800">
+            <div>
+                <h1 class="text-xl font-black">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</h1>
+                <p id="loggedInMeshtri" class="text-xs text-blue-400 font-bold mt-1">സ്വാഗതം, ലോഡിങ്...</p>
+            </div>
+            <a href="dashboard.html" class="bg-slate-800/80 hover:bg-slate-800 text-xs px-3.5 py-2.5 rounded-xl text-slate-300 font-bold transition shadow-sm border border-slate-700">ഡാഷ്‌ബോർഡ്</a>
         </div>
         
-        <h1 class="text-2xl font-black text-slate-800 mb-4">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</h1>
-        
         <!-- ആകെ തുക കാണിക്കുന്ന ബോക്സ് -->
-        <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-md mb-6 text-center">
-            <p class="text-[10px] opacity-80 uppercase tracking-widest font-bold">ആകെ മെറ്റീരിയൽ ചെലവ്</p>
-            <h2 id="totalMaterialCost" class="text-2xl font-extrabold mt-1">₹0</h2>
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-lg mb-6 text-center border border-slate-700">
+            <p class="text-[11px] opacity-75 uppercase tracking-widest font-black text-slate-300">ആകെ മെറ്റീരിയൽ ചെലവ്</p>
+            <h2 id="totalMaterialCost" class="text-3xl font-black mt-1 text-emerald-400">₹0</h2>
         </div>
 
         <!-- സൈറ്റ് പേര് വെച്ച് ഫിൽട്ടർ ചെയ്യാനുള്ള ബോക്സ് -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm mb-6 border border-slate-100 no-print">
-            <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">സൈറ്റ് പേര് വെച്ച് തിരയുക</label>
-            <input type="text" id="filterSite" placeholder="സൈറ്റിന്റെ പേര് നൽകുക..." oninput="filterMaterials()" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 outline-none font-bold">
+        <div class="bg-white p-4 rounded-3xl shadow-sm mb-6 border border-slate-200/80 no-print">
+            <label class="block text-xs font-black text-slate-600 mb-2 uppercase tracking-wide">സൈറ്റ് പേര് വെച്ച് തിരയുക</label>
+            <input type="text" id="filterSite" placeholder="സൈറ്റിന്റെ പേര് നൽകുക..." oninput="filterMaterials()" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-slate-900 outline-none font-bold">
         </div>
         
-        <!-- മെറ്റീരിയൽസ് ഫോം (അക്ഷരങ്ങൾ കള്ളിക്കുള്ളിൽ ഒതുങ്ങാൻ ടെക്സ്റ്റ് സൈസ് ചെറുതാക്കി) -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6 space-y-3.5 no-print">
-            <h2 class="text-base font-extrabold text-slate-700">പുതിയ മെറ്റീരിയൽ ചേർക്കുക</h2>
+        <!-- മെറ്റീരിയൽസ് ഫോം -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 mb-6 space-y-3.5 no-print">
+            <h2 class="text-base font-black text-slate-800">പുതിയ മെറ്റീരിയൽ ചേർക്കുക</h2>
             
             <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-1">തീയതി</label>
+                <label class="block text-[11px] font-bold text-slate-500 mb-1">തീയതി</label>
                 <input type="date" id="matDate" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             </div>
             
-            <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ്)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-slate-900">
-            <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ്)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             
             <div class="grid grid-cols-2 gap-3">
-                <input type="number" id="matQty" placeholder="വാങ്ങിയ അളവ്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-slate-900">
-                <input type="number" id="matUsed" placeholder="ഉപയോഗിച്ചത്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-slate-900">
+                <input type="number" id="matQty" placeholder="വാങ്ങിയ അളവ്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+                <input type="number" id="matUsed" placeholder="ഉപയോഗിച്ചത്" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             </div>
 
-            <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / എണ്ണം)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-slate-900">
-            <input type="number" id="matPrice" placeholder="ആകെ വില (₹)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-slate-900">
-            <input type="tel" id="matPhone" placeholder="സപ്ലയർ ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / എണ്ണം)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="number" id="matPrice" placeholder="ആകെ വില (₹)" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
+            <input type="tel" id="matPhone" placeholder="സപ്ലയർ ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-sm outline-none focus:ring-2 focus:ring-slate-900">
             
-            <button id="saveBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black hover:bg-slate-800 transition shadow-sm text-sm">പുതിയ മെറ്റീരിയൽ ചേർക്കുക</button>
+            <!-- ബിൽ ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യാനുള്ള പുതിയ ഫീച്ചർ -->
+            <div>
+                <label class="block text-[11px] font-black text-slate-600 mb-1">ബില്ലിന്റെ ഫോട്ടോ (ചിത്രം തിരഞ്ഞെടുക്കുക)</label>
+                <input type="file" id="matBillPhoto" accept="image/*" class="w-full p-3 bg-slate-50 rounded-2xl border border-slate-200 font-bold text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-slate-900 file:text-white hover:file:bg-slate-800">
+            </div>
+
+            <button id="saveBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black hover:bg-slate-800 transition shadow-md text-sm mt-2">പുതിയ മെറ്റീരിയൽ ചേർക്കുക</button>
         </div>
 
         <!-- PDF ഡൗൺലോഡ് ബട്ടൺ -->
-        <button onclick="window.print()" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-bold mb-6 hover:bg-blue-700 transition no-print shadow-md text-sm">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
+        <button onclick="window.print()" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-black mb-6 hover:bg-blue-700 transition no-print shadow-md text-sm">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
 
         <!-- ലിസ്റ്റ് വിത്ത് ആക്ഷൻ ബട്ടൺസ് -->
         <section class="space-y-4 pb-12">
-            <h2 class="font-black text-slate-800 text-lg mb-2">സ്റ്റോക്ക് നിലവാരം (ബാക്കി കണക്ക്)</h2>
-            <div id="materialList" class="space-y-3.5">
+            <h2 class="font-black text-slate-800 text-base mb-2">സ്റ്റോക്ക് നിലവാരം (ബാക്കി കണക്ക്)</h2>
+            <div id="materialList" class="space-y-4">
                 <!-- ഡാറ്റ ഇവിടെ ഫയർബേസിൽ നിന്നും ലോഡ് ആകും -->
             </div>
         </section>
@@ -87,31 +95,51 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ യഥാർത്ഥ പേര് ലോക്കൽ സ്റ്റോറേജിൽ നിന്ന് എടുക്കുന്നു
         const currentMeshtri = localStorage.getItem('userName') || "മേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
-        // ഇപ്പോഴത്തെ തീയതി ഓട്ടോമാറ്റിക്കായി ഡേറ്റ് ഫീൽഡിൽ കൊടുക്കാൻ
         document.getElementById('matDate').valueAsDate = new Date();
 
         let editId = null;
 
+        // ഫോട്ടോ കോഡ് റീഡ് ചെയ്യാൻ സഹായിക്കുന്ന ഫംഗ്ഷൻ (Base64)
+        const getBase64 = (file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        };
+
         document.getElementById('saveBtn').onclick = async () => {
+            const name = document.getElementById('matName').value;
+            if (!name) return alert("മെറ്റീരിയൽ പേര് നൽകുക!");
+
+            let billPhotoUrl = "";
+            const fileInput = document.getElementById('matBillPhoto');
+            if (fileInput.files && fileInput.files[0]) {
+                billPhotoUrl = await getBase64(fileInput.files[0]);
+            }
+
             const data = {
                 meshtriOwner: currentMeshtri,
                 date: document.getElementById('matDate').value,
-                name: document.getElementById('matName').value,
+                name: name,
                 site: document.getElementById('matSite').value,
                 qty: parseFloat(document.getElementById('matQty').value) || 0,
                 used: parseFloat(document.getElementById('matUsed').value) || 0,
                 unit: document.getElementById('matUnit').value,
                 price: parseFloat(document.getElementById('matPrice').value) || 0,
-                phone: document.getElementById('matPhone').value
+                phone: document.getElementById('matPhone').value,
+                billPhoto: billPhotoUrl
             };
 
-            if (!data.name) return alert("മെറ്റീരിയൽ പേര് നൽകുക!");
-
             if (editId) {
+                // പഴയ ഫോട്ടോ ഉണ്ടെങ്കിൽ അത് നിലനിർത്താൻ (പുതിയത് സെലക്ട് ചെയ്തില്ലെങ്കിൽ)
+                if (!billPhotoUrl) {
+                    delete data.billPhoto; 
+                }
                 await updateDoc(doc(db, "materials", editId), data);
                 editId = null;
                 document.getElementById('saveBtn').innerText = "പുതിയ മെറ്റീരിയൽ ചേർക്കുക";
@@ -126,6 +154,7 @@
             document.getElementById('matUnit').value = '';
             document.getElementById('matPrice').value = '';
             document.getElementById('matPhone').value = '';
+            document.getElementById('matBillPhoto').value = '';
             alert("വിവരങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
         };
 
@@ -144,17 +173,29 @@
                     const usedQty = parseFloat(d.used) || 0;
                     const remainingQty = totalQty - usedQty;
 
+                    let photoSection = '';
+                    if (d.billPhoto) {
+                        photoSection = `
+                            <div class="mb-3">
+                                <p class="text-[11px] font-black text-slate-500 mb-1">ബിൽ ഫോട്ടോ:</p>
+                                <a href="${d.billPhoto}" target="_blank">
+                                    <img src="${d.billPhoto}" class="w-24 h-24 object-cover rounded-xl border border-slate-200 shadow-sm hover:opacity-95">
+                                </a>
+                            </div>
+                        `;
+                    }
+
                     list.innerHTML += `
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm material-item" data-site="${(d.site || '').toLowerCase()}">
+                        <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm material-item" data-site="${(d.site || '').toLowerCase()}">
                             <div class="flex justify-between items-start mb-1">
                                 <p class="font-black text-slate-800 text-lg">${d.name}</p>
-                                <a href="tel:${d.phone}" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-xl font-black text-xs no-print">വിളിക്കുക</a>
+                                <a href="tel:${d.phone}" class="bg-blue-50 text-blue-600 px-3.5 py-1.5 rounded-xl font-black text-xs no-print shadow-sm">വിളിക്കുക</a>
                             </div>
                             <p class="text-xs text-slate-400 font-bold mb-3">
                                 ${d.date || ''} ${d.site ? '• ' + d.site : ''}
                             </p>
                             
-                            <div class="bg-slate-50 p-3.5 rounded-2xl mb-3 border border-slate-100">
+                            <div class="bg-slate-50 p-4 rounded-2xl mb-3 border border-slate-100">
                                 <div class="flex justify-between text-xs font-bold text-slate-500 mb-1">
                                     <span>വാങ്ങിയത്: ${totalQty} ${d.unit}</span>
                                     <span>ഉപയോഗിച്ചത്: ${usedQty} ${d.unit}</span>
@@ -163,12 +204,14 @@
                                     ബാക്കി സ്റ്റോക്ക്: ${remainingQty} ${d.unit}
                                 </div>
                             </div>
+
+                            ${photoSection}
                             
-                            <p class="text-xs text-slate-600 font-bold mb-4">ആകെ വില: ₹${d.price}</p>
+                            <p class="text-xs font-black text-slate-700 mb-4 bg-slate-100/70 p-2.5 rounded-xl inline-block">ആകെ വില: ₹${d.price}</p>
                             
                             <div class="flex gap-2.5 no-print">
-                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.name}', '${d.site || ''}', ${totalQty}, ${usedQty}, '${d.unit}', ${d.price}, '${d.phone}')" class="flex-1 bg-amber-500 text-white py-2.5 rounded-xl font-black text-xs hover:bg-amber-600 transition">എഡിറ്റ്</button>
-                                <button onclick="window.delMat('${docSnap.id}')" class="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl font-black text-xs hover:bg-red-100 transition">ഡിലീറ്റ്</button>
+                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.name}', '${d.site || ''}', ${totalQty}, ${usedQty}, '${d.unit}', ${d.price}, '${d.phone}')" class="flex-1 bg-amber-500 text-white py-3 rounded-2xl font-black text-xs hover:bg-amber-600 transition shadow-sm">എഡിറ്റ്</button>
+                                <button onclick="window.delMat('${docSnap.id}')" class="bg-red-50 text-red-600 px-4 py-3 rounded-2xl font-black text-xs hover:bg-red-100 transition shadow-sm">ഡിലീറ്റ്</button>
                             </div>
                         </div>`;
                 }
