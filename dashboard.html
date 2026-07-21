@@ -25,10 +25,10 @@
 <body class="bg-slate-100 p-4 font-sans">
     <div class="max-w-md mx-auto">
 
-<!-- ഹെഡർ ഭാഗം: മികച്ച ലുക്കിൽ ക്രമീകരിച്ചത് -->
-<div class="relative mb-24">
+<!-- ഹെഡർ ഭാഗം: ഫേസ്ബുക്ക് സ്റ്റൈൽ കവറും സെന്റർഡ് പ്രൊഫൈലും -->
+<div class="relative mb-28">
     <!-- കവർ ബാനർ ഭാഗം -->
-    <div class="relative h-36 w-full bg-slate-800 rounded-t-[2.5rem] group overflow-hidden shadow-md">
+    <div class="relative h-36 w-full bg-slate-900 rounded-t-[2.5rem] group overflow-hidden shadow-md">
         <label for="coverUpload" class="cursor-pointer block w-full h-full">
             <img id="coverImage" src="https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition duration-300 group-hover:opacity-75">
             <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
@@ -37,7 +37,7 @@
         </label>
         <input type="file" id="coverUpload" class="hidden" accept="image/*" onchange="updateCoverPhoto(event)">
         
-        <!-- ഉചിതമായ സ്ഥാനം: കവർ ഫോട്ടോയുടെ വലതുവശത്ത് താഴെയായി ലോഗ് ഔട്ട് ബട്ടൺ -->
+        <!-- ലോഗ് ഔട്ട് ബട്ടൺ (കവർ ഫോട്ടോയുടെ വലതുവശത്ത് താഴെ) -->
         <button onclick="logoutUser()" class="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-slate-900/80 backdrop-blur-md text-red-400 border border-slate-700/80 flex items-center justify-center font-bold shadow-lg hover:bg-red-500 hover:text-white transition duration-300 z-10" title="ലോഗ് ഔട്ട്">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -45,34 +45,34 @@
         </button>
     </div>
 
-    <!-- പ്രൊഫൈൽ ഫോട്ടോയും വിവരങ്ങളും (ഓവർലാപ്പ് ചെയ്യുന്നത്) -->
-    <div class="absolute -bottom-16 left-6 right-6 flex flex-col items-center">
-        <!-- പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം -->
+    <!-- പ്രൊഫൈൽ ഫോട്ടോയും ഡാർക്ക് കാർഡും (കൃത്യം നടുവിലായി ഓവർലാപ്പ് ചെയ്യുന്നത്) -->
+    <div class="absolute -bottom-20 left-4 right-4 flex flex-col items-center">
+        <!-- മേസ്തിരിയുടെ പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം (നടുവിൽ) -->
         <label for="photoUpload" class="cursor-pointer group relative block mb-3">
-            <div class="relative p-1.5 bg-white rounded-full shadow-2xl border-4 border-slate-100">
+            <div class="relative p-1.5 bg-slate-900 rounded-full shadow-2xl border-4 border-slate-900">
                 <img id="profileImage" src="https://ui-avatars.com/api/?name=User" class="w-28 h-28 rounded-full object-cover transition group-hover:opacity-75">
-                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                    <span class="text-[11px] font-bold bg-black/70 px-3 py-1 rounded-full text-white backdrop-blur-sm">മാറ്റുക</span>
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-full">
+                    <span class="text-[11px] font-bold bg-black/80 px-3 py-1 rounded-full text-white backdrop-blur-sm">മാറ്റുക</span>
                 </div>
             </div>
             <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
         </label>
 
-        <!-- മെയിൻ ടൈറ്റിലും വിവരങ്ങളും (നല്ല വലിപ്പത്തിൽ സെന്റർ ചെയ്തത്) -->
-        <div class="text-center bg-white px-6 py-5 rounded-3xl shadow-xl border border-slate-100/80 w-full">
-            <h1 class="text-4xl font-black text-slate-950 tracking-tight flex items-center justify-center gap-2">
-                MESHTRI <span class="text-blue-600">PRO</span>
+        <!-- ഡാർക്ക് പ്രൊഫഷണൽ കാർഡ് (എല്ലാ വിവരങ്ങളും കൃത്യം നടുവിൽ) -->
+        <div class="text-center bg-slate-900 text-white px-6 py-5 rounded-[2rem] shadow-2xl border border-slate-800 w-full">
+            <h1 class="text-3xl font-black text-white tracking-wider flex items-center justify-center gap-2">
+                MESHTRI <span class="text-blue-500">PRO</span>
             </h1>
-            <p class="text-sm font-bold tracking-widest text-slate-500 uppercase pt-1">SMART SITE MANAGER</p>
+            <p class="text-xs font-semibold tracking-widest text-slate-400 uppercase pt-1">SMART SITE MANAGER</p>
             
             <!-- ലോഗിൻ ചെയ്ത ആളുടെ പേര് -->
-            <p id="meshtriNameDisplay" class="text-blue-700 font-bold text-lg pt-2">സ്വാഗതം, മേസ്തിരി</p>
+            <p id="meshtriNameDisplay" class="text-blue-400 font-bold text-base pt-2">സ്വാഗതം, മേസ്തിരി</p>
              
             <!-- തീയതി ബോക്സ് -->
             <div class="mt-4 flex justify-center">
-                <div class="bg-slate-50 border border-slate-200 px-5 py-2 rounded-full flex items-center gap-2 shadow-inner">
+                <div class="bg-slate-800 border border-slate-700 px-5 py-2 rounded-full flex items-center gap-2 shadow-inner">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <p id="currentDate" class="text-xs font-bold text-slate-700"></p>
+                    <p id="currentDate" class="text-xs font-bold text-slate-300"></p>
                 </div>
             </div>
         </div>
@@ -146,7 +146,7 @@
 </script>
 
         <!-- ബട്ടണുകൾ -->
-        <div class="space-y-4 mt-12">
+        <div class="space-y-4 mt-16">
             <a href="staff.html" class="bg-indigo-900 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white hover:scale-[1.02] transition duration-200">
                 <p class="text-xl font-black">👥 ജീവനക്കാരുടെ ശമ്പളം</p>
             </a>
