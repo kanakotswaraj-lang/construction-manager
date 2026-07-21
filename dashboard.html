@@ -25,42 +25,64 @@
 <body class="bg-slate-100 p-4 font-sans">
     <div class="max-w-md mx-auto">
 
-<!-- ഹെഡർ ഭാഗം: ലേറ്റസ്റ്റ് മോഡൽ -->
-<div class="bg-slate-900 p-6 rounded-[2rem] shadow-2xl text-white mb-6 border border-slate-700 relative overflow-hidden">
+<!-- ഹെഡർ ഭാഗം: വേൾഡ് ക്ലാസ് ഫേസ്ബുക്ക് സ്റ്റൈൽ കവർ ബാനറും പ്രൊഫൈലും -->
+<div class="bg-slate-900 rounded-[2.5rem] shadow-2xl text-white mb-6 border border-slate-700 relative overflow-hidden">
     
-    <!-- ഫോട്ടോയും ലോഗ് ഔട്ടും -->
-    <div class="flex justify-between items-center mb-6">
-        <!-- ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം -->
-        <label for="photoUpload" class="cursor-pointer group">
-            <div class="relative">
-                <img id="profileImage" src="https://ui-avatars.com/api/?name=User" class="w-16 h-16 rounded-2xl border-2 border-slate-700 shadow-lg object-cover transition group-hover:opacity-75">
-                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                    <span class="text-[10px] font-bold bg-black/50 px-2 py-1 rounded">മാറ്റുക</span>
-                </div>
+    <!-- ഫേസ്ബുക്ക് സ്റ്റൈൽ ലോങ് കവർ ബാനർ ഭാഗം -->
+    <div class="relative h-32 w-full bg-slate-800 group overflow-hidden">
+        <label for="coverUpload" class="cursor-pointer block w-full h-full">
+            <img id="coverImage" src="https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition duration-300 group-hover:opacity-75">
+            <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                <span class="text-xs font-bold bg-black/60 px-3 py-1.5 rounded-full text-white backdrop-blur-sm">📷 കവർ മാറ്റുക</span>
             </div>
-            <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
         </label>
+        <input type="file" id="coverUpload" class="hidden" accept="image/*" onchange="updateCoverPhoto(event)">
         
-        <button onclick="logoutUser()" class="w-10 h-10 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-bold hover:bg-red-500 hover:text-white transition">✕</button>
+        <!-- വേൾഡ് ക്ലാസ് ലോഗ് ഔട്ട് ബട്ടൺ (മുകളിൽ വലതുവശത്ത് കവറിന് മേൽ) -->
+        <button onclick="logoutUser()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-900/80 backdrop-blur-md text-red-400 border border-slate-700 flex items-center justify-center font-bold shadow-lg hover:bg-red-500 hover:text-white transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+        </button>
     </div>
 
-    <!-- മെയിൻ ടൈറ്റിൽ -->
-    <div class="text-center space-y-1">
-        <h1 class="text-3xl font-black text-white tracking-tight">MESHTRI <span class="text-blue-500">PRO</span></h1>
-        <!-- ഇവിടെയാണ് ലോഗിൻ ചെയ്ത ആളുടെ പേര് വരുന്നത് -->
-        <p id="meshtriNameDisplay" class="text-blue-400 font-bold text-lg italic">സ്വാഗതം, മേസ്തിരി</p>
-    </div>
+    <!-- പ്രൊഫൈൽ ഫോട്ടോയും യൂസർ വിവരങ്ങളും താഴെ -->
+    <div class="px-6 pb-6 pt-0 relative">
+        <div class="flex justify-between items-end -mt-12 mb-4">
+            <!-- പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം -->
+            <label for="photoUpload" class="cursor-pointer group relative inline-block">
+                <div class="relative p-1 bg-slate-900 rounded-3xl shadow-xl">
+                    <img id="profileImage" src="https://ui-avatars.com/api/?name=User" class="w-20 h-20 rounded-2xl border-2 border-slate-700 object-cover transition group-hover:opacity-75">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <span class="text-[10px] font-bold bg-black/70 px-2 py-1 rounded text-white">ഫോട്ടോ</span>
+                    </div>
+                </div>
+                <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
+            </label>
+        </div>
 
-    <!-- തീയതി ബോക്സ് -->
-    <div class="mt-6 flex justify-center">
-        <div class="bg-slate-800 border border-slate-700 px-6 py-2 rounded-full flex items-center gap-2 shadow-inner">
-            <p id="currentDate" class="text-xs font-bold text-slate-300"></p>
+        <!-- മെയിൻ ടൈറ്റിലും ടാഗ്‌ലൈനും -->
+        <div class="space-y-1">
+            <h1 class="text-3xl font-black text-white tracking-wider flex items-center gap-2">
+                MESHTRI <span class="text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">PRO</span>
+            </h1>
+            <p class="text-xs font-semibold tracking-widest text-slate-400 uppercase">Smart Site Manager</p>
+            <!-- ലോഗിൻ ചെയ്ത ആളുടെ പേര് -->
+            <p id="meshtriNameDisplay" class="text-blue-400 font-bold text-base pt-1">സ്വാഗതം, മേസ്തിരി</p>
+        </div>
+
+        <!-- തീയതി ബോക്സ് -->
+        <div class="mt-5 flex">
+            <div class="bg-slate-800/80 border border-slate-700/80 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-inner backdrop-blur-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <p id="currentDate" class="text-xs font-bold text-slate-300"></p>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // പേജ് ലോഡ് ആകുമ്പോൾ പേരും ഫോട്ടോയും സെറ്റ് ചെയ്യുന്നു
+    // പേജ് ലോഡ് ആകുമ്പോൾ പേരും ഫോട്ടോയും കവറും സെറ്റ് ചെയ്യുന്നു
     window.onload = function() {
         // 1. പേര് സെറ്റ് ചെയ്യുന്നു
         const userName = localStorage.getItem('userName');
@@ -71,91 +93,79 @@
         // 2. തീയതി സെറ്റ് ചെയ്യുന്നു
         const today = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('currentDate').innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
+        const dateElement = document.getElementById('currentDate');
+        if(dateElement) {
+            dateElement.innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
+        }
 
-        // 3. സേവ് ചെയ്ത ഫോട്ടോ ഉണ്ടെങ്കിൽ അത് കാണിക്കുന്നു
+        // 3. സേവ് ചെയ്ത പ്രൊഫൈൽ ഫോട്ടോ ഉണ്ടെങ്കിൽ അത് കാണിക്കുന്നു
         const savedPhoto = localStorage.getItem('profilePhoto');
         if (savedPhoto) {
             document.getElementById('profileImage').src = savedPhoto;
         }
+
+        // 4. സേവ് ചെയ്ത കവർ ഫോട്ടോ ഉണ്ടെങ്കിൽ അത് കാണിക്കുന്നു
+        const savedCover = localStorage.getItem('coverPhoto');
+        if (savedCover) {
+            document.getElementById('coverImage').src = savedCover;
+        }
     };
 
-    // ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുമ്പോൾ
+    // പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുമ്പോൾ
     function updateProfilePhoto(event) {
-        const reader = new FileReader();
-        reader.onload = function(){
-            const imgElement = document.getElementById('profileImage');
-            imgElement.src = reader.result;
-            localStorage.setItem('profilePhoto', reader.result); // ഫോട്ടോ സേവ് ചെയ്യുന്നു
-        };
-        reader.readAsDataURL(event.target.files[0]);
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e){
+                document.getElementById('profileImage').src = e.target.result;
+                localStorage.setItem('profilePhoto', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // കവർ ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുമ്പോൾ
+    function updateCoverPhoto(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e){
+                document.getElementById('coverImage').src = e.target.result;
+                localStorage.setItem('coverPhoto', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
     }
 
     // ലോഗ് ഔട്ട്
     function logoutUser() {
         localStorage.removeItem('userName');
         localStorage.removeItem('profilePhoto');
+        localStorage.removeItem('coverPhoto');
         window.location.href = "login.html";
     }
 </script>
 
         <!-- ബട്ടണുകൾ -->
         <div class="space-y-4">
-            <a href="staff.html" class="bg-indigo-900 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
+            <a href="staff.html" class="bg-indigo-900 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white hover:scale-[1.02] transition duration-200">
                 <p class="text-xl font-black">👥 ജീവനക്കാരുടെ ശമ്പളം</p>
             </a>
-            <a href="rentals.html" class="bg-emerald-900 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
+            <a href="rentals.html" class="bg-emerald-900 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white hover:scale-[1.02] transition duration-200">
                 <p class="text-xl font-black">🏗️ വാടക ഉപകരണങ്ങൾ</p>
             </a>
-            <a href="materials.html" class="bg-indigo-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
+            <a href="materials.html" class="bg-indigo-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white hover:scale-[1.02] transition duration-200">
                 <p class="text-xl font-black">🧱 മെറ്റീരിയൽസ്</p>
             </a>
-            <a href="accounts.html" class="bg-rose-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white">
+            <a href="accounts.html" class="bg-rose-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white hover:scale-[1.02] transition duration-200">
                 <p class="text-xl font-black">📊 വരവ് - ചെലവ്</p>
             </a>
         </div>
 
         <!-- വാട്സാപ്പ് സപ്പോർട്ട് -->
-        <a href="https://wa.me/916238020523" class="mt-8 bg-emerald-600 text-white p-5 rounded-2xl flex items-center justify-center font-black shadow-lg">
+        <a href="https://wa.me/916238020523" class="mt-8 bg-emerald-600 text-white p-5 rounded-2xl flex items-center justify-center font-black shadow-lg hover:bg-emerald-500 transition duration-200">
             💬 വാട്സാപ്പിൽ ബന്ധപ്പെടുക (916238020523)
         </a>
     </div>
-
-    <script>
-        // ലോഗ് ഔട്ട് ഫംഗ്‌ഷൻ
-        function logoutUser() {
-            localStorage.removeItem('userName'); 
-            window.location.href = "login.html";
-        }
-
-        const photoUpload = document.getElementById('photoUpload');
-        const profileImage = document.getElementById('profileImage');
-
-        photoUpload.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    profileImage.src = e.target.result;
-                    localStorage.setItem('profilePhoto', e.target.result);
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        window.onload = function() {
-            const savedPhoto = localStorage.getItem('profilePhoto');
-            if (savedPhoto) {
-                profileImage.src = savedPhoto;
-            }
-
-            const today = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const dateElement = document.getElementById('currentDate');
-            if(dateElement) {
-                dateElement.innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
-            }
-        }
-    </script>
 </body>
 </html>
