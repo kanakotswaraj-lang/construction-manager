@@ -17,7 +17,7 @@
         <!-- ഹെഡിങ് -->
         <div class="text-center mb-6">
             <h1 class="text-3xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
-            <p class="text-blue-500 font-bold mt-1">ലോഗിൻ / രജിസ്ട്രേഷൻ</p>
+            <p class="text-blue-500 font-bold mt-1">സൈറ്റ് മാനേജർ ഡിജിറ്റൽ ഡയറി</p>
         </div>
 
         <!-- ഫോം ഫീൽഡുകൾ -->
@@ -25,7 +25,7 @@
             
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1">മേസ്തിരിയുടെ പേര് (Username)</label>
-                <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
+                <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക (ഉദാ: Swaraj)" 
                        class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
 
@@ -42,7 +42,6 @@
                     <input type="password" id="password" placeholder="പാസ്‌വേർഡ് നൽകുക" 
                            class="w-full p-3 pr-12 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
                     <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
-                        <!-- കണ്ണിന്റെ ചിഹ്നം (SVG Icon) -->
                         <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -88,7 +87,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനുമുള്ള ഫംഗ്ഷൻ (Eye Toggle)
+        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനുമുള്ള ഫംഗ്ഷൻ
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
 
@@ -97,14 +96,14 @@
             passwordInput.setAttribute('type', type);
         });
 
-        // രജിസ്ട്രേഷൻ (Signup)
+        // പുതിയ അക്കൗണ്ട് നിർമ്മിക്കാൻ (Signup)
         document.getElementById("btnSignup").addEventListener("click", async () => {
             const username = document.getElementById('username').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
 
             if (!username || !email || !password) {
-                return alert("യൂസർനെയിം, ഇമെയിൽ, പാസ്‌വേർഡ് എന്നിവ കൃത്യമായി നൽകുക!");
+                return alert("പേര്, ഇമെയിൽ, പാസ്‌വേർഡ് എന്നിവയെല്ലാം കൃത്യമായി നൽകുക!");
             }
 
             try {
@@ -119,7 +118,7 @@
             }
         });
 
-        // ലോഗിൻ (Login)
+        // ലോഗിൻ ചെയ്യാൻ (Login) - ഇമെയിലും പാസ്‌വേർഡും മാത്രം മതി
         document.getElementById("btnLogin").addEventListener("click", async () => {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
@@ -146,10 +145,10 @@
             }
         });
 
-        // പാസ്‌വേർഡ് മറന്നുപോയാൽ (Reset Password)
+        // പാസ്‌വേർഡ് റിക്കവറി
         document.getElementById("btnForgot").addEventListener("click", async () => {
             const email = document.getElementById('email').value.trim();
-            if (!email) return alert("പാസ്‌വേർഡ് മാറ്റാൻ ആദ്യം മുകളിലെ കള്ളിയിൽ നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക!");
+            if (!email) return alert("പാസ്‌വേർഡ് മാറ്റാൻ ആദ്യം നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക!");
 
             try {
                 await sendPasswordResetEmail(auth, email);
