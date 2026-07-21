@@ -120,6 +120,15 @@
                         </div>
 
                         <div class="p-3 bg-slate-50 rounded-xl mb-3 space-y-2 border border-slate-100">
+                            <!-- ഹാജർ ടിക്ക് ചെയ്യാനുള്ള കള്ളി -->
+                            <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200">
+                                <span class="text-xs font-bold text-slate-700">ഇന്നത്തെ ഹാജർ:</span>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="attendance-${d.id}" class="w-4 h-4 accent-emerald-600 rounded">
+                                    <span class="text-xs font-black text-emerald-700">ഹാജർ (Present)</span>
+                                </label>
+                            </div>
+
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-[10px] font-bold text-slate-500 block">ആകെ പണിയെടുത്ത ദിവസം</label>
@@ -136,7 +145,7 @@
                                 <span class="text-emerald-700 font-black">ബാക്കി കൊടുക്കാനുള്ളത്: ₹${balanceDue}</span>
                             </div>
 
-                            <button id="save-${d.id}" class="w-full bg-slate-900 text-white mt-1 p-2.5 rounded-xl text-xs font-bold shadow-sm">கണക്കുകൾ സേവ് ചെയ്യുക</button>
+                            <button id="save-${d.id}" class="w-full bg-slate-900 text-white mt-1 p-2.5 rounded-xl text-xs font-bold shadow-sm">കണക്കുകൾ സേവ് ചെയ്യുക</button>
                         </div>
 
                         <div class="flex gap-2">
@@ -145,6 +154,19 @@
                         </div>
                     `;
                     list.appendChild(div);
+
+                    // ഹാജർ ടിക്ക് ചെയ്യുമ്പോൾ ദിവസങ്ങൾ ഓട്ടോമാറ്റിക് ആയി കൂട്ടാനുള്ള കോഡ്
+                    const attCheckbox = document.getElementById(`attendance-${d.id}`);
+                    attCheckbox.onchange = () => {
+                        const daysInput = document.getElementById(`days-${d.id}`);
+                        let currentDays = parseFloat(daysInput.value) || 0;
+                        if(attCheckbox.checked) {
+                            currentDays += 1;
+                        } else {
+                            currentDays = Math.max(0, currentDays - 1);
+                        }
+                        daysInput.value = currentDays;
+                    };
 
                     // കണക്കുകൾ അപ്ഡേറ്റ് ചെയ്യാനുള്ള കോഡ്
                     document.getElementById(`save-${d.id}`).onclick = async () => {
