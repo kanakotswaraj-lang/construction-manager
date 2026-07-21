@@ -24,7 +24,7 @@
         <!-- 1. ലോഗിൻ ഫോം -->
         <div id="loginSection" class="space-y-4">
             <div>
-                <label class="block text-xs font-black text-gray-600 uppercase mb-1">മേസ്തിരിയുടെ പേര് (Username)</label>
+                <label class="block text-xs font-black text-gray-600 uppercase mb-1">മേസ്തിരിയുടെ പേര് (USERNAME)</label>
                 <input type="text" id="loginUsername" placeholder="നിങ്ങളുടെ പേര് നൽകുക (ഉദാ: Swaraj)" 
                        class="w-full p-3.5 bg-gray-50 border-2 border-gray-200 rounded-2xl outline-none focus:border-blue-600 focus:bg-white transition text-sm font-bold">
             </div>
@@ -121,28 +121,32 @@
             loginPassword.setAttribute('type', type);
         });
 
-        // പേജുകൾ മാറ്റുന്നതിനുള്ള കണക്ഷനുകൾ
+        // പേജുകൾ മാറ്റി കാണിക്കുന്നതിനുള്ള കണക്ഷനുകൾ
         document.getElementById('linkRegister').addEventListener('click', (e) => {
             e.preventDefault();
             loginSection.classList.add('hidden');
             registerSection.classList.remove('hidden');
+            forgotSection.classList.add('hidden');
         });
 
         document.getElementById('linkForgot').addEventListener('click', (e) => {
             e.preventDefault();
             loginSection.classList.add('hidden');
+            registerSection.classList.add('hidden');
             forgotSection.classList.remove('hidden');
         });
 
         document.getElementById('backToLoginFromReg').addEventListener('click', (e) => {
             e.preventDefault();
             registerSection.classList.add('hidden');
+            forgotSection.classList.add('hidden');
             loginSection.classList.remove('hidden');
         });
 
         document.getElementById('backToLoginFromForgot').addEventListener('click', (e) => {
             e.preventDefault();
             forgotSection.classList.add('hidden');
+            registerSection.classList.add('hidden');
             loginSection.classList.remove('hidden');
         });
 
