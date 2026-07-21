@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മേസ്തിരി ആപ്പ് - ലോഗിൻ / രജിസ്ട്രേഷൻ</title>
+    <title>മേസ്തിരി ആപ്പ്</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -16,14 +16,14 @@
         
         <!-- ഹെഡിങ് -->
         <div class="text-center mb-6">
-            <h1 id="formTitle" class="text-3xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
-            <p id="formSubtitle" class="text-blue-500 font-bold mt-1">സൈറ്റ് മാനേജർ ഡിജിറ്റൽ ഡയറി</p>
+            <h1 class="text-3xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
+            <p class="text-blue-500 font-bold mt-1">ലോഗിൻ / രജിസ്ട്രേഷൻ</p>
         </div>
 
         <!-- ഫോം ഫീൽഡുകൾ -->
-        <div class="space-y-3">
-            <!-- യൂസർനെയിം (സൈൻ അപ്പ് ചെയ്യുമ്പോൾ മാത്രം കാണിക്കും) -->
-            <div id="usernameDiv" class="hidden">
+        <div class="space-y-4">
+            
+            <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1">മേസ്തിരിയുടെ പേര് (Username)</label>
                 <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
                        class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
@@ -35,34 +35,45 @@
                        class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
             
+            <!-- പാസ്‌വേർഡും കണ്ണിന്റെ ചിഹ്നവും -->
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
-                <input type="password" id="password" placeholder="പാസ്‌വേർഡ് നൽകുക" 
-                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                <div class="relative">
+                    <input type="password" id="password" placeholder="പാസ്‌വേർഡ് നൽകുക" 
+                           class="w-full p-3 pr-12 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
+                        <!-- കണ്ണിന്റെ ചിഹ്നം (SVG Icon) -->
+                        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- മെയിൻ ബട്ടൺ -->
-        <button id="mainButton" class="w-full mt-5 bg-blue-600 text-white p-3.5 rounded-xl font-black text-lg hover:bg-blue-700 transition shadow-lg">
-            ലോഗിൻ ചെയ്യുക
-        </button>
+        <!-- ബട്ടണുകൾ -->
+        <div class="mt-6 space-y-3">
+            <button id="btnLogin" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-black text-lg hover:bg-blue-700 transition shadow-lg">
+                ലോഗിൻ ചെയ്യുക
+            </button>
+            
+            <button id="btnSignup" class="w-full bg-green-600 text-white p-3.5 rounded-xl font-black text-lg hover:bg-green-700 transition shadow-lg">
+                പുതിയ അക്കൗണ്ട് നിർമ്മിക്കുക
+            </button>
+        </div>
 
         <!-- പാസ്‌വേർഡ് മറന്നുപോയാൽ -->
-        <button id="btnForgot" class="w-full mt-3 text-gray-500 font-bold hover:text-blue-600 underline text-sm">
-            പാസ്‌വേർഡ് മറന്നുപോയോ?
+        <button id="btnForgot" class="w-full mt-4 text-gray-500 font-bold hover:text-blue-600 underline text-sm">
+            പാസ്‌വേർഡ് മറന്നുപോയോ? (ഇമെയിലിലേക്ക് അയക്കാം)
         </button>
 
-        <!-- മോഡ് മാറ്റാനുള്ള ലിങ്ക് (ലോഗിൻ <-> സൈൻ അപ്പ്) -->
-        <p class="text-center mt-5 text-gray-600 font-bold text-sm">
-            <span id="toggleText">പുതിയ അക്കൗണ്ട് വേണോ?</span> 
-            <a href="#" id="toggleMode" class="text-blue-600 underline ml-1">രജിസ്റ്റർ ചെയ്യുക</a>
-        </p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -77,83 +88,68 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let isSignupMode = false;
+        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനുമുള്ള ഫംഗ്ഷൻ (Eye Toggle)
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
 
-        const formTitle = document.getElementById("formTitle");
-        const formSubtitle = document.getElementById("formSubtitle");
-        const usernameDiv = document.getElementById("usernameDiv");
-        const mainButton = document.getElementById("mainButton");
-        const btnForgot = document.getElementById("btnForgot");
-        const toggleText = document.getElementById("toggleText");
-        const toggleMode = document.getElementById("toggleMode");
-
-        // ലോഗിൻ / സൈൻ അപ്പ് മോഡ് മാറ്റുക
-        toggleMode.addEventListener("click", (e) => {
-            e.preventDefault();
-            isSignupMode = !isSignupMode;
-            if (isSignupMode) {
-                formTitle.innerText = "പുതിയ അക്കൗണ്ട്";
-                formSubtitle.innerText = "മേസ്തിരി രജിസ്ട്രേഷൻ";
-                usernameDiv.classList.remove("hidden");
-                mainButton.innerText = "അക്കൗണ്ട് നിർമ്മിക്കുക";
-                btnForgot.classList.add("hidden");
-                toggleText.innerText = "ഇതിനകം അക്കൗണ്ട് ഉണ്ടോ?";
-                toggleMode.innerText = "ലോഗിൻ ചെയ്യുക";
-            } else {
-                formTitle.innerText = "മേസ്തിരി ആപ്പ്";
-                formSubtitle.innerText = "സൈറ്റ് മാനേജർ ഡിജിറ്റൽ ഡയറി";
-                usernameDiv.classList.add("hidden");
-                mainButton.innerText = "ലോഗിൻ ചെയ്യുക";
-                btnForgot.classList.remove("hidden");
-                toggleText.innerText = "പുതിയ അക്കൗണ്ട് വേണോ?";
-                toggleMode.innerText = "രജിസ്റ്റർ ചെയ്യുക";
-            }
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
         });
 
-        // മെയിൻ ബട്ടൺ ആക്ഷൻ (ലോഗിൻ അല്ലെങ്കിൽ സൈൻ അപ്പ്)
-        mainButton.addEventListener("click", async () => {
+        // രജിസ്ട്രേഷൻ (Signup)
+        document.getElementById("btnSignup").addEventListener("click", async () => {
+            const username = document.getElementById('username').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
-            const username = document.getElementById('username').value.trim();
 
-            if (!email || !password || (isSignupMode && !username)) {
-                return alert("എല്ലാ വിവരങ്ങളും കൃത്യമായി പൂരിപ്പിക്കുക!");
+            if (!username || !email || !password) {
+                return alert("യൂസർനെയിം, ഇമെയിൽ, പാസ്‌വേർഡ് എന്നിവ കൃത്യമായി നൽകുക!");
             }
 
             try {
-                if (isSignupMode) {
-                    // രജിസ്ട്രേഷൻ
-                    await createUserWithEmailAndPassword(auth, email, password);
-                    await setDoc(doc(db, "users", username), {
-                        username: username,
-                        email: email
-                    });
-                    alert("അക്കൗണ്ട് വിജയകരമായി നിർമ്മിച്ചു!");
-                    window.location.reload(); // പേജ് റിഫ്രഷ് ചെയ്ത് ലോഗിൻ മോഡിലേക്ക് വരാൻ
-                } else {
-                    // ലോഗിൻ
-                    await signInWithEmailAndPassword(auth, email, password);
-                    
-                    const q = query(collection(db, "users"), where("email", "==", email));
-                    const querySnapshot = await getDocs(q);
-                    
-                    let userName = "Meshtri";
-                    querySnapshot.forEach((doc) => {
-                        userName = doc.data().username;
-                    });
-
-                    localStorage.setItem('userName', userName);
-                    window.location.href = "dashboard.html";
-                }
+                await createUserWithEmailAndPassword(auth, email, password);
+                await setDoc(doc(db, "users", email), {
+                    username: username,
+                    email: email
+                });
+                alert("അക്കൗണ്ട് വിജയകരമായി നിർമ്മിച്ചു! ഇനി ലോഗിൻ ചെയ്യാം.");
             } catch (error) {
-                alert("നടപടിക്രമം പരാജയപ്പെട്ടു: " + error.message);
+                alert("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു: " + error.message);
             }
         });
 
-        // പാസ്‌വേർഡ് മറന്നുപോയാൽ
-        btnForgot.addEventListener("click", async () => {
+        // ലോഗിൻ (Login)
+        document.getElementById("btnLogin").addEventListener("click", async () => {
             const email = document.getElementById('email').value.trim();
-            if (!email) return alert("ആദ്യം മുകളിലെ ബോക്സിൽ നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക!");
+            const password = document.getElementById('password').value.trim();
+
+            if (!email || !password) {
+                return alert("ലോഗിൻ ചെയ്യാൻ ഇമെയിലും പാസ്‌വേർഡും നൽകുക!");
+            }
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                
+                const docRef = doc(db, "users", email);
+                const docSnap = await getDoc(docRef);
+                
+                let userName = "Meshtri";
+                if (docSnap.exists()) {
+                    userName = docSnap.data().username;
+                }
+
+                localStorage.setItem('userName', userName);
+                window.location.href = "dashboard.html";
+            } catch (error) {
+                alert("ലോഗിൻ പരാജയപ്പെട്ടു: ഇമെയിലും പാസ്‌വേർഡും ശരിയാണോ എന്ന് പരിശോധിക്കുക.");
+            }
+        });
+
+        // പാസ്‌വേർഡ് മറന്നുപോയാൽ (Reset Password)
+        document.getElementById("btnForgot").addEventListener("click", async () => {
+            const email = document.getElementById('email').value.trim();
+            if (!email) return alert("പാസ്‌വേർഡ് മാറ്റാൻ ആദ്യം മുകളിലെ കള്ളിയിൽ നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക!");
 
             try {
                 await sendPasswordResetEmail(auth, email);
