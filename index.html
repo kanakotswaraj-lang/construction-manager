@@ -3,35 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മേസ്തിരി ആപ്പ് - ലോഗിൻ</title>
+    <title>മേസ്തിരി പ്രോ - സ്മാർട്ട് സൈറ്റ് മാനേജർ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Manjari', sans-serif; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-900 via-blue-800 to-cyan-900 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 min-h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm border-t-4 border-blue-500">
+    <div class="bg-white/95 backdrop-blur-xl p-8 rounded-3xl shadow-2xl w-full max-w-md border border-white/20 shadow-blue-900/50">
         
+        <!-- ഹെഡർ ഭാഗം -->
         <div class="text-center mb-6">
-            <h1 class="text-3xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
-            <p class="text-blue-500 font-bold mt-1">സൈറ്റ് മാനേജർ ഡിജിറ്റൽ ഡയറി</p>
+            <span class="bg-blue-100 text-blue-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">MESHTRI PRO</span>
+            <h1 class="text-3xl font-black text-blue-950 mt-2">മേസ്തിരി ആപ്പ്</h1>
+            <p class="text-blue-600 font-bold text-sm mt-0.5">സ്മാർട്ട് സൈറ്റ് മാനേജർ ഡിജിറ്റൽ ഡയറി</p>
         </div>
 
-        <!-- ലോഗിൻ ഫോം -->
+        <!-- 1. ലോഗിൻ ഫോം -->
         <div id="loginSection" class="space-y-4">
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">മേസ്തിരിയുടെ പേര് (Username)</label>
-                <input type="text" id="loginUsername" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                <label class="block text-xs font-black text-gray-600 uppercase mb-1">മേസ്തിരിയുടെ പേര് (Username)</label>
+                <input type="text" id="loginUsername" placeholder="നിങ്ങളുടെ പേര് നൽകുക (ഉദാ: Swaraj)" 
+                       class="w-full p-3.5 bg-gray-50 border-2 border-gray-200 rounded-2xl outline-none focus:border-blue-600 focus:bg-white transition text-sm font-bold">
             </div>
             
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
+                <label class="block text-xs font-black text-gray-600 uppercase mb-1">പാസ്‌വേർഡ്</label>
                 <div class="relative">
-                    <input type="password" id="loginPassword" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full p-3 pr-12 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
-                    <button type="button" id="toggleLoginPassword" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <input type="password" id="loginPassword" placeholder="പാസ്‌വേർഡ് നൽകുക" 
+                           class="w-full p-3.5 pr-12 bg-gray-50 border-2 border-gray-200 rounded-2xl outline-none focus:border-blue-600 focus:bg-white transition text-sm font-bold">
+                    <button type="button" id="toggleLoginPassword" class="absolute inset-y-0 right-0 px-3.5 flex items-center text-gray-400 hover:text-blue-600 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
@@ -39,66 +43,66 @@
                 </div>
             </div>
 
-            <button id="btnLogin" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-black text-lg hover:bg-blue-700 transition shadow-lg">
+            <button id="btnLogin" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-black text-base hover:bg-blue-700 active:scale-[0.98] transition shadow-lg shadow-blue-600/30">
                 ലോഗിൻ ചെയ്യുക
             </button>
 
-            <div class="flex justify-between text-sm mt-4 font-bold">
+            <div class="flex justify-between text-xs font-bold pt-2">
                 <a href="#" id="linkForgot" class="text-blue-600 hover:underline">പാസ്‌വേർഡ് മറന്നുപോയോ?</a>
-                <a href="#" id="linkRegister" class="text-green-600 hover:underline">പുതിയ അക്കൗണ്ട്</a>
+                <a href="#" id="linkRegister" class="text-green-600 hover:underline">പുതിയ അക്കൗണ്ട് നിർമ്മിക്കുക</a>
             </div>
         </div>
 
-        <!-- പുതിയ അക്കൗണ്ട് നിർമ്മിക്കുന്ന ഫോം -->
-        <div id="registerSection" class="space-y-3 hidden">
-            <h2 class="text-lg font-bold text-green-700 text-center mb-2">പുതിയ അക്കൗണ്ട് നിർമ്മിക്കുക</h2>
+        <!-- 2. പുതിയ അക്കൗണ്ട് ഫോം (സുരക്ഷാ ചോദ്യങ്ങളോടെ) -->
+        <div id="registerSection" class="space-y-3.5 hidden">
+            <h2 class="text-base font-black text-green-700 text-center mb-1">പുതിയ അക്കൗണ്ട് നിർമ്മിക്കുക</h2>
             <div>
-                <label class="block text-xs font-bold text-gray-700">പേര് (Username)</label>
-                <input type="text" id="regUsername" placeholder="പേര് നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">പേര് (Username)</label>
+                <input type="text" id="regUsername" placeholder="പേര് നൽകുക" class="w-full p-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-bold focus:border-green-600 outline-none">
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-700">പാസ്‌വേർഡ്</label>
-                <input type="password" id="regPassword" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
+                <input type="password" id="regPassword" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full p-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-bold focus:border-green-600 outline-none">
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-700">സുരക്ഷാ ചോദ്യം: ആദ്യ സ്കൂളിന്റെ പേര്?</label>
-                <input type="text" id="regAns1" placeholder="ഉത്തരം നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">സുരക്ഷാ ചോദ്യം: നിങ്ങളുടെ ആദ്യത്തെ സ്കൂളിന്റെ പേര്?</label>
+                <input type="text" id="regAns1" placeholder="ഉത്തരം നൽകുക" class="w-full p-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-bold focus:border-green-600 outline-none">
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-700">സുരക്ഷാ ചോദ്യം: പ്രിയപ്പെട്ട സ്ഥലം?</label>
-                <input type="text" id="regAns2" placeholder="ഉത്തരം നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">സുരക്ഷാ ചോദ്യം: നിങ്ങളുടെ പ്രിയപ്പെട്ട സ്ഥലം?</label>
+                <input type="text" id="regAns2" placeholder="ഉത്തരം നൽകുക" class="w-full p-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-bold focus:border-green-600 outline-none">
             </div>
 
-            <button id="btnSaveRegister" class="w-full bg-green-600 text-white p-3 rounded-xl font-bold hover:bg-green-700 transition">
+            <button id="btnSaveRegister" class="w-full bg-green-600 text-white p-3.5 rounded-2xl font-black text-sm hover:bg-green-700 transition shadow-lg shadow-green-600/30">
                 അക്കൗണ്ട് സേവ് ചെയ്യുക
             </button>
-            <p class="text-center text-sm mt-2"><a href="#" id="backToLoginFromReg" class="text-blue-600 font-bold hover:underline">തിരികെ ലോഗിൻ ചെയ്യുക</a></p>
+            <p class="text-center text-xs pt-1"><a href="#" id="backToLoginFromReg" class="text-blue-600 font-bold hover:underline">തിരികെ ലോഗിൻ ചെയ്യുക</a></p>
         </div>
 
-        <!-- പാസ്‌വേർഡ് റിക്കവറി സെക്ഷൻ -->
-        <div id="forgotSection" class="space-y-3 hidden">
-            <h2 class="text-lg font-bold text-blue-700 text-center mb-2">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h2>
+        <!-- 3. പാസ്‌വേർഡ് റിക്കവറി സെക്ഷൻ -->
+        <div id="forgotSection" class="space-y-3.5 hidden">
+            <h2 class="text-base font-black text-blue-700 text-center mb-1">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h2>
             <div>
-                <label class="block text-xs font-bold text-gray-700">നിങ്ങളുടെ പേര് (Username)</label>
-                <input type="text" id="forgotUsername" placeholder="പേര് നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">നിങ്ങളുടെ പേര് (Username)</label>
+                <input type="text" id="forgotUsername" placeholder="പേര് നൽകുക" class="w-full p-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-bold focus:border-blue-600 outline-none">
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-700">ആദ്യ സ്കൂളിന്റെ പേര്?</label>
-                <input type="text" id="forgotAns1" placeholder="ഉത്തരം നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">ആദ്യത്തെ സ്കൂളിന്റെ പേര്?</label>
+                <input type="text" id="forgotAns1" placeholder="ഉത്തരം നൽകുക" class="w-full p-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-bold focus:border-blue-600 outline-none">
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-700">പ്രിയപ്പെട്ട സ്ഥലം?</label>
-                <input type="text" id="forgotAns2" placeholder="ഉത്തരം നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">പ്രിയപ്പെട്ട സ്ഥലം?</label>
+                <input type="text" id="forgotAns2" placeholder="ഉത്തരം നൽകുക" class="w-full p-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-bold focus:border-blue-600 outline-none">
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-700">പുതിയ പാസ്‌വേർഡ്</label>
-                <input type="password" id="newPassword" placeholder="പുതിയ പാസ്‌വേർഡ്" class="w-full p-2.5 border rounded-lg text-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">പുതിയ പാസ്‌വേർഡ്</label>
+                <input type="password" id="newPassword" placeholder="പുതിയ പാസ്‌വേർഡ് നൽകുക" class="w-full p-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-bold focus:border-blue-600 outline-none">
             </div>
 
-            <button id="btnResetPassword" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold hover:bg-blue-700 transition">
+            <button id="btnResetPassword" class="w-full bg-blue-600 text-white p-3.5 rounded-2xl font-black text-sm hover:bg-blue-700 transition shadow-lg shadow-blue-600/30">
                 പാസ്‌വേർഡ് മാറ്റുക
             </button>
-            <p class="text-center text-sm mt-2"><a href="#" id="backToLoginFromForgot" class="text-blue-600 font-bold hover:underline">തിരികെ ലോഗിൻ ചെയ്യുക</a></p>
+            <p class="text-center text-xs pt-1"><a href="#" id="backToLoginFromForgot" class="text-blue-600 font-bold hover:underline">തിരികെ ലോഗിൻ ചെയ്യുക</a></p>
         </div>
 
     </div>
@@ -117,6 +121,7 @@
             loginPassword.setAttribute('type', type);
         });
 
+        // പേജുകൾ മാറ്റുന്നതിനുള്ള കണക്ഷനുകൾ
         document.getElementById('linkRegister').addEventListener('click', (e) => {
             e.preventDefault();
             loginSection.classList.add('hidden');
@@ -141,6 +146,7 @@
             loginSection.classList.remove('hidden');
         });
 
+        // പുതിയ അക്കൗണ്ട് സേവ് ചെയ്യൽ
         document.getElementById('btnSaveRegister').addEventListener('click', () => {
             const user = document.getElementById('regUsername').value.trim();
             const pass = document.getElementById('regPassword').value.trim();
@@ -148,7 +154,7 @@
             const ans2 = document.getElementById('regAns2').value.trim();
 
             if (!user || !pass || !ans1 || !ans2) {
-                return alert("എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
+                return alert("എല്ലാ വിവരങ്ങളും കൃത്യമായി പൂരിപ്പിക്കുക!");
             }
 
             const accountData = { password: pass, ans1: ans1, ans2: ans2 };
@@ -159,6 +165,7 @@
             loginSection.classList.remove('hidden');
         });
 
+        // ലോഗിൻ പരിശോധന
         document.getElementById('btnLogin').addEventListener('click', () => {
             const user = document.getElementById('loginUsername').value.trim();
             const pass = document.getElementById('loginPassword').value.trim();
@@ -177,10 +184,11 @@
                 localStorage.setItem('userName', user);
                 window.location.href = "dashboard.html";
             } else {
-                alert("പാസ്‌വേർഡ് തെറ്റാണ്!");
+                alert("നൽകിയ പാസ്‌വേർഡ് തെറ്റാണ്!");
             }
         });
 
+        // സുരക്ഷാ ചോദ്യങ്ങൾ വഴി പാസ്‌വേർഡ് റിക്കവറി ചെയ്യൽ
         document.getElementById('btnResetPassword').addEventListener('click', () => {
             const user = document.getElementById('forgotUsername').value.trim();
             const ans1 = document.getElementById('forgotAns1').value.trim();
