@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ലോഗിൻ - മേസ്തിരി ആപ്പ്</title>
+    <title>രജിസ്ട്രേഷൻ - മേസ്തിരി ആപ്പ്</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -12,82 +12,56 @@
 </head>
 <body class="bg-gradient-to-br from-indigo-900 via-blue-800 to-cyan-900 min-h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm border-t-4 border-blue-500">
-        <!-- ഹെഡിംഗ് -->
+    <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm border-t-4 border-green-500">
         <div class="text-center mb-6">
             <h1 class="text-3xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
-            <p class="text-blue-500 font-bold mt-1">സൈറ്റ് മാനേജർ ഡിജിറ്റൽ ഡയറി</p>
+            <p class="text-green-600 font-bold mt-1">പുതിയ അക്കൗണ്ട് നിർമ്മിക്കുക</p>
         </div>
 
-        <!-- ലോഗിൻ സെക്ഷൻ -->
-        <div id="loginFormSection" class="space-y-4">
+        <div class="space-y-3.5">
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">യൂസർനെയിം</label>
-                <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
-                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500 font-bold">
+                <label class="block text-xs font-bold text-gray-700 mb-1">യൂസർനെയിം (പേര്)</label>
+                <input type="text" id="regUser" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
+                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-green-500 font-bold text-sm">
             </div>
+
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
-                <div class="relative">
-                    <input type="password" id="password" placeholder="പാസ്‌വേർഡ് നൽകുക" 
-                           class="w-full p-3 pr-12 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500 font-bold">
-                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                    </button>
+                <label class="block text-xs font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
+                <input type="password" id="regPass" placeholder="പാസ്‌വേർഡ് നൽകുക" 
+                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-green-500 font-bold text-sm">
+            </div>
+
+            <!-- പാസ്‌വേർഡ് റിക്കവറിക്കുള്ള രഹസ്യ ചോദ്യവും ഉത്തരവും നൽകുന്ന കള്ളികൾ -->
+            <div class="bg-amber-50 p-3.5 rounded-2xl border-2 border-amber-200 space-y-3">
+                <p class="text-xs font-black text-amber-900 text-center">പാസ്‌വേർഡ് റിക്കവറിക്കായി ഒരു ചോദ്യം ചേർക്കുക</p>
+                
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">രഹസ്യ ചോദ്യം (ഉദാ: നിങ്ങളുടെ പ്രിയപ്പെട്ട മൃതം ഏത്?)</label>
+                    <input type="text" id="regSecQuestion" placeholder="ചോദ്യം ഇവിടെ എഴുതുക" 
+                           class="w-full p-2.5 bg-white border-2 border-gray-200 rounded-xl outline-none focus:border-amber-500 font-bold text-xs">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">ഉത്തരം</label>
+                    <input type="text" id="regSecAnswer" placeholder="ഉത്തരം ഇവിടെ എഴുതുക" 
+                           class="w-full p-2.5 bg-white border-2 border-gray-200 rounded-xl outline-none focus:border-amber-500 font-bold text-xs">
                 </div>
             </div>
 
-            <button id="btnLogin" class="w-full mt-2 bg-blue-600 text-white p-3.5 rounded-xl font-black text-lg hover:bg-blue-700 transition shadow-lg">
-                ലോഗിൻ ചെയ്യുക
-            </button>
-
-            <button id="btnShowForgot" class="w-full text-center mt-3 text-sm text-gray-500 font-bold hover:text-blue-600 underline">
-                പാസ്‌വേർഡ് മറന്നുപോയോ?
+            <button id="btnRegister" class="w-full mt-2 bg-green-600 text-white p-3.5 rounded-xl font-black text-base hover:bg-green-700 transition shadow-lg">
+                അക്കൗണ്ട് ക്രിയേറ്റ് ചെയ്യുക
             </button>
 
             <p class="text-center mt-4 text-sm text-gray-600 font-bold">
-                പുതിയ അക്കൗണ്ട് വേണോ? <a href="signup.html" class="text-blue-600 hover:underline">രജിസ്റ്റർ ചെയ്യുക</a>
+                ഇതുവരെ അക്കൗണ്ട് ഉണ്ടോ? <a href="login.html" class="text-blue-600 hover:underline">ലോഗിൻ ചെയ്യുക</a>
             </p>
         </div>
-
-        <!-- പാസ്‌വേർഡ് റിക്കവറി സെക്ഷൻ (പ്രത്യേക കള്ളി) -->
-        <div id="forgotBoxSection" class="space-y-4 hidden">
-            <h2 class="text-lg font-black text-blue-900 text-center">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h2>
-            <p class="text-xs text-gray-500 text-center">നിങ്ങളുടെ യൂസർനെയിം നൽകി രഹസ്യ ചോദ്യത്തിന് ഉത്തരം കണ്ടെത്തുക.</p>
-            
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">യൂസർനെയിം</label>
-                <input type="text" id="forgotUsername" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
-                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500 font-bold">
-            </div>
-
-            <div id="questionContainer" class="hidden space-y-2">
-                <p id="displayQuestion" class="text-sm font-bold text-blue-800 bg-blue-50 p-3 rounded-xl border border-blue-200"></p>
-                <input type="text" id="securityAnswerInput" placeholder="രഹസ്യ ചോദ്യത്തിന്റെ ഉത്തരം" 
-                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500 font-bold">
-                <button id="btnVerifyAnswer" class="w-full bg-green-600 text-white p-3 rounded-xl font-black text-base hover:bg-green-700 transition">
-                    പാസ്‌വേർഡ് കാണുക
-                </button>
-            </div>
-
-            <button id="btnGetQuestion" class="w-full bg-blue-600 text-white p-3 rounded-xl font-black text-base hover:bg-blue-700 transition">
-                ചോദ്യം വരുത്തുക
-            </button>
-
-            <button id="backToLogin" class="w-full text-center text-sm text-gray-500 font-bold hover:text-blue-600 underline pt-2">
-                തിരികെ ലോഗിൻ പേജിലേക്ക്
-            </button>
-        </div>
-
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -102,81 +76,32 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // പാസ്‌വേർഡ് ടോഗിൾ
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
-        togglePassword.addEventListener('click', () => {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-        });
-        
-        // ലോഗിൻ കർമ്മം
-        document.getElementById("btnLogin").addEventListener("click", async () => {
-            const user = document.getElementById('username').value.trim().toLowerCase();
-            const pass = document.getElementById('password').value.trim();
-            if(!user || !pass) return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
-            
-            signInWithEmailAndPassword(auth, `${user}@mesthri.com`, pass)
-                .then(() => {
-                    localStorage.setItem('userName', user); 
-                    window.location.href = "dashboard.html";
-                })
-                .catch((error) => {
-                    alert("ലോഗിൻ പരാജയപ്പെട്ടു! വിവരങ്ങൾ ശരിയാണോ എന്ന് പരിശോധിക്കുക.");
-                });
-        });
+        document.getElementById("btnRegister").addEventListener("click", async () => {
+            const user = document.getElementById('regUser').value.trim().toLowerCase();
+            const pass = document.getElementById('regPass').value.trim();
+            const secQ = document.getElementById('regSecQuestion').value.trim();
+            const secA = document.getElementById('regSecAnswer').value.trim();
 
-        // റിക്കവറി സെക്ഷനിലേക്ക് മാറാൻ
-        const loginFormSection = document.getElementById('loginFormSection');
-        const forgotBoxSection = document.getElementById('forgotBoxSection');
-
-        document.getElementById('btnShowForgot').addEventListener('click', (e) => {
-            e.preventDefault();
-            loginFormSection.classList.add('hidden');
-            forgotBoxSection.classList.remove('hidden');
-        });
-
-        document.getElementById('backToLogin').addEventListener('click', (e) => {
-            e.preventDefault();
-            forgotBoxSection.classList.add('hidden');
-            loginFormSection.classList.remove('hidden');
-        });
-
-        let fetchedData = null;
-
-        // രഹസ്യ ചോദ്യം വരുത്തൽ
-        document.getElementById('btnGetQuestion').addEventListener('click', async () => {
-            const user = document.getElementById('forgotUsername').value.trim().toLowerCase();
-            if(!user) return alert("ദയവായി യൂസർനെയിം നൽകുക!");
+            if(!user || !pass || !secQ || !secA) {
+                return alert("ദയവായി എല്ലാ വിവരങ്ങളും (ചോദ്യവും ഉത്തരവും അടക്കം) പൂരിപ്പിക്കുക!");
+            }
 
             try {
-                const docRef = doc(db, "users", user);
-                const docSnap = await getDoc(docRef);
+                // ഫയർബേസ് ഓതന്റിക്കേഷനിൽ അക്കൗണ്ട് ഉണ്ടാക്കുന്നു
+                await createUserWithEmailAndPassword(auth, `${user}@mesthri.com`, pass);
+                
+                // ഫയർസ്റ്റോറിൽ യൂസറുടെ പാസ്‌വേർഡും സുരക്ഷാ ചോദ്യവും സേവ് ചെയ്യുന്നു
+                await setDoc(doc(db, "users", user), {
+                    username: user,
+                    password: pass,
+                    securityQuestion: secQ,
+                    securityAnswer: secA
+                });
 
-                if (docSnap.exists()) {
-                    fetchedData = docSnap.data();
-                    document.getElementById('displayQuestion').innerText = "ചോദ്യം: " + fetchedData.securityQuestion;
-                    document.getElementById('questionContainer').classList.remove('hidden');
-                    document.getElementById('btnGetQuestion').classList.add('hidden');
-                } else {
-                    alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
-                }
+                alert("അക്കൗണ്ട് വിജയകരമായി നിർമ്മിച്ചു!");
+                window.location.href = "login.html";
             } catch (error) {
-                alert("ഡാറ്റ എടുക്കുന്നതിൽ തടസ്സം നേരിട്ടു!");
-            }
-        });
-
-        // ഉത്തരം പരിശോധിച്ച് പാസ്‌വേർഡ് കാണിക്കൽ
-        document.getElementById('btnVerifyAnswer').addEventListener('click', () => {
-            const answer = document.getElementById('securityAnswerInput').value.trim();
-            if(!answer) return alert("ഉത്തരം നൽകുക!");
-
-            if(answer === fetchedData.securityAnswer) {
-                alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + fetchedData.password);
-                forgotBoxSection.classList.add('hidden');
-                loginFormSection.classList.remove('hidden');
-            } else {
-                alert("നൽകിയ ഉത്തരം തെറ്റാണ്!");
+                alert("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു: " + error.message);
             }
         });
     </script>
