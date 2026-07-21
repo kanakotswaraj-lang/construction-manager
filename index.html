@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ലോഗിൻ - മേസ്തിരി ആപ്പ്</title>
+    <title>മേസ്തിരി ആപ്പ് - ലോഗിൻ / രജിസ്ട്രേഷൻ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -13,41 +13,56 @@
 <body class="bg-gradient-to-br from-indigo-900 via-blue-800 to-cyan-900 min-h-screen flex items-center justify-center p-4">
 
     <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm border-t-4 border-blue-500">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
-            <p class="text-blue-500 font-bold mt-2">സൈറ്റ് മാനേജർ ഡിജിറ്റൽ ഡയറി</p>
+        
+        <!-- ഹെഡിങ് -->
+        <div class="text-center mb-6">
+            <h1 id="formTitle" class="text-3xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
+            <p id="formSubtitle" class="text-blue-500 font-bold mt-1">സൈറ്റ് മാനേജർ ഡിജിറ്റൽ ഡയറി</p>
         </div>
 
-        <div class="space-y-4">
+        <!-- ഫോം ഫീൽഡുകൾ -->
+        <div class="space-y-3">
+            <!-- യൂസർനെയിം (സൈൻ അപ്പ് ചെയ്യുമ്പോൾ മാത്രം കാണിക്കും) -->
+            <div id="usernameDiv" class="hidden">
+                <label class="block text-sm font-bold text-gray-700 mb-1">മേസ്തിരിയുടെ പേര് (Username)</label>
+                <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
+                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+            </div>
+
             <div>
-                <label class="block text-lg font-bold text-gray-700 mb-1">ഇമെയിൽ വിലാസം</label>
+                <label class="block text-sm font-bold text-gray-700 mb-1">ഇമെയിൽ വിലാസം</label>
                 <input type="email" id="email" placeholder="email@example.com" 
-                       class="w-full p-4 text-lg border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
+            
             <div>
-                <label class="block text-lg font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
-                <input type="password" id="password" placeholder="പാസ്‌വേർഡ്" 
-                       class="w-full p-4 text-lg border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                <label class="block text-sm font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
+                <input type="password" id="password" placeholder="പാസ്‌വേർഡ് നൽകുക" 
+                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
         </div>
 
-        <button id="btnLogin" class="w-full mt-6 bg-blue-600 text-white p-4 rounded-xl font-black text-xl hover:bg-blue-700 transition shadow-lg">
+        <!-- മെയിൻ ബട്ടൺ -->
+        <button id="mainButton" class="w-full mt-5 bg-blue-600 text-white p-3.5 rounded-xl font-black text-lg hover:bg-blue-700 transition shadow-lg">
             ലോഗിൻ ചെയ്യുക
         </button>
 
-        <button id="btnForgot" class="w-full mt-4 text-gray-500 font-bold hover:text-blue-600 underline text-sm">
+        <!-- പാസ്‌വേർഡ് മറന്നുപോയാൽ -->
+        <button id="btnForgot" class="w-full mt-3 text-gray-500 font-bold hover:text-blue-600 underline text-sm">
             പാസ്‌വേർഡ് മറന്നുപോയോ?
         </button>
 
-        <p class="text-center mt-6 text-gray-600 font-bold">
-            പുതിയ അക്കൗണ്ട് വേണോ? <a href="signup.html" class="text-blue-600">രജിസ്റ്റർ ചെയ്യുക</a>
+        <!-- മോഡ് മാറ്റാനുള്ള ലിങ്ക് (ലോഗിൻ <-> സൈൻ അപ്പ്) -->
+        <p class="text-center mt-5 text-gray-600 font-bold text-sm">
+            <span id="toggleText">പുതിയ അക്കൗണ്ട് വേണോ?</span> 
+            <a href="#" id="toggleMode" class="text-blue-600 underline ml-1">രജിസ്റ്റർ ചെയ്യുക</a>
         </p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -62,42 +77,87 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ലോഗിൻ കോഡ്
-        document.getElementById("btnLogin").addEventListener("click", async () => {
-            const email = document.getElementById('email').value.trim();
-            const pass = document.getElementById('password').value.trim();
-            if(!email || !pass) return alert("വിവരങ്ങൾ നൽകുക!");
-            
-            try {
-                // ഫയർബേസ് ഓതന്റിക്കേഷൻ വഴി ലോഗിൻ ചെയ്യുന്നു
-                await signInWithEmailAndPassword(auth, email, pass);
+        let isSignupMode = false;
 
-                // ഡാറ്റാബേസിൽ നിന്ന് ഈ ഇമെയിലിന് താഴെയുള്ള യൂസറുടെ പേര് കണ്ടുപിടിക്കുന്നു
-                const q = query(collection(db, "users"), where("email", "==", email));
-                const querySnapshot = await getDocs(q);
-                
-                let userName = "Meshtri";
-                querySnapshot.forEach((doc) => {
-                    userName = doc.data().username;
-                });
+        const formTitle = document.getElementById("formTitle");
+        const formSubtitle = document.getElementById("formSubtitle");
+        const usernameDiv = document.getElementById("usernameDiv");
+        const mainButton = document.getElementById("mainButton");
+        const btnForgot = document.getElementById("btnForgot");
+        const toggleText = document.getElementById("toggleText");
+        const toggleMode = document.getElementById("toggleMode");
 
-                // ഡാഷ്‌ബോർഡിനായി പേര് സേവ് ചെയ്യുന്നു
-                localStorage.setItem('userName', userName); 
-                window.location.href = "dashboard.html";
-
-            } catch (error) {
-                alert("ലോഗിൻ പരാജയപ്പെട്ടു: ഇമെയിലും പാസ്‌വേർഡും പരിശോധിക്കുക!");
+        // ലോഗിൻ / സൈൻ അപ്പ് മോഡ് മാറ്റുക
+        toggleMode.addEventListener("click", (e) => {
+            e.preventDefault();
+            isSignupMode = !isSignupMode;
+            if (isSignupMode) {
+                formTitle.innerText = "പുതിയ അക്കൗണ്ട്";
+                formSubtitle.innerText = "മേസ്തിരി രജിസ്ട്രേഷൻ";
+                usernameDiv.classList.remove("hidden");
+                mainButton.innerText = "അക്കൗണ്ട് നിർമ്മിക്കുക";
+                btnForgot.classList.add("hidden");
+                toggleText.innerText = "ഇതിനകം അക്കൗണ്ട് ഉണ്ടോ?";
+                toggleMode.innerText = "ലോഗിൻ ചെയ്യുക";
+            } else {
+                formTitle.innerText = "മേസ്തിരി ആപ്പ്";
+                formSubtitle.innerText = "സൈറ്റ് മാനേജർ ഡിജിറ്റൽ ഡയറി";
+                usernameDiv.classList.add("hidden");
+                mainButton.innerText = "ലോഗിൻ ചെയ്യുക";
+                btnForgot.classList.remove("hidden");
+                toggleText.innerText = "പുതിയ അക്കൗണ്ട് വേണോ?";
+                toggleMode.innerText = "രജിസ്റ്റർ ചെയ്യുക";
             }
         });
 
-        // പാസ്‌വേർഡ് മറന്നുപോയാൽ റീസെറ്റ് ചെയ്യാൻ
-        document.getElementById("btnForgot").addEventListener("click", async () => {
+        // മെയിൻ ബട്ടൺ ആക്ഷൻ (ലോഗിൻ അല്ലെങ്കിൽ സൈൻ അപ്പ്)
+        mainButton.addEventListener("click", async () => {
             const email = document.getElementById('email').value.trim();
-            if(!email) return alert("ആദ്യം മുകളിലെ ബോക്സിൽ നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക!");
+            const password = document.getElementById('password').value.trim();
+            const username = document.getElementById('username').value.trim();
+
+            if (!email || !password || (isSignupMode && !username)) {
+                return alert("എല്ലാ വിവരങ്ങളും കൃത്യമായി പൂരിപ്പിക്കുക!");
+            }
+
+            try {
+                if (isSignupMode) {
+                    // രജിസ്ട്രേഷൻ
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    await setDoc(doc(db, "users", username), {
+                        username: username,
+                        email: email
+                    });
+                    alert("അക്കൗണ്ട് വിജയകരമായി നിർമ്മിച്ചു!");
+                    window.location.reload(); // പേജ് റിഫ്രഷ് ചെയ്ത് ലോഗിൻ മോഡിലേക്ക് വരാൻ
+                } else {
+                    // ലോഗിൻ
+                    await signInWithEmailAndPassword(auth, email, password);
+                    
+                    const q = query(collection(db, "users"), where("email", "==", email));
+                    const querySnapshot = await getDocs(q);
+                    
+                    let userName = "Meshtri";
+                    querySnapshot.forEach((doc) => {
+                        userName = doc.data().username;
+                    });
+
+                    localStorage.setItem('userName', userName);
+                    window.location.href = "dashboard.html";
+                }
+            } catch (error) {
+                alert("നടപടിക്രമം പരാജയപ്പെട്ടു: " + error.message);
+            }
+        });
+
+        // പാസ്‌വേർഡ് മറന്നുപോയാൽ
+        btnForgot.addEventListener("click", async () => {
+            const email = document.getElementById('email').value.trim();
+            if (!email) return alert("ആദ്യം മുകളിലെ ബോക്സിൽ നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക!");
 
             try {
                 await sendPasswordResetEmail(auth, email);
-                alert("പാസ്‌വേർഡ് മാറ്റാനുള്ള ലിങ്ക് നിങ്ങളുടെ ഇമെയിലിലേക്ക് അയച്ചിട്ടുണ്ട്. മെയിൽ പരിശോധിക്കുക!");
+                alert("പാസ്‌വേർഡ് മാറ്റാനുള്ള ലിങ്ക് നിങ്ങളുടെ ഇമെയിലിലേക്ക് അയച്ചിട്ടുണ്ട്!");
             } catch (error) {
                 alert("തെറ്റായ ഇമെയിൽ വിലാസം അല്ലെങ്കിൽ ഈ ഇമെയിൽ രജിസ്റ്റർ ചെയ്തിട്ടില്ല!");
             }
