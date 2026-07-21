@@ -23,14 +23,20 @@
         <div id="loginSection" class="space-y-4">
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1">മേസ്തിരിയുടെ പേര് (Username)</label>
-                <input type="text" id="loginUsername" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
-                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                <input type="text" id="loginUsername" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
             
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
-                <input type="password" id="loginPassword" placeholder="പാസ്‌വേർഡ് നൽകുക" 
-                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                <div class="relative">
+                    <input type="password" id="loginPassword" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full p-3 pr-12 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                    <button type="button" id="toggleLoginPassword" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <button id="btnLogin" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-black text-lg hover:bg-blue-700 transition shadow-lg">
@@ -43,7 +49,7 @@
             </div>
         </div>
 
-        <!-- പുതിയ അക്കൗണ്ട് നിർമ്മിക്കുന്ന ഫോം (സുരക്ഷാ ചോദ്യങ്ങളോടെ) -->
+        <!-- പുതിയ അക്കൗണ്ട് നിർമ്മിക്കുന്ന ഫോം -->
         <div id="registerSection" class="space-y-3 hidden">
             <h2 class="text-lg font-bold text-green-700 text-center mb-2">പുതിയ അക്കൗണ്ട് നിർമ്മിക്കുക</h2>
             <div>
@@ -55,18 +61,18 @@
                 <input type="password" id="regPassword" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-700">സുരക്ഷാ ചോദ്യം: നിങ്ങളുടെ ആദ്യത്തെ സ്കൂളിന്റെ പേര്?</label>
+                <label class="block text-xs font-bold text-gray-700">സുരക്ഷാ ചോദ്യം: ആദ്യ സ്കൂളിന്റെ പേര്?</label>
                 <input type="text" id="regAns1" placeholder="ഉത്തരം നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-700">സുരക്ഷാ ചോദ്യം: നിങ്ങളുടെ പ്രിയപ്പെട്ട സ്ഥലം?</label>
+                <label class="block text-xs font-bold text-gray-700">സുരക്ഷാ ചോദ്യം: പ്രിയപ്പെട്ട സ്ഥലം?</label>
                 <input type="text" id="regAns2" placeholder="ഉത്തരം നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
             </div>
 
             <button id="btnSaveRegister" class="w-full bg-green-600 text-white p-3 rounded-xl font-bold hover:bg-green-700 transition">
                 അക്കൗണ്ട് സേവ് ചെയ്യുക
             </button>
-            <p class="text-center text-sm"><a href="#" id="backToLoginFromReg" class="text-blue-600 font-bold hover:underline">തിരികെ ലോഗിൻ ചെയ്യുക</a></p>
+            <p class="text-center text-sm mt-2"><a href="#" id="backToLoginFromReg" class="text-blue-600 font-bold hover:underline">തിരികെ ലോഗിൻ ചെയ്യുക</a></p>
         </div>
 
         <!-- പാസ്‌വേർഡ് റിക്കവറി സെക്ഷൻ -->
@@ -77,7 +83,7 @@
                 <input type="text" id="forgotUsername" placeholder="പേര് നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-700">ആദ്യത്തെ സ്കൂളിന്റെ പേര്?</label>
+                <label class="block text-xs font-bold text-gray-700">ആദ്യ സ്കൂളിന്റെ പേര്?</label>
                 <input type="text" id="forgotAns1" placeholder="ഉത്തരം നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
             </div>
             <div>
@@ -86,13 +92,13 @@
             </div>
             <div>
                 <label class="block text-xs font-bold text-gray-700">പുതിയ പാസ്‌വേർഡ്</label>
-                <input type="password" id="newPassword" placeholder="പുതിയ പാസ്‌വേർഡ് നൽകുക" class="w-full p-2.5 border rounded-lg text-sm">
+                <input type="password" id="newPassword" placeholder="പുതിയ പാസ്‌വേർഡ്" class="w-full p-2.5 border rounded-lg text-sm">
             </div>
 
             <button id="btnResetPassword" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold hover:bg-blue-700 transition">
                 പാസ്‌വേർഡ് മാറ്റുക
             </button>
-            <p class="text-center text-sm"><a href="#" id="backToLoginFromForgot" class="text-blue-600 font-bold hover:underline">തിരികെ ലോഗിൻ ചെയ്യുക</a></p>
+            <p class="text-center text-sm mt-2"><a href="#" id="backToLoginFromForgot" class="text-blue-600 font-bold hover:underline">തിരികെ ലോഗിൻ ചെയ്യുക</a></p>
         </div>
 
     </div>
@@ -101,6 +107,15 @@
         const loginSection = document.getElementById('loginSection');
         const registerSection = document.getElementById('registerSection');
         const forgotSection = document.getElementById('forgotSection');
+
+        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനുമുള്ള ഫംഗ്ഷൻ (Eye Toggle)
+        const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+        const loginPassword = document.getElementById('loginPassword');
+
+        toggleLoginPassword.addEventListener('click', () => {
+            const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+            loginPassword.setAttribute('type', type);
+        });
 
         document.getElementById('linkRegister').addEventListener('click', (e) => {
             e.preventDefault();
@@ -126,7 +141,6 @@
             loginSection.classList.remove('hidden');
         });
 
-        // പുതിയ അക്കൗണ്ട് സേവ് ചെയ്യൽ (ബ്രൗസറിലെ LocalStorage-ൽ സുരക്ഷിതമായി ഡാറ്റ വെക്കുന്നു)
         document.getElementById('btnSaveRegister').addEventListener('click', () => {
             const user = document.getElementById('regUsername').value.trim();
             const pass = document.getElementById('regPassword').value.trim();
@@ -137,7 +151,6 @@
                 return alert("എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
             }
 
-            // ഡാറ്റ ഒബ്ജായി സേവ് ചെയ്യുന്നു
             const accountData = { password: pass, ans1: ans1, ans2: ans2 };
             localStorage.setItem('meshtri_' + user, JSON.stringify(accountData));
             
@@ -146,7 +159,6 @@
             loginSection.classList.remove('hidden');
         });
 
-        // ലോഗിൻ പരിശോധന
         document.getElementById('btnLogin').addEventListener('click', () => {
             const user = document.getElementById('loginUsername').value.trim();
             const pass = document.getElementById('loginPassword').value.trim();
@@ -169,7 +181,6 @@
             }
         });
 
-        // സുരക്ഷാ ചോദ്യങ്ങൾ വഴി പാസ്‌വേർഡ് റിക്കവറി ചെയ്യൽ
         document.getElementById('btnResetPassword').addEventListener('click', () => {
             const user = document.getElementById('forgotUsername').value.trim();
             const ans1 = document.getElementById('forgotAns1').value.trim();
