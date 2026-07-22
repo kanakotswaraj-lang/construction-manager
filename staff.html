@@ -120,19 +120,26 @@
                         </div>
 
                         <div class="p-3 bg-slate-50 rounded-xl mb-3 space-y-2 border border-slate-100">
-                            <!-- ഹാജർ ടിക്ക് ചെയ്യാനുള്ള കള്ളി -->
-                            <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200">
-                                <span class="text-xs font-bold text-slate-700">ഇന്നത്തെ ഹാജർ:</span>
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" id="attendance-${d.id}" class="w-4 h-4 accent-emerald-600 rounded">
-                                    <span class="text-xs font-black text-emerald-700">ഹാജർ (Present)</span>
-                                </label>
-                            </div>
-
+                            <!-- പണിയുടെ അളവ് (ഫുൾ ഡേ, ഹാഫ് ഡേ, ഓവർടൈം) തിരഞ്ഞെടുക്കാൻ -->
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
+                                    <label class="text-[10px] font-bold text-slate-500 block mb-1">ഇന്നത്തെ പണിയുടെ അളവ്</label>
+                                    <select id="dayType-${d.id}" class="w-full p-2 border rounded text-xs font-bold bg-white text-slate-700 outline-none">
+                                        <option value="1">ഫുൾ ഡേ (1)</option>
+                                        <option value="0.5">ഹാഫ് ഡേ (0.5)</option>
+                                        <option value="1.5">ഓവർടൈം (1.5)</option>
+                                        <option value="2">ഇരട്ടി (2)</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-end">
+                                    <button id="addDayBtn-${d.id}" class="w-full bg-emerald-600 text-white p-2 rounded-xl text-xs font-black shadow-sm hover:bg-emerald-700">കൂട്ടിച്ചേർക്കുക</button>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 pt-1">
+                                <div>
                                     <label class="text-[10px] font-bold text-slate-500 block">ആകെ പണിയെടുത്ത ദിവസം</label>
-                                    <input type="number" id="days-${d.id}" value="${s.workedDays || 0}" class="w-full p-2 border rounded text-sm font-bold bg-white">
+                                    <input type="number" step="0.5" id="days-${d.id}" value="${s.workedDays || 0}" class="w-full p-2 border rounded text-sm font-bold bg-white">
                                 </div>
                                 <div>
                                     <label class="text-[10px] font-bold text-slate-500 block">വാങ്ങിയ അഡ്വാൻസ് (₹)</label>
@@ -155,17 +162,12 @@
                     `;
                     list.appendChild(div);
 
-                    // ഹാജർ ടിക്ക് ചെയ്യുമ്പോൾ ദിവസങ്ങൾ ഓട്ടോമാറ്റിക് ആയി കൂട്ടാനുള്ള കോഡ്
-                    const attCheckbox = document.getElementById(`attendance-${d.id}`);
-                    attCheckbox.onchange = () => {
+                    // 'കൂട്ടിച്ചേർക്കുക' ബട്ടൺ ഞെക്കുമ്പോൾ തിരഞ്ഞെടുത്ത അളവ് (0.5, 1, 1.5 മുതലായവ) നിലവിലെ ദിവസത്തോടൊപ്പം കൂട്ടാൻ
+                    document.getElementById(`addDayBtn-${d.id}`).onclick = () => {
                         const daysInput = document.getElementById(`days-${d.id}`);
+                        const selectVal = parseFloat(document.getElementById(`dayType-${d.id}`).value) || 1;
                         let currentDays = parseFloat(daysInput.value) || 0;
-                        if(attCheckbox.checked) {
-                            currentDays += 1;
-                        } else {
-                            currentDays = Math.max(0, currentDays - 1);
-                        }
-                        daysInput.value = currentDays;
+                        daysInput.value = currentDays + selectVal;
                     };
 
                     // കണക്കുകൾ അപ്ഡേറ്റ് ചെയ്യുക ഒപ്പം Accounts (വരവ്-ചെലവ്) പേജിലേക്ക് ഓട്ടോമാറ്റിക് എൻട്രി കൊടുക്കുക
@@ -173,7 +175,6 @@
                         const newDays = parseFloat(document.getElementById(`days-${d.id}`).value) || 0;
                         const newAdv = parseFloat(document.getElementById(`adv-${d.id}`).value) || 0;
                         
-                        // പഴയ കൂലിയും പുതിയ കൂലിയും തമ്മിലുള്ള വ്യത്യാസം കണക്കാക്കുന്നു (Double Entry ഒഴിവാക്കാൻ)
                         const oldDays = parseFloat(s.workedDays) || 0;
                         const diffDays = newDays - oldDays;
                         const siteName = s.site || "പ്രധാന സൈറ്റ്";
