@@ -119,6 +119,12 @@
                         </div>
 
                         <div class="p-3 bg-slate-50 rounded-xl mb-3 space-y-2 border border-slate-100">
+                            <!-- ഹാജർ നില (വന്നു / അവധി) ബട്ടണുകൾ -->
+                            <div class="flex gap-2 mb-2">
+                                <button type="button" id="presentBtn-${d.id}" class="flex-1 p-2 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">വന്നു (Present)</button>
+                                <button type="button" id="absentBtn-${d.id}" class="flex-1 p-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">അവധി (Absent)</button>
+                            </div>
+
                             <!-- സൈറ്റ് തിരഞ്ഞെടുക്കാൻ -->
                             <div>
                                 <label class="text-[10px] font-bold text-slate-500 block">ഇന്നത്തെ സൈറ്റ്</label>
@@ -161,38 +167,62 @@
                     `;
                     list.appendChild(div);
 
+                    // ഹാജർ 'വന്നു' എന്ന് അമർത്തുമ്പോൾ ദിവസങ്ങളുടെ എണ്ണം ഓട്ടോമാറ്റിക്കായി കൂട്ടാൻ
+                    let attendanceStatus = "present";
+                    const pBtn = document.getElementById(`presentBtn-${d.id}`);
+                    const aBtn = document.getElementById(`absentBtn-${d.id}`);
+                    const daysInput = document.getElementById(`days-${d.id}`);
+
+                    pBtn.onclick = () => {
+                        attendanceStatus = "present";
+                        pBtn.className = "flex-1 p-2 rounded-xl text-xs font-bold bg-emerald-600 text-white border border-emerald-700 shadow-sm";
+                        aBtn.className = "flex-1 p-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200";
+                        
+                        // വന്നുവെന്ന് അമർത്തുമ്പോൾ സെലക്ട് ചെയ്ത പണിയുടെ അളവ് (1, 0.5, 1.5) നിലവിലുള്ള ദിവസത്തോടൊപ്പം കൂട്ടുന്നു
+                        const selectedDays = parseFloat(document.getElementById(`workDayType-${d.id}`).value) || 1;
+                        daysInput.value = workedDays + selectedDays;
+                    };
+
+                    aBtn.onclick = () => {
+                        attendanceStatus = "absent";
+                        aBtn.className = "flex-1 p-2 rounded-xl text-xs font-bold bg-red-600 text-white border border-red-700 shadow-sm";
+                        pBtn.className = "flex-1 p-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200";
+                        
+                        // അവധിയാണെങ്കിൽ ദിവസങ്ങൾ കൂട്ടേണ്ടതില്ല, പഴയതുപോലെ നിർത്താം
+                        daysInput.value = workedDays;
+                    };
+
                     // കണക്കുകൾ അപ്ഡേറ്റ് ചെയ്യാനും വരവ്-ചെലവ് പേജിലേക്ക് അയക്കാനുമുള്ള കോഡ്
                     document.getElementById(`save-${d.id}`).onclick = async () => {
                         const selectedDays = parseFloat(document.getElementById(`workDayType-${d.id}`).value) || 1;
                         const selectedSite = document.getElementById(`workSite-${d.id}`).value || "പ്രധാന സൈറ്റ്";
-                        const currentTotalDays = parseFloat(document.getElementById(`days-${d.id}`).value) || 0;
-                        
-                        // പുതിയ ദിവസങ്ങൾ പഴയതിന്റെ കൂടെ കൂട്ടുന്നു
-                        const newTotalDays = currentTotalDays; // അല്ലെങ്കിൽ നിലവിലെ ഇൻപുട്ട് ബോക്സിലുള്ള വാല്യൂ എടുക്കാം
-                        const advance = parseFloat(document.getElementById(`adv-${d.id}`).value) || 0;
-                        const earnedForThisEntry = selectedDays * dailyWage;
-
-                        // 1. സ്റ്റാഫ് ഡാറ്റാബേസ് അപ്ഡേറ്റ് ചെയ്യുന്നു (ഇവിടെ ആകെ ദിവസങ്ങൾ മാനുവലായി മാറ്റിയതുകൂടി സേവ് ആകും)
                         const finalUpdatedDays = parseFloat(document.getElementById(`days-${d.id}`).value) || 0;
+                        const advance = parseFloat(document.getElementById(`adv-${d.id}`).value) || 0;
                         
+                        // വന്നാണെങ്കിൽ മാത്രം വരവ്-ചെലവിലേക്ക് കൂലി തുക കയറും
+                        if (attendanceStatus === "present") {
+                            const earnedForThisEntry = selectedDays * dailyWage;
+
+                            // 1. വരവ്-ചെലവ് (accounts) പേജിലേക്ക് ആ കൂലി തുക ചേർക്കുന്നു
+                            await addDoc(collection(db, "accounts"), {
+                                meshtriOwner: currentMeshtri,
+                                name: s.name + " (കൂലി - " + selectedDays + " ദിവസം)",
+                                site: selectedSite,
+                                type: "wage",
+                                payment: "cash",
+                                amount: earnedForThisEntry,
+                                date: new Date().toISOString().split('T')[0]
+                            });
+                        }
+
+                        // 2. സ്റ്റാഫ് ഡാറ്റാബേസ് അപ്ഡേറ്റ് ചെയ്യുന്നു
                         await updateDoc(doc(db, 'staffs', d.id), {
                             workedDays: finalUpdatedDays,
                             advance: advance,
                             site: selectedSite
                         });
 
-                        // 2. വരവ്-ചെലവ് (accounts) പേജിലേക്ക് ആ കൂലി തുക ചേർക്കുന്നു
-                        await addDoc(collection(db, "accounts"), {
-                            meshtriOwner: currentMeshtri,
-                            name: s.name + " (കൂലി - " + selectedDays + " ദിവസം)",
-                            site: selectedSite,
-                            type: "wage",
-                            payment: "cash",
-                            amount: earnedForThisEntry,
-                            date: new Date().toISOString().split('T')[0]
-                        });
-
-                        alert("കണക്കുകൾ വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്യുകയും വരവ്-ചെലവിലേക്ക് ചേർക്കുകയും ചെയ്തു!");
+                        alert("കണക്കുകൾ വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്തു!");
                     };
 
                     // ഡിലീറ്റ് ചെയ്യാനുള്ള കോഡ്
