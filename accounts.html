@@ -19,8 +19,8 @@
             <a href="dashboard.html" class="bg-slate-800 text-xs px-3 py-2 rounded-xl text-slate-300 font-bold hover:bg-slate-700">ഡാഷ്‌ബോർഡ്</a>
         </div>
 
-        <!-- ഡാഷ്ബോർഡ് -->
-        <div class="grid grid-cols-2 gap-3 mb-6">
+        <!-- ഡാഷ്ബോർഡ് (ആകെ / സൈറ്റ് തിരിച്ച് കാണിക്കാൻ) -->
+        <div class="grid grid-cols-2 gap-3 mb-4">
             <div class="bg-emerald-600 text-white p-4 rounded-2xl shadow-md text-center">
                 <p class="text-[10px] opacity-80 uppercase tracking-widest">വരവ്</p>
                 <h2 id="totalIncome" class="text-xl font-bold">₹0</h2>
@@ -30,15 +30,23 @@
                 <h2 id="totalExpense" class="text-xl font-bold">₹0</h2>
             </div>
             <div class="col-span-2 bg-slate-800 text-white p-4 rounded-2xl shadow-md text-center">
-                <p class="text-[10px] opacity-80 uppercase tracking-widest">ബാക്കി</p>
+                <p class="text-[10px] opacity-80 uppercase tracking-widest">ലാഭം / ബാക്കി തുക</p>
                 <h2 id="netBalance" class="text-2xl font-bold">₹0</h2>
             </div>
         </div>
 
-        <!-- തീയതി ഫിൽട്ടർ -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm mb-6 border border-slate-100">
-            <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">തീയതി വെച്ച് തിരയുക</label>
-            <input type="date" id="filterDate" onchange="filterList()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-blue-500 outline-none">
+        <!-- ഫിൽട്ടർ ഭാഗം (തീയതിയും സൈറ്റും വെച്ച് തിരയാൻ) -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm mb-6 border border-slate-100 space-y-3">
+            <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1 uppercase">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
+                <select id="filterSite" onchange="filterList()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option value="">എല്ലാ സൈറ്റുകളും (All Sites)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1 uppercase">തീയതി വെച്ച് തിരയുക</label>
+                <input type="date" id="filterDate" onchange="filterList()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
         </div>
 
         <!-- പുതിയ കണക്ക് ഫോം -->
@@ -55,7 +63,7 @@
                     <option value="wage">കൂലി</option>
                     <option value="material">മെറ്റീരിയൽസ്</option>
                     <option value="rent">വാടക</option>
-                    <option value="other">മറ്റ് ചെലവ്</option>
+                    <option value="other">മറ്റ് ചെലവ് / അഡ്വാൻസ്</option>
                 </select>
                 <select id="paymentMethod" class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-base">
                     <option value="cash">ക്യാഷ്</option>
@@ -103,7 +111,7 @@
             const data = {
                 meshtriOwner: currentMeshtri,
                 name: document.getElementById('ownerName').value,
-                site: document.getElementById('siteName').value,
+                site: document.getElementById('siteName').value.trim(),
                 type: document.getElementById('type').value,
                 payment: document.getElementById('paymentMethod').value,
                 amount: parseFloat(document.getElementById('amount').value) || 0,
@@ -120,7 +128,6 @@
                 await addDoc(collection(db, "accounts"), data);
             }
             
-            // ഫോം ക്ലിയർ ചെയ്യുന്നു
             document.getElementById('ownerName').value = '';
             document.getElementById('siteName').value = '';
             document.getElementById('amount').value = '';
@@ -128,16 +135,49 @@
             alert("വിവരങ്ങൾ സേവ് ആയി!");
         };
 
+        let allTransactions = [];
+
         onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
+            allTransactions = [];
+            const siteSet = new Set();
+
+            snapshot.forEach(docSnap => {
+                const d = docSnap.data();
+                if (d.meshtriOwner === currentMeshtri) {
+                    allTransactions.push({ id: docSnap.id, ...d });
+                    if (d.site) siteSet.add(d.site);
+                }
+            });
+
+            // സൈറ്റ് ഡ്രോപ്പ്ഡൗൺ ഓട്ടോമാറ്റിക്കായി ഫിൽ ചെയ്യുന്നു
+            const siteSelect = document.getElementById('filterSite');
+            const currentSelectedSite = siteSelect.value;
+            siteSelect.innerHTML = '<option value="">എല്ലാ സൈറ്റുകളും (All Sites)</option>';
+            siteSet.forEach(site => {
+                siteSelect.innerHTML += `<option value="${site}">${site}</option>`;
+            });
+            siteSelect.value = currentSelectedSite;
+
+            renderList();
+        });
+
+        // ലിസ്റ്റും കണക്കുകളും റെൻഡർ ചെയ്യാനും സൈറ്റ് വെച്ച് ഫിൽട്ടർ ചെയ്യാനുമുള്ള ഫംഗ്ഷൻ
+        window.renderList = () => {
+            const selectedSite = document.getElementById('filterSite').value.toLowerCase();
+            const selectedDate = document.getElementById('filterDate').value;
             const list = document.getElementById('transactionList');
             list.innerHTML = '';
             let inc = 0, exp = 0;
-            
-            snapshot.forEach(docSnap => {
-                const d = docSnap.data();
-                
-                // ഫിൽട്ടറിംഗ്: ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ ഡാറ്റ മാത്രം എടുക്കുന്നു
-                if (d.meshtriOwner === currentMeshtri) {
+
+            allTransactions.forEach(d => {
+                const itemSite = (d.site || '').toLowerCase();
+                const itemDate = d.date || '';
+
+                // സൈറ്റും തീയതിയും ഫിൽട്ടർ ചെയ്യൽ
+                const matchesSite = !selectedSite || itemSite === selectedSite;
+                const matchesDate = !selectedDate || itemDate === selectedDate;
+
+                if (matchesSite && matchesDate) {
                     let categoryColor = "text-red-600";
                     if(d.type === 'income') {
                         categoryColor = "text-emerald-600";
@@ -159,7 +199,7 @@
                         <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 border border-slate-100 flex justify-between items-center">
                             <div>
                                 <p class="font-bold text-base text-slate-800">${d.name}</p>
-                                <p class="text-xs text-slate-500">${d.date || ''} • ${d.site || ''} • 
+                                <p class="text-xs text-slate-500">${d.date || ''} • ${d.site || 'സൈറ്റ് ഇല്ല'} • 
                                    <span class="font-bold text-slate-600">${paymentText}</span> • 
                                    <span class="capitalize font-bold">${typeName}</span>
                                 </p>
@@ -167,20 +207,23 @@
                             <div class="text-right">
                                 <p class="font-bold text-base ${categoryColor}">₹${d.amount}</p>
                                 <div class="flex gap-2 mt-1 justify-end">
-                                    <button onclick="window.editTransaction('${docSnap.id}', '${d.name}', '${d.site || ''}', '${d.type}', '${d.payment}', ${d.amount}, '${d.date}')" class="text-blue-600 text-xs font-bold">എഡിറ്റ്</button>
-                                    <button onclick="window.del('${docSnap.id}')" class="text-red-600 text-xs font-bold">ഡിലീറ്റ്</button>
+                                    <button onclick="window.editTransaction('${d.id}', '${d.name}', '${d.site || ''}', '${d.type}', '${d.payment}', ${d.amount}, '${d.date}')" class="text-blue-600 text-xs font-bold">എഡിറ്റ്</button>
+                                    <button onclick="window.del('${d.id}')" class="text-red-600 text-xs font-bold">ഡിലീറ്റ്</button>
                                 </div>
                             </div>
                         </div>`;
                 }
             });
-            
+
             document.getElementById('totalIncome').innerText = "₹" + inc;
             document.getElementById('totalExpense').innerText = "₹" + exp;
             document.getElementById('netBalance').innerText = "₹" + (inc - exp);
-        });
+        };
 
-        // തിരുത്തിയ എഡിറ്റ് ഫംഗ്ഷൻ (എല്ലാ ഫീൽഡുകളും കൃത്യമായി ലോഡ് ആകാൻ)
+        window.filterList = () => {
+            window.renderList();
+        };
+
         window.editTransaction = (id, name, site, type, payment, amount, date) => {
             editId = id;
             document.getElementById('ownerName').value = name;
@@ -195,20 +238,6 @@
 
         window.del = async (id) => { 
             if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "accounts", id)); 
-        };
-
-        window.filterList = () => {
-            const selectedDate = document.getElementById('filterDate').value;
-            const items = document.querySelectorAll('#transactionList > div');
-            
-            items.forEach(item => {
-                const itemText = item.innerText;
-                if (!selectedDate || itemText.includes(selectedDate)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
         };
     </script>
 </body>
