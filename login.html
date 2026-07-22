@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>രജിസ്ട്രേഷൻ - മേസ്തിരി ആപ്പ്</title>
+    <title>ലോഗിൻ - മേസ്തിരി ആപ്പ്</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght=400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Manjari', sans-serif; }
     </style>
@@ -13,42 +13,43 @@
 <body class="bg-gradient-to-br from-indigo-900 via-blue-800 to-cyan-900 min-h-screen flex items-center justify-center p-4">
 
     <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm border-t-4 border-blue-500">
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-black text-blue-900">പുതിയ അക്കൗണ്ട്</h1>
-            <p class="text-blue-500 font-bold mt-1">മേസ്തിരി രജിസ്ട്രേഷൻ</p>
+        <!-- ഹെഡിംഗ് മാറ്റങ്ങൾ വരുത്തിയത് ഇവിടെയാണ് -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
+            <p class="text-blue-500 font-bold mt-2">സൈറ്റ് മാനേജർ ഡിജിറ്റൽ ഡയറി</p>
         </div>
 
-        <div class="space-y-3">
+        <!-- ഇൻപുട്ട് ബോക്സുകൾ -->
+        <div class="space-y-4">
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">മേസ്തിരിയുടെ പേര് (Username)</label>
-                <input type="text" id="signupUsername" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
-                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                <label class="block text-lg font-bold text-gray-700 mb-1">യൂസർനെയിം</label>
+                <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
+                       class="w-full p-4 text-lg border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">ഇമെയിൽ വിലാസം</label>
-                <input type="email" id="signupEmail" placeholder="email@example.com" 
-                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
-            </div>
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">പുതിയ പാസ്‌വേർഡ്</label>
-                <input type="password" id="signupPassword" placeholder="ആപ്പിനായുള്ള പാസ്‌വേർഡ്" 
-                       class="w-full p-3 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                <label class="block text-lg font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
+                <input type="password" id="password" placeholder="പാസ്‌വേർഡ്" 
+                       class="w-full p-4 text-lg border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
         </div>
 
-        <button id="btnSignup" class="w-full mt-5 bg-blue-600 text-white p-3.5 rounded-xl font-black text-lg hover:bg-blue-700 transition shadow-lg">
-            അക്കൗണ്ട് നിർമ്മിക്കുക
+        <button id="btnLogin" class="w-full mt-6 bg-blue-600 text-white p-4 rounded-xl font-black text-xl hover:bg-blue-700 transition shadow-lg">
+            ലോഗിൻ ചെയ്യുക
         </button>
 
-        <p class="text-center mt-4 text-gray-600 font-bold text-sm">
-            ഇതിനകം അക്കൗണ്ട് ഉണ്ടോ? <a href="index.html" class="text-blue-600">ലോഗിൻ ചെയ്യുക</a>
+        <button id="btnForgot" class="w-full mt-4 text-gray-500 font-bold hover:text-blue-600 underline">
+            പാസ്‌വേർഡ് മറന്നുപോയോ?
+        </button>
+
+        <p class="text-center mt-6 text-gray-600 font-bold">
+            പുതിയ അക്കൗണ്ട് വേണോ? <a href="signup.html" class="text-blue-600">രജിസ്റ്റർ ചെയ്യുക</a>
         </p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -63,29 +64,39 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        document.getElementById("btnSignup").addEventListener("click", async () => {
-            const username = document.getElementById('signupUsername').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const password = document.getElementById('signupPassword').value.trim();
+        
+        document.getElementById("btnLogin").addEventListener("click", async () => {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            if(!user || !pass) return alert("വിവരങ്ങൾ നൽകുക!");
+            
+            signInWithEmailAndPassword(auth, `${user}@mesthri.com`, pass)
+                .then(() => {
+                    // ലോഗിൻ ചെയ്യുമ്പോൾ പേര് സേവ് ചെയ്യുന്നു
+                    localStorage.setItem('userName', user); 
+                    // ഡാഷ്‌ബോർഡിലേക്ക് പോകുന്നു
+                    window.location.href = "dashboard.html";
+                })
+                .catch(() => alert("ലോഗിൻ പരാജയപ്പെട്ടു!"));
+        });
 
-            if(!username || !email || !password) {
-                return alert("എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
-            }
+        document.getElementById("btnForgot").addEventListener("click", async () => {
+            const user = document.getElementById('username').value.trim();
+            if(!user) return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
 
-            try {
-                // ഫയർബേസ് ഓതന്റിക്കേഷനിൽ ഇമെയിലും പാസ്‌വേർഡും ഉപയോഗിച്ച് അക്കൗണ്ട് ഉണ്ടാക്കുന്നു
-                await createUserWithEmailAndPassword(auth, email, password);
+            const docRef = doc(db, "users", user);
+            const docSnap = await getDoc(docRef);
 
-                // ഡാറ്റാബേസിൽ യൂസറുടെ പേര് സേവ് ചെയ്യുന്നു
-                await setDoc(doc(db, "users", username), {
-                    username: username,
-                    email: email
-                });
-
-                alert("അക്കൗണ്ട് വിജയകരമായി നിർമ്മിച്ചു!");
-                window.location.href = "index.html";
-            } catch (error) {
-                alert("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു: " + error.message);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const answer = prompt(`രഹസ്യ ചോദ്യം: ${data.securityQuestion}\n\nഉത്തരം നൽകുക:`);
+                if (answer === data.securityAnswer) {
+                    alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + data.password);
+                } else {
+                    alert("ഉത്തരം തെറ്റാണ്!");
+                }
+            } else {
+                alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
             }
         });
     </script>
