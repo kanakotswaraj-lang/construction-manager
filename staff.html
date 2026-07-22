@@ -3,43 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>നിർമ്മാണ മാനേജർ - ജീവനക്കാരുടെ ശമ്പളം</title>
+    <title>തൊഴിലാളി മാനേജർ</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="p-4 bg-slate-100 font-sans">
+<body class="bg-slate-50 p-4">
+
     <div class="max-w-md mx-auto">
         
-        <!-- ഹെഡർ: ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് കാണിക്കാൻ -->
+        <!-- ഹെഡർ -->
         <div class="bg-slate-900 p-4 rounded-2xl text-white mb-6 flex justify-between items-center shadow-lg">
             <div>
-                <h1 class="text-xl font-black">ജീവനക്കാരുടെ ശമ്പളം</h1>
+                <h1 class="text-xl font-black">തൊഴിലാളികൾ</h1>
                 <p id="loggedInMeshtri" class="text-xs text-blue-400 font-bold mt-1">മേസ്തിരി: ലോഡിങ്...</p>
             </div>
             <a href="dashboard.html" class="bg-slate-800 text-xs px-3 py-2 rounded-xl text-slate-300 font-bold hover:bg-slate-700">ഡാഷ്‌ബോർഡ്</a>
         </div>
-        
-        <!-- ഇൻപുട്ട് ഫോം -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
-            <h2 class="font-bold text-slate-700 mb-3 text-sm">പുതിയ തൊഴിലാളിയെ ചേർക്കുക</h2>
-            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="text" id="siteName" placeholder="പ്രധാന സൈറ്റ്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="number" id="dailyWage" placeholder="ഒരു ദിവസത്തെ കൂലി (₹)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="tel" id="phoneNumber" placeholder="WhatsApp നമ്പർ (91...)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="text" id="jobType" placeholder="ജോലി (ഉദാ: മേസ്തിരി / പണിക്കാരൻ)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="text" id="bankDetails" placeholder="ബാങ്ക് / GPay നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border mb-3 text-sm font-bold">
-            <button id="saveStaffBtn" class="w-full bg-emerald-700 text-white p-3.5 rounded-xl font-black shadow-md text-sm">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
+
+        <!-- പുതിയ തൊഴിലാളിയെ ചേർക്കാനുള്ള ഫോം -->
+        <div class="bg-white p-6 rounded-3xl shadow-lg mb-6 border border-slate-100">
+            <h2 class="text-lg font-bold mb-4 text-slate-700">പുതിയ തൊഴിലാളിയെ ചേർക്കുക</h2>
+            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl mb-3 text-base outline-none">
+            
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <select id="staffRole" class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-base outline-none">
+                    <option value="Helper">ഹെൽപ്പർ (Helper)</option>
+                    <option value="Mason">മേസ്തിരി (Mason)</option>
+                </select>
+                <input type="number" id="dailyWage" placeholder="ഒരു ദിവസത്തെ കൂലി (₹)" class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-base outline-none">
+            </div>
+
+            <button id="saveStaffBtn" class="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold text-base hover:bg-emerald-700 transition">തൊഴിലാളിയെ സേവ് ചെയ്യുക</button>
         </div>
 
-        <!-- സെർച്ച് ബാർ -->
-        <input type="text" id="searchInput" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-3 bg-white rounded-xl border mb-4 shadow-sm text-sm font-bold">
-
-        <div id="staffList" class="space-y-4 pb-12"></div>
+        <!-- തൊഴിലാളികളുടെ ലിസ്റ്റ് കാണിക്കുന്ന സ്ഥലം -->
+        <div id="staffList" class="space-y-4 pb-10"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        
+        import { getFirestore, collection, addDoc, onSnapshot, query, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -48,162 +51,163 @@
             messagingSenderId: "1060617901864",
             appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
         };
-        
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് എടുക്കുന്നു
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
-        // സേവ് സ്റ്റാഫ്
-        document.getElementById('saveStaffBtn').addEventListener('click', async () => {
-            const name = document.getElementById('staffName').value;
+        // പുതിയ തൊഴിലാളിയെ സേവ് ചെയ്യാൻ
+        document.getElementById('saveStaffBtn').onclick = async () => {
+            const name = document.getElementById('staffName').value.trim();
+            const role = document.getElementById('staffRole').value;
+            const wage = parseFloat(document.getElementById('dailyWage').value) || 0;
+
             if (!name) return alert("പേര് നൽകുക!");
-            
+
             await addDoc(collection(db, "staffs"), {
                 meshtriOwner: currentMeshtri,
                 name: name,
-                site: document.getElementById('siteName').value,
-                wage: parseFloat(document.getElementById('dailyWage').value) || 0,
-                phone: document.getElementById('phoneNumber').value,
-                job: document.getElementById('jobType').value,
-                bank: document.getElementById('bankDetails').value,
+                role: role,
+                dailyWage: wage,
                 workedDays: 0,
-                advance: 0
+                advance: 0,
+                site: "പ്രധാന സൈറ്റ്"
             });
-            alert("വിവരങ്ങൾ സേവ് ആയി!");
-            
+
             document.getElementById('staffName').value = '';
-            document.getElementById('siteName').value = '';
             document.getElementById('dailyWage').value = '';
-            document.getElementById('phoneNumber').value = '';
-            document.getElementById('jobType').value = '';
-            document.getElementById('bankDetails').value = '';
-        });
+            alert("തൊഴിലാളിയെ വിജയകരമായി ചേർത്തു!");
+        };
 
-        // സെർച്ച് ഫംഗ്ഷൻ
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            document.querySelectorAll('#staffList > div').forEach(div => {
-                div.style.display = div.innerText.toLowerCase().includes(val) ? '' : 'none';
-            });
-        });
-
-        // ലിസ്റ്റ് അപ്‌ഡേറ്റ്
-        onSnapshot(collection(db, "staffs"), (snapshot) => {
+        // തൊഴിലാളികളുടെ ലിസ്റ്റ് ലൈവ് ആയി ലോഡ് ചെയ്യുന്നു
+        onSnapshot(query(collection(db, "staffs")), (snapshot) => {
             const list = document.getElementById('staffList');
             list.innerHTML = '';
-            
-            snapshot.forEach((d) => {
-                const s = d.data();
-                
-                if (s.meshtriOwner === currentMeshtri) {
-                    const div = document.createElement('div');
-                    div.className = "bg-white p-4 rounded-2xl border shadow-sm";
-                    const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
-                    
-                    const workedDays = parseFloat(s.workedDays) || 0;
-                    const dailyWage = parseFloat(s.wage) || 0;
-                    const totalEarned = workedDays * dailyWage;
-                    const advance = parseFloat(s.advance) || 0;
-                    const balanceDue = totalEarned - advance;
 
-                    div.innerHTML = `
-                        <div class="flex justify-between items-center mb-3">
+            snapshot.forEach(docSnap => {
+                const s = docSnap.data();
+                const d = { id: docSnap.id, ...s };
+
+                if (s.meshtriOwner === currentMeshtri) {
+                    let workedDays = s.workedDays !== undefined ? s.workedDays : 1;
+                    let advance = s.advance !== undefined ? s.advance : 0;
+                    let siteName = s.site || "പ്രധാന സൈറ്റ്";
+                    let attendanceStatus = "present"; // ഡിഫോൾട്ട് ആയി വന്നു എന്ന് വെക്കുന്നു
+
+                    let totalWage = workedDays * s.dailyWage;
+                    let balanceToPay = totalWage - advance;
+
+                    let card = document.createElement('div');
+                    card.className = "bg-white p-5 rounded-3xl shadow-md border border-slate-100 relative";
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-3">
                             <div>
-                                <h3 class="font-black text-base text-slate-800">${s.name} <span class="text-xs font-normal text-slate-500">(${s.job || 'പണിക്കാരൻ'})</span></h3>
-                                <p class="text-xs text-slate-500 font-bold">സൈറ്റ്: ${s.site || 'പ്രധാന സൈറ്റ്'} | കൂലി: ₹${dailyWage}/ദിവസം</p>
+                                <h3 class="font-black text-lg text-slate-800">${s.name} <span class="text-xs font-normal text-slate-500">(${s.role})</span></h3>
+                                <p class="text-xs text-slate-500 mt-0.5">സൈറ്റ്: <span id="siteText-${d.id}" class="font-bold text-slate-700">${siteName}</span> | കൂലി: ₹${s.dailyWage}/ദിവസം</p>
                             </div>
-                            <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
+                            <button id="del-${d.id}" class="text-red-500 text-xs font-bold bg-red-50 px-2.5 py-1.5 rounded-xl hover:bg-red-100">Delete</button>
                         </div>
 
-                        <div class="p-3 bg-slate-50 rounded-xl mb-3 space-y-2 border border-slate-100">
-                            <!-- ഹാജർ നില (വന്നു / അവധി) ബട്ടണുകൾ -->
-                            <div class="flex gap-2 mb-2">
-                                <button type="button" id="presentBtn-${d.id}" class="flex-1 p-2 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">വന്നു (Present)</button>
-                                <button type="button" id="absentBtn-${d.id}" class="flex-1 p-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">അവധി (Absent)</button>
-                            </div>
+                        <!-- ഹാജർ ബട്ടണുകൾ -->
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <button id="presBtn-${d.id}" class="p-2.5 rounded-xl text-xs font-bold transition bg-emerald-500 text-white shadow-sm">വന്നു (Present)</button>
+                            <button id="absBtn-${d.id}" class="p-2.5 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-600">അവധി (Absent)</button>
+                        </div>
 
-                            <!-- സൈറ്റ് തിരഞ്ഞെടുക്കാൻ -->
+                        <div class="space-y-3 mb-4">
                             <div>
-                                <label class="text-[10px] font-bold text-slate-500 block">ഇന്നത്തെ സൈറ്റ്</label>
-                                <input type="text" id="workSite-${d.id}" value="${s.site || ''}" placeholder="സൈറ്റിന്റെ പേര് എഴുതുക" class="w-full p-2 border rounded text-sm font-bold bg-white mb-2">
+                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">ഇന്നത്തെ സൈറ്റ്</label>
+                                <input type="text" id="workSite-${d.id}" value="${siteName}" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none">
                             </div>
 
-                            <!-- പണിയുടെ അളവ് (ഫുൾ ഡേ / ഹാഫ് ഡേ / ഓവർടൈം) -->
-                            <div class="grid grid-cols-2 gap-2">
+                            <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="text-[10px] font-bold text-slate-500 block">പണിയുടെ അളവ്</label>
-                                    <select id="workDayType-${d.id}" class="w-full p-2 border rounded text-sm font-bold bg-white">
-                                        <option value="1">ഫുൾ ഡേ (1)</option>
-                                        <option value="0.5">ഹാഫ് ഡേ (0.5)</option>
-                                        <option value="1.5">ഓവർടൈം (1.5)</option>
+                                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">പണിയുടെ അളവ്</label>
+                                    <select id="workDayType-${d.id}" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none">
+                                        <option value="1" ${workedDays === 1 ? 'selected' : ''}>ഫുൾ ഡേ (1)</option>
+                                        <option value="0.5" ${workedDays === 0.5 ? 'selected' : ''}>ഹാഫ് ഡേ (0.5)</option>
+                                        <option value="1.5" ${workedDays === 1.5 ? 'selected' : ''}>ഓവർടൈം (1.5)</option>
+                                        <option value="2" ${workedDays === 2 ? 'selected' : ''}>ഇരട്ടി (2)</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="text-[10px] font-bold text-slate-500 block">വാങ്ങിയ അഡ്വാൻസ് (₹)</label>
-                                    <input type="number" id="adv-${d.id}" value="${s.advance || 0}" class="w-full p-2 border rounded text-sm font-bold bg-white">
+                                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">വാങ്ങിയ അഡ്വാൻസ് (₹)</label>
+                                    <input type="number" id="adv-${d.id}" value="${advance}" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none">
                                 </div>
                             </div>
+                        </div>
 
+                        <!-- കണക്കുകൾ കാർഡിൽ കാണിക്കാൻ -->
+                        <div class="bg-blue-50/50 p-3.5 rounded-2xl border border-blue-100 mb-4 flex justify-between items-center text-xs">
                             <div>
-                                <label class="text-[10px] font-bold text-slate-500 block">ആകെ പണിയെടുത്ത ദിവസം</label>
-                                <input type="number" id="days-${d.id}" value="${s.workedDays || 0}" class="w-full p-2 border rounded text-sm font-bold bg-white">
+                                <p class="text-slate-500">ആകെ കൂലി:</p>
+                                <p id="totWage-${d.id}" class="font-bold text-emerald-700 text-base">₹${totalWage}</p>
                             </div>
-                            
-                            <div class="text-xs font-bold text-slate-700 pt-1 flex justify-between bg-blue-50 p-2 rounded-lg">
-                                <span>ആകെ കൂലി: ₹${totalEarned}</span>
-                                <span class="text-emerald-700 font-black">ബാക്കി കൊടുക്കാനുള്ളത്: ₹${balanceDue}</span>
+                            <div class="text-right">
+                                <p class="text-slate-500">ബാക്കി കൊടുക്കാനുള്ളത്:</p>
+                                <p id="balPay-${d.id}" class="font-bold text-slate-800 text-base">₹${balanceToPay}</p>
                             </div>
-
-                            <button id="save-${d.id}" class="w-full bg-slate-900 text-white mt-1 p-2.5 rounded-xl text-xs font-bold shadow-sm">ഹാജറും കണക്കുകളും സേവ് ചെയ്യുക</button>
                         </div>
 
-                        <div class="flex gap-2">
-                            <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2.5 rounded-xl text-xs font-bold text-amber-800">Edit Name/Wage</button>
-                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aഈ ആഴ്ചത്തെ കണക്ക്:%0A- ആകെ പണിയെടുത്ത ദിവസങ്ങൾ: ${workedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${balanceDue}" target="_blank" class="flex-1 bg-emerald-600 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp കണക്ക് അയക്കുക</a>
-                        </div>
+                        <button id="save-${d.id}" class="w-full bg-slate-900 text-white p-3.5 rounded-xl font-bold text-sm hover:bg-slate-800 transition shadow-md">ഹാജറും കണക്കുകളും സേവ് ചെയ്യുക</button>
                     `;
-                    list.appendChild(div);
 
-                    // ഹാജർ 'വന്നു' എന്ന് അമർത്തുമ്പോൾ ദിവസങ്ങളുടെ എണ്ണം ഓട്ടോമാറ്റിക്കായി കൂട്ടാൻ
-                    let attendanceStatus = "present";
-                    const pBtn = document.getElementById(`presentBtn-${d.id}`);
-                    const aBtn = document.getElementById(`absentBtn-${d.id}`);
-                    const daysInput = document.getElementById(`days-${d.id}`);
+                    list.appendChild(card);
 
-                    pBtn.onclick = () => {
+                    // ലൊക്കൽ വേരിയബിളുകൾ
+                    let currentDays = workedDays;
+                    const presBtn = document.getElementById(`presBtn-${d.id}`);
+                    const absBtn = document.getElementById(`absBtn-${d.id}`);
+                    const dayTypeSelect = document.getElementById(`workDayType-${d.id}`);
+                    const advInput = document.getElementById(`adv-${d.id}`);
+                    const totWageEl = document.getElementById(`totWage-${d.id}`);
+                    const balPayEl = document.getElementById(`balPay-${d.id}`);
+
+                    // തുക കണക്കാക്കി അപ്ഡേറ്റ് ചെയ്യുന്ന ഫംഗ്ഷൻ
+                    function updateCalculations() {
+                        const days = attendanceStatus === "present" ? (parseFloat(dayTypeSelect.value) || 0) : 0;
+                        const adv = parseFloat(advInput.value) || 0;
+                        const tWage = days * s.dailyWage;
+                        const bPay = tWage - adv;
+
+                        totWageEl.innerText = "₹" + tWage;
+                        balPayEl.innerText = "₹" + bPay;
+                    }
+
+                    // വന്നത് ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
+                    presBtn.onclick = () => {
                         attendanceStatus = "present";
-                        pBtn.className = "flex-1 p-2 rounded-xl text-xs font-bold bg-emerald-600 text-white border border-emerald-700 shadow-sm";
-                        aBtn.className = "flex-1 p-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200";
-                        
-                        // വന്നുവെന്ന് അമർത്തുമ്പോൾ സെലക്ട് ചെയ്ത പണിയുടെ അളവ് (1, 0.5, 1.5) നിലവിലുള്ള ദിവസത്തോടൊപ്പം കൂട്ടുന്നു
-                        const selectedDays = parseFloat(document.getElementById(`workDayType-${d.id}`).value) || 1;
-                        daysInput.value = workedDays + selectedDays;
+                        presBtn.className = "p-2.5 rounded-xl text-xs font-bold transition bg-emerald-500 text-white shadow-sm";
+                        absBtn.className = "p-2.5 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-600";
+                        dayTypeSelect.disabled = false;
+                        updateCalculations();
                     };
 
-                    aBtn.onclick = () => {
+                    // അവധി ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
+                    absBtn.onclick = () => {
                         attendanceStatus = "absent";
-                        aBtn.className = "flex-1 p-2 rounded-xl text-xs font-bold bg-red-600 text-white border border-red-700 shadow-sm";
-                        pBtn.className = "flex-1 p-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200";
-                        
-                        // അവധിയാണെങ്കിൽ ദിവസങ്ങൾ കൂട്ടേണ്ടതില്ല, പഴയതുപോലെ നിർത്താം
-                        daysInput.value = workedDays;
+                        absBtn.className = "p-2.5 rounded-xl text-xs font-bold transition bg-red-500 text-white shadow-sm";
+                        presBtn.className = "p-2.5 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-600";
+                        dayTypeSelect.disabled = true;
+                        totWageEl.innerText = "₹0";
+                        balPayEl.innerText = "₹" + (0 - (parseFloat(advInput.value) || 0));
                     };
 
-                    // കണക്കുകൾ അപ്ഡേറ്റ് ചെയ്യാനും വരവ്-ചെലവ് പേജിലേക്ക് അയക്കാനുമുള്ള കോഡ്
-                    document.getElementById(`save-${d.id}`).onclick = async () => {
-                        const selectedDays = parseFloat(document.getElementById(`workDayType-${d.id}`).value) || 1;
-                        const selectedSite = document.getElementById(`workSite-${d.id}`).value || "പ്രധാന സൈറ്റ്";
-                        const finalUpdatedDays = parseFloat(document.getElementById(`days-${d.id}`).value) || 0;
-                        const advance = parseFloat(document.getElementById(`adv-${d.id}`).value) || 0;
-                        
-                        // വന്നാണെങ്കിൽ മാത്രം വരവ്-ചെലവിലേക്ക് കൂലി തുക കയറും
-                        if (attendanceStatus === "present") {
-                            const earnedForThisEntry = selectedDays * dailyWage;
+                    dayTypeSelect.onchange = updateCalculations;
+                    advInput.oninput = updateCalculations;
 
-                            // 1. വരവ്-ചെലവ് (accounts) പേജിലേക്ക് ആ കൂലി തുക ചേർക്കുന്നു
+                    // സേവ് ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ (കൂലിയും അഡ്വാൻസും Accounts പേജിലേക്ക് പോകും)
+                    document.getElementById(`save-${d.id}`).onclick = async () => {
+                        const selectedDays = attendanceStatus === "present" ? (parseFloat(dayTypeSelect.value) || 1) : 0;
+                        const selectedSite = document.getElementById(`workSite-${d.id}`).value.trim() || "പ്രധാന സൈറ്റ്";
+                        const finalAdv = parseFloat(advInput.value) || 0;
+                        const earnedForThisEntry = selectedDays * s.dailyWage;
+                        const currentDate = new Date().toISOString().split('T')[0];
+
+                        // 1. വന്നാണെങ്കിൽ കൂലി തുക വരവ്-ചെലവിലേക്ക് കയറും
+                        if (attendanceStatus === "present" && earnedForThisEntry > 0) {
                             await addDoc(collection(db, "accounts"), {
                                 meshtriOwner: currentMeshtri,
                                 name: s.name + " (കൂലി - " + selectedDays + " ദിവസം)",
@@ -211,34 +215,38 @@
                                 type: "wage",
                                 payment: "cash",
                                 amount: earnedForThisEntry,
-                                date: new Date().toISOString().split('T')[0]
+                                date: currentDate
                             });
                         }
 
-                        // 2. സ്റ്റാഫ് ഡാറ്റാബേസ് അപ്ഡേറ്റ് ചെയ്യുന്നു
+                        // 2. അഡ്വാൻസ് തുക ഉണ്ടെങ്കിൽ അതും വരവ്-ചെലവിലേക്ക് ചെലവായി കയറും
+                        if (finalAdv > 0) {
+                            await addDoc(collection(db, "accounts"), {
+                                meshtriOwner: currentMeshtri,
+                                name: s.name + " (അഡ്വാൻസ്)",
+                                site: selectedSite,
+                                type: "other",
+                                payment: "cash",
+                                amount: finalAdv,
+                                date: currentDate
+                            });
+                        }
+
+                        // 3. സ്റ്റാഫ് ഡാറ്റാബേസ് അപ്ഡേറ്റ് ചെയ്യുന്നു
                         await updateDoc(doc(db, 'staffs', d.id), {
-                            workedDays: finalUpdatedDays,
-                            advance: advance,
+                            workedDays: selectedDays,
+                            advance: finalAdv,
                             site: selectedSite
                         });
 
-                        alert("കണക്കുകൾ വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്തു!");
+                        alert("കണക്കുകൾ വിജയകരമായി സേവ് ആയി!");
                     };
 
-                    // ഡിലീറ്റ് ചെയ്യാനുള്ള കോഡ്
-                    document.getElementById(`del-${d.id}`).onclick = () => {
-                        if(confirm("ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
-                            deleteDoc(doc(db, 'staffs', d.id));
+                    // തൊഴിലാളിയെ ഡിലീറ്റ് ചെയ്യാൻ
+                    document.getElementById(`del-${d.id}`).onclick = async () => {
+                        if (confirm(`${s.name}-നെ ഡിലീറ്റ് ചെയ്യണോ?`)) {
+                            await deleteDoc(doc(db, 'staffs', d.id));
                         }
-                    };
-                    
-                    // എഡിറ്റ് ചെയ്യാനുള്ള കോഡ്
-                    document.getElementById(`edit-${d.id}`).onclick = () => {
-                        const newName = prompt("പേര് മാറ്റുക:", s.name);
-                        if(newName === null) return;
-                        const newWage = prompt("പുതിയ കൂലി:", s.wage);
-                        if(newWage === null) return;
-                        updateDoc(doc(db, 'staffs', d.id), { name: newName, wage: parseFloat(newWage) || 0 });
                     };
                 }
             });
