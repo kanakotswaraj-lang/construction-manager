@@ -37,7 +37,9 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        
+
+                import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         
         const firebaseConfig = {
@@ -121,15 +123,15 @@
                             </div>
                             <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
                         </div>
-                        <!-- ഹാജർ ടിക്ക് ചെയ്യാനുള്ള ബോക്സ് -->
-<div class="flex items-center gap-2 mb-3 bg-emerald-50 p-2 rounded-xl border border-emerald-100">
-    <input type="checkbox" id="attend-${d.id}" class="w-4 h-4 text-emerald-600 rounded">
-    <label for="attend-${d.id}" class="text-xs font-bold text-emerald-900">ഇന്നത്തെ ഹാജർ ഉണ്ട് (Present)</label>
-</div>
 
+                        <!-- ഹാജർ ടിക്ക് ബോക്സ് ചേർത്തിരിക്കുന്നു -->
+                        <div class="flex items-center gap-2 mb-3 bg-emerald-50 p-2 rounded-xl border border-emerald-100">
+                            <input type="checkbox" id="attend-${d.id}" class="w-4 h-4 text-emerald-600 rounded">
+                            <label for="attend-${d.id}" class="text-xs font-bold text-emerald-900">ഇന്നത്തെ ഹാജർ ഉണ്ട് (Present)</label>
+                        </div>
 
                         <div class="p-3 bg-slate-50 rounded-xl mb-3 space-y-2 border border-slate-100">
-                            <!-- പണിയുടെ അളവ് (ഫുൾ ഡേ, ഹാഫ് ഡേ, ഓവർടൈം) തിരഞ്ഞെടുക്കാൻ -->
+                            <!-- പണിയുടെ അളവ് തിരഞ്ഞെടുക്കാൻ -->
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-[10px] font-bold text-slate-500 block mb-1">ഇന്നത്തെ പണിയുടെ അളവ്</label>
@@ -162,3 +164,107 @@
                             </div>
 
                             <button id="save-${d.id}" class="w-full bg-slate-900 text-white mt-1 p-2.5 rounded-xl text-xs font-bold shadow-sm">കണക്കുകൾ സേവ് ചെയ്യുക</button>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2.5 rounded-xl text-xs font-bold text-amber-800">Edit Details</button>
+                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aഈ ആഴ്ചത്തെ കണക്ക്:%0A- പണിയെടുത്ത ദിവസങ്ങൾ: ${workedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${balanceDue}%0A- ബാങ്ക്/GPay വിവരങ്ങൾ: ${s.bank || 'ഇല്ല'}" target="_blank" class="flex-1 bg-emerald-600 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp കണക്ക് അയക്കുക</a>
+                        </div>
+                    `;
+                    list.appendChild(div);
+
+                    // 'കൂട്ടിച്ചേർക്കുക' ബട്ടൺ വഴി ദിവസങ്ങൾ കൂട്ടാൻ (ഹാജർ ടിക്ക് ചെയ്തിട്ടുണ്ടെങ്കിൽ മാത്രം കൂട്ടാൻ സെറ്റ് ചെയ്യാം അല്ലെങ്കിൽ നേരിട്ട് കൂട്ടാം)
+                    document.getElementById(`addDayBtn-${d.id}`).onclick = () => {
+                        const isChecked = document.getElementById(`attend-${d.id}`).checked;
+                        if (!isChecked) {
+                            if(!confirm("ഹാജർ (Attendance) ടിക്ക് ചെയ്തിട്ടില്ല. എങ്കിലും ദിവസങ്ങൾ കൂട്ടണമോ?")) return;
+                        }
+                        const daysInput = document.getElementById(`days-${d.id}`);
+                        const selectVal = parseFloat(document.getElementById(`dayType-${d.id}`).value) || 1;
+                        let currentDays = parseFloat(daysInput.value) || 0;
+                        daysInput.value = currentDays + selectVal;
+                    };
+
+                    // കണക്കുകൾ സേവ് ചെയ്യുമ്പോൾ അതാത് സൈറ്റിന്റെ പേരിലേക്ക് ചെലവുകൾ ഓട്ടോമാറ്റിക് ആയി കയറും
+                    document.getElementById(`save-${d.id}`).onclick = async () => {
+                        const newDays = parseFloat(document.getElementById(`days-${d.id}`).value) || 0;
+                        const newAdv = parseFloat(document.getElementById(`adv-${d.id}`).value) || 0;
+                        
+                        const oldDays = parseFloat(s.workedDays) || 0;
+                        const diffDays = newDays - oldDays;
+                        
+                        const oldAdv = parseFloat(s.advance) || 0;
+                        const diffAdv = newAdv - oldAdv;
+
+                        const siteName = s.site || "പ്രധാന സൈറ്റ്";
+                        const currentDate = new Date().toISOString().split('T')[0];
+
+                        // സ്റ്റാഫ് ഡാറ്റ അപ്ഡേറ്റ് ചെയ്യുന്നു
+                        await updateDoc(doc(db, 'staffs', d.id), {
+                            workedDays: newDays,
+                            advance: newAdv
+                        });
+
+                        // പുതിയതായി വന്ന കൂലി തുക അക്കൗണ്ട്സ് പേജിലേക്ക് ചെലവായി (wage) കയറുന്നു
+                        if (diffDays > 0) {
+                            const wageAmount = diffDays * dailyWage;
+                            await addDoc(collection(db, "accounts"), {
+                                meshtriOwner: currentMeshtri,
+                                name: s.name + " (കൂലി - " + diffDays + " ദിവസം)",
+                                site: siteName,
+                                type: "wage",
+                                payment: "cash",
+                                amount: wageAmount,
+                                date: currentDate
+                            });
+                        }
+
+                        // പുതിയതായി വന്ന അഡ്വാൻസ് തുക അക്കൗണ്ട്സ് പേജിലേക്ക് ചെലവായി (advance) കയറുന്നു
+                        if (diffAdv > 0) {
+                            await addDoc(collection(db, "accounts"), {
+                                meshtriOwner: currentMeshtri,
+                                name: s.name + " (അഡ്വാൻസ്)",
+                                site: siteName,
+                                type: "advance",
+                                payment: "cash",
+                                amount: diffAdv,
+                                date: currentDate
+                            });
+                        }
+
+                        alert("കണക്കുകൾ വിജയകരമായി സേവ് ആവുകയും സൈറ്റ് അക്കൗണ്ടിലേക്ക് കയറുകയും ചെയ്തു!");
+                    };
+
+                    // ഡിലീറ്റ് ചെയ്യാനുള്ള കോഡ്
+                    document.getElementById(`del-${d.id}`).onclick = () => {
+                        if(confirm("ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
+                            deleteDoc(doc(db, 'staffs', d.id));
+                        }
+                    };
+                    
+                    // എഡിറ്റ് ചെയ്യാനുള്ള കോഡ്
+                    document.getElementById(`edit-${d.id}`).onclick = () => {
+                        const newName = prompt("പേര് മാറ്റുക:", s.name);
+                        if(newName === null) return;
+                        const newWage = prompt("പുതിയ കൂലി:", s.wage);
+                        if(newWage === null) return;
+                        const newSite = prompt("സൈറ്റ് മാറ്റുക:", s.site);
+                        if(newSite === null) return;
+                        const newBank = prompt("ബാങ്ക് / GPay നമ്പർ:", s.bank);
+                        if(newBank === null) return;
+
+                        updateDoc(doc(db, 'staffs', d.id), { 
+                            name: newName, 
+                            wage: parseFloat(newWage) || 0,
+                            site: newSite,
+                            bank: newBank
+                        });
+                    };
+                }
+            });
+        });
+
+
+    </script>
+</body>
+</html>
