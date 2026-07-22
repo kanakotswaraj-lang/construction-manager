@@ -22,7 +22,7 @@
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
             <h2 class="font-bold text-slate-700 mb-3 text-sm">പുതിയ തൊഴിലാളിയെ ചേർക്കുക</h2>
             <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="text" id="siteName" placeholder="സൈറ്റ്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
+            <input type="text" id="siteName" placeholder="സൈറ്റ് പേര് (കൃത്യമായി നൽകുക)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
             <input type="number" id="dailyWage" placeholder="ഒരു ദിവസത്തെ കൂലി (₹)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
             <input type="tel" id="phoneNumber" placeholder="WhatsApp നമ്പർ (91...)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
             <input type="text" id="jobType" placeholder="ജോലി (ഉദാ: മേസ്തിരി / പണിക്കാരൻ)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
@@ -59,12 +59,14 @@
         // സേവ് സ്റ്റാഫ്
         document.getElementById('saveStaffBtn').addEventListener('click', async () => {
             const name = document.getElementById('staffName').value;
+            const site = document.getElementById('siteName').value;
             if (!name) return alert("പേര് നൽകുക!");
+            if (!site) return alert("സൈറ്റിന്റെ പേര് നൽകുക!");
             
             await addDoc(collection(db, "staffs"), {
                 meshtriOwner: currentMeshtri,
                 name: name,
-                site: document.getElementById('siteName').value,
+                site: site,
                 wage: parseFloat(document.getElementById('dailyWage').value) || 0,
                 phone: document.getElementById('phoneNumber').value,
                 job: document.getElementById('jobType').value,
@@ -114,7 +116,8 @@
                         <div class="flex justify-between items-center mb-3">
                             <div>
                                 <h3 class="font-black text-base text-slate-800">${s.name} <span class="text-xs font-normal text-slate-500">(${s.job || 'പണിക്കാരൻ'})</span></h3>
-                                <p class="text-xs text-slate-500 font-bold">${s.site || ''} | <span class="text-emerald-700 text-sm font-black">ഒരു ദിവസത്തെ കൂലി: ₹${dailyWage}</span></p>
+                                <p class="text-xs text-slate-500 font-bold">സൈറ്റ്: <span class="text-blue-600">${s.site || 'പ്രധാന സൈറ്റ്'}</span> | <span class="text-emerald-700 text-sm font-black">കൂലി: ₹${dailyWage}</span></p>
+                                ${s.bank ? `<p class="text-[11px] text-slate-500 mt-0.5">GPay/Bank: ${s.bank}</p>` : ''}
                             </div>
                             <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
                         </div>
@@ -156,13 +159,13 @@
                         </div>
 
                         <div class="flex gap-2">
-                            <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2.5 rounded-xl text-xs font-bold text-amber-800">Edit Name/Wage</button>
-                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aഈ ആഴ്ചത്തെ കണക്ക്:%0A- പണിയെടുത്ത ദിവസങ്ങൾ: ${workedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${balanceDue}" target="_blank" class="flex-1 bg-emerald-600 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp കണക്ക് അയക്കുക</a>
+                            <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2.5 rounded-xl text-xs font-bold text-amber-800">Edit Details</button>
+                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aഈ ആഴ്ചത്തെ കണക്ക്:%0A- പണിയെടുത്ത ദിവസങ്ങൾ: ${workedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${balanceDue}%0A- ബാങ്ക്/GPay വിവരങ്ങൾ: ${s.bank || 'ഇല്ല'}" target="_blank" class="flex-1 bg-emerald-600 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp കണക്ക് അയക്കുക</a>
                         </div>
                     `;
                     list.appendChild(div);
 
-                    // 'കൂട്ടിച്ചേർക്കുക' ബട്ടൺ ഞെക്കുമ്പോൾ തിരഞ്ഞെടുത്ത അളവ് (0.5, 1, 1.5 മുതലായവ) നിലവിലെ ദിവസത്തോടൊപ്പം കൂട്ടാൻ
+                    // 'കൂട്ടിച്ചേർക്കുക' ബട്ടൺ വഴി ദിവസങ്ങൾ കൂട്ടാൻ
                     document.getElementById(`addDayBtn-${d.id}`).onclick = () => {
                         const daysInput = document.getElementById(`days-${d.id}`);
                         const selectVal = parseFloat(document.getElementById(`dayType-${d.id}`).value) || 1;
@@ -170,7 +173,7 @@
                         daysInput.value = currentDays + selectVal;
                     };
 
-                    // കണക്കുകൾ അപ്ഡേറ്റ് ചെയ്യുക ഒപ്പം Accounts (വരവ്-ചെലവ്) പേജിലേക്ക് ഓട്ടോമാറ്റിക് എൻട്രി കൊടുക്കുക
+                    // കണക്കുകൾ സേവ് ചെയ്യുമ്പോൾ അതാത് സൈറ്റിന്റെ പേരിലേക്ക് ചെലവുകൾ അക്കൗണ്ട്സിൽ കയറും
                     document.getElementById(`save-${d.id}`).onclick = async () => {
                         const newDays = parseFloat(document.getElementById(`days-${d.id}`).value) || 0;
                         const newAdv = parseFloat(document.getElementById(`adv-${d.id}`).value) || 0;
@@ -186,7 +189,7 @@
                             advance: newAdv
                         });
 
-                        // പുതിയതായി പണിയെടുത്ത ദിവസങ്ങൾക്ക് കൂലി ഉണ്ടെങ്കിൽ Accounts പേജിലേക്ക് ആഡ് ചെയ്യുന്നു
+                        // പുതിയതായി വന്ന കൂലി തുക അക്കൗണ്ട്സ് പേജിലേക്ക് ചെലവായി (wage) കയറുന്നു
                         if (diffDays > 0) {
                             const wageAmount = diffDays * dailyWage;
                             await addDoc(collection(db, "accounts"), {
@@ -200,7 +203,7 @@
                             });
                         }
 
-                        // പുതിയതായി അഡ്വാൻസ് തുക കൂട്ടിയിട്ടുണ്ടെങ്കിൽ Accounts പേജിലേക്ക് ആഡ് ചെയ്യുന്നു
+                        // പുതിയതായി വന്ന അഡ്വാൻസ് തുക അക്കൗണ്ട്സ് പേജിലേക്ക് ചെലവായി (advance) കയറുന്നു
                         const oldAdv = parseFloat(s.advance) || 0;
                         const diffAdv = newAdv - oldAdv;
                         if (diffAdv > 0) {
@@ -208,14 +211,14 @@
                                 meshtriOwner: currentMeshtri,
                                 name: s.name + " (അഡ്വാൻസ്)",
                                 site: siteName,
-                                type: "other",
+                                type: "advance",
                                 payment: "cash",
                                 amount: diffAdv,
                                 date: currentDate
                             });
                         }
 
-                        alert("കണക്കുകൾ വിജയകരമായി സേവ് ആയി!");
+                        alert("കണക്കുകൾ വിജയകരമായി സേവ് ആവുകയും സൈറ്റ് അക്കൗണ്ടിലേക്ക് കയറുകയും ചെയ്തു!");
                     };
 
                     // ഡിലീറ്റ് ചെയ്യാനുള്ള കോഡ്
@@ -231,7 +234,17 @@
                         if(newName === null) return;
                         const newWage = prompt("പുതിയ കൂലി:", s.wage);
                         if(newWage === null) return;
-                        updateDoc(doc(db, 'staffs', d.id), { name: newName, wage: parseFloat(newWage) || 0 });
+                        const newSite = prompt("സൈറ്റ് മാറ്റുക:", s.site);
+                        if(newSite === null) return;
+                        const newBank = prompt("ബാങ്ക് / GPay നമ്പർ:", s.bank);
+                        if(newBank === null) return;
+
+                        updateDoc(doc(db, 'staffs', d.id), { 
+                            name: newName, 
+                            wage: parseFloat(newWage) || 0,
+                            site: newSite,
+                            bank: newBank
+                        });
                     };
                 }
             });
