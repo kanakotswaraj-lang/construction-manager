@@ -12,46 +12,47 @@
 </head>
 <body class="bg-gradient-to-br from-indigo-900 via-blue-800 to-cyan-900 min-h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm border-t-4 border-blue-500">
+    <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-full max-w-md border-t-4 border-blue-500">
         <!-- ഹെഡിംഗ് -->
         <div class="text-center mb-6">
-            <h1 class="text-3xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
-            <p id="formTitle" class="text-blue-500 font-bold mt-2">ലോഗിൻ ചെയ്യുക</p>
+            <h1 class="text-3xl sm:text-4xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
+            <p id="formTitle" class="text-blue-500 font-bold text-lg mt-2">ലോഗിൻ ചെയ്യുക</p>
         </div>
 
         <!-- ലോഗിൻ / രജിസ്ട്രേഷൻ ഫോം -->
         <div class="space-y-4">
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">യൂസർനെയിം (പേര്)</label>
+                <label class="block text-base font-bold text-gray-700 mb-1">യൂസർനെയിം (പേര്)</label>
                 <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
-                       class="w-full p-3 text-base border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                       class="w-full p-4 text-lg border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
 
             <!-- രജിസ്റ്റർ ചെയ്യുമ്പോൾ മാത്രം കാണുന്ന ഫോൺ നമ്പർ ബോക്സ് -->
             <div id="phoneDiv" class="hidden">
-                <label class="block text-sm font-bold text-gray-700 mb-1">ഫോൺ നമ്പർ</label>
+                <label class="block text-base font-bold text-gray-700 mb-1">ഫോൺ നമ്പർ</label>
                 <input type="tel" id="phone" placeholder="10 അക്ക ഫോൺ നമ്പർ" 
-                       class="w-full p-3 text-base border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                       class="w-full p-4 text-lg border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
 
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
-                <input type="password" id="password" placeholder="പാസ്‌വേർഡ്" 
-                       class="w-full p-3 text-base border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                <label class="block text-base font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
+                <input type="password" id="password" placeholder="കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക" 
+                       class="w-full p-4 text-lg border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                <p class="text-xs text-gray-500 mt-1 font-bold">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
             </div>
         </div>
 
         <!-- ആക്ഷൻ ബട്ടൺ -->
-        <button id="btnAction" class="w-full mt-6 bg-blue-600 text-white p-3 rounded-xl font-black text-lg hover:bg-blue-700 transition shadow-lg">
+        <button id="btnAction" class="w-full mt-6 bg-blue-600 text-white p-4 rounded-xl font-black text-xl hover:bg-blue-700 transition shadow-lg">
             ലോഗിൻ ചെയ്യുക
         </button>
 
-        <button id="btnForgot" class="w-full mt-3 text-gray-500 font-bold text-sm hover:text-blue-600 underline">
+        <button id="btnForgot" class="w-full mt-4 text-gray-500 font-bold text-base hover:text-blue-600 underline block text-center">
             പാസ്‌വേർഡ് മറന്നുപോയോ?
         </button>
 
         <!-- പേജ് മാറാനുള്ള ലിങ്ക് -->
-        <p class="text-center mt-5 text-gray-600 font-bold text-sm">
+        <p class="text-center mt-6 text-gray-600 font-bold text-base">
             <span id="toggleText">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
             <a href="#" id="toggleBtn" class="text-blue-600 underline ml-1">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
         </p>
@@ -77,7 +78,6 @@
 
         let isLoginMode = true;
 
-        // ലോഗിൻ / രജിസ്ട്രേഷൻ മോഡ് മാറ്റാൻ
         const toggleBtn = document.getElementById("toggleBtn");
         const formTitle = document.getElementById("formTitle");
         const phoneDiv = document.getElementById("phoneDiv");
@@ -105,7 +105,6 @@
             }
         });
 
-        // ബട്ടൺ അമർത്തുമ്പോൾ പ്രവർത്തിക്കുന്നത്
         btnAction.addEventListener("click", async () => {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
@@ -115,8 +114,11 @@
                 return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
             }
 
+            if (!isLoginMode && pass.length < 6) {
+                return alert("പാസ്‌വേർഡിന് കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം!");
+            }
+
             if (isLoginMode) {
-                // ലോഗിൻ പ്രോസസ്സ്
                 signInWithEmailAndPassword(auth, `${user}@mesthri.com`, pass)
                     .then(() => {
                         localStorage.setItem('userName', user);
@@ -124,23 +126,19 @@
                     })
                     .catch(() => alert("ലോഗിൻ പരാജയപ്പെട്ടു! യൂസർനെയിമോ പാസ്‌വേർഡോ തെറ്റാണ്."));
             } else {
-                // പുതിയ രജിസ്ട്രേഷൻ പ്രോസസ്സ്
                 if (!phone) {
                     return alert("ദയവായി ഫോൺ നമ്പർ കൂടി നൽകുക!");
                 }
 
                 try {
-                    // 1. ഫയർബേസിൽ അക്കൗണ്ട് ഉണ്ടാക്കുന്നു
                     await createUserWithEmailAndPassword(auth, `${user}@mesthri.com`, pass);
                     
-                    // 2. ഫയർബേസ് ഡാറ്റാബേസിൽ ഡാറ്റ സേവ് ചെയ്യുന്നു
                     await setDoc(doc(db, "users", user), {
                         username: user,
                         phone: phone,
                         password: pass
                     });
 
-                    // 3. നമ്മൾ ഉണ്ടാക്കിയ ഗൂഗിൾ ഷീറ്റിലേക്കും ജിമെയിലിലേക്കും ഡാറ്റ അയക്കുന്നു
                     const webAppUrl = "https://script.google.com/macros/s/AKfycbznevcjdsSz7JgWrKeyaO2gOnxnrd-8-rMMiycABRruqFJQ_hfz4Ac79aLqyvnqf09FXg/exec";
                     fetch(webAppUrl, {
                         method: "POST",
@@ -154,12 +152,11 @@
                     window.location.href = "dashboard.html";
 
                 } catch (error) {
-                    alert("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു! ഈ യൂസർനെയിം നേരത്തെ ഉണ്ടാകാം.");
+                    alert("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു! ഈ യൂസർനെയിം നേരത്തെ ഉണ്ടാകാം അല്ലെങ്കിൽ പാസ്‌വേർഡ് ചെറുതാണ്.");
                 }
             }
         });
 
-        // പാസ്‌വേർഡ് മറന്നുപോയാൽ
         document.getElementById("btnForgot").addEventListener("click", async () => {
             const user = document.getElementById('username').value.trim();
             if(!user) return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
