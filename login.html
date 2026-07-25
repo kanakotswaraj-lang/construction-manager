@@ -17,29 +17,38 @@
         <!-- ഹെഡിംഗ് -->
         <div class="text-center mb-6">
             <h1 class="text-3xl sm:text-4xl font-black text-blue-900">മേസ്തിരി ആപ്പ്</h1>
-            <p id="formTitle" class="text-blue-500 font-bold text-lg mt-2">ലോഗിൻ ചെയ്യുക</p>
+            <p id="formTitle" class="text-blue-500 font-bold text-lg sm:text-xl mt-2">ലോഗിൻ ചെയ്യുക</p>
         </div>
 
         <!-- ലോഗിൻ / രജിസ്ട്രേഷൻ ഫോം -->
         <div class="space-y-4">
             <div>
-                <label class="block text-base font-bold text-gray-700 mb-1">യൂസർനെയിം (പേര്)</label>
+                <label class="block text-base sm:text-lg font-bold text-gray-700 mb-1">യൂസർനെയിം (പേര്)</label>
                 <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
-                       class="w-full p-4 text-lg border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                       class="w-full p-4 text-lg sm:text-xl border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
 
             <!-- രജിസ്റ്റർ ചെയ്യുമ്പോൾ മാത്രം കാണുന്ന ഫോൺ നമ്പർ ബോക്സ് -->
             <div id="phoneDiv" class="hidden">
-                <label class="block text-base font-bold text-gray-700 mb-1">ഫോൺ നമ്പർ</label>
+                <label class="block text-base sm:text-lg font-bold text-gray-700 mb-1">ഫോൺ നമ്പർ</label>
                 <input type="tel" id="phone" placeholder="10 അക്ക ഫോൺ നമ്പർ" 
-                       class="w-full p-4 text-lg border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                       class="w-full p-4 text-lg sm:text-xl border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
             </div>
 
             <div>
-                <label class="block text-base font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
-                <input type="password" id="password" placeholder="കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക" 
-                       class="w-full p-4 text-lg border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
-                <p class="text-xs text-gray-500 mt-1 font-bold">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
+                <label class="block text-base sm:text-lg font-bold text-gray-700 mb-1">പാസ്‌വേർഡ്</label>
+                <div class="relative">
+                    <input type="password" id="password" placeholder="കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക" 
+                           class="w-full p-4 pr-12 text-lg sm:text-xl border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500">
+                    <!-- കണ്ണ് ഐക്കൺ (Password Toggle Eye Button) -->
+                    <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 focus:outline-none">
+                        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-sm sm:text-base text-gray-500 mt-1 font-bold">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
             </div>
         </div>
 
@@ -48,12 +57,12 @@
             ലോഗിൻ ചെയ്യുക
         </button>
 
-        <button id="btnForgot" class="w-full mt-4 text-gray-500 font-bold text-base hover:text-blue-600 underline block text-center">
+        <button id="btnForgot" class="w-full mt-4 text-gray-500 font-bold text-base sm:text-lg hover:text-blue-600 underline block text-center">
             പാസ്‌വേർഡ് മറന്നുപോയോ?
         </button>
 
         <!-- പേജ് മാറാനുള്ള ലിങ്ക് -->
-        <p class="text-center mt-6 text-gray-600 font-bold text-base">
+        <p class="text-center mt-6 text-gray-600 font-bold text-base sm:text-lg">
             <span id="toggleText">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
             <a href="#" id="toggleBtn" class="text-blue-600 underline ml-1">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
         </p>
@@ -85,6 +94,29 @@
         const btnAction = document.getElementById("btnAction");
         const btnForgot = document.getElementById("btnForgot");
         const toggleText = document.getElementById("toggleText");
+        const passwordInput = document.getElementById("password");
+        const togglePassword = document.getElementById("togglePassword");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനുമുള്ള കോഡ്
+        togglePassword.addEventListener("click", () => {
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+            
+            if (type === "text") {
+                // കണ്ണ് തുറന്ന ഐക്കൺ (Crossed/Hide icon)
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.03 10.03 0 012.23-3.38m3.54-2.54A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+                `;
+            } else {
+                // സാധാരണ കണ്ണ് ഐക്കൺ
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                `;
+            }
+        });
 
         toggleBtn.addEventListener("click", (e) => {
             e.preventDefault();
