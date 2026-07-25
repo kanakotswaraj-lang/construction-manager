@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- ആപ്പ് ലോഗോ -->
-<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+    
+    <!-- ആപ്പ് ലോഗോ (നമ്മുടെ പുതിയ ഐക്കൺ ഫയൽ ലിങ്ക് ചെയ്യുന്നു) -->
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
 
     <script>
         // ലോഗിൻ ചെയ്തിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുന്നു
@@ -23,7 +24,7 @@
         }
     </script>
 
-    <title>മെസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
+    <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
 </head>
 <body class="bg-slate-100 p-4 font-sans">
     <div class="max-w-md mx-auto">
@@ -62,10 +63,10 @@
             <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
         </label>
 
-        <!-- മെയിൻ ടൈറ്റിലും വിവരങ്ങളും (നടുവിലായി ക്രമീകരിച്ചത്) -->
+        <!-- മെയിൻ ടൈറ്റിലും വിവരങ്ങളും (മലയാളത്തിലേക്ക് മാറ്റിയിരിക്കുന്നു) -->
         <div class="text-center space-y-1.5">
-            <h1 class="text-4xl font-black text-white tracking-tight flex items-center justify-center gap-2">
-                MESHTRI <span class="text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">PRO</span>
+            <h1 class="text-3xl font-black text-white tracking-tight flex items-center justify-center gap-2">
+                മേസ്തിരി <span class="text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">പ്രോ</span>
             </h1>
             <p class="text-xs font-semibold tracking-widest text-slate-400 uppercase">SMART SITE MANAGER</p>
             
@@ -87,13 +88,11 @@
 <script>
     // പേജ് ലോഡ് ആകുമ്പോൾ പേരും ഫോട്ടോയും കവറും സെറ്റ് ചെയ്യുന്നു
     window.onload = function() {
-        // 1. പേര് സെറ്റ് ചെയ്യുന്നു
         const userName = localStorage.getItem('userName');
         if (userName) {
             document.getElementById('meshtriNameDisplay').innerText = "സ്വാഗതം, " + userName;
         }
 
-        // 2. തീയതി സെറ്റ് ചെയ്യുന്നു
         const today = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         const dateElement = document.getElementById('currentDate');
@@ -101,20 +100,17 @@
             dateElement.innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
         }
 
-        // 3. സേവ് ചെയ്ത പ്രൊഫൈൽ ഫോട്ടോ ഉണ്ടെങ്കിൽ അത് കാണിക്കുന്നു
         const savedPhoto = localStorage.getItem('profilePhoto');
         if (savedPhoto) {
             document.getElementById('profileImage').src = savedPhoto;
         }
 
-        // 4. സേവ് ചെയ്ത കവർ ഫോട്ടോ ഉണ്ടെങ്കിൽ അത് കാണിക്കുന്നു
         const savedCover = localStorage.getItem('coverPhoto');
         if (savedCover) {
-            document.getElementById('coverImage').src = savedCover;
+            document.getElementById('coverImage').src, savedCover;
         }
     };
 
-    // പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുമ്പോൾ
     function updateProfilePhoto(event) {
         const file = event.target.files[0];
         if (file) {
@@ -127,7 +123,6 @@
         }
     }
 
-    // കവർ ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുമ്പോൾ
     function updateCoverPhoto(event) {
         const file = event.target.files[0];
         if (file) {
@@ -140,7 +135,6 @@
         }
     }
 
-    // ലോഗ് ഔട്ട്
     function logoutUser() {
         localStorage.removeItem('userName');
         localStorage.removeItem('profilePhoto');
