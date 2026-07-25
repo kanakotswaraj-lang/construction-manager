@@ -7,9 +7,9 @@
   "theme_color": "#0f172a",
   "orientation": "portrait-primary",
   
-  "icons": [
+    "icons": [
     {
-      "src": "http://googleusercontent.com/image_generation_content/385",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
