@@ -12,6 +12,12 @@
 </head>
 <body class="bg-gradient-to-br from-indigo-900 via-blue-800 to-cyan-900 min-h-screen flex items-center justify-center p-3 sm:p-4">
 
+    <!-- ആപ്പ് തുറക്കുമ്പോൾ ആദ്യം കാണുന്ന സ്പ്ലാഷ് സ്ക്രീൻ (Splash Screen) -->
+    <div id="splash-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom right, #311059, #1e1b4b); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease;">
+        <img src="icon.png" alt="Mesthri Pro Logo" style="width: 180px; height: 180px; border-radius: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 20px;">
+        <h1 style="color: #ffcc00; font-size: 32px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">മേസ്തിരി പ്രോ</h1>
+    </div>
+
     <!-- ബോക്സിന്റെ വലിപ്പം മൊബൈൽ സ്ക്രീനിൽ നന്നായി കാണാൻ w-full ഉം max-w-lg ഉം നൽകിയിരിക്കുന്നു -->
     <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-full max-w-lg border-t-4 border-blue-500">
         <!-- ഹെഡിംഗ് -->
@@ -73,6 +79,19 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
+        // സ്പ്ലാഷ് സ്ക്രീൻ കുറച്ചു സമയം കാണിച്ച് അപ്രത്യക്ഷമാക്കാനുള്ള കോഡ്
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const splash = document.getElementById('splash-screen');
+                if (splash) {
+                    splash.style.opacity = '0';
+                    setTimeout(function() {
+                        splash.style.display = 'none';
+                    }, 500);
+                }
+            }, 2000); // 2 സെക്കൻഡ് ലോഗോ കാണിക്കും
+        });
+
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -104,13 +123,11 @@
             passwordInput.setAttribute("type", type);
             
             if (type === "text") {
-                // കണ്ണ് തുറന്ന ഐക്കൺ (Crossed/Hide icon)
                 eyeIcon.innerHTML = `
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.03 10.03 0 012.23-3.38m3.54-2.54A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
                 `;
             } else {
-                // സാധാരണ കണ്ണ് ഐക്കൺ
                 eyeIcon.innerHTML = `
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -191,7 +208,7 @@
         });
 
         document.getElementById("btnForgot").addEventListener("click", async () => {
-            const user = document.getElementById('username').value.trim();
+            const user = document.getElementById('username'.trim()).value.trim();
             if(!user) return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
 
             const docRef = doc(db, "users", user);
