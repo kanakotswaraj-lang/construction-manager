@@ -164,7 +164,7 @@
                 bank: document.getElementById('bankDetails').value.trim(),
                 advance: 0,
                 extraPaid: 0,
-                lastSettledDate: "" // സെറ്റിൽ ചെയ്ത അവസാന തീയതി രേഖപ്പെടുത്താൻ
+                lastSettledDate: ""
             });
             alert("വിവരങ്ങൾ വിജയകരമായി സേവ് ആയി!");
             
@@ -219,9 +219,8 @@
 
                 staffLogs.forEach(log => {
                     if (log.type === "wage") {
-                        // സെറ്റിൽ ചെയ്ത തീയതിക്ക് ശേഷമുള്ള കണക്കുകൾ മാത്രം പുതിയ സൈക്കിളായി കണക്കാക്കാൻ
                         if (s.lastSettledDate && log.date <= s.lastSettledDate) {
-                            return; // പഴയ സെറ്റിൽ ചെയ്ത കണക്കുകൾ ഒഴിവാക്കുന്നു
+                            return;
                         }
 
                         let passDateFilter = true;
@@ -238,13 +237,13 @@
                                 workedSitesSet.add(log.site);
                             }
 
-                            // ഓരോ ദിവസത്തെയും ലോഗ് കാണിക്കാനും എഡിറ്റ്/ഡിലീറ്റ് ചെയ്യാനും
+                            // 🌟 ഇവിടെ ഫോണ്ട് സൈസ് ചെറുതിൽ നിന്ന് വലുതാക്കി (text-xs / font-black ആക്കി) മാറ്റിയിരിക്കുന്നു
                             logsHtml += `
-                                <div class="flex justify-between items-center text-[11px] bg-white p-2 rounded border mb-1">
-                                    <span>📅 ${log.date} | 📍 ${log.site || 'സൈറ്റ്'} | <b>₹${log.amount}</b></span>
-                                    <div class="flex gap-1">
-                                        <button onclick="openEditLog('${log.id}', '${log.date}', '${log.site || ''}', '${log.amount}')" class="text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded font-bold">Edit</button>
-                                        <button onclick="deleteLog('${log.id}')" class="text-red-600 bg-red-50 px-1.5 py-0.5 rounded font-bold">Del</button>
+                                <div class="flex justify-between items-center text-xs bg-white p-2.5 rounded-lg border border-slate-200 mb-1.5 shadow-sm">
+                                    <span class="font-bold text-slate-800">📅 ${log.date} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-emerald-700 font-black">₹${log.amount}</span></span>
+                                    <div class="flex gap-1.5">
+                                        <button onclick="openEditLog('${log.id}', '${log.date}', '${log.site || ''}', '${log.amount}')" class="text-blue-600 bg-blue-50 px-2 py-1 rounded font-bold hover:bg-blue-100">Edit</button>
+                                        <button onclick="deleteLog('${log.id}')" class="text-red-600 bg-red-50 px-2 py-1 rounded font-bold hover:bg-red-100">Del</button>
                                     </div>
                                 </div>
                             `;
@@ -273,10 +272,10 @@
                         ➕ ദിവസവേദനവും സൈറ്റും ചേർക്കുക (Popup)
                     </button>
 
-                    <div class="bg-slate-100 p-2.5 rounded-xl mb-3 border">
-                        <p class="text-[11px] font-black text-slate-700 mb-1">📋 ഈ കാലയളവിലെ പണി ദിവസങ്ങൾ (എഡിറ്റ് ചെയ്യാം):</p>
-                        <div class="max-h-32 overflow-y-auto space-y-1">
-                            ${logsHtml || '<p class="text-[10px] text-slate-500 text-center">കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>'}
+                    <div class="bg-slate-100 p-3 rounded-xl mb-3 border">
+                        <p class="text-xs font-black text-slate-700 mb-2">📋 ഈ കാലയളവിലെ പണി ദിവസങ്ങൾ:</p>
+                        <div class="max-h-40 overflow-y-auto space-y-1">
+                            ${logsHtml || '<p class="text-xs text-slate-500 text-center py-2">കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>'}
                         </div>
                     </div>
 
@@ -315,7 +314,6 @@
                 `;
                 list.appendChild(div);
 
-                // പോപ്പ്-അപ്പ് തുറക്കാൻ
                 document.getElementById(`openModalBtn-${d.id}`).onclick = () => {
                     document.getElementById('modalStaffId').value = d.id;
                     document.getElementById('modalStaffName').value = s.name;
@@ -329,7 +327,6 @@
                     document.getElementById('wageModal').classList.remove('hidden');
                 };
 
-                // പണം കൊടുത്തു തീർത്താൽ (Settlement / Reset)
                 document.getElementById(`settleBtn-${d.id}`).onclick = async () => {
                     if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ ഇന്നുവരെയുള്ള കണക്കുകൾ ക്ലിയർ ആയി പണിദിവസങ്ങൾ പൂജ്യത്തിൽ നിന്ന് വീണ്ടും തുടങ്ങും)`)) {
                         await updateDoc(doc(db, 'staffs', d.id), {
@@ -342,7 +339,6 @@
                     }
                 };
 
-                // അഡ്വാൻസ് & അധിക തുക സേവ് ചെയ്യാൻ
                 document.getElementById(`saveAdv-${d.id}`).onclick = async () => {
                     const newAdv = parseFloat(document.getElementById(`adv-${d.id}`).value) || 0;
                     const newExtra = parseFloat(document.getElementById(`extra-${d.id}`).value) || 0;
@@ -382,7 +378,6 @@
             });
         }
 
-        // ലോഗ് എഡിറ്റ് ചെയ്യാൻ പോപ്പ്-അപ്പ് തുറക്കൽ (Global Functions)
         window.openEditLog = function(logId, date, site, amount) {
             document.getElementById('editLogId').value = logId;
             document.getElementById('editLogDate').value = date;
@@ -395,7 +390,6 @@
             document.getElementById('editLogModal').classList.add('hidden');
         }
 
-        // ലോഗ് ഡിലീറ്റ് ചെയ്യാൻ
         window.deleteLog = async function(logId) {
             if (confirm("ഈ ദിവസത്തെ കണക്ക് ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
                 await deleteDoc(doc(db, 'accounts', logId));
@@ -404,9 +398,8 @@
             }
         }
 
-        // എഡിറ്റ് ചെയ്ത ലോഗ് സേവ് ചെയ്യാൻ
         document.getElementById('saveEditLogBtn').onclick = async () => {
-            const logId = document.getElementById('editLogId').value;
+            const logId = document.getElementById('editLogId.value') || document.getElementById('editLogId').value;
             const newDate = document.getElementById('editLogDate').value;
             const newSite = document.getElementById('editLogSite').value.trim();
             const newAmount = parseFloat(document.getElementById('editLogAmount').value) || 0;
