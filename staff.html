@@ -13,7 +13,6 @@
 <body class="p-4 bg-slate-100 font-sans">
     <div class="max-w-md mx-auto">
         
-        <!-- ഹെഡർ -->
         <div class="bg-slate-900 p-4 rounded-2xl text-white mb-6 flex justify-between items-center shadow-lg">
             <div>
                 <h1 class="text-xl font-black">ജീവനക്കാരുടെ ശമ്പളം</h1>
@@ -22,7 +21,6 @@
             <a href="dashboard.html" class="bg-slate-800 text-xs px-3 py-2 rounded-xl text-slate-300 font-bold hover:bg-slate-700">ഡാഷ്‌ബോർഡ്</a>
         </div>
         
-        <!-- പുതിയ തൊഴിലാളിയെ ചേർക്കാനുള്ള ഫോം -->
         <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6">
             <h2 class="font-bold text-slate-700 mb-3 text-sm">പുതിയ തൊഴിലാളിയെ ചേർക്കുക</h2>
             <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
@@ -34,7 +32,6 @@
             <button id="saveStaffBtn" class="w-full bg-emerald-700 text-white p-3.5 rounded-xl font-black shadow-md text-sm hover:bg-emerald-800 transition">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
         </div>
 
-        <!-- തീയതി പരിശോധനയ്ക്കുള്ള ഫിൽട്ടർ ബോക്സ് -->
         <div class="bg-white p-4 rounded-2xl border shadow-sm mb-4">
             <h3 class="text-xs font-bold text-slate-700 mb-2">📅 കണക്ക് പരിശോധിക്കേണ്ട തീയതി പരിധി (Date Filter):</h3>
             <div class="grid grid-cols-2 gap-2 mb-2">
@@ -50,10 +47,52 @@
             <button id="applyDateFilter" class="w-full bg-slate-800 text-white p-2 rounded-xl text-xs font-bold shadow-sm">ഈ തീയതിയിലെ കണക്കുകൾ മാത്രം കാണുക</button>
         </div>
 
-        <!-- സെർച്ച് ബാർ -->
         <input type="text" id="searchInput" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-3 bg-white rounded-xl border mb-4 shadow-sm text-sm font-bold">
 
         <div id="staffList" class="space-y-4 pb-12"></div>
+    </div>
+
+    <div id="wageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center p-4">
+        <div class="bg-white w-full max-w-sm p-6 rounded-3xl shadow-xl border">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalWorkerTitle" class="font-black text-slate-800 text-base">കണക്ക് ചേർക്കുക</h3>
+                <button onclick="closeWageModal()" class="text-slate-400 hover:text-slate-700 font-bold text-xl">&times;</button>
+            </div>
+            
+            <input type="hidden" id="modalStaffId">
+            <input type="hidden" id="modalStaffName">
+            <input type="hidden" id="modalDefaultWage">
+
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-slate-600 block mb-1">തീയതി തിരഞ്ഞെടുക്കുക:</label>
+                    <input type="date" id="modalDate" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-800 outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-slate-600 block mb-1">ജോലി ചെയ്ത സൈറ്റ്:</label>
+                    <input type="text" id="modalSiteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-800 outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-xs font-bold text-slate-600 block mb-1">ദിവസത്തിന്റെ അളവ്</label>
+                        <select id="modalDayAmount" onchange="updateModalWage()" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-700 outline-none">
+                            <option value="1">ഫുൾ ഡേ (1)</option>
+                            <option value="0.5">ഹാഫ് ഡേ (0.5)</option>
+                            <option value="1.5">ഓവർടൈം (1.5)</option>
+                            <option value="2">ഡബിൾ (2)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-600 block mb-1">അന്നത്തെ കൂലി (₹)</label>
+                        <input type="number" id="modalWageAmount" placeholder="തുക" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-emerald-700 font-black outline-none">
+                    </div>
+                </div>
+
+                <button id="confirmWageBtn" class="w-full bg-emerald-600 text-white p-3 rounded-xl text-xs font-black shadow-md hover:bg-emerald-700 transition mt-2">കണക്ക് സേവ് ചെയ്യുക</button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -146,7 +185,7 @@
                 
                 let totalEarned = 0;
                 let totalWorkedDays = 0;
-                let workedSitesSet = new Set(); // തൊഴിലാളി ജോലി ചെയ്ത സൈറ്റുകൾ ശേഖരിക്കാൻ
+                let workedSitesSet = new Set();
 
                 staffLogs.forEach(log => {
                     if (log.type === "wage") {
@@ -167,13 +206,10 @@
                     }
                 });
 
-                // സൈറ്റ് ലിസ്റ്റ് ഒരു സ്ട്രിംഗ് രൂപത്തിലാക്കുന്നു
                 const workedSitesList = workedSitesSet.size > 0 ? Array.from(workedSitesSet).join(', ') : (s.site || 'പ്രധാന സൈറ്റ്');
 
                 const advance = parseFloat(s.advance) || 0;
                 const extraPaid = parseFloat(s.extraPaid) || 0;
-                // ബാക്കി കൊടുക്കേണ്ട തുക = (ആകെ കൂലി + അധികമായി കൊടുത്ത തുക) - അഡ്വാൻസ്
-                // അല്ലെങ്കിൽ കൂടുതൽ കൊടുത്ത തുകയും കൂട്ടി അഡ്വാൻസ് പോലെ അഡ്ജസ്റ്റ് ചെയ്യാം
                 const balanceDue = totalEarned - advance + extraPaid;
 
                 div.innerHTML = `
@@ -181,38 +217,16 @@
                         <div>
                             <h3 class="font-black text-base text-slate-800">${s.name} <span class="text-xs font-normal text-slate-500">(${s.job || 'പണിക്കാരൻ'})</span></h3>
                             <p class="text-xs text-slate-500 font-bold">പ്രാഥമിക സൈറ്റ്: <span class="text-blue-600">${s.site || 'പ്രധാന സൈറ്റ്'}</span> | <span class="text-emerald-700 text-sm font-black">കൂലി: ₹${s.wage || 0}</span></p>
-                            <!-- തൊഴിലാളി ജോലി ചെയ്ത സൈറ്റുകളുടെ ഹിസ്റ്ററി -->
                             <p class="text-[11px] text-amber-700 font-bold mt-0.5">📍 പണിയെടുത്ത സൈറ്റുകൾ: ${workedSitesList}</p>
                             ${s.bank ? `<p class="text-[11px] text-slate-500 mt-0.5">GPay/Bank: ${s.bank}</p>` : ''}
                         </div>
                         <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
                     </div>
 
-                    <!-- തീയതിയും ഹാജറും ചേർക്കുന്ന ബോക്സ് -->
-                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100 mb-3 space-y-2">
-                        <div class="flex justify-between items-center">
-                            <label class="text-xs font-bold text-emerald-900">തീയതി തിരഞ്ഞെടുക്കുക:</label>
-                            <input type="date" id="date-${d.id}" value="${today}" class="p-1.5 border rounded text-xs font-bold bg-white text-emerald-900 outline-none">
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-500 block mb-1">ദിവസത്തിന്റെ അളവ്</label>
-                                <select id="dayAmount-${d.id}" class="w-full p-2 border rounded text-xs font-bold bg-white text-slate-700 outline-none">
-                                    <option value="1">ഫുൾ ഡേ (1)</option>
-                                    <option value="0.5">ഹാഫ് ഡേ (0.5)</option>
-                                    <option value="1.5">ഓവർടൈം (1.5)</option>
-                                    <option value="2">ഡബിൾ (2)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-500 block mb-1">അന്നത്തെ കൂലി (₹)</label>
-                                <input type="number" id="customWage-${d.id}" value="${s.wage || 0}" placeholder="തുക" class="w-full p-2 border rounded text-xs font-bold bg-white text-emerald-700 font-black outline-none">
-                            </div>
-                        </div>
-                        <button id="addDayBtn-${d.id}" class="w-full bg-emerald-600 text-white p-2.5 rounded-xl text-xs font-black shadow-sm hover:bg-emerald-700 transition">ഈ ദിവസത്തെ കണക്ക് ചേർക്കുക</button>
-                    </div>
+                    <button id="openModalBtn-${d.id}" class="w-full bg-emerald-600 text-white p-2.5 rounded-xl text-xs font-black shadow-sm hover:bg-emerald-700 transition mb-3">
+                        ➕ ദിവസവേദനവും സൈറ്റും ചേർക്കുക (Popup)
+                    </button>
 
-                    <!-- മൊത്തം കണക്കുകളുടെ സംഗ്രഹം & അധിക തുക ബോക്സ് -->
                     <div class="p-3 bg-slate-50 rounded-xl mb-3 space-y-2 border border-slate-100">
                         <div class="grid grid-cols-3 gap-2">
                             <div>
@@ -244,30 +258,18 @@
                 `;
                 list.appendChild(div);
 
-                // കണക്ക് ചേർക്കുമ്പോൾ
-                document.getElementById(`addDayBtn-${d.id}`).onclick = async () => {
-                    const selectedDate = document.getElementById(`date-${d.id}`).value || today;
-                    const addedDays = parseFloat(document.getElementById(`dayAmount-${d.id}`).value) || 1;
-                    const addedMoney = parseFloat(document.getElementById(`customWage-${d.id}`).value) || 0;
+                // പോപ്പ്-അപ്പ് തുറക്കാൻ ക്ലിക്ക് ചെയ്യുമ്പോൾ
+                document.getElementById(`openModalBtn-${d.id}`).onclick = () => {
+                    document.getElementById('modalStaffId').value = d.id;
+                    document.getElementById('modalStaffName').value = s.name;
+                    document.getElementById('modalDefaultWage').value = s.wage || 0;
+                    document.getElementById('modalWorkerTitle').innerText = `${s.name} - കണക്ക് ചേർക്കുക`;
+                    document.getElementById('modalDate').value = today;
+                    document.getElementById('modalSiteName').value = s.site || "";
+                    document.getElementById('modalDayAmount').value = "1";
+                    document.getElementById('modalWageAmount').value = s.wage || 0;
 
-                    if (addedMoney <= 0) {
-                        return alert("ദയവായി ശരിയായ തുക നൽകുക!");
-                    }
-
-                    const siteName = s.site || "പ്രധാന സൈറ്റ്";
-
-                    await addDoc(collection(db, "accounts"), {
-                        meshtriOwner: currentMeshtri,
-                        name: s.name + ` (കൂലി - ${addedDays} ദിവസം)`,
-                        site: siteName,
-                        type: "wage",
-                        payment: "cash",
-                        amount: addedMoney,
-                        date: selectedDate
-                    });
-
-                    alert(`${selectedDate} തീയതിയിലെ ₹${addedMoney} കൂലി കണക്ക് വിജയകരമായി ചേർത്തു!`);
-                    loadStaffAndAccounts();
+                    document.getElementById('wageModal').classList.remove('hidden');
                 };
 
                 // അഡ്വാൻസ് & അധിക തുക സേവ് ചെയ്യാൻ
@@ -309,6 +311,49 @@
                 };
             });
         }
+
+        // പോപ്പ്-അപ്പിനുള്ളിലെ ഡേറ്റ് അളവ് മാറ്റുമ്പോൾ കൂലി ഓട്ടോമാറ്റിക് മാറാൻ
+        window.updateModalWage = function() {
+            const baseWage = parseFloat(document.getElementById('modalDefaultWage').value) || 0;
+            const multiplier = parseFloat(document.getElementById('modalDayAmount').value) || 1;
+            document.getElementById('modalWageAmount').value = baseWage * multiplier;
+        }
+
+        // പോപ്പ്-അപ്പ് ക്ലോസ് ചെയ്യാൻ
+        window.closeWageModal = function() {
+            document.getElementById('wageModal').classList.add('hidden');
+        }
+
+        // പോപ്പ്-അപ്പിൽ നിന്ന് കണക്ക് സേവ് ചെയ്യുമ്പോൾ (വരവ്-ചെലവ് കണക്കിലേക്കും സ്റ്റാഫ് കണക്കിലേക്കും ഒരേപോലെ)
+        document.getElementById('confirmWageBtn').onclick = async () => {
+            const staffName = document.getElementById('modalStaffName').value;
+            const selectedDate = document.getElementById('modalDate').value || getTodayDate();
+            const siteName = document.getElementById('modalSiteName').value.trim() || "പ്രധാന സൈറ്റ്";
+            const addedDays = parseFloat(document.getElementById('modalDayAmount').value) || 1;
+            const addedMoney = parseFloat(document.getElementById('modalWageAmount').value) || 0;
+
+            if (addedMoney <= 0) {
+                return alert("ദയവായി ശരിയായ തുക നൽകുക!");
+            }
+            if (!siteName) {
+                return alert("ദയവായി സൈറ്റിന്റെ പേര് നൽകുക!");
+            }
+
+            // 1. ഫയർബേസിലെ പ്രധാന 'accounts' (വരവ് ചെലവ്) കളക്ഷനിലേക്ക് ചെലവായി സേവ് ചെയ്യുന്നു
+            await addDoc(collection(db, "accounts"), {
+                meshtriOwner: currentMeshtri,
+                name: staffName + ` (കൂലി - ${addedDays} ദിവസം)`,
+                site: siteName,
+                type: "wage",
+                payment: "cash",
+                amount: addedMoney,
+                date: selectedDate
+            });
+
+            alert(`${selectedDate} തീയതിയിലെ (${siteName}) ₹${addedMoney} കൂലി കണക്ക് വിജയകരമായി ചേർത്തു!`);
+            closeWageModal();
+            loadStaffAndAccounts();
+        };
 
         document.getElementById('applyDateFilter').addEventListener('click', () => {
             loadStaffAndAccounts();
