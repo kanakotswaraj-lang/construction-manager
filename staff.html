@@ -95,6 +95,34 @@
         </div>
     </div>
 
+    <div id="editLogModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center p-4">
+        <div class="bg-white w-full max-w-sm p-6 rounded-3xl shadow-xl border">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-black text-slate-800 text-base">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
+                <button onclick="closeEditLogModal()" class="text-slate-400 hover:text-slate-700 font-bold text-xl">&times;</button>
+            </div>
+            
+            <input type="hidden" id="editLogId">
+
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-slate-600 block mb-1">തീയതി:</label>
+                    <input type="date" id="editLogDate" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-800 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-600 block mb-1">സൈറ്റ്:</label>
+                    <input type="text" id="editLogSite" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-800 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-600 block mb-1">തുക (₹):</label>
+                    <input type="number" id="editLogAmount" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-emerald-700 font-black outline-none">
+                </div>
+
+                <button id="saveEditLogBtn" class="w-full bg-slate-900 text-white p-3 rounded-xl text-xs font-black shadow-md hover:bg-slate-800 transition mt-2">മാറ്റങ്ങൾ സേവ് ചെയ്യുക</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
@@ -135,7 +163,8 @@
                 job: document.getElementById('jobType').value.trim(),
                 bank: document.getElementById('bankDetails').value.trim(),
                 advance: 0,
-                extraPaid: 0
+                extraPaid: 0,
+                lastSettledDate: "" // സെറ്റിൽ ചെയ്ത അവസാന തീയതി രേഖപ്പെടുത്താൻ
             });
             alert("വിവരങ്ങൾ വിജയകരമായി സേവ് ആയി!");
             
@@ -186,9 +215,15 @@
                 let totalEarned = 0;
                 let totalWorkedDays = 0;
                 let workedSitesSet = new Set();
+                let logsHtml = '';
 
                 staffLogs.forEach(log => {
                     if (log.type === "wage") {
+                        // സെറ്റിൽ ചെയ്ത തീയതിക്ക് ശേഷമുള്ള കണക്കുകൾ മാത്രം പുതിയ സൈക്കിളായി കണക്കാക്കാൻ
+                        if (s.lastSettledDate && log.date <= s.lastSettledDate) {
+                            return; // പഴയ സെറ്റിൽ ചെയ്ത കണക്കുകൾ ഒഴിവാക്കുന്നു
+                        }
+
                         let passDateFilter = true;
                         if (fromDate && log.date < fromDate) passDateFilter = false;
                         if (toDate && log.date > toDate) passDateFilter = false;
@@ -202,6 +237,17 @@
                             if (log.site) {
                                 workedSitesSet.add(log.site);
                             }
+
+                            // ഓരോ ദിവസത്തെയും ലോഗ് കാണിക്കാനും എഡിറ്റ്/ഡിലീറ്റ് ചെയ്യാനും
+                            logsHtml += `
+                                <div class="flex justify-between items-center text-[11px] bg-white p-2 rounded border mb-1">
+                                    <span>📅 ${log.date} | 📍 ${log.site || 'സൈറ്റ്'} | <b>₹${log.amount}</b></span>
+                                    <div class="flex gap-1">
+                                        <button onclick="openEditLog('${log.id}', '${log.date}', '${log.site || ''}', '${log.amount}')" class="text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded font-bold">Edit</button>
+                                        <button onclick="deleteLog('${log.id}')" class="text-red-600 bg-red-50 px-1.5 py-0.5 rounded font-bold">Del</button>
+                                    </div>
+                                </div>
+                            `;
                         }
                     }
                 });
@@ -227,6 +273,13 @@
                         ➕ ദിവസവേദനവും സൈറ്റും ചേർക്കുക (Popup)
                     </button>
 
+                    <div class="bg-slate-100 p-2.5 rounded-xl mb-3 border">
+                        <p class="text-[11px] font-black text-slate-700 mb-1">📋 ഈ കാലയളവിലെ പണി ദിവസങ്ങൾ (എഡിറ്റ് ചെയ്യാം):</p>
+                        <div class="max-h-32 overflow-y-auto space-y-1">
+                            ${logsHtml || '<p class="text-[10px] text-slate-500 text-center">കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>'}
+                        </div>
+                    </div>
+
                     <div class="p-3 bg-slate-50 rounded-xl mb-3 space-y-2 border border-slate-100">
                         <div class="grid grid-cols-3 gap-2">
                             <div>
@@ -239,7 +292,7 @@
                             </div>
                             <div>
                                 <label class="text-[10px] font-bold text-slate-500 block">അധിക തുക (₹)</label>
-                                <input type="number" id="extra-${d.id}" value="${s.extraPaid || 0}" placeholder="കൂടുതൽ കൊടുത്തത്" class="w-full p-2 border rounded text-xs font-bold bg-white text-amber-700">
+                                <input type="number" id="extra-${d.id}" value="${s.extraPaid || 0}" placeholder="കൂടുതൽ കൊടുത്തത്" class="w-full p-2 border rounded text-xs font-bold bg-slate-50 text-amber-700">
                             </div>
                         </div>
                         
@@ -249,6 +302,10 @@
                         </div>
 
                         <button id="saveAdv-${d.id}" class="w-full bg-slate-900 text-white mt-1 p-2.5 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-800 transition">അഡ്വാൻസ് / അധിക തുക മാറ്റങ്ങൾ സേവ് ചെയ്യുക</button>
+                        
+                        <button id="settleBtn-${d.id}" class="w-full bg-purple-600 text-white mt-2 p-2.5 rounded-xl text-xs font-black shadow-sm hover:bg-purple-700 transition">
+                            💸 പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്കിൾ തുടങ്ങുക)
+                        </button>
                     </div>
 
                     <div class="flex gap-2">
@@ -258,7 +315,7 @@
                 `;
                 list.appendChild(div);
 
-                // പോപ്പ്-അപ്പ് തുറക്കാൻ ക്ലിക്ക് ചെയ്യുമ്പോൾ
+                // പോപ്പ്-അപ്പ് തുറക്കാൻ
                 document.getElementById(`openModalBtn-${d.id}`).onclick = () => {
                     document.getElementById('modalStaffId').value = d.id;
                     document.getElementById('modalStaffName').value = s.name;
@@ -270,6 +327,19 @@
                     document.getElementById('modalWageAmount').value = s.wage || 0;
 
                     document.getElementById('wageModal').classList.remove('hidden');
+                };
+
+                // പണം കൊടുത്തു തീർത്താൽ (Settlement / Reset)
+                document.getElementById(`settleBtn-${d.id}`).onclick = async () => {
+                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ ഇന്നുവരെയുള്ള കണക്കുകൾ ക്ലിയർ ആയി പണിദിവസങ്ങൾ പൂജ്യത്തിൽ നിന്ന് വീണ്ടും തുടങ്ങും)`)) {
+                        await updateDoc(doc(db, 'staffs', d.id), {
+                            lastSettledDate: today,
+                            advance: 0,
+                            extraPaid: 0
+                        });
+                        alert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി! പുതിയ പണിദിവസങ്ങൾ ഇനിമുതൽ ആദ്യ മുതൽ തുടങ്ങും.");
+                        loadStaffAndAccounts();
+                    }
                 };
 
                 // അഡ്വാൻസ് & അധിക തുക സേവ് ചെയ്യാൻ
@@ -312,19 +382,60 @@
             });
         }
 
-        // പോപ്പ്-അപ്പിനുള്ളിലെ ഡേറ്റ് അളവ് മാറ്റുമ്പോൾ കൂലി ഓട്ടോമാറ്റിക് മാറാൻ
+        // ലോഗ് എഡിറ്റ് ചെയ്യാൻ പോപ്പ്-അപ്പ് തുറക്കൽ (Global Functions)
+        window.openEditLog = function(logId, date, site, amount) {
+            document.getElementById('editLogId').value = logId;
+            document.getElementById('editLogDate').value = date;
+            document.getElementById('editLogSite').value = site;
+            document.getElementById('editLogAmount').value = amount;
+            document.getElementById('editLogModal').classList.remove('hidden');
+        }
+
+        window.closeEditLogModal = function() {
+            document.getElementById('editLogModal').classList.add('hidden');
+        }
+
+        // ലോഗ് ഡിലീറ്റ് ചെയ്യാൻ
+        window.deleteLog = async function(logId) {
+            if (confirm("ഈ ദിവസത്തെ കണക്ക് ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
+                await deleteDoc(doc(db, 'accounts', logId));
+                alert("കണക്ക് ഡിലീറ്റ് ചെയ്തു!");
+                loadStaffAndAccounts();
+            }
+        }
+
+        // എഡിറ്റ് ചെയ്ത ലോഗ് സേവ് ചെയ്യാൻ
+        document.getElementById('saveEditLogBtn').onclick = async () => {
+            const logId = document.getElementById('editLogId').value;
+            const newDate = document.getElementById('editLogDate').value;
+            const newSite = document.getElementById('editLogSite').value.trim();
+            const newAmount = parseFloat(document.getElementById('editLogAmount').value) || 0;
+
+            if (!newDate || newAmount <= 0) {
+                return alert("ശരിയായ തീയതിയും തുകയും നൽകുക!");
+            }
+
+            await updateDoc(doc(db, 'accounts', logId), {
+                date: newDate,
+                site: newSite,
+                amount: newAmount
+            });
+
+            alert("കണക്ക് വിജയകരമായി എഡിറ്റ് ചെയ്ത് സേവ് ചെയ്തു!");
+            closeEditLogModal();
+            loadStaffAndAccounts();
+        };
+
         window.updateModalWage = function() {
             const baseWage = parseFloat(document.getElementById('modalDefaultWage').value) || 0;
             const multiplier = parseFloat(document.getElementById('modalDayAmount').value) || 1;
             document.getElementById('modalWageAmount').value = baseWage * multiplier;
         }
 
-        // പോപ്പ്-അപ്പ് ക്ലോസ് ചെയ്യാൻ
         window.closeWageModal = function() {
             document.getElementById('wageModal').classList.add('hidden');
         }
 
-        // പോപ്പ്-അപ്പിൽ നിന്ന് കണക്ക് സേവ് ചെയ്യുമ്പോൾ (വരവ്-ചെലവ് കണക്കിലേക്കും സ്റ്റാഫ് കണക്കിലേക്കും ഒരേപോലെ)
         document.getElementById('confirmWageBtn').onclick = async () => {
             const staffName = document.getElementById('modalStaffName').value;
             const selectedDate = document.getElementById('modalDate').value || getTodayDate();
@@ -332,14 +443,9 @@
             const addedDays = parseFloat(document.getElementById('modalDayAmount').value) || 1;
             const addedMoney = parseFloat(document.getElementById('modalWageAmount').value) || 0;
 
-            if (addedMoney <= 0) {
-                return alert("ദയവായി ശരിയായ തുക നൽകുക!");
-            }
-            if (!siteName) {
-                return alert("ദയവായി സൈറ്റിന്റെ പേര് നൽകുക!");
-            }
+            if (addedMoney <= 0) return alert("ദയവായി ശരിയായ തുക നൽകുക!");
+            if (!siteName) return alert("ദയവായി സൈറ്റിന്റെ പേര് നൽകുക!");
 
-            // 1. ഫയർബേസിലെ പ്രധാന 'accounts' (വരവ് ചെലവ്) കളക്ഷനിലേക്ക് ചെലവായി സേവ് ചെയ്യുന്നു
             await addDoc(collection(db, "accounts"), {
                 meshtriOwner: currentMeshtri,
                 name: staffName + ` (കൂലി - ${addedDays} ദിവസം)`,
