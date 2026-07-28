@@ -10,52 +10,149 @@
         body { font-family: 'Manjari', sans-serif; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-6">
+<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
 
-    <!-- ടോപ്പ് ഹെഡർ ഭാഗം -->
+    <!-- ടോപ്പ് ഹെഡർ: വലിയ ലോഗോയും തിളക്കവും -->
     <div class="text-center pt-6">
-        <div class="inline-flex items-center gap-2.5 bg-amber-500/20 text-amber-400 text-base font-bold px-4 py-2 rounded-full border border-amber-500/50 shadow-lg">
-            <img src="icon.png" alt="Mesthiri" class="w-7 h-7 rounded-full object-cover border-2 border-amber-400">
-            <span class="text-base font-black text-amber-300 tracking-wide">മേസ്തിരി പ്രോ</span>
+        <div class="inline-flex items-center gap-4 bg-amber-500/30 text-amber-300 px-7 py-3.5 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.5)]">
+            <img src="icon.png" alt="Mesthiri" class="rounded-full object-cover border-2 border-amber-200 shadow-lg" style="width: 72px; height: 72px;">
+            <span class="text-2xl font-black text-amber-300 tracking-wide">മേസ്തിരി പ്രോ</span>
         </div>
-        <h1 class="text-4xl font-black mt-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
+        <h1 class="text-4xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
             പുതിയ രജിസ്ട്രേഷൻ
         </h1>
-        <p class="text-sm text-blue-200 mt-1 font-bold">വിവരങ്ങൾ നൽകി പുതിയ അക്കൗണ്ട് ഉണ്ടാക്കാം</p>
+        <p class="text-base text-blue-200 mt-1 font-bold">വിവരങ്ങൾ നൽകി പുതിയ അക്കൗണ്ട് ഉണ്ടാക്കാം</p>
     </div>
 
     <!-- രജിസ്ട്രേഷൻ ഫോം കാർഡ് -->
     <div class="bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 max-w-sm mx-auto w-full my-4 space-y-4 shadow-xl">
         <div>
-            <label class="block text-sm font-bold text-blue-200 mb-1">മേസ്തിരിയുടെ പേര്</label>
-            <input type="text" placeholder="പേര് ഇവിടെ എഴുതുക" class="w-full bg-slate-900/80 border border-blue-500/40 rounded-xl p-3.5 text-white text-sm font-bold focus:outline-none focus:border-amber-400">
+            <label class="block text-base font-black text-amber-300 mb-1.5">മേസ്തിരിയുടെ പേര്</label>
+            <input type="text" id="username" placeholder="പേര് ഇവിടെ എഴുതുക" 
+                   class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
         </div>
 
         <div>
-            <label class="block text-sm font-bold text-blue-200 mb-1">ഫോൺ നമ്പർ</label>
-            <input type="tel" placeholder="10 അക്ക മൊബൈൽ നമ്പർ" class="w-full bg-slate-900/80 border border-blue-500/40 rounded-xl p-3.5 text-white text-sm font-bold focus:outline-none focus:border-amber-400">
+            <label class="block text-base font-black text-amber-300 mb-1.5">ഫോൺ നമ്പർ</label>
+            <input type="tel" id="phone" placeholder="10 അക്ക മൊബൈൽ നമ്പർ" 
+                   class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
         </div>
 
         <div>
-            <label class="block text-sm font-bold text-blue-200 mb-1">പാസ്‌വേർഡ് (Password)</label>
-            <input type="password" placeholder="പുതിയ പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-900/80 border border-blue-500/40 rounded-xl p-3.5 text-white text-sm font-bold focus:outline-none focus:border-amber-400">
+            <label class="block text-base font-black text-amber-300 mb-1.5">പാസ്‌വേർഡ് (Password)</label>
+            <div class="relative">
+                <input type="password" id="password" placeholder="പുതിയ പാസ്‌വേർഡ് നൽകുക" 
+                       class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 pr-12 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
+                <!-- പാസ്‌വേർഡ് കാണാനുള്ള കണ്ണ് ഐക്കൺ -->
+                <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-300 hover:text-amber-400 focus:outline-none">
+                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                </button>
+            </div>
+            <p class="text-sm text-blue-200 mt-2 font-bold leading-relaxed">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
         </div>
 
-        <button onclick="alert('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി!')" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-xl font-black text-base shadow-lg shadow-amber-950/40 transition mt-2">
+        <button id="btnRegister" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/50 transition mt-2">
             അക്കൗണ്ട് രജിസ്റ്റർ ചെയ്യാം
         </button>
     </div>
 
     <!-- ലോഗിൻ പേജിലേക്ക് തിരിച്ചു പോകാൻ -->
     <div class="max-w-sm mx-auto w-full text-center pb-4 space-y-3">
-        <p class="text-sm text-blue-200 font-bold">
+        <p class="text-base text-blue-100 font-bold">
             അക്കൗണ്ട് ഉണ്ടോ? 
-            <a href="login.html" class="text-amber-400 font-black underline ml-1">ഇവിടെ ലോഗിൻ ചെയ്യാം</a>
+            <a href="login.html" class="text-amber-400 font-black underline ml-1 text-lg">ഇവിടെ ലോഗിൻ ചെയ്യാം</a>
         </p>
         <p class="text-xs text-slate-400 font-bold pt-2">
             മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
         </p>
     </div>
 
+    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനുമുള്ള കോഡ്
+        const passwordInput = document.getElementById("password");
+        const togglePassword = document.getElementById("togglePassword");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+        togglePassword.addEventListener("click", () => {
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+            
+            if (type === "text") {
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.03 10.03 0 012.23-3.38m3.54-2.54A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+                `;
+            } else {
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                `;
+            }
+        });
+
+        // രജിസ്ട്രേഷൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
+        document.getElementById("btnRegister").addEventListener("click", async () => {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            if (!user || !pass || !phone) {
+                return alert("ദയവായി എല്ലാ വിവരങ്ങളും നൽകുക!");
+            }
+
+            if (pass.length < 6) {
+                return alert("പാസ്‌വേർഡിന് കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം!");
+            }
+
+            try {
+                // ഫയർബേസ് ഓതന്റിക്കേഷൻ വഴി അക്കൗണ്ട് ഉണ്ടാക്കുന്നു
+                await createUserWithEmailAndPassword(auth, `${user}@mesthri.com`, pass);
+                
+                // ഫയർസ്റ്റോറിൽ ഡാറ്റ സേവ് ചെയ്യുന്നു
+                await setDoc(doc(db, "users", user), {
+                    username: user,
+                    phone: phone,
+                    password: pass
+                });
+
+                // ഗൂഗിൾ ഷീറ്റിലേക്ക് ഡാറ്റ അയക്കുന്നു
+                const webAppUrl = "https://script.google.com/macros/s/AKfycbznevcjdsSz7JgWrKeyaO2gOnxnrd-8-rMMiycABRruqFJQ_hfz4Ac79aLqyvnqf09FXg/exec";
+                fetch(webAppUrl, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: user, phone: phone })
+                }).catch(err => console.log(err));
+
+                alert("വിജയകരമായി രജിസ്റ്റർ ചെയ്തു!");
+                localStorage.setItem('userName', user);
+                window.location.href = "dashboard.html";
+
+            } catch (error) {
+                alert("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു! ഈ യൂസർനെയിം നേരത്തെ ഉണ്ടാകാം.");
+            }
+        });
+    </script>
 </body>
 </html>
