@@ -1,29 +1,28 @@
+
 <!DOCTYPE html>
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>നിർമ്മാണ മാനേജർ - മൊബൈൽ പ്രിവ്യൂ</title>
+    <title>നിർമ്മാണ മാനേജർ - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Manjari', sans-serif; }
         
-        /* മൊബൈൽ ഫോൺ ഫ്രെയിമിനുള്ള സ്റ്റൈലുകൾ */
         .phone-frame {
-            width: 320px; /* ഒരു സാധാരണ ഫോണിന്റെ വീതി */
-            height: 640px; /* നീളം */
+            width: 320px;
+            height: 640px;
             background: #111;
             border-radius: 36px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 4px #333;
             padding: 12px;
             position: relative;
-            margin: 50px auto; /* പേജിന്റെ നടുവിലാക്കാൻ */
+            margin: 30px auto;
             overflow: hidden;
             border: 2px solid #444;
         }
         
-        /* ഫോണിന്റെ നോച്ച് */
         .phone-notch {
             width: 150px;
             height: 25px;
@@ -37,88 +36,86 @@
             z-index: 10;
         }
         
-        /* ഫോണിന്റെ സ്‌ക്രീൻ കണ്ടന്റ് */
         .phone-screen {
             width: 100%;
             height: 100%;
-            background-color: #0f172a; /* bg-slate-900 */
+            background-color: #0f172a;
             border-radius: 28px;
-            overflow-y: auto; /* സ്‌ക്രീൻ ഉള്ളിൽ സ്ക്രോൾ ചെയ്യാൻ */
+            overflow-y: auto;
         }
         
-        /* സ്‌ക്രോൾബാർ ഹൈഡ് ചെയ്യാൻ (ഭംഗിക്ക്) */
         .phone-screen::-webkit-scrollbar { display: none; }
         
-        /* ചെറിയ സ്ക്രീനുകളിൽ ഫോൺ ചെറുതാക്കാൻ (Responsive) */
         @media (max-width: 400px) {
-            .phone-frame { transform: scale(0.85); margin: 20px auto; }
+            .phone-frame { transform: scale(0.85); margin: 10px auto; }
         }
     </style>
 </head>
 <body class="bg-slate-950 min-h-screen p-4 flex items-center justify-center">
 
-    <!-- മൊബൈൽ ഫോൺ ഫ്രെയിം തുടങ്ങുന്നു -->
     <div class="phone-frame">
         <div class="phone-notch"></div>
         
-        <!-- ഫോൺ സ്‌ക്രീൻ (ഇവിടെയാണ് നമ്മുടെ പഴയ കോഡ് വരുന്നത്) -->
         <div class="phone-screen bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white flex flex-col justify-between p-5">
 
-            <!-- ടോപ്പ് ഹെഡർ -->
-            <div class="text-center pt-6">
-                <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-500/30">🏗️ മേസ്തിരി ആപ്പ്</span>
-                <h1 class="text-2xl font-black mt-3 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-emerald-400">
+            <!-- ടോപ്പ് ഹെഡർ: മേസ്തിരിയുടെ icon.png ചിത്രവും 'മേസ്തിരി പ്രോ' പേരും -->
+            <div class="text-center pt-5">
+                <div class="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3.5 py-1.5 rounded-full border border-emerald-500/30">
+                    <img src="icon.png" alt="Mesthiri" class="w-5 h-5 rounded-full object-cover border border-emerald-400">
+                    <span>മേസ്തിരി പ്രോ</span>
+                </div>
+                <h1 class="text-2xl font-black mt-2.5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-emerald-400">
                     നിർമ്മാണ മാനേജർ
                 </h1>
-                <p class="text-[11px] text-slate-300 mt-1 font-bold">പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ</p>
+                <p class="text-xs text-slate-200 mt-0.5 font-bold">പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ</p>
             </div>
 
-            <!-- പ്രധാന വിവരങ്ങൾ (കാർഡുകൾ) -->
-            <div class="space-y-3 my-6">
-                <!-- കാർഡ് 1 -->
-                <div class="bg-white/5 backdrop-blur-sm p-3 rounded-xl border border-white/10 flex items-center gap-3">
-                    <div class="bg-emerald-500/15 p-2.5 rounded-lg text-emerald-400 text-lg font-bold">👥</div>
+            <!-- പ്രധാന വിവരങ്ങൾ കാർഡുകൾ -->
+            <div class="space-y-3 my-3">
+                <!-- കാർഡ് 1: തൊഴിലാളികളുടെ കൂലി -->
+                <div class="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/15 flex items-center gap-3">
+                    <div class="bg-emerald-500/20 p-2.5 rounded-lg text-emerald-400 text-lg font-bold">👥</div>
                     <div>
-                        <h3 class="font-bold text-xs text-white">തൊഴിലാളികളുടെ കൂലി</h3>
-                        <p class="text-[10px] text-slate-300 mt-0.5">ഫുൾ ഡേ, ഹാഫ് ഡേ, ഓവർടൈം കണക്കുകൾ.</p>
+                        <h3 class="font-black text-xs text-white">തൊഴിലാളികളുടെ കൂലി</h3>
+                        <p class="text-[11px] text-slate-200 font-medium mt-0.5">ഫുൾ ഡേ, ഹാഫ് ഡേ, ഓവർടൈം കണക്കുകൾ.</p>
                     </div>
                 </div>
 
-                <!-- കാർഡ് 2 -->
-                <div class="bg-white/5 backdrop-blur-sm p-3 rounded-xl border border-white/10 flex items-center gap-3">
-                    <div class="bg-blue-500/15 p-2.5 rounded-lg text-blue-400 text-lg font-bold">📍</div>
+                <!-- കാർഡ് 2: സൈറ്റ് ഹിസ്റ്ററി (വീടിന്റെ ചിത്രം 🏠) -->
+                <div class="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/15 flex items-center gap-3">
+                    <div class="bg-blue-500/20 p-2.5 rounded-lg text-blue-400 text-lg font-bold">🏠</div>
                     <div>
-                        <h3 class="font-bold text-xs text-white">സൈറ്റ് ഹിസ്റ്ററി</h3>
-                        <p class="text-[10px] text-slate-300 mt-0.5">ഓരോ തൊഴിലാളിയും ഏത് സൈറ്റിൽ.</p>
+                        <h3 class="font-black text-xs text-white">സൈറ്റ് ഹിസ്റ്ററി</h3>
+                        <p class="text-[11px] text-slate-200 font-medium mt-0.5">ഓരോ തൊഴിലാളിയും ഏത് സൈറ്റിൽ.</p>
                     </div>
                 </div>
 
-                <!-- കാർഡ് 3 -->
-                <div class="bg-white/5 backdrop-blur-sm p-3 rounded-xl border border-white/10 flex items-center gap-3">
-                    <div class="bg-amber-500/15 p-2.5 rounded-lg text-amber-400 text-lg font-bold">📱</div>
+                <!-- കാർഡ് 3: വാട്സാപ്പ് ഷെയറിങ് -->
+                <div class="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/15 flex items-center gap-3">
+                    <div class="bg-amber-500/20 p-2.5 rounded-lg text-amber-400 text-lg font-bold">📱</div>
                     <div>
-                        <h3 class="font-bold text-xs text-white">വാട്സാപ്പ് ഷെയറിങ്</h3>
-                        <p class="text-[10px] text-slate-300 mt-0.5">കണക്കുകൾ ഒറ്റക്ലിക്കിൽ അയക്കാം.</p>
+                        <h3 class="font-black text-xs text-white">വാട്സാപ്പ് ഷെയറിങ്</h3>
+                        <p class="text-[11px] text-slate-200 font-medium mt-0.5">കണക്കുകൾ ഒറ്റക്ലിക്കിൽ അയക്കാം.</p>
                     </div>
                 </div>
             </div>
 
             <!-- ബട്ടണുകൾ -->
-            <div class="space-y-2.5 pb-3">
+            <div class="space-y-2.5 pb-2">
                 <a href="login.html" class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white text-center p-3 rounded-xl font-black text-xs shadow-lg shadow-emerald-900/50 transition">
                     ലോഗിൻ ചെയ്യാം
                 </a>
-                <a href="register.html" class="block w-full bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-center p-2.5 rounded-xl font-bold text-[11px] transition">
+                <a href="register.html" class="block w-full bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-center p-2.5 rounded-xl font-bold text-xs transition">
                     പുതിയ രജിസ്ട്രേഷൻ
                 </a>
 
-                <p class="text-center text-[9px] text-slate-500 font-bold pt-1">
+                <p class="text-center text-[10px] text-slate-400 font-bold pt-1">
                     മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
                 </p>
             </div>
 
-        </div> <!-- ഫോൺ സ്‌ക്രീൻ അവസാനിക്കുന്നു -->
-    </div> <!-- മൊബൈൽ ഫോൺ ഫ്രെയിം അവസാനിക്കുന്നു -->
+        </div>
+    </div>
 
 </body>
 </html>
