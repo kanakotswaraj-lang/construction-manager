@@ -18,64 +18,64 @@
         <h1 class="text-amber-300 text-3xl font-black tracking-wide">മേസ്തിരി പ്രോ</h1>
     </div>
 
-    <!-- ടോപ്പ് ഹെഡർ ഭാഗം -->
+    <!-- ടോപ്പ് ഹെഡർ ഭാഗം (വലിയ അക്ഷരങ്ങൾ) -->
     <div class="text-center pt-4">
         <div class="inline-flex items-center gap-2.5 bg-amber-500/20 text-amber-400 text-base font-bold px-4 py-2 rounded-full border border-amber-500/50 shadow-lg">
-            <img src="icon.png" alt="Mesthiri" class="w-7 h-7 rounded-full object-cover border-2 border-amber-400">
-            <span class="text-base font-black text-amber-300 tracking-wide">മേസ്തിരി പ്രോ</span>
+            <img src="icon.png" alt="Mesthiri" class="w-8 h-8 rounded-full object-cover border-2 border-amber-400">
+            <span class="text-lg font-black text-amber-300 tracking-wide">മേസ്തിരി പ്രോ</span>
         </div>
         <h1 id="formTitle" class="text-4xl font-black mt-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
             ലോഗിൻ ചെയ്യുക
         </h1>
-        <p class="text-sm text-blue-200 mt-1 font-bold">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
+        <p class="text-base text-blue-200 mt-1 font-bold">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
     </div>
 
     <!-- ലോഗിൻ / രജിസ്ട്രേഷൻ ഫോം കാർഡ് -->
     <div class="bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 max-w-sm mx-auto w-full my-4 space-y-4 shadow-xl">
         <div>
-            <label class="block text-sm font-bold text-blue-200 mb-1">യൂസർനെയിം (പേര്)</label>
+            <label class="block text-base font-black text-amber-300 mb-1.5">യൂസർനെയിം (പേര്)</label>
             <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
-                   class="w-full bg-slate-900/80 border border-blue-500/40 rounded-xl p-3.5 text-white text-sm font-bold focus:outline-none focus:border-amber-400">
+                   class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
         </div>
 
         <!-- രജിസ്റ്റർ ചെയ്യുമ്പോൾ മാത്രം കാണുന്ന ഫോൺ നമ്പർ ബോക്സ് -->
         <div id="phoneDiv" class="hidden">
-            <label class="block text-sm font-bold text-blue-200 mb-1">ഫോൺ നമ്പർ</label>
+            <label class="block text-base font-black text-amber-300 mb-1.5">ഫോൺ നമ്പർ</label>
             <input type="tel" id="phone" placeholder="10 അക്ക ഫോൺ നമ്പർ" 
-                   class="w-full bg-slate-900/80 border border-blue-500/40 rounded-xl p-3.5 text-white text-sm font-bold focus:outline-none focus:border-amber-400">
+                   class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
         </div>
 
         <div>
-            <label class="block text-sm font-bold text-blue-200 mb-1">പാസ്‌വേർഡ്</label>
+            <label class="block text-base font-black text-amber-300 mb-1.5">പാസ്‌വേർഡ്</label>
             <div class="relative">
                 <input type="password" id="password" placeholder="കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക" 
-                       class="w-full bg-slate-900/80 border border-blue-500/40 rounded-xl p-3.5 pr-12 text-white text-sm font-bold focus:outline-none focus:border-amber-400">
-                <!-- കണ്ണ് ഐക്കൺ (Password Toggle Eye Button) -->
+                       class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 pr-12 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
+                <!-- കണ്ണ് ഐക്കൺ -->
                 <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-300 hover:text-amber-400 focus:outline-none">
-                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                 </button>
             </div>
-            <p class="text-xs text-blue-300/80 mt-1.5 font-bold">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
+            <p class="text-sm text-blue-200 mt-2 font-bold leading-relaxed">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
         </div>
 
         <!-- ആക്ഷൻ ബട്ടൺ -->
-        <button id="btnAction" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-xl font-black text-base shadow-lg shadow-amber-950/40 transition mt-2">
+        <button id="btnAction" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/50 transition mt-3">
             ലോഗിൻ ചെയ്യുക
         </button>
 
-        <button id="btnForgot" class="w-full text-blue-300 font-bold text-sm hover:text-amber-400 underline block text-center pt-1">
+        <button id="btnForgot" class="w-full text-amber-300 font-bold text-base hover:underline block text-center pt-2">
             പാസ്‌വേർഡ് മറന്നുപോയോ?
         </button>
     </div>
 
     <!-- പേജ് മാറാനുള്ള ലിങ്ക് -->
     <div class="max-w-sm mx-auto w-full text-center pb-4 space-y-3">
-        <p class="text-sm text-blue-200 font-bold">
+        <p class="text-base text-blue-100 font-bold">
             <span id="toggleText">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
-            <a href="#" id="toggleBtn" class="text-amber-400 font-black underline ml-1">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
+            <a href="#" id="toggleBtn" class="text-amber-400 font-black underline ml-1 text-lg">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
         </p>
         <p class="text-xs text-slate-400 font-bold pt-2">
             മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
