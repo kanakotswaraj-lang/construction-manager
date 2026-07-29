@@ -98,10 +98,15 @@
         }
 
         const today = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const days = ['ഞായറാഴ്ച', 'തിങ്കളാഴ്ച', 'ചൊവ്വാഴ്ച', 'ബുധനാഴ്ച', 'വ്യാഴാഴ്ച', 'വെള്ളിയാഴ്ച', 'ശനിയാഴ്ച'];
+        const dayName = days[today.getDay()];
+        
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = today.toLocaleDateString('ml-IN', options);
+        
         const dateElement = document.getElementById('currentDate');
         if(dateElement) {
-            dateElement.innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
+            dateElement.innerText = `ഇന്ന്: ${dayName}, ${dateStr}`;
         }
 
         const savedPhoto = localStorage.getItem('profilePhoto');
