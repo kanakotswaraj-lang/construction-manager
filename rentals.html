@@ -1,25 +1,48 @@
-
 <!DOCTYPE html>
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Manjari', sans-serif; }
+    </style>
     <title>വാടക ഉപകരണങ്ങൾ</title>
 </head>
-<body class="bg-slate-50 p-4 font-sans">
-    <div class="max-w-md mx-auto">
+<body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
+    <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ: ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് കാണിക്കാൻ -->
-        <div class="bg-slate-900 p-4 rounded-2xl text-white mb-6 flex justify-between items-center shadow-lg">
-            <div>
-                <h1 class="text-xl font-black">വാടക ഉപകരണങ്ങൾ</h1>
-                <p id="loggedInMeshtri" class="text-xs text-blue-400 font-bold mt-1">മേസ്തിരി: ലോഡിങ്...</p>
+        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം -->
+        <div class="flex flex-col items-center pt-2 pb-2">
+            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md">
+                <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
+                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col text-left">
+                    <span class="text-amber-400 font-black text-sm tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
+                    <span class="text-[10px] font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
+                </div>
             </div>
-            <a href="dashboard.html" class="bg-slate-800 text-xs px-3 py-2 rounded-xl text-slate-300 font-bold hover:bg-slate-700">ഡാഷ്‌ബോർഡ്</a>
+            <!-- സ്വാഗതം പേര് (Cyan കളർ) -->
+            <div class="mt-3 text-center">
+                <span id="loggedInMeshtri" class="text-sm font-black tracking-wide text-cyan-300 bg-cyan-500/15 px-4 py-1.5 rounded-full border border-cyan-400/40 shadow-lg">
+                    സ്വാഗതം, ലോഡിങ്...
+                </span>
+            </div>
+        </div>
+
+        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
+            <div>
+                <h1 class="text-lg font-black text-white">വാടക ഉപകരണങ്ങൾ</h1>
+            </div>
+            <a href="dashboard.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
+                <span>←</span> ഡാഷ്‌ബോർഡ്
+            </a>
         </div>
         
-        <div class="bg-white p-6 rounded-3xl shadow-sm border mb-8 space-y-4">
+        <div class="bg-white text-slate-800 p-6 rounded-3xl shadow-sm border mb-8 space-y-4">
             <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
             <input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
@@ -43,8 +66,8 @@
             <button id="saveRentBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
-        <section id="rentList" class="space-y-4">
-            <h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>
+        <section id="rentList" class="space-y-4 pb-12">
+            <h2 class="font-black text-white mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>
         </section>
     </div>
 
@@ -121,7 +144,7 @@
         // ഈ മേസ്തിരിയുടെ ഡാറ്റ മാത്രം ഫിൽട്ടർ ചെയ്ത് കാണിക്കുന്നു
         onSnapshot(collection(db, "rentals"), (snapshot) => {
             const list = document.getElementById('rentList');
-            list.innerHTML = '<h2 class="font-black text-slate-800 mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>';
+            list.innerHTML = '<h2 class="font-black text-white mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>';
             
             snapshot.forEach((d) => {
                 const r = d.data();
@@ -130,7 +153,7 @@
                 if (r.meshtriOwner === currentMeshtri) {
                     const bal = r.total - r.paid;
                     const div = document.createElement('div');
-                    div.className = `bg-white p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-sm mb-4`;
+                    div.className = `bg-white p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-sm mb-4 text-slate-800`;
                     div.innerHTML = `
                         <p class="font-black text-slate-800 text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
                         <p class="text-xs text-slate-500 font-bold mb-2">കട: ${r.shop} | 📞 ${r.phone}</p>
