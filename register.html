@@ -12,11 +12,14 @@
 </head>
 <body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
 
-    <!-- ടോപ്പ് ഹെഡർ: വലിയ ലോഗോയും തിളക്കവും -->
+    <!-- ടോപ്പ് ഹെഡർ: വലിയ ലോഗോയും Smart Site Manager ടാഗും -->
     <div class="text-center pt-6">
-        <div class="inline-flex items-center gap-4 bg-amber-500/30 text-amber-300 px-7 py-3.5 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.5)]">
-            <img src="icon.png" alt="Mesthiri" class="rounded-full object-cover border-2 border-amber-200 shadow-lg" style="width: 72px; height: 72px;">
-            <span class="text-2xl font-black text-amber-300 tracking-wide">മേസ്തിരി പ്രോ</span>
+        <div class="inline-flex items-center gap-4 bg-amber-500/30 text-amber-300 px-6 py-3 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.5)]">
+            <img src="icon.png" alt="Mesthiri" class="rounded-full object-cover border-2 border-amber-200 shadow-lg" style="width: 64px; height: 64px;">
+            <div class="text-left">
+                <span class="text-2xl font-black text-amber-300 tracking-wide block leading-tight">മേസ്തിരി പ്രോ</span>
+                <span class="text-[11px] font-bold text-blue-200 tracking-wider uppercase">Smart Site Manager</span>
+            </div>
         </div>
         <h1 class="text-4xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
             പുതിയ രജിസ്ട്രേഷൻ
@@ -89,7 +92,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനുമുള്ള കോഡ്
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
         const eyeIcon = document.getElementById("eyeIcon");
@@ -111,7 +113,6 @@
             }
         });
 
-        // രജിസ്ട്രേഷൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
         document.getElementById("btnRegister").addEventListener("click", async () => {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
@@ -126,17 +127,14 @@
             }
 
             try {
-                // ഫയർബേസ് ഓതന്റിക്കേഷൻ വഴി അക്കൗണ്ട് ഉണ്ടാക്കുന്നു
                 await createUserWithEmailAndPassword(auth, `${user}@mesthri.com`, pass);
                 
-                // ഫയർസ്റ്റോറിൽ ഡാറ്റ സേവ് ചെയ്യുന്നു
                 await setDoc(doc(db, "users", user), {
                     username: user,
                     phone: phone,
                     password: pass
                 });
 
-                // ഗൂഗിൾ ഷീറ്റിലേക്ക് ഡാറ്റ അയക്കുന്നു
                 const webAppUrl = "https://script.google.com/macros/s/AKfycbznevcjdsSz7JgWrKeyaO2gOnxnrd-8-rMMiycABRruqFJQ_hfz4Ac79aLqyvnqf09FXg/exec";
                 fetch(webAppUrl, {
                     method: "POST",
