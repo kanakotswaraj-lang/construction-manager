@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- ആപ്പ് ലോഗോ (നമ്മുടെ പുതിയ ഐക്കൺ ഫയൽ ലിങ്ക് ചെയ്യുന്നു) -->
+    <!-- ആപ്പ് ലോഗോ -->
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
+
+    <style>
+        body { font-family: 'Manjari', sans-serif; }
+    </style>
 
     <script>
         // ലോഗിൻ ചെയ്തിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുന്നു
@@ -26,24 +31,24 @@
 
     <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
 </head>
-<body class="bg-slate-100 p-4 font-sans">
-    <div class="max-w-md mx-auto">
+<body class="bg-[#050B18] text-white min-h-screen p-4 font-sans pb-12">
+    <div class="max-w-md mx-auto space-y-4">
 
-<!-- ഹെഡർ ഭാഗം: ചിത്രത്തിലുള്ളതുപോലെയുള്ള പെർഫെക്റ്റ് ലേഔട്ട് -->
-<div class="bg-slate-900 rounded-[2.5rem] shadow-2xl text-white mb-6 border border-slate-700 relative overflow-hidden">
+<!-- ഹെഡർ ഭാഗം -->
+<div class="bg-slate-900 rounded-[2.5rem] shadow-2xl text-white border border-slate-800 relative overflow-hidden">
     
     <!-- കവർ ബാനർ ഭാഗം -->
     <div class="relative h-36 w-full bg-slate-800 group overflow-hidden">
         <label for="coverUpload" class="cursor-pointer block w-full h-full">
             <img id="coverImage" src="https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition duration-300 group-hover:opacity-75">
-            <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                <span class="text-xs font-bold bg-black/60 px-3 py-1.5 rounded-full text-white backdrop-blur-sm">📷 കവർ മാറ്റുക</span>
+            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                <span class="text-xs font-black bg-black/60 px-3.5 py-2 rounded-full text-white backdrop-blur-sm border border-slate-700">📷 കവർ മാറ്റുക</span>
             </div>
         </label>
         <input type="file" id="coverUpload" class="hidden" accept="image/*" onchange="updateCoverPhoto(event)">
         
-        <!-- ലോഗ് ഔട്ട് ബട്ടൺ (വലതുവശത്ത് മുകളിൽ) -->
-        <button onclick="logoutUser()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-900/80 backdrop-blur-md text-red-400 border border-slate-700 flex items-center justify-center font-bold shadow-lg hover:bg-red-500 hover:text-white transition duration-300 z-10" title="ലോഗ് ഔട്ട്">
+        <!-- ലോഗ് ഔട്ട് ബട്ടൺ -->
+        <button onclick="logoutUser()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-900/90 backdrop-blur-md text-red-400 border border-slate-700 flex items-center justify-center font-bold shadow-lg hover:bg-red-500 hover:text-white transition duration-300 z-10" title="ലോഗ് ഔട്ട്">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
@@ -52,33 +57,33 @@
 
     <!-- പ്രൊഫൈൽ ഫോട്ടോയും വിവരങ്ങളും -->
     <div class="px-6 pb-6 pt-0 relative">
-        <!-- പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം (കവറിലേക്ക് കയറിനിൽക്കുന്ന ഓവർലാപ്പ് ലുക്ക്) -->
-        <label for="photoUpload" class="cursor-pointer group relative inline-block -mt-10 mb-4">
-            <div class="relative p-1.5 bg-slate-900 rounded-3xl shadow-2xl border-2 border-slate-700">
+        <!-- പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം -->
+        <label for="photoUpload" class="cursor-pointer group relative inline-block -mt-10 mb-3">
+            <div class="relative p-1.5 bg-slate-900 rounded-3xl shadow-2xl border-2 border-amber-400/60">
                 <img id="profileImage" src="https://ui-avatars.com/api/?name=User" class="w-24 h-24 rounded-2xl object-cover transition group-hover:opacity-75">
-                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-2xl">
-                    <span class="text-[10px] font-bold bg-black/80 px-2 py-1 rounded text-white backdrop-blur-sm">മാറ്റുക</span>
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-2xl bg-black/40">
+                    <span class="text-[10px] font-black bg-black/80 px-2.5 py-1 rounded-md text-white backdrop-blur-sm">മാറ്റുക</span>
                 </div>
             </div>
             <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
         </label>
 
-        <!-- മെയിൻ ടൈറ്റിലും വിവരങ്ങളും (മലയാളത്തിലേക്ക് മാറ്റിയിരിക്കുന്നു) -->
-        <div class="text-center space-y-1.5">
-            <h1 class="text-3xl font-black text-white tracking-tight flex items-center justify-center gap-2">
-                മേസ്തിരി <span class="text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">പ്രോ</span>
+        <!-- ടൈറ്റിലും വിവരങ്ങളും -->
+        <div class="text-center space-y-1">
+            <h1 class="text-2xl font-black text-white tracking-tight flex items-center justify-center gap-1.5">
+                മേസ്തിരി <span class="text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">പ്രോ</span>
             </h1>
-            <p class="text-xs font-semibold tracking-widest text-slate-400 uppercase">SMART SITE MANAGER</p>
+            <p class="text-[10px] font-bold tracking-widest text-blue-300 uppercase">SMART SITE MANAGER</p>
             
             <!-- ലോഗിൻ ചെയ്ത ആളുടെ പേര് -->
-            <p id="meshtriNameDisplay" class="text-blue-400 font-bold text-lg pt-1">സ്വാഗതം, മേസ്തിരി</p>
+            <p id="meshtriNameDisplay" class="text-cyan-300 font-black text-base pt-1">സ്വാഗതം, മേസ്തിരി</p>
         </div>
 
-        <!-- തീയതി ബോക്സ് -->
-        <div class="mt-5 flex justify-center">
-            <div class="bg-slate-800/80 border border-slate-700/80 px-5 py-2 rounded-full flex items-center gap-2 shadow-inner backdrop-blur-sm">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <p id="currentDate" class="text-xs font-bold text-slate-300"></p>
+        <!-- തീയതിയും ആഴ്ച ദിവസവും കാണിക്കുന്ന ബോക്സ് -->
+        <div class="mt-4 flex justify-center">
+            <div class="bg-slate-800/90 border border-slate-700 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-inner backdrop-blur-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <p id="currentDate" class="text-xs font-bold text-slate-200"></p>
             </div>
         </div>
     </div>
@@ -86,7 +91,6 @@
 <!-- ഹെഡർ ഭാഗം അവസാനിക്കുന്നു -->
 
 <script>
-    // പേജ് ലോഡ് ആകുമ്പോൾ പേരും ഫോട്ടോയും കവറും സെറ്റ് ചെയ്യുന്നു
     window.onload = function() {
         const userName = localStorage.getItem('userName');
         if (userName) {
@@ -94,7 +98,7 @@
         }
 
         const today = new Date();
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const dateElement = document.getElementById('currentDate');
         if(dateElement) {
             dateElement.innerText = "ഇന്ന്: " + today.toLocaleDateString('ml-IN', options);
@@ -107,7 +111,7 @@
 
         const savedCover = localStorage.getItem('coverPhoto');
         if (savedCover) {
-            document.getElementById('coverImage').src, savedCover;
+            document.getElementById('coverImage').src = savedCover;
         }
     };
 
@@ -144,23 +148,27 @@
 </script>
 
         <!-- ബട്ടണുകൾ -->
-        <div class="space-y-4">
-            <a href="staff.html" class="bg-indigo-900 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white hover:scale-[1.02] transition duration-200">
-                <p class="text-xl font-black">👥 ജീവനക്കാരുടെ ശമ്പളം</p>
+        <div class="space-y-3.5 pt-2">
+            <a href="staff.html" class="bg-indigo-900/90 border border-indigo-700/50 p-5 rounded-2xl shadow-lg flex items-center justify-between text-white hover:bg-indigo-800 transition duration-200">
+                <p class="text-base font-black">👥 ജീവനക്കാരുടെ ശമ്പളം</p>
+                <span class="text-indigo-300 font-bold">→</span>
             </a>
-            <a href="rentals.html" class="bg-emerald-900 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white hover:scale-[1.02] transition duration-200">
-                <p class="text-xl font-black">🏗️ വാടക ഉപകരണങ്ങൾ</p>
+            <a href="rentals.html" class="bg-emerald-900/90 border border-emerald-700/50 p-5 rounded-2xl shadow-lg flex items-center justify-between text-white hover:bg-emerald-800 transition duration-200">
+                <p class="text-base font-black">🏗️ വാടക ഉപകരണങ്ങൾ</p>
+                <span class="text-emerald-300 font-bold">→</span>
             </a>
-            <a href="materials.html" class="bg-indigo-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white hover:scale-[1.02] transition duration-200">
-                <p class="text-xl font-black">🧱 മെറ്റീരിയൽസ്</p>
+            <a href="materials.html" class="bg-blue-900/90 border border-blue-700/50 p-5 rounded-2xl shadow-lg flex items-center justify-between text-white hover:bg-blue-800 transition duration-200">
+                <p class="text-base font-black">🧱 മെറ്റീരിയൽസ്</p>
+                <span class="text-blue-300 font-bold">→</span>
             </a>
-            <a href="accounts.html" class="bg-rose-800 p-8 rounded-3xl shadow-lg flex items-center justify-between text-white hover:scale-[1.02] transition duration-200">
-                <p class="text-xl font-black">📊 വരവ് - ചെലവ്</p>
+            <a href="accounts.html" class="bg-rose-900/90 border border-rose-700/50 p-5 rounded-2xl shadow-lg flex items-center justify-between text-white hover:bg-rose-800 transition duration-200">
+                <p class="text-base font-black">📊 വരവ് - ചെലവ്</p>
+                <span class="text-rose-300 font-bold">→</span>
             </a>
         </div>
 
         <!-- വാട്സാപ്പ് സപ്പോർട്ട് -->
-        <a href="https://wa.me/916238020523" class="mt-8 bg-emerald-600 text-white p-5 rounded-2xl flex items-center justify-center font-black shadow-lg hover:bg-emerald-500 transition duration-200">
+        <a href="https://wa.me/916238020523" class="mt-6 bg-emerald-600 text-white p-4 rounded-2xl flex items-center justify-center font-black text-sm shadow-lg hover:bg-emerald-500 transition duration-200 border border-emerald-500">
             💬 വാട്സാപ്പിൽ ബന്ധപ്പെടുക (916238020523)
         </a>
     </div>
