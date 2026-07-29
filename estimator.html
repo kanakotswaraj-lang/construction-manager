@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <style>
+        body { font-family: 'Manjari', sans-serif; }
+    </style>
+
+    <script>
+        if (!localStorage.getItem('userName')) {
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <title>മേസ്തിരി പ്രോ - മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റർ</title>
+</head>
+<body class="bg-[#050B18] text-white min-h-screen p-4 font-sans pb-12">
+    <div class="max-w-md mx-auto space-y-4">
+
+        <!-- ടോപ്പ് ഹെഡർ ബാക്ക് ബട്ടൺ -->
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center justify-between shadow-xl">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-amber-400 font-bold hover:bg-slate-700 transition">
+                    ←
+                </a>
+                <div>
+                    <h1 class="text-lg font-black text-white">എസ്റ്റിമേറ്റർ കാൽക്കുലേറ്റർ</h1>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">മെറ്റീരിയൽ & ലേബർ അളവുകൾ</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- കാൽക്കുലേറ്റർ ഫോം ബോക്സ് -->
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl space-y-4">
+            <h2 class="text-sm font-black text-amber-400 tracking-wide uppercase border-b border-slate-800 pb-2">📐 അളവുകൾ നൽകുക</h2>
+            
+            <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1">പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)</label>
+                <input type="number" id="sqftInput" placeholder="ഉദാ: 1000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1">പണിയുടെ തരം</label>
+                <select id="workType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
+                    <option value="slab">സ്ലാബ് / റൂഫ് വാർപ്പ് (Slab / Roof Concreting)</option>
+                    <option value="wall">ചുമർ കെട്ടൽ / ബ്രിക്ക് വർക്ക് (Brick/Block Work)</option>
+                    <option value="plaster">പ്ലാസ്റ്ററിങ് (Plastering)</option>
+                </select>
+            </div>
+
+            <button onclick="calculateMaterials()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-xl shadow-lg transition duration-200">
+                കണക്കുകൂട്ടുക (Calculate)
+            </button>
+        </div>
+
+        <!-- ഫലം കാണിക്കുന്ന ഭാഗം -->
+        <div id="resultBox" class="hidden bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl space-y-4">
+            <h2 class="text-sm font-black text-emerald-400 tracking-wide uppercase border-b border-slate-800 pb-2">📊 കണക്കാക്കിയ അളവുകൾ</h2>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">സിമന്റ് (Cement)</p>
+                    <p id="resCement" class="text-base font-black text-amber-400 mt-1">-</p>
+                </div>
+                <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">മണൽ (Sand)</p>
+                    <p id="resSand" class="text-base font-black text-amber-400 mt-1">-</p>
+                </div>
+                <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">കമ്പി / ചല്ലി (Steel / Agg)</p>
+                    <p id="resSteel" class="text-base font-black text-amber-400 mt-1">-</p>
+                </div>
+                <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">തടി / ഷട്ടറിങ്</p>
+                    <p id="resWood" class="text-base font-black text-amber-400 mt-1">-</p>
+                </div>
+            </div>
+
+            <!-- ലേബർ ടീം അളവ് -->
+            <div class="bg-indigo-950/40 border border-indigo-800/50 p-4 rounded-2xl space-y-2">
+                <p class="text-xs font-black text-indigo-300 uppercase">👥 ആവശ്യമായ ടീം അളവ് (Labor Estimate)</p>
+                <p id="resLabor" class="text-xs font-bold text-slate-200 leading-relaxed">-</p>
+            </div>
+        </div>
+
+        <!-- ഫൂട്ടർ നാവിഗേഷൻ -->
+        <a href="index.html" class="block text-center bg-slate-800 text-slate-300 font-bold py-3.5 rounded-2xl border border-slate-700 hover:bg-slate-700 transition">
+            ഡാഷ്‌ബോർഡിലേക്ക് മടങ്ങുക
+        </a>
+
+    </div>
+
+    <script>
+        function calculateMaterials() {
+            const sqft = parseFloat(document.getElementById('sqftInput').value);
+            const type = document.getElementById('workType').value;
+
+            if (!sqft || sqft <= 0) {
+                alert('ദയവായി ശരിയായ സ്ക്വയർ ഫീറ്റ് അളവ് നൽകുക!');
+                return;
+            }
+
+            let cement = 0, sand = 0, steelOrBlock = 0, wood = 0, laborText = "";
+
+            if (type === 'slab') {
+                // Slab standard approximation per sqft
+                cement = (sqft * 0.4).toFixed(1) + " ചാക്ക് (Bags)";
+                sand = (sqft * 1.2).toFixed(1) + " കൂബ് അടി (CFT)";
+                steelOrBlock = (sqft * 3.5).toFixed(1) + " কেজি (Kg Steel)";
+                wood = (sqft * 0.5).toFixed(1) + " ഷട്ടറിങ് ഏരിയ";
+                let masons = Math.ceil(sqft / 150);
+                let coolies = Math.ceil(sqft / 100);
+                laborText = `ഈ വാർപ്പ് പണി തീർക്കാൻ ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
+            } 
+            else if (type === 'wall') {
+                cement = (sqft * 0.15).toFixed(1) + " ചാക്ക് (Bags)";
+                sand = (sqft * 0.6).toFixed(1) + " കൂബ് അടി (CFT)";
+                steelOrBlock = (sqft * 1.1).toFixed(0) + " എണ്ണം (Blocks/Bricks)";
+                wood = "ആവശ്യമില്ല";
+                let masons = Math.ceil(sqft / 80);
+                let coolies = Math.ceil(sqft / 60);
+                laborText = `ചുമർ കെട്ടാൻ ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
+            }
+            else if (type === 'plaster') {
+                cement = (sqft * 0.08).toFixed(1) + " ചാക്ക് (Bags)";
+                sand = (sqft * 0.35).toFixed(1) + " കൂബ് അടി (CFT)";
+                steelOrBlock = "ബാധകമല്ല";
+                wood = "ആവശ്യമില്ല";
+                let masons = Math.ceil(sqft / 200);
+                let coolies = Math.ceil(sqft / 150);
+                laborText = `പ്ലാസ്റ്റിംഗിന് ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
+            }
+
+            document.getElementById('resCement').innerText = cement;
+            document.getElementById('resSand').innerText = sand;
+            document.getElementById('resSteel').innerText = steelOrBlock;
+            document.getElementById('resWood').innerText = wood;
+            document.getElementById('resLabor').innerText = laborText;
+
+            document.getElementById('resultBox').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
