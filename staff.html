@@ -13,16 +13,22 @@
 <body class="bg-[#0b1329] text-white font-sans min-h-screen p-4">
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ലോഗോ ഭാഗം -->
+        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം -->
         <div class="flex flex-col items-center pt-2 pb-2">
-            <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-slate-900/90 border border-amber-400/40 shadow-lg shadow-amber-500/10 backdrop-blur-md">
+            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md">
                 <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
-                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover">
+                    <img src="Icon.png" alt="Logo" class="w-full h-full object-cover">
                 </div>
                 <div class="flex flex-col text-left">
                     <span class="text-amber-400 font-black text-sm tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
                     <span class="text-[10px] font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
                 </div>
+            </div>
+            <!-- ഹൈലൈറ്റ് ചെയ്ത സ്വാഗതം മേസ്തിരി പേര് -->
+            <div class="mt-2 text-center">
+                <span id="loggedInMeshtri" class="text-xs font-black tracking-wide text-amber-300 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-400/30 shadow-inner">
+                    സ്വാഗതം, Swaraj
+                </span>
             </div>
         </div>
 
@@ -30,7 +36,7 @@
         <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
             <div>
                 <h1 class="text-lg font-black text-white">ജീവനക്കാരുടെ ശമ്പളം</h1>
-                <p id="loggedInMeshtri" class="text-xs text-blue-300">സ്വാഗതം, Swaraj</p>
+                <p class="text-[11px] text-slate-400">തൊഴിലാളികളുടെ കൂലിയും കണക്കുകളും</p>
             </div>
             <a href="dashboard.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
                 <span>←</span> ഡാഷ്‌ബോർഡ്
@@ -68,28 +74,25 @@
         <div id="staffList" class="space-y-4 pb-12"></div>
     </div>
 
+    <!-- മോഡലുകളും സ്ക്രിപ്റ്റുകളും -->
     <div id="wageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center p-4">
         <div class="bg-white w-full max-w-sm p-6 rounded-3xl shadow-xl border">
             <div class="flex justify-between items-center mb-4">
                 <h3 id="modalWorkerTitle" class="font-black text-slate-800 text-base">കണക്ക് ചേർക്കുക</h3>
                 <button onclick="closeWageModal()" class="text-slate-400 hover:text-slate-700 font-bold text-xl">&times;</button>
             </div>
-            
             <input type="hidden" id="modalStaffId">
             <input type="hidden" id="modalStaffName">
             <input type="hidden" id="modalDefaultWage">
-
             <div class="space-y-3">
                 <div>
                     <label class="text-xs font-bold text-slate-600 block mb-1">തീയതി തിരഞ്ഞെടുക്കുക:</label>
                     <input type="date" id="modalDate" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-800 outline-none">
                 </div>
-
                 <div>
                     <label class="text-xs font-bold text-slate-600 block mb-1">ജോലി ചെയ്ത സൈറ്റ്:</label>
                     <input type="text" id="modalSiteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-800 outline-none">
                 </div>
-
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="text-xs font-bold text-slate-600 block mb-1">ദിവസത്തിന്റെ അളവ്</label>
@@ -105,7 +108,6 @@
                         <input type="number" id="modalWageAmount" placeholder="തുക" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-emerald-700 font-black outline-none">
                     </div>
                 </div>
-
                 <button id="confirmWageBtn" class="w-full bg-emerald-600 text-white p-3 rounded-xl text-xs font-black shadow-md hover:bg-emerald-700 transition mt-2">കണക്ക് സേവ് ചെയ്യുക</button>
             </div>
         </div>
@@ -117,9 +119,7 @@
                 <h3 class="font-black text-slate-800 text-base">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
                 <button onclick="closeEditLogModal()" class="text-slate-400 hover:text-slate-700 font-bold text-xl">&times;</button>
             </div>
-            
             <input type="hidden" id="editLogId">
-
             <div class="space-y-3">
                 <div>
                     <label class="text-xs font-bold text-slate-600 block mb-1">തീയതി:</label>
@@ -133,7 +133,6 @@
                     <label class="text-xs font-bold text-slate-600 block mb-1">തുക (₹):</label>
                     <input type="number" id="editLogAmount" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-emerald-700 font-black outline-none">
                 </div>
-
                 <button id="saveEditLogBtn" class="w-full bg-slate-900 text-white p-3 rounded-xl text-xs font-black shadow-md hover:bg-slate-800 transition mt-2">മാറ്റങ്ങൾ സേവ് ചെയ്യുക</button>
             </div>
         </div>
@@ -309,15 +308,16 @@
                             </div>
                         </div>
                         
-                        <div class="bg-gradient-to-r from-blue-950 via-slate-900 to-blue-950 border-2 border-amber-400/60 p-4 rounded-2xl flex justify-between items-center shadow-xl">
+                        <!-- 🌟 ബാക്കി കൊടുക്കാനുള്ള തുക കാണിക്കുന്ന ബോർഡിന്റെ കളർ മാറ്റിയത് -->
+                        <div class="bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-950 border-2 border-amber-400 p-4 rounded-2xl flex justify-between items-center shadow-2xl">
                             <div class="text-white font-black text-sm">
                                 ആകെ കൂലി:<br>
                                 <span class="text-amber-400 text-lg">₹${totalEarned}</span>
                             </div>
-                            <div class="h-10 w-[1px] bg-blue-500/30"></div>
+                            <div class="h-10 w-[1px] bg-amber-400/30"></div>
                             <div class="text-white font-black text-sm text-right">
                                 ബാക്കി കൊടുക്കാനുള്ളത്:<br>
-                                <span class="text-emerald-400 text-lg">₹${balanceDue}</span>
+                                <span class="text-emerald-400 text-xl font-black">₹${balanceDue}</span>
                             </div>
                         </div>
 
