@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ലോഗിൻ / രജിസ്ട്രേഷൻ - മേസ്തിരി പ്രോ</title>
+    <title>ലോഗിൻ - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -12,36 +12,26 @@
 </head>
 <body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
 
-    <!-- ആപ്പ് തുറക്കുമ്പോൾ ആദ്യം കാണുന്ന സ്പ്ലാഷ് സ്ക്രീൻ (വലിയ ലോഗോ) -->
-    <div id="splash-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom right, #090d16, #172554); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease;">
-        <img src="icon.png" alt="Mesthri Pro Logo" class="w-48 h-48 rounded-3xl object-cover border-4 border-amber-300 shadow-[0_0_45px_rgba(251,191,36,0.7)] mb-5">
-        <h1 class="text-amber-300 text-5xl font-black tracking-wide drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">മേസ്തിരി പ്രോ</h1>
-    </div>
-
-    <!-- ടോപ്പ് ഹെഡർ: ചിത്രം കൂടുതൽ വലുതാക്കി ഹൈലൈറ്റ് ചെയ്തിരിക്കുന്നു -->
+    <!-- ടോപ്പ് ഹെഡർ: വലിയ ലോഗോയും Smart Site Manager ടാഗും -->
     <div class="text-center pt-6">
-        <div class="inline-flex items-center gap-4 bg-amber-500/30 text-amber-300 px-7 py-3.5 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.5)]">
-            <img src="icon.png" alt="Mesthiri" class="w-18 h-18 rounded-full object-cover border-2 border-amber-200 shadow-lg" style="width: 72px; height: 72px;">
-            <span class="text-2xl font-black text-amber-300 tracking-wide">മേസ്തിരി പ്രോ</span>
+        <div class="inline-flex items-center gap-4 bg-amber-500/30 text-amber-300 px-6 py-3 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.5)]">
+            <img src="icon.png" alt="Mesthiri" class="rounded-full object-cover border-2 border-amber-200 shadow-lg" style="width: 64px; height: 64px;">
+            <div class="text-left">
+                <span class="text-2xl font-black text-amber-300 tracking-wide block leading-tight">മേസ്തിരി പ്രോ</span>
+                <span class="text-[13px] font-bold text-blue-200 tracking-wider uppercase">Smart Site Manager</span>
+            </div>
         </div>
-        <h1 id="formTitle" class="text-4xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
+        <h1 class="text-4xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
             ലോഗിൻ ചെയ്യുക
         </h1>
         <p class="text-base text-blue-200 mt-1 font-bold">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
     </div>
 
-    <!-- ലോഗിൻ / രജിസ്ട്രേഷൻ ഫോം കാർഡ് -->
+    <!-- ലോഗിൻ ഫോം കാർഡ് -->
     <div class="bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 max-w-sm mx-auto w-full my-4 space-y-4 shadow-xl">
         <div>
             <label class="block text-base font-black text-amber-300 mb-1.5">യൂസർനെയിം (പേര്)</label>
             <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
-                   class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
-        </div>
-
-        <!-- രജിസ്റ്റർ ചെയ്യുമ്പോൾ മാത്രം കാണുന്ന ഫോൺ നമ്പർ ബോക്സ് -->
-        <div id="phoneDiv" class="hidden">
-            <label class="block text-base font-black text-amber-300 mb-1.5">ഫോൺ നമ്പർ</label>
-            <input type="tel" id="phone" placeholder="10 അക്ക ഫോൺ നമ്പർ" 
                    class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
         </div>
 
@@ -50,7 +40,7 @@
             <div class="relative">
                 <input type="password" id="password" placeholder="കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക" 
                        class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 pr-12 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
-                <!-- കണ്ണ് ഐക്കൺ -->
+                <!-- പാസ്‌വേർഡ് കാണാനുള്ള കണ്ണ് ഐക്കൺ -->
                 <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-300 hover:text-amber-400 focus:outline-none">
                     <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -61,8 +51,8 @@
             <p class="text-sm text-blue-200 mt-2 font-bold leading-relaxed">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
         </div>
 
-        <!-- ആക്ഷൻ ബട്ടൺ -->
-        <button id="btnAction" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/50 transition mt-3">
+        <!-- ലോഗിൻ ബട്ടൺ -->
+        <button id="btnLogin" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/50 transition mt-3">
             ലോഗിൻ ചെയ്യുക
         </button>
 
@@ -71,33 +61,22 @@
         </button>
     </div>
 
-    <!-- പേജ് മാറാനുള്ള ലിങ്ക് -->
+    <!-- രജിസ്ട്രേഷൻ ലിങ്ക് -->
     <div class="max-w-sm mx-auto w-full text-center pb-4 space-y-3">
         <p class="text-base text-blue-100 font-bold">
-            <span id="toggleText">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
-            <a href="#" id="toggleBtn" class="text-amber-400 font-black underline ml-1 text-lg">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
+            അക്കൗണ്ട് ഇല്ലെങ്കിൽ? 
+            <a href="register.html" class="text-amber-400 font-black underline ml-1 text-lg">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
         </p>
         <p class="text-xs text-slate-400 font-bold pt-2">
             മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
         </p>
     </div>
 
+    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                const splash = document.getElementById('splash-screen');
-                if (splash) {
-                    splash.style.opacity = '0';
-                    setTimeout(function() {
-                        splash.style.display = 'none';
-                    }, 500);
-                }
-            }, 2000);
-        });
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -112,14 +91,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let isLoginMode = true;
-
-        const toggleBtn = document.getElementById("toggleBtn");
-        const formTitle = document.getElementById("formTitle");
-        const phoneDiv = document.getElementById("phoneDiv");
-        const btnAction = document.getElementById("btnAction");
-        const btnForgot = document.getElementById("btnForgot");
-        const toggleText = document.getElementById("toggleText");
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
         const eyeIcon = document.getElementById("eyeIcon");
@@ -141,76 +112,20 @@
             }
         });
 
-        toggleBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            isLoginMode = !isLoginMode;
-            if (isLoginMode) {
-                formTitle.innerText = "ലോഗിൻ ചെയ്യുക";
-                phoneDiv.classList.add("hidden");
-                btnAction.innerText = "ലോഗിൻ ചെയ്യുക";
-                btnForgot.style.display = "block";
-                toggleText.innerText = "അക്കൗണ്ട് ഇല്ലെങ്കിൽ?";
-                toggleBtn.innerText = "പുതിയതായി രജിസ്റ്റർ ചെയ്യുക";
-            } else {
-                formTitle.innerText = "പുതിയ രജിസ്ട്രേഷൻ";
-                phoneDiv.classList.remove("hidden");
-                btnAction.innerText = "രജിസ്റ്റർ ചെയ്യുക";
-                btnForgot.style.display = "none";
-                toggleText.innerText = "അക്കൗണ്ട് ഉണ്ടോ?";
-                toggleBtn.innerText = "ലോഗിൻ ചെയ്യുക";
-            }
-        });
-
-        btnAction.addEventListener("click", async () => {
+        document.getElementById("btnLogin").addEventListener("click", () => {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
-            const phone = document.getElementById('phone').value.trim();
 
             if (!user || !pass) {
                 return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
             }
 
-            if (!isLoginMode && pass.length < 6) {
-                return alert("പാസ്‌വേർഡിന് കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം!");
-            }
-
-            if (isLoginMode) {
-                signInWithEmailAndPassword(auth, `${user}@mesthri.com`, pass)
-                    .then(() => {
-                        localStorage.setItem('userName', user);
-                        window.location.href = "dashboard.html";
-                    })
-                    .catch(() => alert("ലോഗിൻ പരാജയപ്പെട്ടു! യൂസർനെയിമോ പാസ്‌വേർഡോ തെറ്റാണ്."));
-            } else {
-                if (!phone) {
-                    return alert("ദയവായി ഫോൺ നമ്പർ കൂടി നൽകുക!");
-                }
-
-                try {
-                    await createUserWithEmailAndPassword(auth, `${user}@mesthri.com`, pass);
-                    
-                    await setDoc(doc(db, "users", user), {
-                        username: user,
-                        phone: phone,
-                        password: pass
-                    });
-
-                    const webAppUrl = "https://script.google.com/macros/s/AKfycbznevcjdsSz7JgWrKeyaO2gOnxnrd-8-rMMiycABRruqFJQ_hfz4Ac79aLqyvnqf09FXg/exec";
-                    fetch(webAppUrl, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ name: user, phone: phone })
-                    }).catch(err => console.log(err));
-
-                    alert("വിജയകരമായി രജിസ്റ്റർ ചെയ്തു!");
+            signInWithEmailAndPassword(auth, `${user}@mesthri.com`, pass)
+                .then(() => {
                     localStorage.setItem('userName', user);
                     window.location.href = "dashboard.html";
-
-                } catch (error) {
-                    alert("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു! ഈ യൂസർനെയിം നേരത്തെ ഉണ്ടാകാം അല്ലെങ്കിൽ പാസ്‌വേർഡ് ചെറുതാണ്.");
-                }
-            }
+                })
+                .catch(() => alert("ലോഗിൻ പരാജയപ്പെട്ടു! യൂസർനെയിമോ പാസ്‌വേർഡോ തെറ്റാണ്."));
         });
 
         document.getElementById("btnForgot").addEventListener("click", async () => {
