@@ -32,14 +32,14 @@
                 </a>
                 <div>
                     <h1 class="text-lg font-black text-white">എസ്റ്റിമേറ്റർ കാൽക്കുലേറ്റർ</h1>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">കൃത്യമായ മെറ്റീരിയൽ & ലേബർ അളവുകൾ</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">കനവും അളവുകളും തിരിച്ച്</p>
                 </div>
             </div>
         </div>
 
         <!-- കാൽക്കുലേറ്റർ ഫോം ബോക്സ് -->
         <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl space-y-4">
-            <h2 class="text-sm font-black text-amber-400 tracking-wide uppercase border-b border-slate-800 pb-2">📐 അളവുകൾ നൽകുക</h2>
+            <h2 class="text-sm font-black text-amber-400 tracking-wide uppercase border-b border-slate-800 pb-2">📐 അളവുകളും കനവും നൽകുക</h2>
             
             <div>
                 <label class="block text-xs font-bold text-slate-300 mb-1">പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)</label>
@@ -48,10 +48,21 @@
 
             <div>
                 <label class="block text-xs font-bold text-slate-300 mb-1">പണിയുടെ തരം</label>
-                <select id="workType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
-                    <option value="slab">സ്ലാബ് / റൂഫ് വാർപ്പ് (Slab Concreting - 5 inch thickness)</option>
-                    <option value="wall">ചുമർ കെട്ടൽ / ബ്രിക്ക് വർക്ക് (Brick/Block Work)</option>
-                    <option value="plaster">പ്ലാസ്റ്ററിങ് (Plastering)</option>
+                <select id="workType" onchange="toggleThickness()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
+                    <option value="slab">സ്ലാബ് വാർപ്പ് (RCC Slab)</option>
+                    <option value="wall">ചുമർ കെട്ടൽ (Brick/Block Work)</option>
+                    <option value="plaster">പ്ലാസ്റ്റിംഗ് (Plastering)</option>
+                </select>
+            </div>
+
+            <!-- സ്ലാബിന്റെ കനം തിരഞ്ഞെടുക്കാനുള്ള പുതിയ കോളം -->
+            <div id="thicknessBox">
+                <label class="block text-xs font-bold text-slate-300 mb-1">വാർപ്പിന്റെ കനം (Thickness)</label>
+                <select id="slabThickness" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
+                    <option value="4.5">4.5 ഇഞ്ച് (4.5 Inches)</option>
+                    <option value="5" selected>5 ഇഞ്ച് - സ്റ്റാൻഡേർഡ് (5 Inches)</option>
+                    <option value="5.5">5.5 ഇഞ്ച് (5.5 Inches)</option>
+                    <option value="6">6 ഇഞ്ച് (6 Inches)</option>
                 </select>
             </div>
 
@@ -74,7 +85,7 @@
                     <p id="resSand" class="text-base font-black text-amber-400 mt-1">-</p>
                 </div>
                 <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">കമ്പി / ചല്ലി (Steel / Agg)</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">കമ്പി (Steel Total)</p>
                     <p id="resSteel" class="text-base font-black text-amber-400 mt-1">-</p>
                 </div>
                 <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
@@ -98,9 +109,20 @@
     </div>
 
     <script>
+        function toggleThickness() {
+            const type = document.getElementById('workType').value;
+            const thicknessBox = document.getElementById('thicknessBox');
+            if (type === 'slab') {
+                thicknessBox.style.display = 'block';
+            } else {
+                thicknessBox.style.display = 'none';
+            }
+        }
+
         function calculateMaterials() {
             const sqft = parseFloat(document.getElementById('sqftInput').value);
             const type = document.getElementById('workType').value;
+            const thickness = parseFloat(document.getElementById('slabThickness').value);
 
             if (!sqft || sqft <= 0) {
                 alert('ദയവായി ശരിയായ സ്ക്വയർ ഫീറ്റ് അളവ് നൽകുക!');
@@ -110,32 +132,33 @@
             let cement = 0, sand = 0, steelOrAgg = 0, wood = 0, laborText = "";
 
             if (type === 'slab') {
-                // Standard formula for 5-inch RCC slab:
-                // Cement: ~0.4 to 0.42 bags per sqft
-                // Sand: ~ 1.2 CFT per sqft
-                // Steel: ~ 3.5 to 4 kg per sqft
-                cement = Math.round(sqft * 0.40) + " ചാക്ക് (Bags)";
-                sand = Math.round(sqft * 1.15) + " കൂബ് അടി (CFT)";
-                steelOrAgg = Math.round(sqft * 3.75) + " কেজি (Kg Steel)";
+                // 5 ഇഞ്ചിന്റെ അടിസ്ഥാനത്തിൽ കനം അനുസരിച്ച് അളവുകൾ ക്രമീകരിക്കുന്നു
+                let multiplier = thickness / 5;
+                let baseFactor = sqft / 1000;
+
+                cement = Math.round(210 * baseFactor * multiplier) + " ചാക്ക് (Bags)";
+                sand = Math.round(850 * baseFactor * multiplier) + " കൂബ് അടി (CFT)";
+                steelOrAgg = Math.round(1650 * baseFactor * multiplier) + " কেজি (Kg Steel)";
                 wood = sqft + " sq.ft (ഷട്ടറിങ്)";
+                
                 let masons = Math.ceil(sqft / 150);
                 let coolies = Math.ceil(sqft / 100);
-                laborText = `ഈ വാർപ്പ് പണിക്ക് ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
+                laborText = `ഈ വാർപ്പ് പണിക്ക് (${thickness} ഇഞ്ച് കനം) ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
             } 
             else if (type === 'wall') {
-                // Brick/Block work estimation
-                cement = Math.round(sqft * 0.15) + " ചാക്ക് (Bags)";
-                sand = Math.round(sqft * 0.45) + " കൂബ് അടി (CFT)";
-                steelOrAgg = Math.round(sqft * 1.1) + " കട്ടകൾ (Blocks)";
+                let factor = sqft / 1000;
+                cement = Math.round(80 * factor) + " ചാക്ക് (Bags)";
+                sand = Math.round(300 * factor) + " കൂബ് അടി (CFT)";
+                steelOrAgg = Math.round(1100 * factor) + " കട്ടകൾ (Blocks)";
                 wood = "ബാധകമല്ല";
                 let masons = Math.ceil(sqft / 80);
                 let coolies = Math.ceil(sqft / 60);
                 laborText = `ചുമർ കെട്ടാൻ ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
             }
             else if (type === 'plaster') {
-                // Plastering estimation
-                cement = Math.round(sqft * 0.04) + " ചാക്ക് (Bags)";
-                sand = Math.round(sqft * 0.20) + " കൂബ് അടി (CFT)";
+                let factor = sqft / 1000;
+                cement = Math.round(25 * factor) + " ചാക്ക് (Bags)";
+                sand = Math.round(150 * factor) + " കൂബ് അടി (CFT)";
                 steelOrAgg = "ബാധകമല്ല";
                 wood = "ബാധകമല്ല";
                 let masons = Math.ceil(sqft / 200);
