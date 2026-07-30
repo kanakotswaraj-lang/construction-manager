@@ -10,10 +10,11 @@
         body { font-family: 'Manjari', sans-serif; }
     </style>
 </head>
+<!-- ലോഗിൻ പേജിന്റെ അതേ തീം കളർ ഇവിടെ നൽകിയിരിക്കുന്നു -->
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം (ലോഗിൻ പേജ് പോലെ വലുതാക്കിയത്) -->
+        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം -->
         <div class="flex flex-col items-center pt-3 pb-3">
             <div class="inline-flex items-center gap-4 px-6 py-3.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-xl shadow-amber-500/20 backdrop-blur-md">
                 <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
@@ -42,60 +43,60 @@
             </a>
         </div>
         
-        <div class="bg-white text-slate-800 p-6 rounded-3xl shadow-sm border mb-6">
-            <h2 class="font-bold text-slate-700 mb-3 text-sm">പുതിയ തൊഴിലാളിയെ ചേർക്കുക</h2>
-            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="text" id="siteName" placeholder="സൈറ്റ് പേര് (കൃത്യമായി നൽകുക)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="number" id="dailyWage" placeholder="ഒരു ദിവസത്തെ സാധാരണ കൂലി (₹)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="tel" id="phoneNumber" placeholder="WhatsApp നമ്പർ (91...)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="text" id="jobType" placeholder="ജോലി (ഉദാ: മേസ്തിരി / പണിക്കാരൻ)" class="w-full p-3 bg-slate-50 rounded-xl border mb-2 text-sm font-bold">
-            <input type="text" id="bankDetails" placeholder="ബാങ്ക് / GPay നമ്പർ" class="w-full p-3 bg-slate-50 rounded-xl border mb-3 text-sm font-bold">
-            <button id="saveStaffBtn" class="w-full bg-emerald-700 text-white p-3.5 rounded-xl font-black shadow-md text-sm hover:bg-emerald-800 transition">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
+        <div class="bg-slate-900/80 text-white p-6 rounded-3xl shadow-xl border border-slate-800 backdrop-blur-md mb-6">
+            <h2 class="font-bold text-amber-400 mb-3 text-sm">പുതിയ തൊഴിലാളിയെ ചേർക്കുക</h2>
+            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 mb-2 text-sm font-bold outline-none focus:border-amber-400">
+            <input type="text" id="siteName" placeholder="സൈറ്റ് പേര് (കൃത്യമായി നൽകുക)" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 mb-2 text-sm font-bold outline-none focus:border-amber-400">
+            <input type="number" id="dailyWage" placeholder="ഒരു ദിവസത്തെ സാധാരണ കൂലി (₹)" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 mb-2 text-sm font-bold outline-none focus:border-amber-400">
+            <input type="tel" id="phoneNumber" placeholder="WhatsApp നമ്പർ (91...)" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 mb-2 text-sm font-bold outline-none focus:border-amber-400">
+            <input type="text" id="jobType" placeholder="ജോലി (ഉദാ: മേസ്തിരി / പണിക്കാരൻ)" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 mb-2 text-sm font-bold outline-none focus:border-amber-400">
+            <input type="text" id="bankDetails" placeholder="ബാങ്ക് / GPay നമ്പർ" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 mb-3 text-sm font-bold outline-none focus:border-amber-400">
+            <button id="saveStaffBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-3.5 rounded-xl font-black shadow-lg text-sm transition">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
         </div>
 
-        <div class="bg-white text-slate-800 p-4 rounded-2xl border shadow-sm mb-4">
-            <h3 class="text-xs font-bold text-slate-700 mb-2">📅 കണക്ക് പരിശോധിക്കേണ്ട തീയതി പരിധി (Date Filter):</h3>
+        <div class="bg-slate-900/80 text-white p-4 rounded-2xl border border-slate-800 shadow-xl backdrop-blur-md mb-4">
+            <h3 class="text-xs font-bold text-amber-400 mb-2">📅 കണക്ക് പരിശോധിക്കേണ്ട തീയതി പരിധി (Date Filter):</h3>
             <div class="grid grid-cols-2 gap-2 mb-2">
                 <div>
-                    <label class="text-[10px] text-slate-500 font-bold">മുതൽ (From):</label>
-                    <input type="date" id="filterFromDate" class="w-full p-1.5 border rounded text-xs font-bold bg-slate-50">
+                    <label class="text-[10px] text-slate-400 font-bold">മുതൽ (From):</label>
+                    <input type="date" id="filterFromDate" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-white outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-slate-500 font-bold">വരെ (To):</label>
-                    <input type="date" id="filterToDate" class="w-full p-1.5 border rounded text-xs font-bold bg-slate-50">
+                    <label class="text-[10px] text-slate-400 font-bold">വരെ (To):</label>
+                    <input type="date" id="filterToDate" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-white outline-none">
                 </div>
             </div>
-            <button id="applyDateFilter" class="w-full bg-slate-800 text-white p-2 rounded-xl text-xs font-bold shadow-sm">ഈ തീയതിയിലെ കണക്കുകൾ മാത്രം കാണുക</button>
+            <button id="applyDateFilter" class="w-full bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 p-2.5 rounded-xl text-xs font-bold shadow-md transition">ഈ തീയതിയിലെ കണക്കുകൾ മാത്രം കാണുക</button>
         </div>
 
-        <input type="text" id="searchInput" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-3 bg-white text-slate-800 rounded-xl border mb-4 shadow-sm text-sm font-bold">
+        <input type="text" id="searchInput" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-3 bg-slate-900/80 text-white rounded-xl border border-slate-700 mb-4 shadow-xl text-sm font-bold outline-none focus:border-amber-400">
 
         <div id="staffList" class="space-y-4 pb-12"></div>
     </div>
 
     <!-- മോഡലുകളും സ്ക്രിപ്റ്റുകളും -->
-    <div id="wageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center p-4">
-        <div class="bg-white w-full max-w-sm p-6 rounded-3xl shadow-xl border">
+    <div id="wageModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex justify-center items-center p-4">
+        <div class="bg-slate-900 text-white w-full max-w-sm p-6 rounded-3xl shadow-2xl border border-slate-800">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="modalWorkerTitle" class="font-black text-slate-800 text-base">കണക്ക് ചേർക്കുക</h3>
-                <button onclick="closeWageModal()" class="text-slate-400 hover:text-slate-700 font-bold text-xl">&times;</button>
+                <h3 id="modalWorkerTitle" class="font-black text-amber-400 text-base">കണക്ക് ചേർക്കുക</h3>
+                <button onclick="closeWageModal()" class="text-slate-400 hover:text-white font-bold text-xl">&times;</button>
             </div>
             <input type="hidden" id="modalStaffId">
             <input type="hidden" id="modalStaffName">
             <input type="hidden" id="modalDefaultWage">
             <div class="space-y-3">
                 <div>
-                    <label class="text-xs font-bold text-slate-600 block mb-1">തീയതി തിരഞ്ഞെടുക്കുക:</label>
-                    <input type="date" id="modalDate" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-800 outline-none">
+                    <label class="text-xs font-bold text-slate-300 block mb-1">തീയതി തിരഞ്ഞെടുക്കുക:</label>
+                    <input type="date" id="modalDate" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
                 </div>
                 <div>
-                    <label class="text-xs font-bold text-slate-600 block mb-1">ജോലി ചെയ്ത സൈറ്റ്:</label>
-                    <input type="text" id="modalSiteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-800 outline-none">
+                    <label class="text-xs font-bold text-slate-300 block mb-1">ജോലി ചെയ്ത സൈറ്റ്:</label>
+                    <input type="text" id="modalSiteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="text-xs font-bold text-slate-600 block mb-1">ദിവസത്തിന്റെ അളവ്</label>
-                        <select id="modalDayAmount" onchange="updateModalWage()" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-700 outline-none">
+                        <label class="text-xs font-bold text-slate-300 block mb-1">ദിവസത്തിന്റെ അളവ്</label>
+                        <select id="modalDayAmount" onchange="updateModalWage()" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
                             <option value="1">ഫുൾ ഡേ (1)</option>
                             <option value="0.5">ഹാഫ് ഡേ (0.5)</option>
                             <option value="1.5">ഓവർടൈം (1.5)</option>
@@ -103,36 +104,36 @@
                         </select>
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-slate-600 block mb-1">അന്നത്തെ കൂലി (₹)</label>
-                        <input type="number" id="modalWageAmount" placeholder="തുക" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-emerald-700 font-black outline-none">
+                        <label class="text-xs font-bold text-slate-300 block mb-1">അന്നത്തെ കൂലി (₹)</label>
+                        <input type="number" id="modalWageAmount" placeholder="തുക" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-amber-400 font-black outline-none">
                     </div>
                 </div>
-                <button id="confirmWageBtn" class="w-full bg-emerald-600 text-white p-3 rounded-xl text-xs font-black shadow-md hover:bg-emerald-700 transition mt-2">കണക്ക് സേവ് ചെയ്യുക</button>
+                <button id="confirmWageBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-3 rounded-xl text-xs font-black shadow-lg transition mt-2">കണക്ക് സേവ് ചെയ്യുക</button>
             </div>
         </div>
     </div>
 
-    <div id="editLogModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center p-4">
-        <div class="bg-white w-full max-w-sm p-6 rounded-3xl shadow-xl border">
+    <div id="editLogModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex justify-center items-center p-4">
+        <div class="bg-slate-900 text-white w-full max-w-sm p-6 rounded-3xl shadow-2xl border border-slate-800">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-black text-slate-800 text-base">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
-                <button onclick="closeEditLogModal()" class="text-slate-400 hover:text-slate-700 font-bold text-xl">&times;</button>
+                <h3 class="font-black text-amber-400 text-base">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
+                <button onclick="closeEditLogModal()" class="text-slate-400 hover:text-white font-bold text-xl">&times;</button>
             </div>
             <input type="hidden" id="editLogId">
             <div class="space-y-3">
                 <div>
-                    <label class="text-xs font-bold text-slate-600 block mb-1">തീയതി:</label>
-                    <input type="date" id="editLogDate" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-800 outline-none">
+                    <label class="text-xs font-bold text-slate-300 block mb-1">തീയതി:</label>
+                    <input type="date" id="editLogDate" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
                 </div>
                 <div>
-                    <label class="text-xs font-bold text-slate-600 block mb-1">സൈറ്റ്:</label>
-                    <input type="text" id="editLogSite" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-slate-800 outline-none">
+                    <label class="text-xs font-bold text-slate-300 block mb-1">സൈറ്റ്:</label>
+                    <input type="text" id="editLogSite" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
                 </div>
                 <div>
-                    <label class="text-xs font-bold text-slate-600 block mb-1">തുക (₹):</label>
-                    <input type="number" id="editLogAmount" class="w-full p-2.5 border rounded-xl text-xs font-bold bg-slate-50 text-emerald-700 font-black outline-none">
+                    <label class="text-xs font-bold text-slate-300 block mb-1">തുക (₹):</label>
+                    <input type="number" id="editLogAmount" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-amber-400 font-black outline-none">
                 </div>
-                <button id="saveEditLogBtn" class="w-full bg-slate-900 text-white p-3 rounded-xl text-xs font-black shadow-md hover:bg-slate-800 transition mt-2">മാറ്റങ്ങൾ സേവ് ചെയ്യുക</button>
+                <button id="saveEditLogBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 p-3 rounded-xl text-xs font-black shadow-lg transition mt-2">മാറ്റങ്ങൾ സേവ് ചെയ്യുക</button>
             </div>
         </div>
     </div>
@@ -206,7 +207,7 @@
 
         async function loadStaffAndAccounts() {
             const list = document.getElementById('staffList');
-            list.innerHTML = '<p class="text-center text-xs text-slate-300 font-bold">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>';
+            list.innerHTML = '<p class="text-center text-xs text-slate-400 font-bold">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>';
 
             const fromDate = document.getElementById('filterFromDate').value;
             const toDate = document.getElementById('filterToDate').value;
@@ -226,7 +227,7 @@
             staffsSnapshot.forEach((d) => {
                 const s = d.data();
                 const div = document.createElement('div');
-                div.className = "bg-white text-slate-800 p-4 rounded-2xl border shadow-sm mb-4";
+                div.className = "bg-slate-900/80 text-white p-4 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-md mb-4";
                 const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
                 const today = getTodayDate();
 
@@ -261,11 +262,11 @@
                             const displayDateStr = dayName ? `${log.date} (${dayName})` : log.date;
 
                             logsHtml += `
-                                <div class="flex justify-between items-center text-xs bg-white p-2.5 rounded-lg border border-slate-200 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-800">📅 ${displayDateStr} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-emerald-700 font-black">₹${log.amount}</span></span>
+                                <div class="flex justify-between items-center text-xs bg-slate-800 p-2.5 rounded-xl border border-slate-700 mb-1.5 shadow-sm">
+                                    <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
                                     <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', '${log.date}', '${log.site || ''}', '${log.amount}')" class="text-blue-600 bg-blue-50 px-2 py-1 rounded font-bold hover:bg-blue-100">Edit</button>
-                                        <button onclick="deleteLog('${log.id}')" class="text-red-600 bg-red-50 px-2 py-1 rounded font-bold hover:bg-red-100">Del</button>
+                                        <button onclick="openEditLog('${log.id}', '${log.date}', '${log.site || ''}', '${log.amount}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold hover:bg-blue-900">Edit</button>
+                                        <button onclick="deleteLog('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2 py-1 rounded-lg font-bold hover:bg-red-900">Del</button>
                                     </div>
                                 </div>
                             `;
@@ -282,38 +283,38 @@
                 div.innerHTML = `
                     <div class="flex justify-between items-center mb-3">
                         <div>
-                            <h3 class="font-black text-base text-slate-800">${s.name} <span class="text-xs font-normal text-slate-500">(${s.job || 'പണിക്കാരൻ'})</span></h3>
-                            <p class="text-xs text-slate-500 font-bold">പ്രാഥമിക സൈറ്റ്: <span class="text-blue-600">${s.site || 'പ്രധാന സൈറ്റ്'}</span> | <span class="text-emerald-700 text-sm font-black">കൂലി: ₹${s.wage || 0}</span></p>
-                            <p class="text-[11px] text-amber-700 font-bold mt-0.5">📍 പണിയെടുത്ത സൈറ്റുകൾ: ${workedSitesList}</p>
-                            ${s.bank ? `<p class="text-[11px] text-slate-500 mt-0.5">GPay/Bank: ${s.bank}</p>` : ''}
+                            <h3 class="font-black text-base text-amber-400">${s.name} <span class="text-xs font-normal text-slate-400">(${s.job || 'പണിക്കാരൻ'})</span></h3>
+                            <p class="text-xs text-slate-400 font-bold">പ്രാഥമിക സൈറ്റ്: <span class="text-cyan-300">${s.site || 'പ്രധാന സൈറ്റ്'}</span> | <span class="text-amber-400 text-sm font-black">കൂലി: ₹${s.wage || 0}</span></p>
+                            <p class="text-[11px] text-blue-300 font-bold mt-0.5">📍 പണിയെടുത്ത സൈറ്റുകൾ: ${workedSitesList}</p>
+                            ${s.bank ? `<p class="text-[11px] text-slate-400 mt-0.5">GPay/Bank: ${s.bank}</p>` : ''}
                         </div>
-                        <button id="del-${d.id}" class="text-red-500 text-xs font-bold px-2 py-1 bg-red-50 rounded">Delete</button>
+                        <button id="del-${d.id}" class="text-red-400 text-xs font-bold px-2.5 py-1.5 bg-red-950/60 border border-red-800/50 rounded-xl">Delete</button>
                     </div>
 
-                    <button id="openModalBtn-${d.id}" class="w-full bg-emerald-600 text-white p-2.5 rounded-xl text-xs font-black shadow-sm hover:bg-emerald-700 transition mb-3">
+                    <button id="openModalBtn-${d.id}" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-2.5 rounded-xl text-xs font-black shadow-lg transition mb-3">
                         ➕ ദിവസവേദനവും സൈറ്റും ചേർക്കുക (Popup)
                     </button>
 
-                    <div class="bg-slate-100 p-3 rounded-xl mb-3 border">
-                        <p class="text-xs font-black text-slate-700 mb-2">📋 ഈ കാലയളവിലെ പണി ദിവസങ്ങൾ:</p>
+                    <div class="bg-slate-800/60 border border-slate-800 p-3 rounded-2xl mb-3">
+                        <p class="text-xs font-black text-amber-400 mb-2">📋 ഈ കാലയളവിലെ പണി ദിവസങ്ങൾ:</p>
                         <div class="max-h-40 overflow-y-auto space-y-1">
-                            ${logsHtml || '<p class="text-xs text-slate-500 text-center py-2">കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>'}
+                            ${logsHtml || '<p class="text-xs text-slate-400 text-center py-2">കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>'}
                         </div>
                     </div>
 
-                    <div class="p-3 bg-slate-50 rounded-xl mb-3 space-y-2 border border-slate-100">
+                    <div class="p-3 bg-slate-800/60 rounded-2xl mb-3 space-y-2 border border-slate-800">
                         <div class="grid grid-cols-3 gap-2">
                             <div>
-                                <label class="text-[10px] font-bold text-slate-500 block">പണി ദിവസം</label>
-                                <input type="text" readonly value="${totalWorkedDays}" class="w-full p-2 border rounded text-xs font-bold bg-slate-200 text-slate-700 text-center">
+                                <label class="text-[10px] font-bold text-slate-400 block">പണി ദിവസം</label>
+                                <input type="text" readonly value="${totalWorkedDays}" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-cyan-300 text-center">
                             </div>
                             <div>
-                                <label class="text-[10px] font-bold text-slate-500 block">അഡ്വാൻസ് (₹)</label>
-                                <input type="number" id="adv-${d.id}" value="${s.advance || 0}" class="w-full p-2 border rounded text-xs font-bold bg-white">
+                                <label class="text-[10px] font-bold text-slate-400 block">അഡ്വാൻസ് (₹)</label>
+                                <input type="number" id="adv-${d.id}" value="${s.advance || 0}" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-white outline-none">
                             </div>
                             <div>
-                                <label class="text-[10px] font-bold text-slate-500 block">അധിക തുക (₹)</label>
-                                <input type="number" id="extra-${d.id}" value="${s.extraPaid || 0}" placeholder="കൂടുതൽ കൊടുത്തത്" class="w-full p-2 border rounded text-xs font-bold bg-slate-50 text-amber-700">
+                                <label class="text-[10px] font-bold text-slate-400 block">അധിക തുക (₹)</label>
+                                <input type="number" id="extra-${d.id}" value="${s.extraPaid || 0}" placeholder="കൂടുതൽ കൊടുത്തത്" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-amber-400 outline-none">
                             </div>
                         </div>
                         
@@ -329,18 +330,18 @@
                             </div>
                         </div>
 
-                        <button id="saveAdv-${d.id}" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black p-3.5 rounded-2xl shadow-lg border border-blue-400/30 transition text-xs">
+                        <button id="saveAdv-${d.id}" class="w-full bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 font-black p-3 rounded-xl shadow-md transition text-xs">
                             അഡ്വാൻസ് / അധിക തുക മാറ്റങ്ങൾ സേവ് ചെയ്യുക
                         </button>
  
-                        <button id="settleBtn-${d.id}" class="w-full bg-purple-600 text-white mt-2 p-2.5 rounded-xl text-xs font-black shadow-sm hover:bg-purple-700 transition">
+                        <button id="settleBtn-${d.id}" class="w-full bg-purple-900/60 hover:bg-purple-900 border border-purple-700/50 text-purple-200 mt-2 p-2.5 rounded-xl text-xs font-black shadow-sm transition">
                             💸 പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്കിൾ തുടങ്ങുക)
                         </button>
                     </div>
 
                     <div class="flex gap-2">
-                        <button id="edit-${d.id}" class="flex-1 bg-amber-100 p-2.5 rounded-xl text-xs font-bold text-amber-800 hover:bg-amber-200">Edit Details</button>
-                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${balanceDue}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="flex-1 bg-emerald-600 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm hover:bg-emerald-700">WhatsApp അയക്കുക</a>
+                        <button id="edit-${d.id}" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-slate-200">Edit Details</button>
+                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${balanceDue}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                     </div>
                 `;
                 list.appendChild(div);
