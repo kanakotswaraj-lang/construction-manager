@@ -43,7 +43,7 @@
             
             <div>
                 <label class="block text-xs font-bold text-slate-300 mb-1">പണിയേണ്ട ഏരിയ / നീളം (Square Feet / Length)</label>
-                <input type="number" id="sqftInput" placeholder="ഉദാ: 1000 (സ്ക്വയർ ഫീറ്റ് അല്ലെങ്കിൽ നീളം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
+                <input type="number" id="sqftInput" placeholder="ഉദാ: 1000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
             </div>
 
             <div>
@@ -68,14 +68,15 @@
                 </select>
             </div>
 
-            <!-- കമ്പി സൈസ് തിരഞ്ഞെടുക്കാനുള്ള പുതിയ കോളം (ആദ്യം ഹൈഡ് ചെയ്തിരിക്കുന്നു) -->
+            <!-- കമ്പി സൈസ് തിരഞ്ഞെടുക്കാനുള്ള കോളം -->
             <div id="steelSizeBox" class="hidden">
                 <label class="block text-xs font-bold text-slate-300 mb-1">കമ്പിയുടെ സൈസ് (Steel Bar Size)</label>
                 <select id="steelSize" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
-                    <option value="8">8 mm (റിങ് / ഡിസ്ട്രിബ്യൂഷൻ ബാർ)</option>
-                    <option value="10">10 mm (സ്ലാബ് മെയിൻ ബാർ)</option>
-                    <option value="12" selected>12 mm (ബീം / സ്ലാബ് ഹെവി)</option>
-                    <option value="16">16 mm (മെയിൻ ബീം / കോളം)</option>
+                    <option value="slab_dual">സ്ലാബ് കമ്പി (8mm & 10mm/12mm വെവ്വേറെ)</option>
+                    <option value="8">8 mm മാത്രം (റിങ് / ഡിസ്ട്രിബ്യൂഷൻ)</option>
+                    <option value="10">10 mm മാത്രം (മെയിൻ ബാർ)</option>
+                    <option value="12">12 mm മാത്രം (ബീം / ഹെവി)</option>
+                    <option value="16">16 mm മാത്രം (മെയിൻ ബീം / കോളം)</option>
                 </select>
             </div>
 
@@ -143,7 +144,7 @@
             const sqft = parseFloat(document.getElementById('sqftInput').value);
             const type = document.getElementById('workType').value;
             const thickness = parseFloat(document.getElementById('slabThickness').value);
-            const steelMm = document.getElementById('steelSize').value;
+            const steelChoice = document.getElementById('steelSize').value;
 
             if (!sqft || sqft <= 0) {
                 alert('ദയവായി ശരിയായ അളവ് നൽകുക!');
@@ -195,22 +196,40 @@
                 laborText = `വെട്ടുകല്ല് കെട്ടാൻ ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
             }
             else if (type === 'steel') {
-                // കമ്പി കണക്ക് (ഉദാഹരണത്തിന് നൽകിയ നീളത്തിന്/ഏരിയയ്ക്ക് അനുസരിച്ചുള്ള ഭാരം)
-                // D^2 / 162 എന്ന സ്റ്റാൻഡേർഡ് ഫോർമുല പ്രകാരം 1 മീറ്റർ കമ്പിയുടെ ഭാരം കാണാം
-                let weightPerMeter = (steelMm * steelMm) / 162;
-                let totalKg = sqft * weightPerMeter * 0.3; // ലളിതമായ സൈറ്റ് എസ്റ്റിമേറ്റ് ഫാക്ടർ
+                if (steelChoice === 'slab_dual') {
+                    // സ്ലാബിന് പൊതുവെ വരുന്ന മൊത്തം കമ്പിയുടെ ഏകദേശം 40% 8mm ഉം, 60% 10mm ഉം ആണ് വരിക
+                    let totalSlabSteelKg = sqft * 0.75; // 1 sqft ന് ഏകദേശം 750 ഗ്രാം - 800 ഗ്രാം കമ്പി
+                    let steel8mm = totalSlabSteelKg * 0.40;
+                    let steel10mm = totalSlabSteelKg * 0.60;
 
-                document.getElementById('labelItem1').innerText = "കമ്പി സൈസ്";
-                document.getElementById('labelItem2').innerText = "ആകെ ഭാരം (Weight)";
-                document.getElementById('labelItem3').innerText = "ഏകദേശ കെട്ടുകമ്പി";
-                document.getElementById('labelItem4').innerText = "സ്റ്റാറ്റസ്";
+                    document.getElementById('labelItem1').innerText = "8 mm കമ്പി (Ring/Dist)";
+                    document.getElementById('labelItem2').innerText = "10 mm കമ്പി (Main)";
+                    document.getElementById('labelItem3').innerText = "കെട്ടുകമ്പി (Wire)";
+                    document.getElementById('labelItem4').innerText = "ആകെ ഭാരം (Total)";
 
-                cText = steelMm + " mm";
-                sText = Math.round(totalKg) + " കിലോ (Kg)";
-                mText = Math.round(totalKg * 0.02) + " കിലോ (Binding Wire)";
-                wText = "ബാധകമല്ല";
+                    cText = Math.round(steel8mm) + " കിലോ (Kg)";
+                    sText = Math.round(steel10mm) + " കിലോ (Kg)";
+                    mText = Math.round(totalSlabSteelKg * 0.02) + " കിലോ (Kg)";
+                    wText = Math.round(totalSlabSteelKg) + " കിലോ (Kg)";
 
-                laborText = `തെരഞ്ഞെടുത്ത ${steelMm}mm കമ്പി ഉപയോഗിക്കുമ്പോൾ വരുന്ന ഏകദേശ ഭാരക്കണക്കാണിത്. സൈറ്റിലെ ആവശ്യത്തിന് അനുസരിച്ച് ചെറിയ വ്യത്യാസങ്ങൾ വരാം.`;
+                    laborText = `ഈ സ്ക്വയർ ഫീറ്റ് (${sqft} Sq.Ft) സ്ലാബിന് ആവശ്യമായ 8mm, 10mm കമ്പികളുടെ വേവ്വേറെയുള്ള കണക്കാണിത്.`;
+                } else {
+                    let mm = parseFloat(steelChoice);
+                    let weightPerMeter = (mm * mm) / 162;
+                    let totalKg = sqft * weightPerMeter * 0.3;
+
+                    document.getElementById('labelItem1').innerText = "കമ്പി സൈസ്";
+                    document.getElementById('labelItem2').innerText = "ആകെ ഭാരം (Weight)";
+                    document.getElementById('labelItem3').innerText = "ഏകദേശ കെട്ടുകമ്പി";
+                    document.getElementById('labelItem4').innerText = "സ്റ്റാറ്റസ്";
+
+                    cText = mm + " mm";
+                    sText = Math.round(totalKg) + " കിലോ (Kg)";
+                    mText = Math.round(totalKg * 0.02) + " കിലോ (Kg)";
+                    wText = "ബാധകമല്ല";
+
+                    laborText = `തെരഞ്ഞെടുത്ത ${mm}mm കമ്പി ഉപയോഗിക്കുമ്പോൾ വരുന്ന ഏകദേശ ഭാരക്കണക്കാണിത്.`;
+                }
             }
             else if (type === 'plaster') {
                 let factor = sqft / 1000;
@@ -227,9 +246,7 @@
                 mText = "ബാധകമല്ല";
                 wText = "ബാധകമല്ല";
 
-                let masons = Math.ceil(sqft / 200);
-                let coolies = Math.ceil(sqft / 150);
-                laborText = `പ്ലാസ്റ്റിംഗിന് ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
+                laborText = `പ്ലാസ്റ്റിംഗിന് ഏകദേശം ${masons} മേസ്തിരിമാരും തൊഴിലാളികളും ആവശ്യമാണ്.`;
             }
 
             document.getElementById('resCement').innerText = cText;
