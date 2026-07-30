@@ -32,14 +32,14 @@
                 </a>
                 <div>
                     <h1 class="text-lg font-black text-white">എസ്റ്റിമേറ്റർ കാൽക്കുലേറ്റർ</h1>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">കനവും അളവുകളും തിരിച്ച്</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">മേസ്തിരി അനുഭവക്കണക്ക് പ്രകാരം</p>
                 </div>
             </div>
         </div>
 
         <!-- കാൽക്കുലേറ്റർ ഫോം ബോക്സ് -->
         <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl space-y-4">
-            <h2 class="text-sm font-black text-amber-400 tracking-wide uppercase border-b border-slate-800 pb-2">📐 അളവുകളും കനവും നൽകുക</h2>
+            <h2 class="text-sm font-black text-amber-400 tracking-wide uppercase border-b border-slate-800 pb-2">📐 അളവുകളും പണിയുടെ തരണവും നൽകുക</h2>
             
             <div>
                 <label class="block text-xs font-bold text-slate-300 mb-1">പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)</label>
@@ -48,17 +48,18 @@
 
             <div>
                 <label class="block text-xs font-bold text-slate-300 mb-1">പണിയുടെ തരം</label>
-                <select id="workType" onchange="toggleThickness()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
-                    <option value="slab">സ്ലാബ് വാർപ്പ് (RCC Slab)</option>
-                    <option value="wall">ചുമർ കെട്ടൽ (Brick/Block Work)</option>
+                <select id="workType" onchange="toggleWorkType()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
+                    <option value="slab">സ്ലാബ് വാർപ്പ് (RCC Slab - 1:2:3)</option>
+                    <option value="stone">വെട്ടുകല്ല് കെട്ടൽ (Laterite Stone - Malabar Style)</option>
                     <option value="plaster">പ്ലാസ്റ്റിംഗ് (Plastering)</option>
                 </select>
             </div>
 
-            <!-- സ്ലാബിന്റെ കനം തിരഞ്ഞെടുക്കാനുള്ള പുതിയ കോളം -->
+            <!-- സ്ലാബിന്റെ കനം തിരഞ്ഞെടുക്കാനുള്ള കോളം -->
             <div id="thicknessBox">
                 <label class="block text-xs font-bold text-slate-300 mb-1">വാർപ്പിന്റെ കനം (Thickness)</label>
                 <select id="slabThickness" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
+                    <option value="4">4 ഇഞ്ച് (4 Inches)</option>
                     <option value="4.5">4.5 ഇഞ്ച് (4.5 Inches)</option>
                     <option value="5" selected>5 ഇഞ്ച് - സ്റ്റാൻഡേർഡ് (5 Inches)</option>
                     <option value="5.5">5.5 ഇഞ്ച് (5.5 Inches)</option>
@@ -77,19 +78,19 @@
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">സിമന്റ് (Cement)</p>
+                    <p id="labelItem1" class="text-[10px] text-slate-400 font-bold uppercase">സിമന്റ് (Cement)</p>
                     <p id="resCement" class="text-base font-black text-amber-400 mt-1">-</p>
                 </div>
                 <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">മണൽ (Sand)</p>
+                    <p id="labelItem2" class="text-[10px] text-slate-400 font-bold uppercase">മണൽ (Sand)</p>
                     <p id="resSand" class="text-base font-black text-amber-400 mt-1">-</p>
                 </div>
                 <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">കമ്പി (Steel Total)</p>
+                    <p id="labelItem3" class="text-[10px] text-slate-400 font-bold uppercase">മെറ്റൽ / കല്ല്</p>
                     <p id="resSteel" class="text-base font-black text-amber-400 mt-1">-</p>
                 </div>
                 <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">തടി / ഷട്ടറിങ്</p>
+                    <p id="labelItem4" class="text-[10px] text-slate-400 font-bold uppercase">ഷട്ടറിങ് / അധികം</p>
                     <p id="resWood" class="text-base font-black text-amber-400 mt-1">-</p>
                 </div>
             </div>
@@ -109,7 +110,7 @@
     </div>
 
     <script>
-        function toggleThickness() {
+        function toggleWorkType() {
             const type = document.getElementById('workType').value;
             const thicknessBox = document.getElementById('thicknessBox');
             if (type === 'slab') {
@@ -129,47 +130,77 @@
                 return;
             }
 
-            let cement = 0, sand = 0, steelOrAgg = 0, wood = 0, laborText = "";
+            let cText = "", sText = "", mText = "", wText = "", laborText = "";
 
             if (type === 'slab') {
-                // 5 ഇഞ്ചിന്റെ അടിസ്ഥാനത്തിൽ കനം അനുസരിച്ച് അളവുകൾ ക്രമീകരിക്കുന്നു
-                let multiplier = thickness / 5;
-                let baseFactor = sqft / 1000;
+                // സ്ലാബ് വാർപ്പ് കണക്ക് (1:2:3 അനുപാതം)
+                // ആകെ CFT = Area * (Thickness / 12)
+                let totalCft = sqft * (thickness / 12);
+                let cementBags = (totalCft / 6) / 1.25; // 1 ചാക്ക് = 1.25 CFT
+                let sandCft = (totalCft / 6) * 2;
+                let metalCft = (totalCft / 6) * 3;
 
-                cement = Math.round(210 * baseFactor * multiplier) + " ചാക്ക് (Bags)";
-                sand = Math.round(850 * baseFactor * multiplier) + " കൂബ് അടി (CFT)";
-                steelOrAgg = Math.round(1650 * baseFactor * multiplier) + " কেজি (Kg Steel)";
-                wood = sqft + " sq.ft (ഷട്ടറിങ്)";
-                
+                document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
+                document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
+                document.getElementById('labelItem3').innerText = "മെറ്റൽ (Metal)";
+                document.getElementById('labelItem4').innerText = "ഷട്ടറിങ് ഏരിയ";
+
+                cText = Math.round(cementBags) + " ചാക്ക് (Bags)";
+                sText = Math.round(sandCft) + " കൂബ് അടി (CFT)";
+                mText = Math.round(metalCft) + " കൂബ് അടി (CFT)";
+                wText = sqft + " Sq.Ft";
+
                 let masons = Math.ceil(sqft / 150);
                 let coolies = Math.ceil(sqft / 100);
-                laborText = `ഈ വാർപ്പ് പണിക്ക് (${thickness} ഇഞ്ച് കനം) ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
+                laborText = `ഈ സ്ലാബ് വാർപ്പ് പണിക്ക് (${thickness} ഇഞ്ച് കനം) ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
             } 
-            else if (type === 'wall') {
-                let factor = sqft / 1000;
-                cement = Math.round(80 * factor) + " ചാക്ക് (Bags)";
-                sand = Math.round(300 * factor) + " കൂബ് അടി (CFT)";
-                steelOrAgg = Math.round(1100 * factor) + " കട്ടകൾ (Blocks)";
-                wood = "ബാധകമല്ല";
+            else if (type === 'stone') {
+                // വെട്ടുകല്ല് കെട്ടൽ (1 Sq.Ft ൽ ഏകദേശം 1.15 കല്ല് + 4% വേസ്റ്റ്, 100 കല്ലിന് 1 ചാക്ക് സിമന്റ്)
+                let baseBricks = sqft * 1.15;
+                let waste = baseBricks * 0.04; // 4% വേസ്റ്റ്
+                let totalBricks = Math.ceil(baseBricks + waste);
+                let cementBags = totalBricks / 100;
+                let sandCft = cementBags * 3; // ഏകദേശ മണൽ കണക്ക്
+
+                document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
+                document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
+                document.getElementById('labelItem3').innerText = "വെട്ടുകല്ലുകൾ";
+                document.getElementById('labelItem4').innerText = "വേസ്റ്റ് കല്ല്";
+
+                cText = Math.ceil(cementBags) + " ചാക്ക് (Bags)";
+                sText = Math.round(sandCft) + " കൂബ് അടി (CFT)";
+                mText = totalBricks + " എണ്ണം";
+                wText = Math.round(waste) + " എണ്ണം";
+
                 let masons = Math.ceil(sqft / 80);
                 let coolies = Math.ceil(sqft / 60);
-                laborText = `ചുമർ കെട്ടാൻ ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
+                laborText = `വെട്ടുകല്ല് കെട്ടാൻ ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
             }
             else if (type === 'plaster') {
+                // പ്ലാസ്റ്റിംഗ് കണക്ക്
                 let factor = sqft / 1000;
-                cement = Math.round(25 * factor) + " ചാക്ക് (Bags)";
-                sand = Math.round(150 * factor) + " കൂബ് അടി (CFT)";
-                steelOrAgg = "ബാധകമല്ല";
-                wood = "ബാധകമല്ല";
+                let cementBags = 25 * factor;
+                let sandCft = 150 * factor;
+
+                document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
+                document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
+                document.getElementById('labelItem3').innerText = "സ്റ്റാറ്റസ്";
+                document.getElementById('labelItem4').innerText = "സ്റ്റാറ്റസ്";
+
+                cText = Math.round(cementBags) + " ചാക്ക് (Bags)";
+                sText = Math.round(sandCft) + " കൂബ് അടി (CFT)";
+                mText = "ബാധകമല്ല";
+                wText = "ബാധകമല്ല";
+
                 let masons = Math.ceil(sqft / 200);
                 let coolies = Math.ceil(sqft / 150);
                 laborText = `പ്ലാസ്റ്റിംഗിന് ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
             }
 
-            document.getElementById('resCement').innerText = cement;
-            document.getElementById('resSand').innerText = sand;
-            document.getElementById('resSteel').innerText = steelOrAgg;
-            document.getElementById('resWood').innerText = wood;
+            document.getElementById('resCement').innerText = cText;
+            document.getElementById('resSand').innerText = sText;
+            document.getElementById('resSteel').innerText = mText;
+            document.getElementById('resWood').innerText = wText;
             document.getElementById('resLabor').innerText = laborText;
 
             document.getElementById('resultBox').classList.remove('hidden');
