@@ -133,12 +133,12 @@
             let cText = "", sText = "", mText = "", wText = "", laborText = "";
 
             if (type === 'slab') {
-                // സ്ലാബ് വാർപ്പ് കണക്ക് (1:2:3 അനുപാതം)
-                // ആകെ CFT = Area * (Thickness / 12)
+                // സ്ലാബ് വാർപ്പ് കണക്ക് (1:2:3 അനുപാതം - സൈറ്റ് പ്രാക്ടിക്കൽ അനുഭവം അനുസരിച്ച് തിരുത്തിയത്)
                 let totalCft = sqft * (thickness / 12);
-                let cementBags = (totalCft / 6) / 1.25; // 1 ചാക്ക് = 1.25 CFT
-                let sandCft = (totalCft / 6) * 2;
-                let metalCft = (totalCft / 6) * 3;
+                let dryVolume = totalCft * 1.54; // ഡ്രൈ വോളിയം ഫാക്ടർ
+                let cementBags = (dryVolume / 6) / 1.25; // സിമന്റ് ചാക്കുകൾ
+                let sandCft = (dryVolume / 6) * 2;
+                let metalCft = (dryVolume / 6) * 3;
 
                 document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
                 document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
@@ -155,12 +155,11 @@
                 laborText = `ഈ സ്ലാബ് വാർപ്പ് പണിക്ക് (${thickness} ഇഞ്ച് കനം) ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
             } 
             else if (type === 'stone') {
-                // വെട്ടുകല്ല് കെട്ടൽ (1 Sq.Ft ൽ ഏകദേശം 1.15 കല്ല് + 4% വേസ്റ്റ്, 100 കല്ലിന് 1 ചാക്ക് സിമന്റ്)
                 let baseBricks = sqft * 1.15;
-                let waste = baseBricks * 0.04; // 4% വേസ്റ്റ്
+                let waste = baseBricks * 0.04;
                 let totalBricks = Math.ceil(baseBricks + waste);
                 let cementBags = totalBricks / 100;
-                let sandCft = cementBags * 3; // ഏകദേശ മണൽ കണക്ക്
+                let sandCft = cementBags * 3;
 
                 document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
                 document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
@@ -177,7 +176,6 @@
                 laborText = `വെട്ടുകല്ല് കെട്ടാൻ ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
             }
             else if (type === 'plaster') {
-                // പ്ലാസ്റ്റിംഗ് കണക്ക്
                 let factor = sqft / 1000;
                 let cementBags = 25 * factor;
                 let sandCft = 150 * factor;
