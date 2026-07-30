@@ -42,8 +42,8 @@
             <h2 class="text-sm font-black text-amber-400 tracking-wide uppercase border-b border-slate-800 pb-2">📐 അളവുകളും പണിയുടെ തരണവും നൽകുക</h2>
             
             <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)</label>
-                <input type="number" id="sqftInput" placeholder="ഉദാ: 1000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
+                <label class="block text-xs font-bold text-slate-300 mb-1">പണിയേണ്ട ഏരിയ / നീളം (Square Feet / Length)</label>
+                <input type="number" id="sqftInput" placeholder="ഉദാ: 1000 (സ്ക്വയർ ഫീറ്റ് അല്ലെങ്കിൽ നീളം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
             </div>
 
             <div>
@@ -51,6 +51,7 @@
                 <select id="workType" onchange="toggleWorkType()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
                     <option value="slab">സ്ലാബ് വാർപ്പ് (RCC Slab - 1:2:3)</option>
                     <option value="stone">വെട്ടുകല്ല് കെട്ടൽ (Laterite Stone - Malabar Style)</option>
+                    <option value="steel">കമ്പി കണക്ക് (Steel / Reinforcement)</option>
                     <option value="plaster">പ്ലാസ്റ്റിംഗ് (Plastering)</option>
                 </select>
             </div>
@@ -64,6 +65,17 @@
                     <option value="5" selected>5 ഇഞ്ച് - സ്റ്റാൻഡേർഡ് (5 Inches)</option>
                     <option value="5.5">5.5 ഇഞ്ച് (5.5 Inches)</option>
                     <option value="6">6 ഇഞ്ച് (6 Inches)</option>
+                </select>
+            </div>
+
+            <!-- കമ്പി സൈസ് തിരഞ്ഞെടുക്കാനുള്ള പുതിയ കോളം (ആദ്യം ഹൈഡ് ചെയ്തിരിക്കുന്നു) -->
+            <div id="steelSizeBox" class="hidden">
+                <label class="block text-xs font-bold text-slate-300 mb-1">കമ്പിയുടെ സൈസ് (Steel Bar Size)</label>
+                <select id="steelSize" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
+                    <option value="8">8 mm (റിങ് / ഡിസ്ട്രിബ്യൂഷൻ ബാർ)</option>
+                    <option value="10">10 mm (സ്ലാബ് മെയിൻ ബാർ)</option>
+                    <option value="12" selected>12 mm (ബീം / സ്ലാബ് ഹെവി)</option>
+                    <option value="16">16 mm (മെയിൻ ബീം / കോളം)</option>
                 </select>
             </div>
 
@@ -97,7 +109,7 @@
 
             <!-- ലേബർ ടീം അളവ് -->
             <div class="bg-indigo-950/40 border border-indigo-800/50 p-4 rounded-2xl space-y-2">
-                <p class="text-xs font-black text-indigo-300 uppercase">👥 ആവശ്യമായ ടീം അളവ് (Labor Estimate)</p>
+                <p class="text-xs font-black text-indigo-300 uppercase">👥 ആവശ്യമായ ടീം അളവ് / വിവരങ്ങൾ</p>
                 <p id="resLabor" class="text-xs font-bold text-slate-200 leading-relaxed">-</p>
             </div>
         </div>
@@ -113,10 +125,17 @@
         function toggleWorkType() {
             const type = document.getElementById('workType').value;
             const thicknessBox = document.getElementById('thicknessBox');
+            const steelSizeBox = document.getElementById('steelSizeBox');
+
             if (type === 'slab') {
                 thicknessBox.style.display = 'block';
+                steelSizeBox.style.display = 'none';
+            } else if (type === 'steel') {
+                thicknessBox.style.display = 'none';
+                steelSizeBox.style.display = 'block';
             } else {
                 thicknessBox.style.display = 'none';
+                steelSizeBox.style.display = 'none';
             }
         }
 
@@ -124,19 +143,19 @@
             const sqft = parseFloat(document.getElementById('sqftInput').value);
             const type = document.getElementById('workType').value;
             const thickness = parseFloat(document.getElementById('slabThickness').value);
+            const steelMm = document.getElementById('steelSize').value;
 
             if (!sqft || sqft <= 0) {
-                alert('ദയവായി ശരിയായ സ്ക്വയർ ഫീറ്റ് അളവ് നൽകുക!');
+                alert('ദയവായി ശരിയായ അളവ് നൽകുക!');
                 return;
             }
 
             let cText = "", sText = "", mText = "", wText = "", laborText = "";
 
             if (type === 'slab') {
-                // സ്ലാബ് വാർപ്പ് കണക്ക് (1:2:3 അനുപാതം - സൈറ്റ് പ്രാക്ടിക്കൽ അനുഭവം അനുസരിച്ച് തിരുത്തിയത്)
                 let totalCft = sqft * (thickness / 12);
-                let dryVolume = totalCft * 1.54; // ഡ്രൈ വോളിയം ഫാക്ടർ
-                let cementBags = (dryVolume / 6) / 1.25; // സിമന്റ് ചാക്കുകൾ
+                let dryVolume = totalCft * 1.54;
+                let cementBags = (dryVolume / 6) / 1.25;
                 let sandCft = (dryVolume / 6) * 2;
                 let metalCft = (dryVolume / 6) * 3;
 
@@ -174,6 +193,24 @@
                 let masons = Math.ceil(sqft / 80);
                 let coolies = Math.ceil(sqft / 60);
                 laborText = `വെട്ടുകല്ല് കെട്ടാൻ ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
+            }
+            else if (type === 'steel') {
+                // കമ്പി കണക്ക് (ഉദാഹരണത്തിന് നൽകിയ നീളത്തിന്/ഏരിയയ്ക്ക് അനുസരിച്ചുള്ള ഭാരം)
+                // D^2 / 162 എന്ന സ്റ്റാൻഡേർഡ് ഫോർമുല പ്രകാരം 1 മീറ്റർ കമ്പിയുടെ ഭാരം കാണാം
+                let weightPerMeter = (steelMm * steelMm) / 162;
+                let totalKg = sqft * weightPerMeter * 0.3; // ലളിതമായ സൈറ്റ് എസ്റ്റിമേറ്റ് ഫാക്ടർ
+
+                document.getElementById('labelItem1').innerText = "കമ്പി സൈസ്";
+                document.getElementById('labelItem2').innerText = "ആകെ ഭാരം (Weight)";
+                document.getElementById('labelItem3').innerText = "ഏകദേശ കെട്ടുകമ്പി";
+                document.getElementById('labelItem4').innerText = "സ്റ്റാറ്റസ്";
+
+                cText = steelMm + " mm";
+                sText = Math.round(totalKg) + " കിലോ (Kg)";
+                mText = Math.round(totalKg * 0.02) + " കിലോ (Binding Wire)";
+                wText = "ബാധകമല്ല";
+
+                laborText = `തെരഞ്ഞെടുത്ത ${steelMm}mm കമ്പി ഉപയോഗിക്കുമ്പോൾ വരുന്ന ഏകദേശ ഭാരക്കണക്കാണിത്. സൈറ്റിലെ ആവശ്യത്തിന് അനുസരിച്ച് ചെറിയ വ്യത്യാസങ്ങൾ വരാം.`;
             }
             else if (type === 'plaster') {
                 let factor = sqft / 1000;
