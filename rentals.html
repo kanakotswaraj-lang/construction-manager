@@ -42,28 +42,30 @@
             </a>
         </div>
         
-        <div class="bg-white text-slate-800 p-6 rounded-3xl shadow-sm border mb-8 space-y-4">
-            <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-            <input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-            <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+        <!-- ഡാർക്ക് തീമിലേക്ക് മാറ്റിയ ഫോം ഭാഗം -->
+        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 mb-8 space-y-4 backdrop-blur-sm">
+            <h2 class="font-black text-amber-400 mb-2 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
+            <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+            <input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+            <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="space-y-1">
-                    <label class="text-[10px] font-black text-slate-500 ml-1">എടുത്ത തീയതി</label>
-                    <input type="date" id="startDate" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+                    <label class="text-[10px] font-black text-slate-400 ml-1">എടുത്ത തീയതി</label>
+                    <input type="date" id="startDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
                 </div>
                 <div class="space-y-1">
-                    <label class="text-[10px] font-black text-slate-500 ml-1">തിരികെ നൽകേണ്ടത്</label>
-                    <input type="date" id="endDate" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+                    <label class="text-[10px] font-black text-slate-400 ml-1">തിരികെ നൽകേണ്ടത്</label>
+                    <input type="date" id="endDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
                 </div>
             </div>
             
-            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
-            <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold">
+            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+            <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
             
-            <button id="saveRentBtn" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
+            <button id="saveRentBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black shadow-lg transition">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
         <section id="rentList" class="space-y-4 pb-12">
@@ -153,16 +155,16 @@
                 if (r.meshtriOwner === currentMeshtri) {
                     const bal = r.total - r.paid;
                     const div = document.createElement('div');
-                    div.className = `bg-white p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-sm mb-4 text-slate-800`;
+                    div.className = `bg-slate-900/90 border border-slate-800 p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-xl mb-4 text-white backdrop-blur-sm`;
                     div.innerHTML = `
-                        <p class="font-black text-slate-800 text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
-                        <p class="text-xs text-slate-500 font-bold mb-2">കട: ${r.shop} | 📞 ${r.phone}</p>
-                        <div class="border-t pt-2 flex justify-between items-center">
-                            <p class="text-xs font-black text-slate-700">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
+                        <p class="font-black text-white text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
+                        <p class="text-xs text-slate-400 font-bold mb-2">കട: ${r.shop} | 📞 ${r.phone}</p>
+                        <div class="border-t border-slate-800 pt-2 flex justify-between items-center">
+                            <p class="text-xs font-black text-slate-300">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
                             <div class="flex gap-1">
-                                <button onclick="editDetails('${d.id}', ${JSON.stringify(r).replace(/"/g, '&quot;')})" class="bg-blue-100 text-blue-600 px-2 py-1 rounded-lg text-[9px] font-black">എഡിറ്റ്</button>
-                                <button onclick="editRent('${d.id}', ${r.paid})" class="bg-slate-900 text-white px-2 py-1 rounded-lg text-[9px] font-black">പെയ്മെന്റ്</button>
-                                <button onclick="deleteRent('${d.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded-lg text-[9px] font-black">ഡിലീറ്റ്</button>
+                                <button onclick="editDetails('${d.id}', ${JSON.stringify(r).replace(/"/g, '&quot;')})" class="bg-blue-900/50 text-blue-300 border border-blue-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">എഡിറ്റ്</button>
+                                <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 text-slate-950 px-2.5 py-1 rounded-lg text-[10px] font-black">പെയ്മെന്റ്</button>
+                                <button onclick="deleteRent('${d.id}')" class="bg-red-900/50 text-red-300 border border-red-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">ഡിലീറ്റ്</button>
                             </div>
                         </div>
                     `;
