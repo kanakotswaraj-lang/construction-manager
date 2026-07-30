@@ -17,13 +17,6 @@
         }
     </style>
 
-    <script>
-        // ലോഗിൻ ചെയ്തിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുന്നു
-        if (!localStorage.getItem('userName')) {
-            window.location.href = "login.html";
-        }
-    </script>
-
     <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
 </head>
 <body class="bg-[#050B18] text-white min-h-screen p-4 font-sans pb-12">
@@ -94,9 +87,22 @@
         </div>
 
 <script>
+    // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഉടൻ ഡാറ്റ സെറ്റ് ചെയ്യുന്നു
+    (function() {
+        let userName = localStorage.getItem('userName');
+        if (!userName) {
+            // നാമം ഇല്ലെങ്കിൽ ഡിഫോൾട്ടായി 'Swaraj' എന്ന് സെറ്റ് ചെയ്യുന്നു (അല്ലെങ്കിൽ login.html-ലേക്ക് വിടാം)
+            localStorage.setItem('userName', 'Swaraj');
+            userName = 'Swaraj';
+        }
+    })();
+
     window.onload = function() {
-        const userName = localStorage.getItem('userName') || "മേസ്തിരി";
-        document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + userName;
+        const userName = localStorage.getItem('userName') || "Swaraj";
+        const nameElement = document.getElementById('loggedInMeshtri');
+        if(nameElement) {
+            nameElement.innerText = "സ്വാഗതം, " + userName;
+        }
 
         // പ്രൊഫൈൽ ഫോട്ടോ ലോഡ് ചെയ്യുന്നു
         const savedPhoto = localStorage.getItem('profilePhoto');
@@ -114,6 +120,7 @@
             document.getElementById('coverImage').src = "https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop";
         }
 
+        // തീയതി സെറ്റ് ചെയ്യുന്നു
         const today = new Date();
         const days = ['ഞായറാഴ്ച', 'തിങ്കളാഴ്ച', 'ചൊവ്വാഴ്ച', 'ബുധനാഴ്ച', 'വ്യാഴാഴ്ച', 'വെള്ളിയാഴ്ച', 'ശനിയാഴ്ച'];
         const dayName = days[today.getDay()];
@@ -132,22 +139,12 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e){
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 400;
-                    canvas.height = 400;
-                    ctx.drawImage(img, 0, 0, 400, 400);
-                    const compressedData = canvas.toDataURL('image/jpeg', 0.85);
-                    
-                    document.getElementById('profileImage').src = compressedData;
-                    try {
-                        localStorage.setItem('profilePhoto', compressedData);
-                    } catch (err) {
-                        alert('സ്റ്റോറേജ് ഫുൾ ആണ്.');
-                    }
+                const result = e.target.result;
+                document.getElementById('profileImage').src = result;
+                try {
+                    localStorage.setItem('profilePhoto', result);
+                } catch (err) {
+                    alert('സ്റ്റോറേജ് ഫുൾ ആണ്.');
                 }
             };
             reader.readAsDataURL(file);
@@ -159,22 +156,12 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e){
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 800;
-                    canvas.height = 400;
-                    ctx.drawImage(img, 0, 0, 800, 400);
-                    const compressedData = canvas.toDataURL('image/jpeg', 0.85);
-
-                    document.getElementById('coverImage').src = compressedData;
-                    try {
-                        localStorage.setItem('coverPhoto', compressedData);
-                    } catch (err) {
-                        alert('സ്റ്റോറേജ് ഫുൾ ആണ്.');
-                    }
+                const result = e.target.result;
+                document.getElementById('coverImage').src = result;
+                try {
+                    localStorage.setItem('coverPhoto', result);
+                } catch (err) {
+                    alert('സ്റ്റോറേജ് ഫുൾ ആണ്.');
                 }
             };
             reader.readAsDataURL(file);
