@@ -11,7 +11,10 @@
     <link rel="apple-touch-icon" href="icon.png">
 
     <style>
-        body { font-family: 'Manjari', sans-serif; }
+        body { 
+            font-family: 'Manjari', sans-serif; 
+            background-color: #050B18 !important;
+        }
     </style>
 
     <script>
@@ -26,7 +29,52 @@
 <body class="bg-[#050B18] text-white min-h-screen p-4 font-sans pb-12">
     <div class="max-w-md mx-auto space-y-4">
 
-        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും -->
+        <!-- പ്രധാന ഹെഡർ & പ്രൊഫൈൽ ഭാഗം (മുകളിൽ) -->
+        <div class="bg-slate-900 rounded-[2.5rem] shadow-2xl text-white border border-slate-800 relative overflow-hidden mt-2">
+            
+            <!-- കവർ ബാനർ ഭാഗം -->
+            <div class="relative h-36 w-full bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 group overflow-hidden border-b border-slate-800">
+                <label for="coverUpload" class="cursor-pointer block w-full h-full">
+                    <img id="coverImage" src="" class="w-full h-full object-cover transition duration-300 group-hover:opacity-75 opacity-90" onerror="this.src='https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop'">
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <span class="text-xs font-black bg-black/70 px-3.5 py-2 rounded-full text-white backdrop-blur-sm border border-slate-700">📷 കവർ മാറ്റുക</span>
+                    </div>
+                </label>
+                <input type="file" id="coverUpload" class="hidden" accept="image/*" onchange="updateCoverPhoto(event)">
+                
+                <!-- ലോഗ് ഔട്ട് ബട്ടൺ -->
+                <button onclick="logoutUser()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-900/90 backdrop-blur-md text-red-400 border border-slate-700 flex items-center justify-center font-bold shadow-lg hover:bg-red-500 hover:text-white transition duration-300 z-10" title="ലോഗ് ഔട്ട്">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- പ്രൊഫൈൽ ഫോട്ടോയും തീയതിയും -->
+            <div class="px-6 pb-6 pt-0 relative text-center">
+                <!-- പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം -->
+                <label for="photoUpload" class="cursor-pointer group relative inline-block -mt-10 mb-3">
+                    <div class="relative p-1.5 bg-slate-900 rounded-3xl shadow-2xl border-2 border-amber-400/60">
+                        <img id="profileImage" src="" class="w-24 h-24 rounded-2xl object-cover transition group-hover:opacity-75 bg-slate-800">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-2xl bg-black/40">
+                            <span class="text-[10px] font-black bg-black/80 px-2.5 py-1 rounded-md text-white backdrop-blur-sm">മാറ്റുക</span>
+                        </div>
+                    </div>
+                    <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
+                </label>
+
+                <!-- തീയതിയും ആഴ്ച ദിവസവും കാണിക്കുന്ന ബോക്സ് -->
+                <div class="mt-1 flex justify-center">
+                    <div class="bg-slate-800/90 border border-slate-700 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-inner backdrop-blur-sm">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <p id="currentDate" class="text-xs font-bold text-slate-200"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- പ്രൊഫൈൽ ഭാഗം അവസാനിക്കുന്നു -->
+
+        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും (അതിന് താഴെ) -->
         <div class="flex flex-col items-center pt-2 pb-2">
             <div class="inline-flex items-center gap-4 px-7 py-3.5 rounded-full bg-slate-900/95 border border-amber-400/60 shadow-xl shadow-amber-500/20 backdrop-blur-md">
                 <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-amber-400 flex-shrink-0 bg-slate-800 flex items-center justify-center shadow-lg">
@@ -45,51 +93,6 @@
             </div>
         </div>
 
-<!-- പ്രധാന ഹെഡർ & പ്രൊഫൈൽ ഭാഗം -->
-<div class="bg-slate-900 rounded-[2.5rem] shadow-2xl text-white border border-slate-800 relative overflow-hidden mt-2">
-    
-    <!-- കവർ ബാനർ ഭാഗം -->
-    <div class="relative h-36 w-full bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 group overflow-hidden border-b border-slate-800">
-        <label for="coverUpload" class="cursor-pointer block w-full h-full">
-            <img id="coverImage" src="" class="w-full h-full object-cover transition duration-300 group-hover:opacity-75 opacity-90" onerror="this.src='https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop'">
-            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                <span class="text-xs font-black bg-black/70 px-3.5 py-2 rounded-full text-white backdrop-blur-sm border border-slate-700">📷 കവർ മാറ്റുക</span>
-            </div>
-        </label>
-        <input type="file" id="coverUpload" class="hidden" accept="image/*" onchange="updateCoverPhoto(event)">
-        
-        <!-- ലോഗ് ഔട്ട് ബട്ടൺ -->
-        <button onclick="logoutUser()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-900/90 backdrop-blur-md text-red-400 border border-slate-700 flex items-center justify-center font-bold shadow-lg hover:bg-red-500 hover:text-white transition duration-300 z-10" title="ലോഗ് ഔട്ട്">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-        </button>
-    </div>
-
-    <!-- പ്രൊഫൈൽ ഫോട്ടോയും തീയതിയും -->
-    <div class="px-6 pb-6 pt-0 relative text-center">
-        <!-- പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം -->
-        <label for="photoUpload" class="cursor-pointer group relative inline-block -mt-10 mb-3">
-            <div class="relative p-1.5 bg-slate-900 rounded-3xl shadow-2xl border-2 border-amber-400/60">
-                <img id="profileImage" src="" class="w-24 h-24 rounded-2xl object-cover transition group-hover:opacity-75 bg-slate-800">
-                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-2xl bg-black/40">
-                    <span class="text-[10px] font-black bg-black/80 px-2.5 py-1 rounded-md text-white backdrop-blur-sm">മാറ്റുക</span>
-                </div>
-            </div>
-            <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
-        </label>
-
-        <!-- തീയതിയും ആഴ്ച ദിവസവും കാണിക്കുന്ന ബോക്സ് -->
-        <div class="mt-1 flex justify-center">
-            <div class="bg-slate-800/90 border border-slate-700 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-inner backdrop-blur-sm">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <p id="currentDate" class="text-xs font-bold text-slate-200"></p>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- ഹെഡർ ഭാഗം അവസാനിക്കുന്നു -->
-
 <script>
     window.onload = function() {
         const userName = localStorage.getItem('userName') || "മേസ്തിരി";
@@ -97,7 +100,7 @@
 
         // പ്രൊഫൈൽ ഫോട്ടോ ലോഡ് ചെയ്യുന്നു
         const savedPhoto = localStorage.getItem('profilePhoto');
-        if (savedPhoto && savedPhoto.trim() !== "") {
+        if (savedPhoto) {
             document.getElementById('profileImage').src = savedPhoto;
         } else {
             document.getElementById('profileImage').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D1117&color=FBBF24&bold=true&size=128`;
@@ -105,7 +108,7 @@
 
         // കവർ ഫോട്ടോ ലോഡ് ചെയ്യുന്നു
         const savedCover = localStorage.getItem('coverPhoto');
-        if (savedCover && savedCover.trim() !== "") {
+        if (savedCover) {
             document.getElementById('coverImage').src = savedCover;
         } else {
             document.getElementById('coverImage').src = "https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop";
@@ -129,9 +132,23 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e){
-                const result = e.target.result;
-                document.getElementById('profileImage').src = result;
-                localStorage.setItem('profilePhoto', result);
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 400;
+                    canvas.height = 400;
+                    ctx.drawImage(img, 0, 0, 400, 400);
+                    const compressedData = canvas.toDataURL('image/jpeg', 0.85);
+                    
+                    document.getElementById('profileImage').src = compressedData;
+                    try {
+                        localStorage.setItem('profilePhoto', compressedData);
+                    } catch (err) {
+                        alert('സ്റ്റോറേജ് ഫുൾ ആണ്.');
+                    }
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -142,9 +159,23 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e){
-                const result = e.target.result;
-                document.getElementById('coverImage').src = result;
-                localStorage.setItem('coverPhoto', result);
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 800;
+                    canvas.height = 400;
+                    ctx.drawImage(img, 0, 0, 800, 400);
+                    const compressedData = canvas.toDataURL('image/jpeg', 0.85);
+
+                    document.getElementById('coverImage').src = compressedData;
+                    try {
+                        localStorage.setItem('coverPhoto', compressedData);
+                    } catch (err) {
+                        alert('സ്റ്റോറേജ് ഫുൾ ആണ്.');
+                    }
+                }
             };
             reader.readAsDataURL(file);
         }
