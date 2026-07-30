@@ -158,6 +158,14 @@
 
         const getTodayDate = () => new Date().toISOString().split('T')[0];
 
+        // തീയതി നൽകിയാൽ മലയാളത്തിൽ ആഴ്ചയിലെ ദിവസം (തിങ്കൾ, ചൊവ്വ...) കണ്ടുപിടിക്കുന്ന ഫംഗ്ഷൻ
+        function getMalayalamDay(dateString) {
+            if (!dateString) return "";
+            const days = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"];
+            const d = new Date(dateString);
+            return days[d.getDay()] || "";
+        }
+
         document.getElementById('filterFromDate').value = "";
         document.getElementById('filterToDate').value = getTodayDate();
 
@@ -250,9 +258,13 @@
                                 workedSitesSet.add(log.site);
                             }
 
+                            // തീയതിയോടൊപ്പം ആഴ്ചയിലെ ദിവസവും (ഉദാ: ചൊവ്വ) ചേർക്കുന്നു
+                            const dayName = getMalayalamDay(log.date);
+                            const displayDateStr = dayName ? `${log.date} (${dayName})` : log.date;
+
                             logsHtml += `
                                 <div class="flex justify-between items-center text-xs bg-white p-2.5 rounded-lg border border-slate-200 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-800">📅 ${log.date} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-emerald-700 font-black">₹${log.amount}</span></span>
+                                    <span class="font-bold text-slate-800">📅 ${displayDateStr} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-emerald-700 font-black">₹${log.amount}</span></span>
                                     <div class="flex gap-1.5">
                                         <button onclick="openEditLog('${log.id}', '${log.date}', '${log.site || ''}', '${log.amount}')" class="text-blue-600 bg-blue-50 px-2 py-1 rounded font-bold hover:bg-blue-100">Edit</button>
                                         <button onclick="deleteLog('${log.id}')" class="text-red-600 bg-red-50 px-2 py-1 rounded font-bold hover:bg-red-100">Del</button>
