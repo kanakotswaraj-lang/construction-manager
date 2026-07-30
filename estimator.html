@@ -32,7 +32,7 @@
                 </a>
                 <div>
                     <h1 class="text-lg font-black text-white">എസ്റ്റിമേറ്റർ കാൽക്കുലേറ്റർ</h1>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">മെറ്റീരിയൽ & ലേബർ അളവുകൾ</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">കൃത്യമായ മെറ്റീരിയൽ & ലേബർ അളവുകൾ</p>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
             <div>
                 <label class="block text-xs font-bold text-slate-300 mb-1">പണിയുടെ തരം</label>
                 <select id="workType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
-                    <option value="slab">സ്ലാബ് / റൂഫ് വാർപ്പ് (Slab / Roof Concreting)</option>
+                    <option value="slab">സ്ലാബ് / റൂഫ് വാർപ്പ് (Slab Concreting - 5 inch thickness)</option>
                     <option value="wall">ചുമർ കെട്ടൽ / ബ്രിക്ക് വർക്ക് (Brick/Block Work)</option>
                     <option value="plaster">പ്ലാസ്റ്ററിങ് (Plastering)</option>
                 </select>
@@ -107,32 +107,37 @@
                 return;
             }
 
-            let cement = 0, sand = 0, steelOrBlock = 0, wood = 0, laborText = "";
+            let cement = 0, sand = 0, steelOrAgg = 0, wood = 0, laborText = "";
 
             if (type === 'slab') {
-                // Slab standard approximation per sqft
-                cement = (sqft * 0.4).toFixed(1) + " ചാക്ക് (Bags)";
-                sand = (sqft * 1.2).toFixed(1) + " കൂബ് അടി (CFT)";
-                steelOrBlock = (sqft * 3.5).toFixed(1) + " কেজি (Kg Steel)";
-                wood = (sqft * 0.5).toFixed(1) + " ഷട്ടറിങ് ഏരിയ";
+                // Standard formula for 5-inch RCC slab:
+                // Cement: ~0.4 to 0.42 bags per sqft
+                // Sand: ~ 1.2 CFT per sqft
+                // Steel: ~ 3.5 to 4 kg per sqft
+                cement = Math.round(sqft * 0.40) + " ചാക്ക് (Bags)";
+                sand = Math.round(sqft * 1.15) + " കൂബ് അടി (CFT)";
+                steelOrAgg = Math.round(sqft * 3.75) + " কেজি (Kg Steel)";
+                wood = sqft + " sq.ft (ഷട്ടറിങ്)";
                 let masons = Math.ceil(sqft / 150);
                 let coolies = Math.ceil(sqft / 100);
-                laborText = `ഈ വാർപ്പ് പണി തീർക്കാൻ ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
+                laborText = `ഈ വാർപ്പ് പണിക്ക് ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
             } 
             else if (type === 'wall') {
-                cement = (sqft * 0.15).toFixed(1) + " ചാക്ക് (Bags)";
-                sand = (sqft * 0.6).toFixed(1) + " കൂബ് അടി (CFT)";
-                steelOrBlock = (sqft * 1.1).toFixed(0) + " എണ്ണം (Blocks/Bricks)";
-                wood = "ആവശ്യമില്ല";
+                // Brick/Block work estimation
+                cement = Math.round(sqft * 0.15) + " ചാക്ക് (Bags)";
+                sand = Math.round(sqft * 0.45) + " കൂബ് അടി (CFT)";
+                steelOrAgg = Math.round(sqft * 1.1) + " കട്ടകൾ (Blocks)";
+                wood = "ബാധകമല്ല";
                 let masons = Math.ceil(sqft / 80);
                 let coolies = Math.ceil(sqft / 60);
                 laborText = `ചുമർ കെട്ടാൻ ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
             }
             else if (type === 'plaster') {
-                cement = (sqft * 0.08).toFixed(1) + " ചാക്ക് (Bags)";
-                sand = (sqft * 0.35).toFixed(1) + " കൂബ് അടി (CFT)";
-                steelOrBlock = "ബാധകമല്ല";
-                wood = "ആവശ്യമില്ല";
+                // Plastering estimation
+                cement = Math.round(sqft * 0.04) + " ചാക്ക് (Bags)";
+                sand = Math.round(sqft * 0.20) + " കൂബ് അടി (CFT)";
+                steelOrAgg = "ബാധകമല്ല";
+                wood = "ബാധകമല്ല";
                 let masons = Math.ceil(sqft / 200);
                 let coolies = Math.ceil(sqft / 150);
                 laborText = `പ്ലാസ്റ്റിംഗിന് ഏകദേശം ${masons} മേസ്തിരിമാരും ${coolies} തൊഴിലാളികളും ആവശ്യമാണ്.`;
@@ -140,7 +145,7 @@
 
             document.getElementById('resCement').innerText = cement;
             document.getElementById('resSand').innerText = sand;
-            document.getElementById('resSteel').innerText = steelOrBlock;
+            document.getElementById('resSteel').innerText = steelOrAgg;
             document.getElementById('resWood').innerText = wood;
             document.getElementById('resLabor').innerText = laborText;
 
