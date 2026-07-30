@@ -97,7 +97,7 @@
 
         // പ്രൊഫൈൽ ഫോട്ടോ ലോഡ് ചെയ്യുന്നു
         const savedPhoto = localStorage.getItem('profilePhoto');
-        if (savedPhoto) {
+        if (savedPhoto && savedPhoto.trim() !== "") {
             document.getElementById('profileImage').src = savedPhoto;
         } else {
             document.getElementById('profileImage').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D1117&color=FBBF24&bold=true&size=128`;
@@ -105,7 +105,7 @@
 
         // കവർ ഫോട്ടോ ലോഡ് ചെയ്യുന്നു
         const savedCover = localStorage.getItem('coverPhoto');
-        if (savedCover) {
+        if (savedCover && savedCover.trim() !== "") {
             document.getElementById('coverImage').src = savedCover;
         } else {
             document.getElementById('coverImage').src = "https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop";
@@ -129,20 +129,9 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e){
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    // കൃത്യമായ അളവിൽ ഫോട്ടോ കംപ്രസ് ചെയ്ത് സ്റ്റോറേജ് ഓവർഫ്ലോ തടയുന്നു
-                    canvas.width = 400;
-                    canvas.height = 400;
-                    ctx.drawImage(img, 0, 0, 400, 400);
-                    const optimizedData = canvas.toDataURL('image/jpeg', 0.85);
-                    
-                    document.getElementById('profileImage').src = optimizedData;
-                    localStorage.setItem('profilePhoto', optimizedData);
-                }
+                const result = e.target.result;
+                document.getElementById('profileImage').src = result;
+                localStorage.setItem('profilePhoto', result);
             };
             reader.readAsDataURL(file);
         }
@@ -153,19 +142,9 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e){
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 800;
-                    canvas.height = 400;
-                    ctx.drawImage(img, 0, 0, 800, 400);
-                    const optimizedData = canvas.toDataURL('image/jpeg', 0.85);
-
-                    document.getElementById('coverImage').src = optimizedData;
-                    localStorage.setItem('coverPhoto', optimizedData);
-                }
+                const result = e.target.result;
+                document.getElementById('coverImage').src = result;
+                localStorage.setItem('coverPhoto', result);
             };
             reader.readAsDataURL(file);
         }
