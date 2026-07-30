@@ -87,7 +87,7 @@
 
         <!-- ഫലം കാണിക്കുന്ന ഭാഗം -->
         <div id="resultBox" class="hidden bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl space-y-4">
-            <h2 class="text-sm font-black text-emerald-400 tracking-wide uppercase border-b border-slate-800 pb-2">📊 കണക്കാക്കിയ അളവുകൾ</h2>
+            <h2 class="text-sm font-black text-emerald-400 tracking-wide uppercase border-b border-slate-800 pb-2">📊 കണക്കാക്കിയ അളവുകൾ (വെവ്വേറെ)</h2>
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-2xl text-center">
@@ -162,40 +162,39 @@
             let i1 = "", i2 = "", i3 = "", i4 = "", detailsText = "";
 
             if (category === 'slab') {
-                // കോൺക്രീറ്റ് മെറ്റീരിയൽ കണക്ക്
+                // കോൺക്രീറ്റ് മെറ്റീരിയൽ കണക്ക് (വെവ്വേറെ)
                 let totalCft = val * (thickness / 12);
                 let dryVolume = totalCft * 1.54;
                 let cementBags = (dryVolume / 6) / 1.25;
                 let sandCft = (dryVolume / 6) * 2;
                 let metalCft = (dryVolume / 6) * 3;
 
-                // കമ്പി കണക്ക് (Spacing അടിസ്ഥാനമാക്കി - 6 ഇഞ്ച് സാധാരണ വീടുകൾക്ക്)
-                let spacingFactor = 6 / spacing; 
-                let steel8mm = Math.round(val * 0.28 * spacingFactor); 
-                let steelMain = Math.round(val * 0.45 * spacingFactor);
-                let bindingWire = 6; // കെട്ടുകമ്പി ഏകദേശം 6 കിലോ സ്ഥിരമായി നിർത്താം
+                // റിയലിസ്റ്റിക് കമ്പി കണക്ക് (Spacing അനുസരിച്ച് കൃത്യമായ ഭാരം)
+                let spacingMultiplier = 6 / spacing; 
+                let steel8mm = Math.round(val * 0.22 * spacingMultiplier);  // റിങ് / ഡിസ്ട്രിബ്യൂഷൻ
+                let steelMain = Math.round(val * 0.50 * spacingMultiplier); // മെയിൻ ബാർ
+                let bindingWire = 6; // കെട്ടുകമ്പി ഏകദേശം 5-6 കിലോ
 
                 document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
-                document.getElementById('labelItem2').innerText = "മണൽ / മെറ്റൽ";
-                document.getElementById('labelItem3').innerText = "8 mm കമ്പി (റിങ്)";
-                document.getElementById('labelItem4').innerText = "മെയിൻ ബാർ (10/12mm)";
+                document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
+                document.getElementById('labelItem3').innerText = "മെറ്റൽ (Metal)";
+                document.getElementById('labelItem4').innerText = "കമ്പി (8mm + Main)";
 
                 i1 = Math.round(cementBags) + " ചാക്ക്";
-                i2 = Math.round(sandCft) + " Cft മണൽ";
-                i3 = steel8mm + " കിലോ";
-                i4 = steelMain + " കിലോ";
+                i2 = Math.round(sandCft) + " Cft";
+                i3 = Math.round(metalCft) + " Cft";
+                i4 = (steel8mm + steelMain) + " കിലോ (Wire: 6kg)";
 
-                detailsText = `സ്ലാബ് കനം: ${thickness} ഇഞ്ച്, കമ്പി അകലം: ${spacing} ഇഞ്ച്. കെട്ടുകമ്പി ഏകദേശം ${bindingWire} കിലോ വരും. ആവശ്യമായ മേസ്തിരിമാർ: ${Math.ceil(val/150)}, തൊഴിലാളികൾ: ${Math.ceil(val/100)}.`;
+                detailsText = `സ്ലാബ് കനം: ${thickness} ഇഞ്ച്, കമ്പി അകലം: ${spacing} ഇഞ്ച്. (8mm കമ്പി: ${steel8mm} kg, മെയിൻ കമ്പി: ${steelMain} kg). ആവശ്യമായ മേസ്തിരിമാർ: ${Math.ceil(val/150)}, തൊഴിലാളികൾ: ${Math.ceil(val/100)}.`;
             } 
             else if (category === 'beam') {
-                // ബീം കമ്പി കണക്ക് (Running feet അടിസ്ഥാനത്തിൽ)
-                let mainSteel = Math.round(val * 0.75); // റണ്ണിങ് ഫീറ്റിന് വരുന്ന മെയിൻ കമ്പി
-                let ringSteel = Math.round(val * 0.35); // റിങ് കമ്പി
+                let mainSteel = Math.round(val * 0.65); 
+                let ringSteel = Math.round(val * 0.30); 
                 let bindingWire = 5;
 
-                document.getElementById('labelItem1').innerText = "മെയിൻ കമ്പി (12/16mm)";
+                document.getElementById('labelItem1').innerText = "മെയിൻ കമ്പി";
                 document.getElementById('labelItem2').innerText = "റിങ് കമ്പി (8mm)";
-                document.getElementById('labelItem3').innerText = "കെട്ടുകമ്പി (Wire)";
+                document.getElementById('labelItem3').innerText = "കെട്ടുകമ്പി";
                 document.getElementById('labelItem4').innerText = "ആകെ നീളം";
 
                 i1 = mainSteel + " കിലോ";
@@ -203,15 +202,15 @@
                 i3 = bindingWire + " കിലോ";
                 i4 = val + " R.Ft";
 
-                detailsText = `${val} റണ്ണിങ് ഫീറ്റ് ബീം പണിക്ക് ആവശ്യമായ സ്റ്റീൽ കണക്കാണിത്.`;
+                detailsText = `${val} റണ്ണിങ് ഫീറ്റ് ബീം പണിക്കുള്ള സ്റ്റീൽ കണക്കാണിത്.`;
             }
             else if (category === 'lintel') {
-                let mainSteel = Math.round(val * 0.40);
-                let ringSteel = Math.round(val * 0.20);
+                let mainSteel = Math.round(val * 0.35);
+                let ringSteel = Math.round(val * 0.18);
                 let bindingWire = 3;
 
-                document.getElementById('labelItem1').innerText = "മെയിൻ കമ്പി (10mm)";
-                document.getElementById('labelItem2').innerText = "റിങ് കമ്പി (8mm)";
+                document.getElementById('labelItem1').innerText = "മെയിൻ കമ്പി";
+                document.getElementById('labelItem2').innerText = "റിങ് കമ്പി";
                 document.getElementById('labelItem3').innerText = "കെട്ടുകമ്പി";
                 document.getElementById('labelItem4').innerText = "ആകെ നീളം";
 
