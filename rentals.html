@@ -24,7 +24,6 @@
                     <span class="text-[10px] font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
                 </div>
             </div>
-            <!-- സ്വാഗതം പേര് (Cyan കളർ) -->
             <div class="mt-3 text-center">
                 <span id="loggedInMeshtri" class="text-sm font-black tracking-wide text-cyan-300 bg-cyan-500/15 px-4 py-1.5 rounded-full border border-cyan-400/40 shadow-lg">
                     സ്വാഗതം, ലോഡിങ്...
@@ -42,7 +41,7 @@
             </a>
         </div>
         
-        <!-- ഡാർക്ക് തീമിലേക്ക് മാറ്റിയ ഫോം ഭാഗം -->
+        <!-- ഫോം ഭാഗം -->
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 mb-8 space-y-4 backdrop-blur-sm">
             <h2 class="font-black text-amber-400 mb-2 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
             <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
@@ -68,6 +67,12 @@
             <button id="saveRentBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black shadow-lg transition">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
+        <!-- ഫിൽട്ടർ ബട്ടണുകൾ -->
+        <div class="flex gap-2 mb-4">
+            <button onclick="setFilter('active')" id="filterActiveBtn" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 transition">നടന്നുകൊണ്ടിരിക്കുന്നത്</button>
+            <button onclick="setFilter('returned')" id="filterReturnedBtn" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition">തിരികെ നൽകിയത്</button>
+        </div>
+
         <section id="rentList" class="space-y-4 pb-12">
             <h2 class="font-black text-white mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>
         </section>
@@ -89,11 +94,17 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് എടുക്കുന്നു
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
-        // ഓട്ടോമാറ്റിക് കാൽക്കുലേഷൻ
+        let currentFilter = 'active';
+        window.setFilter = (filter) => {
+            currentFilter = filter;
+            document.getElementById('filterActiveBtn').className = `flex-1 py-2.5 rounded-xl text-xs font-black transition ${filter === 'active' ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-300 border border-slate-700'}`;
+            document.getElementById('filterReturnedBtn').className = `flex-1 py-2.5 rounded-xl text-xs font-black transition ${filter === 'returned' ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-300 border border-slate-700'}`;
+            loadData();
+        };
+
         function calculateTotal() {
             const start = new Date(document.getElementById('startDate').value);
             const end = new Date(document.getElementById('endDate').value);
@@ -119,17 +130,30 @@
             if(extraPaid) await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
         };
 
+        // മുഴുവൻ തുകയും തീർക്കാനുള്ള സെറ്റിൽമെന്റ് ഫീച്ചർ
+        window.settleFull = async (id, total) => {
+            if(confirm("ബാക്കി തുക മുഴുവൻ അടച്ചു തീർത്ത് അക്കൗണ്ട് ക്ലിയർ ചെയ്യണോ?")) {
+                await updateDoc(doc(db, "rentals", id), { paid: total });
+                alert("അക്കൗണ്ട് സെറ്റിൽ ചെയ്തു!");
+            }
+        };
+
+        // റിട്ടേൺ സ്റ്റാറ്റസ് മാറ്റാൻ
+        window.toggleReturn = async (id, currentStatus) => {
+            const newStatus = !currentStatus;
+            await updateDoc(doc(db, "rentals", id), { isReturned: newStatus });
+        };
+
         window.deleteRent = async (id) => {
             if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "rentals", id));
         };
 
-        // സേവ് ചെയ്യുമ്പോൾ മേസ്തിരിയുടെ പേര് കൂടി ഡാറ്റാബേസിൽ ചേർക്കുന്നു
         document.getElementById('saveRentBtn').addEventListener('click', async () => {
             const itemName = document.getElementById('itemName').value;
             if (!itemName) return alert("ഉപകരണത്തിന്റെ പേര് നൽകുക!");
 
             await addDoc(collection(db, "rentals"), {
-                meshtriOwner: currentMeshtri, // ആരുടെ ഡാറ്റയാണെന്ന് തിരിച്ചറിയാൻ
+                meshtriOwner: currentMeshtri,
                 item: itemName,
                 qty: document.getElementById('itemQty').value,
                 shop: document.getElementById('shopName').value,
@@ -138,39 +162,52 @@
                 end: document.getElementById('endDate').value,
                 unitRent: document.getElementById('unitRent').value,
                 total: parseFloat(document.getElementById('totalRent').value) || 0,
-                paid: parseFloat(document.getElementById('paidRent').value) || 0
+                paid: parseFloat(document.getElementById('paidRent').value) || 0,
+                isReturned: false
             });
             alert("സേവ് ആയി!");
         });
 
-        // ഈ മേസ്തിരിയുടെ ഡാറ്റ മാത്രം ഫിൽട്ടർ ചെയ്ത് കാണിക്കുന്നു
-        onSnapshot(collection(db, "rentals"), (snapshot) => {
+        let cachedSnapshot = null;
+        function loadData() {
+            if (!cachedSnapshot) return;
             const list = document.getElementById('rentList');
-            list.innerHTML = '<h2 class="font-black text-white mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>';
+            list.innerHTML = `<h2 class="font-black text-white mb-2">${currentFilter === 'active' ? 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ' : 'തിരികെ നൽകിയ ഉപകരണങ്ങൾ'}</h2>`;
             
-            snapshot.forEach((d) => {
+            cachedSnapshot.forEach((d) => {
                 const r = d.data();
-                
-                // ഫിൽട്ടറിംഗ് പരിശോധന
                 if (r.meshtriOwner === currentMeshtri) {
-                    const bal = r.total - r.paid;
-                    const div = document.createElement('div');
-                    div.className = `bg-slate-900/90 border border-slate-800 p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-xl mb-4 text-white backdrop-blur-sm`;
-                    div.innerHTML = `
-                        <p class="font-black text-white text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
-                        <p class="text-xs text-slate-400 font-bold mb-2">കട: ${r.shop} | 📞 ${r.phone}</p>
-                        <div class="border-t border-slate-800 pt-2 flex justify-between items-center">
-                            <p class="text-xs font-black text-slate-300">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
-                            <div class="flex gap-1">
-                                <button onclick="editDetails('${d.id}', ${JSON.stringify(r).replace(/"/g, '&quot;')})" class="bg-blue-900/50 text-blue-300 border border-blue-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">എഡിറ്റ്</button>
-                                <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 text-slate-950 px-2.5 py-1 rounded-lg text-[10px] font-black">പെയ്മെന്റ്</button>
-                                <button onclick="deleteRent('${d.id}')" class="bg-red-900/50 text-red-300 border border-red-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">ഡിലീറ്റ്</button>
+                    const isRet = r.isReturned === true;
+                    if ((currentFilter === 'active' && !isRet) || (currentFilter === 'returned' && isRet)) {
+                        const bal = r.total - r.paid;
+                        const div = document.createElement('div');
+                        div.className = `bg-slate-900/90 border border-slate-800 p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-xl mb-4 text-white backdrop-blur-sm`;
+                        div.innerHTML = `
+                            <div class="flex justify-between items-start mb-1">
+                                <p class="font-black text-white text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
+                                <button onclick="toggleReturn('${d.id}', ${isRet})" class="text-[10px] font-black px-2.5 py-1 rounded-lg border ${isRet ? 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50' : 'bg-slate-800 text-slate-300 border-slate-700'}">
+                                    ${isRet ? '✓ തിരികെ നൽകി' : 'റിട്ടേൺ ചെയ്യുക'}
+                                </button>
                             </div>
-                        </div>
-                    `;
-                    list.appendChild(div);
+                            <p class="text-xs text-slate-400 font-bold mb-2">കട: ${r.shop} | 📞 ${r.phone}</p>
+                            <div class="border-t border-slate-800 pt-2 flex justify-between items-center">
+                                <p class="text-xs font-black text-slate-300">നൽകിയത്: ₹${r.paid} | ബാലൻസ്: ₹${bal}</p>
+                                <div class="flex gap-1">
+                                    ${bal > 0 ? `<button onclick="settleFull('${d.id}', ${r.total})" class="bg-emerald-600 text-white px-2 py-1 rounded-lg text-[10px] font-black">സെറ്റിൽ</button>` : ''}
+                                    <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 text-slate-950 px-2 py-1 rounded-lg text-[10px] font-black">പെയ്മെന്റ്</button>
+                                    <button onclick="deleteRent('${d.id}')" class="bg-red-900/50 text-red-300 border border-red-700/50 px-2 py-1 rounded-lg text-[10px] font-black">ഡിലീറ്റ്</button>
+                                </div>
+                            </div>
+                        `;
+                        list.appendChild(div);
+                    }
                 }
             });
+        }
+
+        onSnapshot(collection(db, "rentals"), (snapshot) => {
+            cachedSnapshot = snapshot;
+            loadData();
         });
     </script>
 </body>
