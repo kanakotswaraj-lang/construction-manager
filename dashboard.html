@@ -19,14 +19,6 @@
         if (!localStorage.getItem('userName')) {
             window.location.href = "login.html";
         }
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker Registered'))
-                    .catch(err => console.log('Service Worker Failed', err));
-            });
-        }
     </script>
 
     <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
@@ -34,15 +26,34 @@
 <body class="bg-[#050B18] text-white min-h-screen p-4 font-sans pb-12">
     <div class="max-w-md mx-auto space-y-4">
 
-<!-- ഹെഡർ ഭാഗം -->
-<div class="bg-slate-900 rounded-[2.5rem] shadow-2xl text-white border border-slate-800 relative overflow-hidden">
+        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം (മറ്റു പേജുകൾ പോലെ) -->
+        <div class="flex flex-col items-center pt-2 pb-2">
+            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md">
+                <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
+                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=M&background=0D1117&color=FBBF24&bold=true'">
+                </div>
+                <div class="flex flex-col text-left">
+                    <span class="text-amber-400 font-black text-sm tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
+                    <span class="text-[10px] font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
+                </div>
+            </div>
+            <!-- സ്വാഗതം പേര് (Cyan കളർ) -->
+            <div class="mt-3 text-center">
+                <span id="loggedInMeshtri" class="text-sm font-black tracking-wide text-cyan-300 bg-cyan-500/15 px-4 py-1.5 rounded-full border border-cyan-400/40 shadow-lg">
+                    സ്വാഗതം, ലോഡിങ്...
+                </span>
+            </div>
+        </div>
+
+<!-- പ്രധാന ഹെഡർ & പ്രൊഫൈൽ ഭാഗം -->
+<div class="bg-slate-900 rounded-[2.5rem] shadow-2xl text-white border border-slate-800 relative overflow-hidden mt-2">
     
     <!-- കവർ ബാനർ ഭാഗം -->
-    <div class="relative h-36 w-full bg-slate-800 group overflow-hidden">
+    <div class="relative h-36 w-full bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 group overflow-hidden border-b border-slate-800">
         <label for="coverUpload" class="cursor-pointer block w-full h-full">
-            <img id="coverImage" src="https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition duration-300 group-hover:opacity-75">
+            <img id="coverImage" src="" class="w-full h-full object-cover transition duration-300 group-hover:opacity-75 opacity-90" onerror="this.src='https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop'">
             <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                <span class="text-xs font-black bg-black/60 px-3.5 py-2 rounded-full text-white backdrop-blur-sm border border-slate-700">📷 കവർ മാറ്റുക</span>
+                <span class="text-xs font-black bg-black/70 px-3.5 py-2 rounded-full text-white backdrop-blur-sm border border-slate-700">📷 കവർ മാറ്റുക</span>
             </div>
         </label>
         <input type="file" id="coverUpload" class="hidden" accept="image/*" onchange="updateCoverPhoto(event)">
@@ -55,12 +66,12 @@
         </button>
     </div>
 
-    <!-- പ്രൊഫൈൽ ഫോട്ടോയും വിവരങ്ങളും -->
-    <div class="px-6 pb-6 pt-0 relative">
+    <!-- പ്രൊഫൈൽ ഫോട്ടോയും തീയതിയും -->
+    <div class="px-6 pb-6 pt-0 relative text-center">
         <!-- പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം -->
         <label for="photoUpload" class="cursor-pointer group relative inline-block -mt-10 mb-3">
             <div class="relative p-1.5 bg-slate-900 rounded-3xl shadow-2xl border-2 border-amber-400/60">
-                <img id="profileImage" src="https://ui-avatars.com/api/?name=User" class="w-24 h-24 rounded-2xl object-cover transition group-hover:opacity-75">
+                <img id="profileImage" src="" class="w-24 h-24 rounded-2xl object-cover transition group-hover:opacity-75 bg-slate-800">
                 <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-2xl bg-black/40">
                     <span class="text-[10px] font-black bg-black/80 px-2.5 py-1 rounded-md text-white backdrop-blur-sm">മാറ്റുക</span>
                 </div>
@@ -68,19 +79,8 @@
             <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
         </label>
 
-        <!-- ടൈറ്റിലും വിവരങ്ങളും -->
-        <div class="text-center space-y-1">
-            <h1 class="text-2xl font-black text-white tracking-tight flex items-center justify-center gap-1.5">
-                മേസ്തിരി <span class="text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">പ്രോ</span>
-            </h1>
-            <p class="text-[10px] font-bold tracking-widest text-blue-300 uppercase">SMART SITE MANAGER</p>
-            
-            <!-- ലോഗിൻ ചെയ്ത ആളുടെ പേര് -->
-            <p id="meshtriNameDisplay" class="text-cyan-300 font-black text-base pt-1">സ്വാഗതം, മേസ്തിരി</p>
-        </div>
-
         <!-- തീയതിയും ആഴ്ച ദിവസവും കാണിക്കുന്ന ബോക്സ് -->
-        <div class="mt-4 flex justify-center">
+        <div class="mt-1 flex justify-center">
             <div class="bg-slate-800/90 border border-slate-700 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-inner backdrop-blur-sm">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <p id="currentDate" class="text-xs font-bold text-slate-200"></p>
@@ -92,9 +92,23 @@
 
 <script>
     window.onload = function() {
-        const userName = localStorage.getItem('userName');
-        if (userName) {
-            document.getElementById('meshtriNameDisplay').innerText = "സ്വാഗതം, " + userName;
+        const userName = localStorage.getItem('userName') || "മേസ്തിരി";
+        document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + userName;
+
+        // പ്രൊഫൈൽ ഫോട്ടോ സെറ്റ് ചെയ്യൽ
+        const savedPhoto = localStorage.getItem('profilePhoto');
+        if (savedPhoto) {
+            document.getElementById('profileImage').src = savedPhoto;
+        } else {
+            document.getElementById('profileImage').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D1117&color=FBBF24&bold=true&size=128`;
+        }
+
+        // കവർ ഫോട്ടോ സെറ്റ് ചെയ്യൽ
+        const savedCover = localStorage.getItem('coverPhoto');
+        if (savedCover) {
+            document.getElementById('coverImage').src = savedCover;
+        } else {
+            document.getElementById('coverImage').src = "https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop";
         }
 
         const today = new Date();
@@ -108,16 +122,6 @@
         if(dateElement) {
             dateElement.innerText = `ഇന്ന്: ${dayName}, ${dateStr}`;
         }
-
-        const savedPhoto = localStorage.getItem('profilePhoto');
-        if (savedPhoto) {
-            document.getElementById('profileImage').src = savedPhoto;
-        }
-
-        const savedCover = localStorage.getItem('coverPhoto');
-        if (savedCover) {
-            document.getElementById('coverImage').src = savedCover;
-        }
     };
 
     function updateProfilePhoto(event) {
@@ -125,8 +129,19 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e){
-                document.getElementById('profileImage').src = e.target.result;
-                localStorage.setItem('profilePhoto', e.target.result);
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 300;
+                    canvas.height = 300;
+                    ctx.drawImage(img, 0, 0, 300, 300);
+                    const compressedData = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    document.getElementById('profileImage').src = compressedData;
+                    localStorage.setItem('profilePhoto', compressedData);
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -137,8 +152,19 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e){
-                document.getElementById('coverImage').src = e.target.result;
-                localStorage.setItem('coverPhoto', e.target.result);
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 800;
+                    canvas.height = 400;
+                    ctx.drawImage(img, 0, 0, 800, 400);
+                    const compressedData = canvas.toDataURL('image/jpeg', 0.7);
+
+                    document.getElementById('coverImage').src = compressedData;
+                    localStorage.setItem('coverPhoto', compressedData);
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -170,7 +196,6 @@
                 <p class="text-base font-black">📊 വരവ് - ചെലവ്</p>
                 <span class="text-rose-300 font-bold">→</span>
             </a>
-            <!-- പുതിയ എസ്റ്റിമേറ്റർ ബട്ടൺ ഇവിടെ ചേർത്തിരിക്കുന്നു -->
             <a href="estimator.html" class="bg-amber-900/90 border border-amber-700/50 p-5 rounded-2xl shadow-lg flex items-center justify-between text-white hover:bg-amber-800 transition duration-200">
                 <p class="text-base font-black">📐 മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്</p>
                 <span class="text-amber-300 font-bold">→</span>
