@@ -70,9 +70,9 @@
 
             <!-- കമ്പി സൈസ് തിരഞ്ഞെടുക്കാനുള്ള കോളം -->
             <div id="steelSizeBox" class="hidden">
-                <label class="block text-xs font-bold text-slate-300 mb-1">കമ്പിയുടെ സൈസ് (Steel Bar Size)</label>
+                <label class="block text-xs font-bold text-slate-300 mb-1">കമ്പി കണക്കാക്കേണ്ട രീതി</label>
                 <select id="steelSize" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-400 transition">
-                    <option value="slab_dual">സ്ലാബ് കമ്പി (8mm & 10mm/12mm വെവ്വേറെ)</option>
+                    <option value="slab_dual">സ്ലാബ് മൊത്തം കമ്പി (8mm & 10mm/12mm വെവ്വേറെ)</option>
                     <option value="8">8 mm മാത്രം (റിങ് / ഡിസ്ട്രിബ്യൂഷൻ)</option>
                     <option value="10">10 mm മാത്രം (മെയിൻ ബാർ)</option>
                     <option value="12">12 mm മാത്രം (ബീം / ഹെവി)</option>
@@ -197,38 +197,39 @@
             }
             else if (type === 'steel') {
                 if (steelChoice === 'slab_dual') {
-                    // സ്ലാബിന് പൊതുവെ വരുന്ന മൊത്തം കമ്പിയുടെ ഏകദേശം 40% 8mm ഉം, 60% 10mm ഉം ആണ് വരിക
-                    let totalSlabSteelKg = sqft * 0.75; // 1 sqft ന് ഏകദേശം 750 ഗ്രാം - 800 ഗ്രാം കമ്പി
-                    let steel8mm = totalSlabSteelKg * 0.40;
-                    let steel10mm = totalSlabSteelKg * 0.60;
+                    // സാധാരണ ഒരു സ്ക്വയർ ഫീറ്റ് സ്ലാബിന് ആകെ വരുന്ന പ്രാക്ടിക്കൽ കമ്പി ഭാരം (റീജിയണൽ മേസ്തിരി അനുഭവം)
+                    // 1000 സ്ക്വയർ ഫീറ്റിന് ഏകദേശം 350-400 കിലോ 8mm ഉം, 600-700 കിലോ 10mm/12mm ഉം വരും.
+                    let steel8mm = sqft * 0.38;  // ഏകദേശം 380 കിലോ (1000 sqft ന്)
+                    let steelMain = sqft * 0.65; // ഏകദേശം 650 കിലോ (1000 sqft ന്)
+                    let totalSteel = steel8mm + steelMain;
 
-                    document.getElementById('labelItem1').innerText = "8 mm കമ്പി (Ring/Dist)";
-                    document.getElementById('labelItem2').innerText = "10 mm കമ്പി (Main)";
+                    document.getElementById('labelItem1').innerText = "8 mm കമ്പി (റിങ്/ഡിസ്ട്രി)";
+                    document.getElementById('labelItem2').innerText = "10/12 mm (മെയിൻ ബാർ)";
                     document.getElementById('labelItem3').innerText = "കെട്ടുകമ്പി (Wire)";
-                    document.getElementById('labelItem4').innerText = "ആകെ ഭാരം (Total)";
+                    document.getElementById('labelItem4').innerText = "ആകെ കമ്പി ഭാരം";
 
                     cText = Math.round(steel8mm) + " കിലോ (Kg)";
-                    sText = Math.round(steel10mm) + " കിലോ (Kg)";
-                    mText = Math.round(totalSlabSteelKg * 0.02) + " കിലോ (Kg)";
-                    wText = Math.round(totalSlabSteelKg) + " കിലോ (Kg)";
+                    sText = Math.round(steelMain) + " കിലോ (Kg)";
+                    mText = Math.round(totalSteel * 0.025) + " കിലോ (Kg)";
+                    wText = Math.round(totalSteel) + " കിലോ (Kg)";
 
-                    laborText = `ഈ സ്ക്വയർ ഫീറ്റ് (${sqft} Sq.Ft) സ്ലാബിന് ആവശ്യമായ 8mm, 10mm കമ്പികളുടെ വേവ്വേറെയുള്ള കണക്കാണിത്.`;
+                    laborText = `മേസ്തിരി അനുഭവക്കണക്ക് പ്രകാരം ${sqft} Sq.Ft സ്ലാബിന് വരുന്ന യഥാർത്ഥ സൈറ്റ് കണക്കാണിത്. (ലിന്റലും ബീമും ചേർത്തുള്ള പൊതുവായ കണക്ക്).`;
                 } else {
                     let mm = parseFloat(steelChoice);
-                    let weightPerMeter = (mm * mm) / 162;
-                    let totalKg = sqft * weightPerMeter * 0.3;
+                    // സാധാരണക്കാർക്ക് മനസ്സിലാകുന്ന ലളിതമായ സൈറ്റ് ഫാക്ടർ
+                    let totalKg = sqft * (mm * 0.035);
 
                     document.getElementById('labelItem1').innerText = "കമ്പി സൈസ്";
-                    document.getElementById('labelItem2').innerText = "ആകെ ഭാരം (Weight)";
-                    document.getElementById('labelItem3').innerText = "ഏകദേശ കെട്ടുകമ്പി";
+                    document.getElementById('labelItem2').innerText = "ഏകദേശ ഭാരം";
+                    document.getElementById('labelItem3').innerText = "കെട്ടുകമ്പി";
                     document.getElementById('labelItem4').innerText = "സ്റ്റാറ്റസ്";
 
                     cText = mm + " mm";
                     sText = Math.round(totalKg) + " കിലോ (Kg)";
                     mText = Math.round(totalKg * 0.02) + " കിലോ (Kg)";
-                    wText = "ബാധകമല്ല";
+                    wText = "സാധാരണ സൈറ്റ്";
 
-                    laborText = `തെരഞ്ഞെടുത്ത ${mm}mm കമ്പി ഉപയോഗിക്കുമ്പോൾ വരുന്ന ഏകദേശ ഭാരക്കണക്കാണിത്.`;
+                    laborText = `തെരഞ്ഞെടുത്ത ${mm}mm കമ്പിയുടെ ഏകദേശ സൈറ്റ് കണക്കാണിത്.`;
                 }
             }
             else if (type === 'plaster') {
@@ -246,7 +247,7 @@
                 mText = "ബാധകമല്ല";
                 wText = "ബാധകമല്ല";
 
-                laborText = `പ്ലാസ്റ്റിംഗിന് ഏകദേശം ${masons} മേസ്തിരിമാരും തൊഴിലാളികളും ആവശ്യമാണ്.`;
+                laborText = `പ്ലാസ്റ്റിംഗിന് ആവശ്യമായ തൊഴിലാളികളുടെ കണക്കാണിത്.`;
             }
 
             document.getElementById('resCement').innerText = cText;
