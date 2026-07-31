@@ -118,7 +118,6 @@
 
     <!-- ജാവാസ്ക്രിപ്റ്റ് കോഡ് -->
     <script>
-        // പേജ് ലോഡ് ആകുമ്പോൾ തന്നെ ഡാറ്റ എടുക്കുന്നു
         window.addEventListener('DOMContentLoaded', () => {
             let userName = localStorage.getItem('userName');
             if (!userName) {
@@ -161,27 +160,57 @@
             }
         });
 
+        // പ്രൊഫൈൽ ഫോട്ടോ കംപ്രസ് ചെയ്ത് സേവ് ചെയ്യുന്നു
         function updateProfilePhoto(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const result = e.target.result;
-                    document.getElementById('profileImage').src = result;
-                    localStorage.setItem('profilePhoto', result);
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 300;
+                        canvas.height = 300;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, 300, 300);
+                        const compressedData = canvas.toDataURL('image/jpeg', 0.7);
+                        
+                        document.getElementById('profileImage').src = compressedData;
+                        try {
+                            localStorage.setItem('profilePhoto', compressedData);
+                        } catch (err) {
+                            alert('സ്റ്റോറേജ് ഫുൾ ആണ്.');
+                        }
+                    }
                 };
                 reader.readAsDataURL(file);
             }
         }
 
+        // കവർ ഫോട്ടോ കംപ്രസ് ചെയ്ത് സുരക്ഷിതമായി സേവ് ചെയ്യുന്നു
         function updateCoverPhoto(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const result = e.target.result;
-                    document.getElementById('coverImage').src = result;
-                    localStorage.setItem('coverPhoto', result);
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 600;
+                        canvas.height = 300;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, 600, 300);
+                        const compressedData = canvas.toDataURL('image/jpeg', 0.7);
+
+                        document.getElementById('coverImage').src = compressedData;
+                        try {
+                            localStorage.setItem('coverPhoto', compressedData);
+                        } catch (err) {
+                            alert('സ്റ്റോറേജ് ഫുൾ ആണ്.');
+                        }
+                    }
                 };
                 reader.readAsDataURL(file);
             }
