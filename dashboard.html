@@ -6,6 +6,111 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
+    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ (Firebase SDKs) -->
+    
+<script type="module">
+     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+    authDomain: "mesthri-app.firebaseapp.com",
+    projectId: "mesthri-app",
+    storageBucket: "mesthri-app.appspot.com",
+    messagingSenderId: "1060617901864",
+    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function updateDashboard() {
+    try {
+        window.addEventListener('DOMContentLoaded', () => {
+            let userName = localStorage.getItem('userName');
+            if (!userName) {
+                userName = 'സുരാജ്';
+                localStorage.setItem('userName', userName);
+            }
+            
+            const nameElement = document.getElementById('loggedInMeshtri');
+            if(nameElement) {
+                nameElement.innerText = "സ്വാഗതം, " + userName;
+            }
+
+            // പ്രൊഫൈൽ ഫോട്ടോ ലോഡ് ചെയ്യുന്നു
+            const savedPhoto = localStorage.getItem('profilePhoto');
+            if (savedPhoto) {
+                document.getElementById('profileImage').src = savedPhoto;
+            } else {
+                document.getElementById('profileImage').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D1117&color=FBBF24&bold=true&size=128`;
+            }
+
+            // കവർ ഫോട്ടോ ലോഡ് ചെയ്യുന്നു
+            const savedCover = localStorage.getItem('coverPhoto');
+            if (savedCover) {
+                document.getElementById('coverImage').src = savedCover;
+            } else {
+                document.getElementById('coverImage').src = "https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop";
+            }
+
+            // തീയതി സെറ്റ് ചെയ്യുന്നു
+            const today = new Date();
+            const days = ['ഞായറാഴ്ച', 'തിങ്കളാഴ്ച', 'ചൊവ്വാഴ്ച', 'ബുധനാഴ്ച', 'വ്യാഴാഴ്ച', 'വെള്ളിയാഴ്ച', 'ശനിയാഴ്ച'];
+            const dayName = days[today.getDay()];
+            
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = today.toLocaleDateString('ml-IN', options);
+            
+            const dateElement = document.getElementById('currentDate');
+            if(dateElement) {
+                dateElement.innerText = `ഇന്ന്: ${dayName}, ${dateStr}`;
+            }
+
+            // ഫയർബേസിൽ നിന്ന് തത്സമയം കണക്കുകൾ എടുക്കുന്നു
+            fetchDashboardData(db, userName);
+        });
+
+        function fetchDashboardData(db, currentMeshtri) {
+            onSnapshot(query(collection(db, "accounts")), (snapshot) => {
+                let totalInc = 0;
+                let totalExp = 0;
+
+                snapshot.forEach(docSnap => {
+                    const d = docSnap.data();
+                    if (d.meshtriOwner === currentMeshtri) {
+                        let amount = parseFloat(d.amount) || 0;
+                        if (d.type === 'income') {
+                            totalInc += amount;
+                        } else {
+                            totalExp += amount;
+                        }
+                    }
+                });
+
+                let net = totalInc - totalExp;
+
+                document.getElementById('dashTotalIncome').innerText = `₹ ${totalInc.toLocaleString('en-IN')}`;
+                document.getElementById('dashTotalExpense').innerText = `₹ ${totalExp.toLocaleString('en-IN')}`;
+                
+                let netEl = document.getElementById('dashNetProfit');
+                let labelEl = document.getElementById('dashProfitLabel');
+
+                if (net >= 0) {
+                    labelEl.innerText = "ശുദ്ധ ലാഭം";
+                    labelEl.className = "text-[11px] font-bold text-emerald-400 block";
+                    netEl.innerText = `₹ ${net.toLocaleString('en-IN')}`;
+                    netEl.style.color = "#34d399";
+                } else {
+                    labelEl.innerText = "നഷ്ടം";
+                    labelEl.className = "text-[11px] font-bold text-rose-400 block";
+                    netEl.innerText = `₹ ${Math.abs(net).toLocaleString('en-IN')}`;
+                    netEl.style.color = "#fb7185";
+                }
+            });
+        }
+    </script>
+
     <!-- ആപ്പ് ലോഗോ -->
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
@@ -132,93 +237,8 @@
         </a>
     </div>
 
-    <!-- ജാവാസ്ക്രിപ്റ്റ് കോഡ് -->
+    <!-- ഫോട്ടോ അപ്‌ലോഡ് & ലോഗ് ഔട്ട് ജാവാസ്ക്രിപ്റ്റ് ഫങ്ഷനുകൾ -->
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            let userName = localStorage.getItem('userName');
-            if (!userName) {
-                userName = 'സുരാജ്';
-                localStorage.setItem('userName', userName);
-            }
-            
-            const nameElement = document.getElementById('loggedInMeshtri');
-            if(nameElement) {
-                nameElement.innerText = "സ്വാഗതം, " + userName;
-            }
-
-            // പ്രൊഫൈൽ ഫോട്ടോ ലോഡ് ചെയ്യുന്നു
-            const savedPhoto = localStorage.getItem('profilePhoto');
-            if (savedPhoto) {
-                document.getElementById('profileImage').src = savedPhoto;
-            } else {
-                document.getElementById('profileImage').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D1117&color=FBBF24&bold=true&size=128`;
-            }
-
-            // കവർ ഫോട്ടോ ലോഡ് ചെയ്യുന്നു
-            const savedCover = localStorage.getItem('coverPhoto');
-            if (savedCover) {
-                document.getElementById('coverImage').src = savedCover;
-            } else {
-                document.getElementById('coverImage').src = "https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop";
-            }
-
-            // തീയതി സെറ്റ് ചെയ്യുന്നു
-            const today = new Date();
-            const days = ['ഞായറാഴ്ച', 'തിങ്കളാഴ്ച', 'ചൊവ്വാഴ്ച', 'ബുധനാഴ്ച', 'വ്യാഴാഴ്ച', 'വെള്ളിയാഴ്ച', 'ശനിയാഴ്ച'];
-            const dayName = days[today.getDay()];
-            
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const dateStr = today.toLocaleDateString('ml-IN', options);
-            
-            const dateElement = document.getElementById('currentDate');
-            if(dateElement) {
-                dateElement.innerText = `ഇന്ന്: ${dayName}, ${dateStr}`;
-            }
-
-            // വരവ്-ചെലവ് കണക്കുകൾ ലോഡ് ചെയ്ത് ലാഭം/നഷ്ടം കാണിക്കുന്നു
-            loadDashboardFinancials();
-        });
-
-        // ലോക്കൽ സ്റ്റോറേജിൽ നിന്നോ ഫയർബേസിൽ നിന്നോ കണക്കുകൾ എടുത്ത് ഡാഷ്‌ബോർഡിൽ കാണിക്കുന്ന ഫങ്ഷൻ
-        function loadDashboardFinancials() {
-            try {
-                let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-                let totalInc = 0;
-                let totalExp = 0;
-
-                transactions.forEach(item => {
-                    let amount = parseFloat(item.amount) || 0;
-                    if (item.type === 'income' || item.category === 'income') {
-                        totalInc += amount;
-                    } else {
-                        totalExp += amount;
-                    }
-                });
-
-                let net = totalInc - totalExp;
-
-                document.getElementById('dashTotalIncome').innerText = `₹ ${totalInc.toLocaleString('en-IN')}`;
-                document.getElementById('dashTotalExpense').innerText = `₹ ${totalExp.toLocaleString('en-IN')}`;
-                
-                let netEl = document.getElementById('dashNetProfit');
-                let labelEl = document.getElementById('dashProfitLabel');
-
-                if (net >= 0) {
-                    labelEl.innerText = "ശുദ്ധ ലാഭം";
-                    labelEl.className = "text-[11px] font-bold text-emerald-400 block";
-                    netEl.innerText = `₹ ${net.toLocaleString('en-IN')}`;
-                    netEl.style.color = "#34d399";
-                } else {
-                    labelEl.innerText = "നഷ്ടം";
-                    labelEl.className = "text-[11px] font-bold text-rose-400 block";
-                    netEl.innerText = `₹ ${Math.abs(net).toLocaleString('en-IN')}`;
-                    netEl.style.color = "#fb7185";
-                }
-            } catch (e) {
-                console.log("Financial load error:", e);
-            }
-        }
-
         // പ്രൊഫൈൽ ഫോട്ടോ കംപ്രസ് ചെയ്ത് സേവ് ചെയ്യുന്നു
         function updateProfilePhoto(event) {
             const file = event.target.files[0];
