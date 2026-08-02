@@ -6,27 +6,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ (Firebase SDKs) -->
-    
-<script type="module">
-     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ (Firebase SDKs 9.22.0) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-    authDomain: "mesthri-app.firebaseapp.com",
-    projectId: "mesthri-app",
-    storageBucket: "mesthri-app.appspot.com",
-    messagingSenderId: "1060617901864",
-    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.appspot.com",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+        };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-async function updateDashboard() {
-    try {
-        window.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener("DOMContentLoaded", () => {
             let userName = localStorage.getItem('userName');
             if (!userName) {
                 userName = 'സുരാജ്';
@@ -98,12 +95,12 @@ async function updateDashboard() {
 
                 if (net >= 0) {
                     labelEl.innerText = "ശുദ്ധ ലാഭം";
-                    labelEl.className = "text-[11px] font-bold text-emerald-400 block";
+                    labelEl.className = "text-[11px] font-black text-emerald-400 block tracking-wider uppercase";
                     netEl.innerText = `₹ ${net.toLocaleString('en-IN')}`;
                     netEl.style.color = "#34d399";
                 } else {
                     labelEl.innerText = "നഷ്ടം";
-                    labelEl.className = "text-[11px] font-bold text-rose-400 block";
+                    labelEl.className = "text-[11px] font-black text-rose-400 block tracking-wider uppercase";
                     netEl.innerText = `₹ ${Math.abs(net).toLocaleString('en-IN')}`;
                     netEl.style.color = "#fb7185";
                 }
@@ -118,32 +115,41 @@ async function updateDashboard() {
     <style>
         body { 
             font-family: 'Manjari', sans-serif; 
-            background-color: #050B18 !important;
+            background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important;
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-gold {
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.15);
         }
     </style>
 
     <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
 </head>
-<body class="bg-[#050B18] text-white min-h-screen p-4 font-sans pb-12">
+<body class="text-white min-h-screen p-4 font-sans pb-16">
     <div class="max-w-md mx-auto space-y-4">
 
-        <!-- പ്രധാന ഹെഡർ & പ്രൊഫൈൽ ഭാഗം (മുകളിൽ) -->
-        <div class="bg-slate-900 rounded-[2.5rem] shadow-2xl text-white border border-slate-800 relative overflow-hidden mt-2">
+        <!-- പ്രധാന ഹെഡർ & പ്രൊഫൈൽ ഭാഗം (Modern Glassmorphic Banner) -->
+        <div class="glass-card rounded-[2.5rem] shadow-2xl relative overflow-hidden mt-2">
             
             <!-- കവർ ബാനർ ഭാഗം -->
-            <div class="relative h-36 w-full bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 group overflow-hidden border-b border-slate-800">
+            <div class="relative h-40 w-full group overflow-hidden">
                 <label for="coverUpload" class="cursor-pointer block w-full h-full">
-                    <img id="coverImage" src="" class="w-full h-full object-cover transition duration-300 group-hover:opacity-75 opacity-90" onerror="this.src='https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop'">
-                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                        <span class="text-xs font-black bg-black/70 px-3.5 py-2 rounded-full text-white backdrop-blur-sm border border-slate-700">📷 കവർ മാറ്റുക</span>
+                    <img id="coverImage" src="" class="w-full h-full object-cover transition duration-500 group-hover:scale-105 opacity-85" onerror="this.src='https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050b18] via-black/30 to-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <span class="text-xs font-black bg-black/70 px-4 py-2 rounded-full text-white backdrop-blur-md border border-white/10 shadow-lg">📷 കവർ മാറ്റുക</span>
                     </div>
                 </label>
                 <input type="file" id="coverUpload" class="hidden" accept="image/*" onchange="updateCoverPhoto(event)">
                 
                 <!-- ലോഗ് ഔട്ട് ബട്ടൺ -->
-                <button onclick="logoutUser()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-900/90 backdrop-blur-md text-red-400 border border-slate-700 flex items-center justify-center font-bold shadow-lg hover:bg-red-500 hover:text-white transition duration-300 z-10" title="ലോഗ് ഔട്ട്">
+                <button onclick="logoutUser()" class="absolute top-4 right-4 w-11 h-11 rounded-2xl bg-slate-900/80 backdrop-blur-xl text-rose-400 border border-white/10 flex items-center justify-center shadow-2xl hover:bg-rose-500 hover:text-white transition duration-300 z-10" title="ലോഗ് ഔട്ട്">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                 </button>
             </div>
@@ -151,11 +157,11 @@ async function updateDashboard() {
             <!-- പ്രൊഫൈൽ ഫോട്ടോയും തീയതിയും -->
             <div class="px-6 pb-6 pt-0 relative text-center">
                 <!-- പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ഭാഗം -->
-                <label for="photoUpload" class="cursor-pointer group relative inline-block -mt-10 mb-3">
-                    <div class="relative p-1.5 bg-slate-900 rounded-3xl shadow-2xl border-2 border-amber-400/60">
-                        <img id="profileImage" src="" class="w-24 h-24 rounded-2xl object-cover transition group-hover:opacity-75 bg-slate-800" onerror="this.src='https://ui-avatars.com/api/?name=User&background=0D1117&color=FBBF24&bold=true'">
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-2xl bg-black/40">
-                            <span class="text-[10px] font-black bg-black/80 px-2.5 py-1 rounded-md text-white backdrop-blur-sm">മാറ്റുക</span>
+                <label for="photoUpload" class="cursor-pointer group relative inline-block -mt-12 mb-3">
+                    <div class="relative p-1 bg-gradient-to-br from-amber-400 to-amber-600 rounded-3xl shadow-2xl glow-gold">
+                        <img id="profileImage" src="" class="w-24 h-24 rounded-[1.3rem] object-cover transition duration-300 group-hover:opacity-85 bg-slate-900" onerror="this.src='https://ui-avatars.com/api/?name=User&background=0D1117&color=FBBF24&bold=true'">
+                        <div class="absolute inset-1 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-[1.3rem] bg-black/50 backdrop-blur-sm">
+                            <span class="text-[11px] font-black bg-white/20 px-3 py-1 rounded-lg text-white">മാറ്റുക</span>
                         </div>
                     </div>
                     <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
@@ -163,84 +169,102 @@ async function updateDashboard() {
 
                 <!-- തീയതിയും ആഴ്ച ദിവസവും കാണിക്കുന്ന ബോക്സ് -->
                 <div class="mt-1 flex justify-center">
-                    <div class="bg-slate-800/90 border border-slate-700 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-inner backdrop-blur-sm">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <p id="currentDate" class="text-xs font-bold text-slate-200">ലോഡ് ചെയ്യുന്നു...</p>
+                    <div class="bg-white/5 border border-white/10 px-4 py-1.5 rounded-full flex items-center gap-2.5 shadow-inner backdrop-blur-md">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                        <p id="currentDate" class="text-xs font-bold text-slate-200 tracking-wide">ലോഡ് ചെയ്യുന്നു...</p>
                     </div>
                 </div>
             </div>
         </div>
         <!-- പ്രൊഫൈൽ ഭാഗം അവസാനിക്കുന്നു -->
 
-        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും (അതിന് താഴെ) -->
-        <div class="flex flex-col items-center pt-2 pb-2">
-            <div class="inline-flex items-center gap-4 px-7 py-3.5 rounded-full bg-slate-900/95 border border-amber-400/60 shadow-xl shadow-amber-500/20 backdrop-blur-md">
-                <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-amber-400 flex-shrink-0 bg-slate-800 flex items-center justify-center shadow-lg">
+        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും -->
+        <div class="flex flex-col items-center pt-1 pb-1">
+            <div class="inline-flex items-center gap-4 px-6 py-3.5 rounded-2xl glass-card border border-amber-400/30 shadow-xl shadow-amber-500/10">
+                <div class="w-12 h-12 rounded-xl overflow-hidden border border-amber-400/50 flex-shrink-0 bg-slate-900 flex items-center justify-center shadow-inner">
                     <img src="icon.png" alt="Logo" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=M&background=0D1117&color=FBBF24&bold=true'">
                 </div>
                 <div class="flex flex-col text-left">
-                    <span class="text-amber-400 font-black text-xl tracking-wide leading-tight drop-shadow-[0_0_12px_rgba(251,191,36,0.5)]">മേസ്തിരി പ്രോ</span>
-                    <span class="text-xs font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
+                    <span class="text-amber-400 font-black text-lg tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
+                    <span class="text-[10px] font-bold text-slate-400 tracking-widest uppercase">SMART SITE MANAGER</span>
                 </div>
             </div>
             <!-- സ്വാഗതം പേര് -->
             <div class="mt-3 text-center">
-                <span id="loggedInMeshtri" class="text-sm font-black tracking-wide text-cyan-300 bg-cyan-500/15 px-5 py-2 rounded-full border border-cyan-400/40 shadow-lg">
+                <span id="loggedInMeshtri" class="text-xs font-black tracking-wider text-cyan-300 bg-cyan-500/10 px-5 py-2 rounded-xl border border-cyan-400/30 shadow-lg">
                     സ്വാഗതം, സുരാജ്
                 </span>
             </div>
         </div>
 
-        <!-- പുതിയതായി ചേർത്ത ലാഭ-നഷ്ട സംഗ്രഹ ബോക്സുകൾ (Profit & Loss Summary Cards) -->
-        <div class="grid grid-cols-3 gap-2 pt-1">
-            <div class="bg-slate-900/90 border border-emerald-500/40 p-3 rounded-2xl text-center shadow-lg">
-                <span class="text-[11px] font-bold text-emerald-400 block">വരുമാനം</span>
+        <!-- ലാഭ-നഷ്ട സംഗ്രഹ ബോക്സുകൾ (Modern Financial Cards) -->
+        <div class="grid grid-cols-3 gap-2.5 pt-1">
+            <div class="glass-card border-emerald-500/30 p-3.5 rounded-2xl text-center shadow-lg hover:border-emerald-500/60 transition">
+                <span class="text-[11px] font-black text-emerald-400 block tracking-wider uppercase">വരുമാനം</span>
                 <p id="dashTotalIncome" class="text-sm font-black text-white mt-1">₹ 0</p>
             </div>
-            <div class="bg-slate-900/90 border border-rose-500/40 p-3 rounded-2xl text-center shadow-lg">
-                <span class="text-[11px] font-bold text-rose-400 block">ചെലവ്</span>
+            <div class="glass-card border-rose-500/30 p-3.5 rounded-2xl text-center shadow-lg hover:border-rose-500/60 transition">
+                <span class="text-[11px] font-black text-rose-400 block tracking-wider uppercase">ചെലവ്</span>
                 <p id="dashTotalExpense" class="text-sm font-black text-white mt-1">₹ 0</p>
             </div>
-            <div class="bg-slate-900/90 border border-blue-500/40 p-3 rounded-2xl text-center shadow-lg">
-                <span id="dashProfitLabel" class="text-[11px] font-bold text-blue-400 block">ലാഭം</span>
+            <div class="glass-card border-blue-500/30 p-3.5 rounded-2xl text-center shadow-lg hover:border-blue-500/60 transition">
+                <span id="dashProfitLabel" class="text-[11px] font-black text-blue-400 block tracking-wider uppercase">ലാഭം</span>
                 <p id="dashNetProfit" class="text-sm font-black text-white mt-1">₹ 0</p>
             </div>
         </div>
 
-        <!-- ബട്ടണുകൾ -->
-        <div class="space-y-3.5 pt-2">
-            <a href="staff.html" class="bg-indigo-900/90 border border-indigo-700/50 p-5 rounded-2xl shadow-lg flex items-center justify-between text-white hover:bg-indigo-800 transition duration-200">
-                <p class="text-base font-black">👥 ജീവനക്കാരുടെ ശമ്പളം</p>
-                <span class="text-indigo-300 font-bold">→</span>
+        <!-- പ്രധാന മെനു ബട്ടണുകൾ -->
+        <div class="space-y-3 pt-2">
+            <a href="staff.html" class="glass-card p-4.5 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-indigo-500 group">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-lg">👥</div>
+                    <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">ജീവനക്കാരുടെ ശമ്പളം</p>
+                </div>
+                <span class="text-indigo-400 font-bold text-lg">→</span>
             </a>
-            <a href="rentals.html" class="bg-emerald-900/90 border border-emerald-700/50 p-5 rounded-2xl shadow-lg flex items-center justify-between text-white hover:bg-emerald-800 transition duration-200">
-                <p class="text-base font-black">🏗️ വാടക ഉപകരണങ്ങൾ</p>
-                <span class="text-emerald-300 font-bold">→</span>
+
+            <a href="rentals.html" class="glass-card p-4.5 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-emerald-500 group">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-lg">🏗️</div>
+                    <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">വാടക ഉപകരണങ്ങൾ</p>
+                </div>
+                <span class="text-emerald-400 font-bold text-lg">→</span>
             </a>
-            <a href="materials.html" class="bg-blue-900/90 border border-blue-700/50 p-5 rounded-2xl shadow-lg flex items-center justify-between text-white hover:bg-blue-800 transition duration-200">
-                <p class="text-base font-black">🧱 മെറ്റീരിയൽസ്</p>
-                <span class="text-blue-300 font-bold">→</span>
+
+            <a href="materials.html" class="glass-card p-4.5 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-blue-500 group">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-lg">🧱</div>
+                    <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">മെറ്റീരിയൽസ്</p>
+                </div>
+                <span class="text-blue-400 font-bold text-lg">→</span>
             </a>
-            <a href="accounts.html" class="bg-rose-900/90 border border-rose-700/50 p-5 rounded-2xl shadow-lg flex items-center justify-between text-white hover:bg-rose-800 transition duration-200">
-                <p class="text-base font-black">📊 വരവ് - ചെലവ്</p>
-                <span class="text-rose-300 font-bold">→</span>
+
+            <a href="accounts.html" class="glass-card p-4.5 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-rose-500 group">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-lg">📊</div>
+                    <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">വരവ് - ചെലവ്</p>
+                </div>
+                <span class="text-rose-400 font-bold text-lg">→</span>
             </a>
-            <a href="estimator.html" class="bg-amber-900/90 border border-amber-700/50 p-5 rounded-2xl shadow-lg flex items-center justify-between text-white hover:bg-amber-800 transition duration-200">
-                <p class="text-base font-black">📐 മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്</p>
-                <span class="text-amber-300 font-bold">→</span>
+
+            <a href="estimator.html" class="glass-card p-4.5 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-lg">📐</div>
+                    <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്</p>
+                </div>
+                <span class="text-amber-400 font-bold text-lg">→</span>
             </a>
         </div>
 
         <!-- വാട്സാപ്പ് സപ്പോർട്ട് -->
-        <a href="https://wa.me/916238020523" class="mt-6 bg-emerald-600 text-white p-4 rounded-2xl flex items-center justify-center font-black text-sm shadow-lg hover:bg-emerald-500 transition duration-200 border border-emerald-500">
+        <a href="https://wa.me/916238020523" class="mt-6 bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-4 rounded-2xl flex items-center justify-center gap-2 font-black text-sm shadow-xl hover:opacity-95 transition duration-300 border border-emerald-400/30">
             💬 വാട്സാപ്പിൽ ബന്ധപ്പെടുക (916238020523)
         </a>
     </div>
 
     <!-- ഫോട്ടോ അപ്‌ലോഡ് & ലോഗ് ഔട്ട് ജാവാസ്ക്രിപ്റ്റ് ഫങ്ഷനുകൾ -->
     <script>
-        // പ്രൊഫൈൽ ഫോട്ടോ കംപ്രസ് ചെയ്ത് സേവ് ചെയ്യുന്നു
-        function updateProfilePhoto(event) {
+        window.updateProfilePhoto = function(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -265,10 +289,9 @@ async function updateDashboard() {
                 };
                 reader.readAsDataURL(file);
             }
-        }
+        };
 
-        // കവർ ഫോട്ടോ കംപ്രസ് ചെയ്ത് സുരക്ഷിതമായി സേവ് ചെയ്യുന്നു
-        function updateCoverPhoto(event) {
+        window.updateCoverPhoto = function(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -293,14 +316,14 @@ async function updateDashboard() {
                 };
                 reader.readAsDataURL(file);
             }
-        }
+        };
 
-        function logoutUser() {
+        window.logoutUser = function() {
             localStorage.removeItem('userName');
             localStorage.removeItem('profilePhoto');
             localStorage.removeItem('coverPhoto');
             window.location.href = "login.html";
-        }
+        };
     </script>
 </body>
 </html>
