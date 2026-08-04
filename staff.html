@@ -184,7 +184,9 @@
                 job: document.getElementById('jobType').value.trim(),
                 bank: document.getElementById('bankDetails').value.trim(),
                 advance: 0,
+                advanceDate: "",
                 extraPaid: 0,
+                extraPaidDate: "",
                 lastSettledDate: ""
             });
             alert("വിവരങ്ങൾ വിജയകരമായി സേവ് ആയി!");
@@ -317,6 +319,18 @@
                                 <input type="number" id="extra-${d.id}" value="${s.extraPaid || 0}" placeholder="കൂടുതൽ കൊടുത്തത്" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-amber-400 outline-none">
                             </div>
                         </div>
+
+                        <!-- പുതിയതായി ചേർത്ത അഡ്വാൻസ് തീയതി കാണിക്കുന്ന ഭാഗം -->
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-400 block">അഡ്വാൻസ് തീയതി:</label>
+                                <input type="date" id="advDate-${d.id}" value="${s.advanceDate || today}" class="w-full p-2 border border-slate-700 rounded-xl text-[11px] font-bold bg-slate-800 text-white outline-none">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-400 block">അധിക തുക തീയതി:</label>
+                                <input type="date" id="extraDate-${d.id}" value="${s.extraPaidDate || today}" class="w-full p-2 border border-slate-700 rounded-xl text-[11px] font-bold bg-slate-800 text-white outline-none">
+                            </div>
+                        </div>
                         
                         <div class="bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-950 border-2 border-amber-400 p-4 rounded-2xl flex justify-between items-center shadow-2xl">
                             <div class="text-white font-black text-sm">
@@ -341,7 +355,7 @@
 
                     <div class="flex gap-2">
                         <button id="edit-${d.id}" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-slate-200">Edit Details</button>
-                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${balanceDue}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
+                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance} (${s.advanceDate || 'തീയതി ഇല്ല'})%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${balanceDue}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                     </div>
                 `;
                 list.appendChild(div);
@@ -359,26 +373,39 @@
                     document.getElementById('wageModal').classList.remove('hidden');
                 };
 
+                // പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്കിൾ) അമർത്തുമ്പോൾ നിലവിലുള്ള ബാലൻസ് തുക മാത്രം അഡ്വാൻസ് ആയി വെക്കുന്ന ലോജിക്
                 document.getElementById(`settleBtn-${d.id}`).onclick = async () => {
-                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ ഇന്നുവരെയുള്ള കണക്കുകൾ ക്ലിയർ ആയി പണിദിവസങ്ങൾ പൂജ്യത്തിൽ നിന്ന് വീണ്ടും തുടങ്ങും)`)) {
+                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ പഴയ ദിവസക്കണക്കുകൾ ക്ലിയർ ആവുകയും, നിലവിലെ ബാക്കി തുക മാത്രം അടുത്ത സൈക്ലിലേക്ക് അഡ്വാൻസ് ആയി ബാക്കി നിൽക്കുകയും ചെയ്യും)`)) {
+                        
+                        // നിലവിലെ ബാക്കി തുക കണക്കുകൂട്ടുക
+                        const currentBalance = totalEarned - advance + extraPaid;
+
                         await updateDoc(doc(db, 'staffs', d.id), {
                             lastSettledDate: today,
-                            advance: 0,
-                            extraPaid: 0
+                            advance: currentBalance > 0 ? currentBalance : 0, // പോസിറ്റീവ് ആണെങ്കിൽ മാത്രം ബാക്കി തുക അഡ്വാൻസ് ആയി വെക്കുന്നു
+                            advanceDate: today,
+                            extraPaid: 0,
+                            extraPaidDate: ""
                         });
-                        alert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി! പുതിയ പണിദിവസങ്ങൾ ഇനിമുതൽ ആദ്യ മുതൽ തുടങ്ങും.");
+
+                        alert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി! പഴയ കണക്കുകൾ ഒഴിവാക്കി ബാക്കി തുക മാത്രം പുതിയ അഡ്വാൻസ് ആയി നിലനിർത്തിയിട്ടുണ്ട്.");
                         loadStaffAndAccounts();
                     }
                 };
 
                 document.getElementById(`saveAdv-${d.id}`).onclick = async () => {
                     const newAdv = parseFloat(document.getElementById(`adv-${d.id}`).value) || 0;
+                    const newAdvDate = document.getElementById(`advDate-${d.id}`).value;
                     const newExtra = parseFloat(document.getElementById(`extra-${d.id}`).value) || 0;
+                    const newExtraDate = document.getElementById(`extraDate-${d.id}`).value;
+
                     await updateDoc(doc(db, 'staffs', d.id), {
                         advance: newAdv,
-                        extraPaid: newExtra
+                        advanceDate: newAdvDate,
+                        extraPaid: newExtra,
+                        extraPaidDate: newExtraDate
                     });
-                    alert("മാറ്റങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
+                    alert("മാറ്റങ്ങളും തീയതിയും വിജയകരമായി സേവ് ചെയ്തു!");
                     loadStaffAndAccounts();
                 };
 
@@ -431,7 +458,7 @@
         }
 
         document.getElementById('saveEditLogBtn').onclick = async () => {
-            const logId = document.getElementById('editLogId').value;
+            const logId = document.getElementById('editLogId.value') || document.getElementById('editLogId').value;
             const newDate = document.getElementById('editLogDate').value;
             const newSite = document.getElementById('editLogSite').value.trim();
             const newAmount = parseFloat(document.getElementById('editLogAmount').value) || 0;
