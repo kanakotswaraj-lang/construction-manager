@@ -278,9 +278,18 @@
 
                 const workedSitesList = workedSitesSet.size > 0 ? Array.from(workedSitesSet).join(', ') : (s.site || 'പ്രധാന സൈറ്റ്');
 
-                const advance = parseFloat(s.advance) || 0;
-                const extraPaid = parseFloat(s.extraPaid) || 0;
-                const balanceDue = totalEarned - advance + extraPaid;
+                let advance = parseFloat(s.advance) || 0;
+                let extraPaid = parseFloat(s.extraPaid) || 0;
+                
+                let rawBalance = totalEarned - advance + extraPaid;
+                let displayBalance = rawBalance;
+                
+                if (rawBalance < 0) {
+                    extraPaid += Math.abs(rawBalance);
+                    displayBalance = 0;
+                }
+
+                const extraInputColorClass = extraPaid > 0 ? "border-red-500 text-red-400 bg-red-950/25" : "text-amber-400";
 
                 div.innerHTML = `
                     <div class="flex justify-between items-center mb-3">
@@ -316,11 +325,10 @@
                             </div>
                             <div>
                                 <label class="text-[10px] font-bold text-slate-400 block">അധിക തുക (₹)</label>
-                                <input type="number" id="extra-${d.id}" value="${s.extraPaid || 0}" placeholder="കൂടുതൽ കൊടുത്തത്" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-amber-400 outline-none">
+                                <input type="number" id="extra-${d.id}" value="${extraPaid}" placeholder="കൂടുതൽ കൊടുത്തത്" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 ${extraInputColorClass} outline-none">
                             </div>
                         </div>
 
-                        <!-- പുതിയതായി ചേർത്ത അഡ്വാൻസ് തീയതി കാണിക്കുന്ന ഭാഗം -->
                         <div class="grid grid-cols-2 gap-2 pt-1">
                             <div>
                                 <label class="text-[10px] font-bold text-slate-400 block">അഡ്വാൻസ് തീയതി:</label>
@@ -340,7 +348,7 @@
                             <div class="h-10 w-[1px] bg-amber-400/30"></div>
                             <div class="text-white font-black text-sm text-right">
                                 ബാക്കി കൊടുക്കാനുള്ളത്:<br>
-                                <span class="text-emerald-400 text-xl font-black">₹${balanceDue}</span>
+                                <span class="text-emerald-400 text-xl font-black">₹${displayBalance}</span>
                             </div>
                         </div>
 
@@ -355,7 +363,7 @@
 
                     <div class="flex gap-2">
                         <button id="edit-${d.id}" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-slate-200">Edit Details</button>
-                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance} (${s.advanceDate || 'തീയതി ഇല്ല'})%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${balanceDue}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
+                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ഇനി കിട്ടാനുള്ള ബാക്കി തുക: ₹${displayBalance}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                     </div>
                 `;
                 list.appendChild(div);
@@ -373,22 +381,31 @@
                     document.getElementById('wageModal').classList.remove('hidden');
                 };
 
-                // പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്കിൾ) അമർത്തുമ്പോൾ നിലവിലുള്ള ബാലൻസ് തുക മാത്രം അഡ്വാൻസ് ആയി വെക്കുന്ന ലോജിക്
                 document.getElementById(`settleBtn-${d.id}`).onclick = async () => {
-                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ പഴയ ദിവസക്കണക്കുകൾ ക്ലിയർ ആവുകയും, നിലവിലെ ബാക്കി തുക മാത്രം അടുത്ത സൈക്ലിലേക്ക് അഡ്വാൻസ് ആയി ബാക്കി നിൽക്കുകയും ചെയ്യും)`)) {
+                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ പഴയ ദിവസക്കണക്കുകൾ ക്ലിയർ ആവുകയും, നിലവിലെ ബാക്കി തുകയോ അധിക തുകയോ അതിന്റെ തീയതി സഹിതം അടുത്ത സൈക്ലിലേക്ക് ബാക്കി നിൽക്കുകയും ചെയ്യും)`)) {
                         
-                        // നിലവിലെ ബാക്കി തുക കണക്കുകൂട്ടുക
-                        const currentBalance = totalEarned - advance + extraPaid;
+                        let newAdvanceVal = 0;
+                        let newAdvanceDateVal = "";
+                        let newExtraVal = 0;
+                        let newExtraDateVal = "";
+
+                        if (rawBalance > 0) {
+                            newAdvanceVal = rawBalance;
+                            newAdvanceDateVal = today;
+                        } else if (rawBalance < 0) {
+                            newExtraVal = Math.abs(rawBalance);
+                            newExtraDateVal = today;
+                        }
 
                         await updateDoc(doc(db, 'staffs', d.id), {
                             lastSettledDate: today,
-                            advance: currentBalance > 0 ? currentBalance : 0, // പോസിറ്റീവ് ആണെങ്കിൽ മാത്രം ബാക്കി തുക അഡ്വാൻസ് ആയി വെക്കുന്നു
-                            advanceDate: today,
-                            extraPaid: 0,
-                            extraPaidDate: ""
+                            advance: newAdvanceVal,
+                            advanceDate: newAdvanceDateVal,
+                            extraPaid: newExtraVal,
+                            extraPaidDate: newExtraDateVal
                         });
 
-                        alert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി! പഴയ കണക്കുകൾ ഒഴിവാക്കി ബാക്കി തുക മാത്രം പുതിയ അഡ്വാൻസ് ആയി നിലനിർത്തിയിട്ടുണ്ട്.");
+                        alert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി! ബാക്കി തുകയും അതിന്റെ തീയതിയും അടുത്ത സൈക്ലിലേക്ക് മാറ്റിയിട്ടുണ്ട്.");
                         loadStaffAndAccounts();
                     }
                 };
@@ -458,7 +475,7 @@
         }
 
         document.getElementById('saveEditLogBtn').onclick = async () => {
-            const logId = document.getElementById('editLogId.value') || document.getElementById('editLogId').value;
+            const logId = document.getElementById('editLogId').value;
             const newDate = document.getElementById('editLogDate').value;
             const newSite = document.getElementById('editLogSite').value.trim();
             const newAmount = parseFloat(document.getElementById('editLogAmount').value) || 0;
