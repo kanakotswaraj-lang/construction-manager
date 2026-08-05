@@ -164,7 +164,7 @@
         }
 
         document.getElementById('filterFromDate').value = "";
-        document.getElementById('filterToDate').value = getTodayDate();
+        document.getElementById('filterToDate').value = "";
 
         document.getElementById('saveStaffBtn').addEventListener('click', async () => {
             const name = document.getElementById('staffName').value.trim();
@@ -218,7 +218,6 @@
                 allAccounts.push({ id: docSnap.id, ...docSnap.data() });
             });
 
-            // Sort accounts by date descending (Newest first)
             allAccounts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             const staffsQuery = query(collection(db, "staffs"), where("meshtriOwner", "==", currentMeshtri));
@@ -246,6 +245,7 @@
                             return;
                         }
 
+                        // ഫിൽട്ടർ നൽകിയിട്ടുണ്ടെങ്കിൽ മാത്രം ആ തീയതി പരിധി പരിശോധിക്കുക, ഇല്ലെങ്കിൽ എല്ലാ കണക്കുകളും കാണിക്കുക
                         let passDateFilter = true;
                         if (fromDate && log.date < fromDate) passDateFilter = false;
                         if (toDate && log.date > toDate) passDateFilter = false;
@@ -466,7 +466,7 @@
             document.getElementById('editLogModal').classList.add('hidden');
         }
 
-        window.deleteLog = async function(logId, staffId) {
+        window.deleteLog = async function(logId) {
             if (confirm("ഈ ദിവസത്തെ കണക്ക് ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
                 await deleteDoc(doc(db, 'accounts', logId));
                 alert("കണക്ക് ഡിലീറ്റ് ചെയ്തു!");
