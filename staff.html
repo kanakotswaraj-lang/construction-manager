@@ -241,12 +241,18 @@
 
                 staffLogs.forEach(log => {
                     if (log.type === "wage") {
-                        // സെറ്റിൽമെന്റ് ഡേറ്റ് പരിശോധന പൂർണ്ണമായി ഒഴിവാക്കി, എല്ലാ പഴയ കണക്കുകളും ഇവിടെ കാണിക്കും
+                        // സെറ്റിൽമെന്റ് ചെയ്ത തീയതിക്ക് മുമ്പുള്ള പഴയ കണക്കുകൾ ഒഴിവാക്കുന്നു (എന്നാൽ ഫിൽട്ടർ വെച്ചിട്ടുണ്ടെങ്കിൽ അത് ബാധകമല്ല)
+                        let isAfterSettlement = true;
+                        if (s.lastSettledDate && log.date <= s.lastSettledDate) {
+                            isAfterSettlement = false;
+                        }
+
                         let passDateFilter = true;
                         if (fromDate && log.date < fromDate) passDateFilter = false;
                         if (toDate && log.date > toDate) passDateFilter = false;
 
-                        if (passDateFilter) {
+                        // സെറ്റിൽമെന്റിന് ശേഷമുള്ളവ അല്ലെങ്കിൽ ഡേറ്റ് ഫിൽട്ടർ പ്രകാരമുള്ളവ കാണിക്കുക
+                        if (isAfterSettlement || (fromDate && passDateFilter)) {
                             totalEarned += parseFloat(log.amount) || 0;
                             const match = log.name.match(/\((?:കൂലി|wage)\s*-\s*([\d.]+)\s*ദിവസം\)/i);
                             if (match) {
@@ -378,7 +384,7 @@
                 };
 
                 document.getElementById(`settleBtn-${d.id}`).onclick = async () => {
-                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ നിലവിലെ ബാക്കി തുകയോ അധിക തുകയോ അതിന്റെ തീയതി സഹിതം അടുത്ത സൈക്ലിലേക്ക് ബാക്കി നിൽക്കും)`)) {
+                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ നിലവിലെ ബാക്കി തുകയോ അധിക തുകയോ അടുത്ത സൈക്ലിലേക്ക് മാറുകയും, ഇന്നത്തെ തീയതി സെറ്റിൽമെന്റ് തീയതിയായി സെറ്റ് ചെയ്യപ്പെടുകയും ചെയ്യും)`)) {
                         
                         let newAdvanceVal = 0;
                         let newAdvanceDateVal = "";
@@ -394,14 +400,14 @@
                         }
 
                         await updateDoc(doc(db, 'staffs', d.id), {
-                            lastSettledDate: "", // സെറ്റിൽമെൻ്റ് തീയതി ക്ലിയർ ചെയ്യുന്നു, അതിനാൽ ഏത് പഴയ തീയതിയും ഇനി കാണാം
+                            lastSettledDate: today, // ഇന്നത്തെ തീയതി സെറ്റിൽമെന്റ് തീയതിയായി സേവ് ചെയ്യുന്നു
                             advance: newAdvanceVal,
                             advanceDate: newAdvanceDateVal,
                             extraPaid: newExtraVal,
                             extraPaidDate: newExtraDateVal
                         });
 
-                        alert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി! ബാക്കി തുകയും അതിന്റെ തീയതിയും അടുത്ത സൈക്ലിലേക്ക് മാറ്റിയിട്ടുണ്ട്.");
+                        alert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി!");
                         loadStaffAndAccounts();
                     }
                 };
