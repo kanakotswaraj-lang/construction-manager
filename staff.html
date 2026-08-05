@@ -220,7 +220,7 @@
 
                 staffLogs.forEach(log => {
                     if (log.type === "wage") {
-                        // സെറ്റിൽമെന്റ് ചെയ്ത തീയതിക്ക് (lastSettledDate) മുമ്പുള്ള പഴയ കണക്കുകൾ ലിസ്റ്റിൽ നിന്നും ടോട്ടലിൽ നിന്നും പൂർണ്ണമായി ഒഴിവാക്കുന്നു
+                        // സെറ്റിൽമെന്റ് ചെയ്ത തീയതിക്ക് മുമ്പുള്ള പഴയ കണക്കുകൾ പൂർണ്ണമായി ഒഴിവാക്കുന്നു
                         if (s.lastSettledDate && log.date <= s.lastSettledDate) {
                             return; 
                         }
@@ -280,9 +280,9 @@
                     </button>
 
                     <div class="bg-slate-800/60 border border-slate-800 p-3 rounded-2xl mb-3">
-                        <p class="text-xs font-black text-amber-400 mb-2">📋 ഈ കാലയളവിലെ പണി ദിവസങ്ങൾ:</p>
+                        <p class="text-xs font-black text-amber-400 mb-2">📋 ഈ സൈക്ലിലെ പണി ദിവസങ്ങൾ:</p>
                         <div class="max-h-40 overflow-y-auto space-y-1">
-                            ${logsHtml || '<p class="text-xs text-slate-400 text-center py-2">കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>'}
+                            ${logsHtml || '<p class="text-xs text-slate-400 text-center py-2">പുതിയ കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>'}
                         </div>
                     </div>
 
@@ -355,7 +355,7 @@
                 };
 
                 document.getElementById(`settleBtn-${d.id}`).onclick = async () => {
-                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ നിലവിലെ ബാക്കി തുകയോ അധിക തുകയോ അതിന്റെ തീയതി സഹിതം അടുത്ത സൈക്ലിലേക്ക് ബാക്കി നിൽക്കും)`)) {
+                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ ഇന്നത്തെ തീയതി സെറ്റിൽമെന്റ് തീയതിയായി സേവ് ചെയ്യപ്പെടുകയും, അതിനുമുമ്പുള്ള പഴയ കണക്കുകൾ ലിസ്റ്റിൽ നിന്നും മാറുകയും ചെയ്യും)`)) {
                         
                         let newAdvanceVal = 0;
                         let newAdvanceDateVal = "";
@@ -371,7 +371,7 @@
                         }
 
                         await updateDoc(doc(db, 'staffs', d.id), {
-                            lastSettledDate: today, // ഇന്നത്തെ തീയതി സെറ്റിൽമെന്റ് തീയതിയായി സേവ് ചെയ്യുന്നു
+                            lastSettledDate: today, // ഇന്നത്തെ തീയതി സെറ്റിൽമെന്റ് തീയതിയായി സെറ്റ് ചെയ്യുന്നു
                             advance: newAdvanceVal,
                             advanceDate: newAdvanceDateVal,
                             extraPaid: newExtraVal,
