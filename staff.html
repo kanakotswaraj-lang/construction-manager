@@ -206,12 +206,23 @@
 
             staffsSnapshot.forEach((d) => {
                 const s = d.data();
+                const staffId = d.id;
                 const div = document.createElement('div');
                 div.className = "bg-slate-900/80 text-white p-4 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-md mb-4";
                 const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
                 const today = getTodayDate();
 
-                const staffLogs = allAccounts.filter(acc => acc.name && acc.name.startsWith(s.name + " ("));
+                // പഴയ ലോഗുകളിൽ staffId ഇല്ലാതിരുന്നാൽ പേര് വെച്ചും (Name match) ഒപ്പം പുതിയവ staffId വെച്ചും മാച്ച് ചെയ്ത് കണക്കുകൾ പൂർണ്ണമായി എടുക്കുന്നു
+                const staffLogs = allAccounts.filter(acc => {
+                    if (acc.staffId === staffId) return true;
+                    // പഴയ ഡാറ്റയ്ക്ക് വേണ്ടി തൊഴിലാളിയുടെ പേര് ലോഗ് നാമിന്റെ തുടക്കത്തിലുണ്ടോ എന്ന് നോക്കുന്നു
+                    if (!acc.staffId && acc.name && s.name) {
+                        const accNameClean = acc.name.split('(')[0].trim().toLowerCase();
+                        const staffNameClean = s.name.trim().toLowerCase();
+                        return accNameClean === staffNameClean;
+                    }
+                    return false;
+                });
                 
                 let totalEarned = 0;
                 let totalWorkedDays = 0;
@@ -220,16 +231,16 @@
 
                 staffLogs.forEach(log => {
                     if (log.type === "wage") {
-                        // സെറ്റിൽമെന്റിന് ശേഷം വരുന്ന പുതിയ കണക്കുകൾ മാത്രം കാണിക്കുക, 
-                        // എന്നാൽ ബാക്ക്ഡേറ്റിൽ ചേർത്തതാണെങ്കിൽ അതും ലിസ്റ്റിൽ ഉൾപ്പെടുത്തുക.
                         if (s.lastSettledDate && log.date < s.lastSettledDate) {
                             return; 
                         }
 
                         totalEarned += parseFloat(log.amount) || 0;
-                        const match = log.name.match(/\((?:കൂലി|wage)\s*-\s*([\d.]+)\s*ദിവസം\)/i);
+                        const match = log.name ? log.name.match(/\((?:കൂലി|wage)\s*-\s*([\d.]+)\s*ദിവസം\)/i) : null;
                         if (match) {
                             totalWorkedDays += parseFloat(match[1]) || 0;
+                        } else {
+                            totalWorkedDays += 1; // ഡിഫോൾട്ടായി 1 ദിവസം കണക്കാക്കുന്നു
                         }
                         if (log.site) {
                             workedSitesSet.add(log.site);
@@ -273,10 +284,10 @@
                             <p class="text-[11px] text-blue-300 font-bold mt-0.5">📍 പണിയെടുത്ത സൈറ്റുകൾ: ${workedSitesList}</p>
                             ${s.bank ? `<p class="text-[11px] text-slate-400 mt-0.5">GPay/Bank: ${s.bank}</p>` : ''}
                         </div>
-                        <button id="del-${d.id}" class="text-red-400 text-xs font-bold px-2.5 py-1.5 bg-red-950/60 border border-red-800/50 rounded-xl">Delete</button>
+                        <button id="del-${staffId}" class="text-red-400 text-xs font-bold px-2.5 py-1.5 bg-red-950/60 border border-red-800/50 rounded-xl">Delete</button>
                     </div>
 
-                    <button id="openModalBtn-${d.id}" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-2.5 rounded-xl text-xs font-black shadow-lg transition mb-3">
+                    <button id="openModalBtn-${staffId}" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-2.5 rounded-xl text-xs font-black shadow-lg transition mb-3">
                         ➕ ദിവസവേദനവും സൈറ്റും ചേർക്കുക (Popup)
                     </button>
 
@@ -295,22 +306,22 @@
                             </div>
                             <div>
                                 <label class="text-[10px] font-bold text-slate-400 block">അഡ്വാൻസ് (₹)</label>
-                                <input type="number" id="adv-${d.id}" value="${s.advance || 0}" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-white outline-none">
+                                <input type="number" id="adv-${staffId}" value="${s.advance || 0}" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-white outline-none">
                             </div>
                             <div>
                                 <label class="text-[10px] font-bold text-slate-400 block">അധിക തുക (₹)</label>
-                                <input type="number" id="extra-${d.id}" value="${extraPaid}" placeholder="കൂടുതൽ കൊടുത്തത്" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 ${extraInputColorClass} outline-none">
+                                <input type="number" id="extra-${staffId}" value="${extraPaid}" placeholder="കൂടുതൽ കൊടുത്തത്" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 ${extraInputColorClass} outline-none">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-2 pt-1">
                             <div>
                                 <label class="text-[10px] font-bold text-slate-400 block">അഡ്വാൻസ് തീയതി:</label>
-                                <input type="date" id="advDate-${d.id}" value="${s.advanceDate || today}" class="w-full p-2 border border-slate-700 rounded-xl text-[11px] font-bold bg-slate-800 text-white outline-none">
+                                <input type="date" id="advDate-${staffId}" value="${s.advanceDate || today}" class="w-full p-2 border border-slate-700 rounded-xl text-[11px] font-bold bg-slate-800 text-white outline-none">
                             </div>
                             <div>
                                 <label class="text-[10px] font-bold text-slate-400 block">അധിക തുക തീയതി:</label>
-                                <input type="date" id="extraDate-${d.id}" value="${s.extraPaidDate || today}" class="w-full p-2 border border-slate-700 rounded-xl text-[11px] font-bold bg-slate-800 text-white outline-none">
+                                <input type="date" id="extraDate-${staffId}" value="${s.extraPaidDate || today}" class="w-full p-2 border border-slate-700 rounded-xl text-[11px] font-bold bg-slate-800 text-white outline-none">
                             </div>
                         </div>
                         
@@ -326,24 +337,24 @@
                             </div>
                         </div>
 
-                        <button id="saveAdv-${d.id}" class="w-full bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 font-black p-3 rounded-xl shadow-md transition text-xs">
+                        <button id="saveAdv-${staffId}" class="w-full bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 font-black p-3 rounded-xl shadow-md transition text-xs">
                             അഡ്വാൻസ് / അധിക തുക മാറ്റങ്ങൾ സേവ് ചെയ്യുക
                         </button>
  
-                        <button id="settleBtn-${d.id}" class="w-full bg-purple-900/60 hover:bg-purple-900 border border-purple-700/50 text-purple-200 mt-2 p-2.5 rounded-xl text-xs font-black shadow-sm transition">
+                        <button id="settleBtn-${staffId}" class="w-full bg-purple-900/60 hover:bg-purple-900 border border-purple-700/50 text-purple-200 mt-2 p-2.5 rounded-xl text-xs font-black shadow-sm transition">
                             💸 പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്കിൾ തുടങ്ങുക)
                         </button>
                     </div>
 
                     <div class="flex gap-2">
-                        <button id="edit-${d.id}" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-slate-200">Edit Details</button>
+                        <button id="edit-${staffId}" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-slate-200">Edit Details</button>
                         <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ${rawBalance < 0 ? 'തൊഴിലാളി തരാനുള്ളത്' : 'കിട്ടാനുള്ള ബാക്കി തുക'}: ₹${displayBalance}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                     </div>
                 `;
                 list.appendChild(div);
 
-                document.getElementById(`openModalBtn-${d.id}`).onclick = () => {
-                    document.getElementById('modalStaffId').value = d.id;
+                document.getElementById(`openModalBtn-${staffId}`).onclick = () => {
+                    document.getElementById('modalStaffId').value = staffId;
                     document.getElementById('modalStaffName').value = s.name;
                     document.getElementById('modalDefaultWage').value = s.wage || 0;
                     document.getElementById('modalWorkerTitle').innerText = `${s.name} - കണക്ക് ചേർക്കുക`;
@@ -355,7 +366,7 @@
                     document.getElementById('wageModal').classList.remove('hidden');
                 };
 
-                document.getElementById(`settleBtn-${d.id}`).onclick = async () => {
+                document.getElementById(`settleBtn-${staffId}`).onclick = async () => {
                     if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ സെറ്റിൽമെന്റ് തീയതി അപ്ഡേറ്റ് ചെയ്യപ്പെടും)`)) {
                         
                         let newAdvanceVal = 0;
@@ -371,7 +382,7 @@
                             newExtraDateVal = today;
                         }
 
-                        await updateDoc(doc(db, 'staffs', d.id), {
+                        await updateDoc(doc(db, 'staffs', staffId), {
                             lastSettledDate: today,
                             advance: newAdvanceVal,
                             advanceDate: newAdvanceDateVal,
@@ -384,13 +395,13 @@
                     }
                 };
 
-                document.getElementById(`saveAdv-${d.id}`).onclick = async () => {
-                    const newAdv = parseFloat(document.getElementById(`adv-${d.id}`).value) || 0;
-                    const newAdvDate = document.getElementById(`advDate-${d.id}`).value;
-                    const newExtra = parseFloat(document.getElementById(`extra-${d.id}`).value) || 0;
-                    const newExtraDate = document.getElementById(`extraDate-${d.id}`).value;
+                document.getElementById(`saveAdv-${staffId}`).onclick = async () => {
+                    const newAdv = parseFloat(document.getElementById(`adv-${staffId}`).value) || 0;
+                    const newAdvDate = document.getElementById(`advDate-${staffId}`).value;
+                    const newExtra = parseFloat(document.getElementById(`extra-${staffId}`).value) || 0;
+                    const newExtraDate = document.getElementById(`extraDate-${staffId}`).value;
 
-                    await updateDoc(doc(db, 'staffs', d.id), {
+                    await updateDoc(doc(db, 'staffs', staffId), {
                         advance: newAdv,
                         advanceDate: newAdvDate,
                         extraPaid: newExtra,
@@ -400,14 +411,14 @@
                     loadStaffAndAccounts();
                 };
 
-                document.getElementById(`del-${d.id}`).onclick = () => {
+                document.getElementById(`del-${staffId}`).onclick = () => {
                     if(confirm("ഈ തൊഴിലാളിയെ ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
-                        deleteDoc(doc(db, 'staffs', d.id));
+                        deleteDoc(doc(db, 'staffs', staffId));
                         loadStaffAndAccounts();
                     }
                 };
                 
-                document.getElementById(`edit-${d.id}`).onclick = () => {
+                document.getElementById(`edit-${staffId}`).onclick = () => {
                     const newName = prompt("പേര് മാറ്റുക:", s.name);
                     if(newName === null) return;
                     const newWage = prompt("സാധാരണ കൂലി:", s.wage);
@@ -417,7 +428,7 @@
                     const newBank = prompt("ബാങ്ക് / GPay നമ്പർ:", s.bank);
                     if(newBank === null) return;
 
-                    updateDoc(doc(db, 'staffs', d.id), { 
+                    updateDoc(doc(db, 'staffs', staffId), { 
                         name: newName, 
                         wage: parseFloat(newWage) || 0,
                         site: newSite,
@@ -480,6 +491,7 @@
         }
 
         document.getElementById('confirmWageBtn').onclick = async () => {
+            const staffId = document.getElementById('modalStaffId').value;
             const staffName = document.getElementById('modalStaffName').value;
             const selectedDate = document.getElementById('modalDate').value || getTodayDate();
             const siteName = document.getElementById('modalSiteName').value.trim() || "പ്രധാന സൈറ്റ്";
@@ -491,6 +503,7 @@
 
             await addDoc(collection(db, "accounts"), {
                 meshtriOwner: currentMeshtri,
+                staffId: staffId,
                 name: staffName + ` (കൂലി - ${addedDays} ദിവസം)`,
                 site: siteName,
                 type: "wage",
