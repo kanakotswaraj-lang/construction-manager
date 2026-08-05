@@ -50,21 +50,6 @@
             <button id="saveStaffBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-3.5 rounded-xl font-black shadow-lg text-sm transition">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
         </div>
 
-        <div class="bg-slate-900/80 text-white p-4 rounded-2xl border border-slate-800 shadow-xl backdrop-blur-md mb-4">
-            <h3 class="text-xs font-bold text-amber-400 mb-2">📅 കണക്ക് പരിശോധിക്കേണ്ട തീയതി പരിധി (Date Filter):</h3>
-            <div class="grid grid-cols-2 gap-2 mb-2">
-                <div>
-                    <label class="text-[10px] text-slate-400 font-bold">മുതൽ (From):</label>
-                    <input type="date" id="filterFromDate" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-white outline-none">
-                </div>
-                <div>
-                    <label class="text-[10px] text-slate-400 font-bold">വരെ (To):</label>
-                    <input type="date" id="filterToDate" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-white outline-none">
-                </div>
-            </div>
-            <button id="applyDateFilter" class="w-full bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 p-2.5 rounded-xl text-xs font-bold shadow-md transition">ഈ തീയതിയിലെ കണക്കുകൾ മാത്രം കാണുക</button>
-        </div>
-
         <input type="text" id="searchInput" placeholder="പേര് സെർച്ച് ചെയ്യുക..." class="w-full p-3 bg-slate-900/80 text-white rounded-xl border border-slate-700 mb-4 shadow-xl text-sm font-bold outline-none focus:border-amber-400">
 
         <div id="staffList" class="space-y-4 pb-12"></div>
@@ -163,9 +148,6 @@
             return days[d.getDay()] || "";
         }
 
-        document.getElementById('filterFromDate').value = "";
-        document.getElementById('filterToDate').value = "";
-
         document.getElementById('saveStaffBtn').addEventListener('click', async () => {
             const name = document.getElementById('staffName').value.trim();
             const site = document.getElementById('siteName').value.trim();
@@ -208,9 +190,6 @@
             const list = document.getElementById('staffList');
             list.innerHTML = '<p class="text-center text-xs text-slate-400 font-bold">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>';
 
-            const fromDate = document.getElementById('filterFromDate').value;
-            const toDate = document.getElementById('filterToDate').value;
-
             const accountsQuery = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
             const accountsSnapshot = await getDocs(accountsQuery);
             const allAccounts = [];
@@ -241,40 +220,32 @@
 
                 staffLogs.forEach(log => {
                     if (log.type === "wage") {
-                        // സെറ്റിൽമെന്റ് ചെയ്ത തീയതിക്ക് മുമ്പുള്ള പഴയ കണക്കുകൾ ഒഴിവാക്കുന്നു (എന്നാൽ ഫിൽട്ടർ വെച്ചിട്ടുണ്ടെങ്കിൽ അത് ബാധകമല്ല)
-                        let isAfterSettlement = true;
+                        // സെറ്റിൽമെന്റ് ചെയ്ത തീയതിക്ക് (lastSettledDate) മുമ്പുള്ള പഴയ കണക്കുകൾ ലിസ്റ്റിൽ നിന്നും ടോട്ടലിൽ നിന്നും പൂർണ്ണമായി ഒഴിവാക്കുന്നു
                         if (s.lastSettledDate && log.date <= s.lastSettledDate) {
-                            isAfterSettlement = false;
+                            return; 
                         }
 
-                        let passDateFilter = true;
-                        if (fromDate && log.date < fromDate) passDateFilter = false;
-                        if (toDate && log.date > toDate) passDateFilter = false;
+                        totalEarned += parseFloat(log.amount) || 0;
+                        const match = log.name.match(/\((?:കൂലി|wage)\s*-\s*([\d.]+)\s*ദിവസം\)/i);
+                        if (match) {
+                            totalWorkedDays += parseFloat(match[1]) || 0;
+                        }
+                        if (log.site) {
+                            workedSitesSet.add(log.site);
+                        }
 
-                        // സെറ്റിൽമെന്റിന് ശേഷമുള്ളവ അല്ലെങ്കിൽ ഡേറ്റ് ഫിൽട്ടർ പ്രകാരമുള്ളവ കാണിക്കുക
-                        if (isAfterSettlement || (fromDate && passDateFilter)) {
-                            totalEarned += parseFloat(log.amount) || 0;
-                            const match = log.name.match(/\((?:കൂലി|wage)\s*-\s*([\d.]+)\s*ദിവസം\)/i);
-                            if (match) {
-                                totalWorkedDays += parseFloat(match[1]) || 0;
-                            }
-                            if (log.site) {
-                                workedSitesSet.add(log.site);
-                            }
+                        const dayName = getMalayalamDay(log.date);
+                        const displayDateStr = dayName ? `${log.date} (${dayName})` : log.date;
 
-                            const dayName = getMalayalamDay(log.date);
-                            const displayDateStr = dayName ? `${log.date} (${dayName})` : log.date;
-
-                            logsHtml += `
-                                <div class="flex justify-between items-center text-xs bg-slate-800 p-2.5 rounded-xl border border-slate-700 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
-                                    <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', '${log.date}', '${log.site || ''}', '${log.amount}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold hover:bg-blue-900">Edit</button>
-                                        <button onclick="deleteLog('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2 py-1 rounded-lg font-bold hover:bg-red-900">Del</button>
-                                    </div>
+                        logsHtml += `
+                            <div class="flex justify-between items-center text-xs bg-slate-800 p-2.5 rounded-xl border border-slate-700 mb-1.5 shadow-sm">
+                                <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
+                                <div class="flex gap-1.5">
+                                    <button onclick="openEditLog('${log.id}', '${log.date}', '${log.site || ''}', '${log.amount}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold hover:bg-blue-900">Edit</button>
+                                    <button onclick="deleteLog('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2 py-1 rounded-lg font-bold hover:bg-red-900">Del</button>
                                 </div>
-                            `;
-                        }
+                            </div>
+                        `;
                     }
                 });
 
@@ -384,7 +355,7 @@
                 };
 
                 document.getElementById(`settleBtn-${d.id}`).onclick = async () => {
-                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ നിലവിലെ ബാക്കി തുകയോ അധിക തുകയോ അടുത്ത സൈക്ലിലേക്ക് മാറുകയും, ഇന്നത്തെ തീയതി സെറ്റിൽമെന്റ് തീയതിയായി സെറ്റ് ചെയ്യപ്പെടുകയും ചെയ്യും)`)) {
+                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ നിലവിലെ ബാക്കി തുകയോ അധിക തുകയോ അതിന്റെ തീയതി സഹിതം അടുത്ത സൈക്ലിലേക്ക് ബാക്കി നിൽക്കും)`)) {
                         
                         let newAdvanceVal = 0;
                         let newAdvanceDateVal = "";
@@ -531,10 +502,6 @@
             closeWageModal();
             loadStaffAndAccounts();
         };
-
-        document.getElementById('applyDateFilter').addEventListener('click', () => {
-            loadStaffAndAccounts();
-        });
 
         loadStaffAndAccounts();
     </script>
