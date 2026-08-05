@@ -70,6 +70,7 @@
         <div id="staffList" class="space-y-4 pb-12"></div>
     </div>
 
+    <!-- Wage Modal -->
     <div id="wageModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex justify-center items-center p-4">
         <div class="bg-slate-900 text-white w-full max-w-sm p-6 rounded-3xl shadow-2xl border border-slate-800">
             <div class="flex justify-between items-center mb-4">
@@ -108,6 +109,7 @@
         </div>
     </div>
 
+    <!-- Edit Log Modal -->
     <div id="editLogModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex justify-center items-center p-4">
         <div class="bg-slate-900 text-white w-full max-w-sm p-6 rounded-3xl shadow-2xl border border-slate-800">
             <div class="flex justify-between items-center mb-4">
@@ -215,6 +217,9 @@
             accountsSnapshot.forEach(docSnap => {
                 allAccounts.push({ id: docSnap.id, ...docSnap.data() });
             });
+
+            // Sort accounts by date descending (Newest first)
+            allAccounts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             const staffsQuery = query(collection(db, "staffs"), where("meshtriOwner", "==", currentMeshtri));
             const staffsSnapshot = await getDocs(staffsQuery);
@@ -461,7 +466,7 @@
             document.getElementById('editLogModal').classList.add('hidden');
         }
 
-        window.deleteLog = async function(logId) {
+        window.deleteLog = async function(logId, staffId) {
             if (confirm("ഈ ദിവസത്തെ കണക്ക് ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
                 await deleteDoc(doc(db, 'accounts', logId));
                 alert("കണക്ക് ഡിലീറ്റ് ചെയ്തു!");
