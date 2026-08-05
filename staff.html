@@ -241,11 +241,7 @@
 
                 staffLogs.forEach(log => {
                     if (log.type === "wage") {
-                        if (s.lastSettledDate && log.date <= s.lastSettledDate) {
-                            return;
-                        }
-
-                        // ഫിൽട്ടർ നൽകിയിട്ടുണ്ടെങ്കിൽ മാത്രം ആ തീയതി പരിധി പരിശോധിക്കുക, ഇല്ലെങ്കിൽ എല്ലാ കണക്കുകളും കാണിക്കുക
+                        // സെറ്റിൽമെന്റ് ഡേറ്റ് പരിശോധന പൂർണ്ണമായി ഒഴിവാക്കി, എല്ലാ പഴയ കണക്കുകളും ഇവിടെ കാണിക്കും
                         let passDateFilter = true;
                         if (fromDate && log.date < fromDate) passDateFilter = false;
                         if (toDate && log.date > toDate) passDateFilter = false;
@@ -382,7 +378,7 @@
                 };
 
                 document.getElementById(`settleBtn-${d.id}`).onclick = async () => {
-                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ പഴയ ദിവസക്കണക്കുകൾ ക്ലിയർ ആവുകയും, നിലവിലെ ബാക്കി തുകയോ അധിക തുകയോ അതിന്റെ തീയതി സഹിതം അടുത്ത സൈക്ലിലേക്ക് ബാക്കി നിൽക്കുകയും ചെയ്യും)`)) {
+                    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള മുഴുവൻ പണവും കൊടുത്തുതീർത്തു എന്ന് ഉറപ്പാണോ?\n(ഇത് ചെയ്യുമ്പോൾ നിലവിലെ ബാക്കി തുകയോ അധിക തുകയോ അതിന്റെ തീയതി സഹിതം അടുത്ത സൈക്ലിലേക്ക് ബാക്കി നിൽക്കും)`)) {
                         
                         let newAdvanceVal = 0;
                         let newAdvanceDateVal = "";
@@ -398,7 +394,7 @@
                         }
 
                         await updateDoc(doc(db, 'staffs', d.id), {
-                            lastSettledDate: today,
+                            lastSettledDate: "", // സെറ്റിൽമെൻ്റ് തീയതി ക്ലിയർ ചെയ്യുന്നു, അതിനാൽ ഏത് പഴയ തീയതിയും ഇനി കാണാം
                             advance: newAdvanceVal,
                             advanceDate: newAdvanceDateVal,
                             extraPaid: newExtraVal,
