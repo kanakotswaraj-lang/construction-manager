@@ -187,7 +187,6 @@
 
     <h2>സൈറ്റ് കണക്ക് എൻട്രി</h2>
     
-    <!-- സെർച്ച് ബോക്സ് -->
     <div class="form-group" style="margin-bottom: 15px;">
         <input type="text" id="searchBox" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()">
     </div>
@@ -226,25 +225,22 @@
             </div>
         </div>
 
-        <!-- മറ്റു ചെലവുകൾ വിവരണ സഹിതം ചേർക്കാൻ -->
         <div class="other-expense-section">
             <h3 style="text-align: left; font-size: 15px; margin-bottom: 10px;">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ മുതലായവ)</h3>
             <div id="expenseListContainer"></div>
             <button type="button" class="btn-success" onclick="addExpenseRow()">+ ചെലവ് ചേർക്കുക</button>
         </div>
 
-        <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ -->
         <div class="worker-section">
             <h3 style="text-align: left; font-size: 15px; margin-bottom: 10px;">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
             <div id="workerListContainer"></div>
             
             <div style="display: flex; gap: 8px; margin-top: 10px;">
                 <button type="button" class="btn-success" onclick="addWorkerRow()">+ തൊഴിലാളിയെ ചേർക്കുക</button>
-                <button type="button" class="btn-success" style="background: #2563eb;" onclick="addNewWorkerPrompt()">+ പുതിയ ആളെ ചേർക്കുക</button>
+                <a href="staff.html" class="btn-success" style="background: #2563eb; text-decoration: none; text-align: center; display: inline-block; line-height: normal;">+ പുതിയ ആളെ ചേർക്കുക</a>
             </div>
         </div>
 
-        <!-- Summary & Totals (Real-time) -->
         <div class="summary-box">
             <div class="summary-row">
                 <span>ആകെ വരവ്:</span>
@@ -266,35 +262,38 @@
     </form>
 </div>
 
-<script>
-    let registeredWorkers = [
-        "രാമൻ",
-        "ചന്ദ്രൻ",
-        "കുട്ടപ്പൻ",
-        "സുരേഷ്"
-    ];
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.appspot.com",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+
+    let registeredWorkers = [];
 
     document.getElementById('entryDate').valueAsDate = new Date();
 
-    // ഫീൽഡ് എഡിറ്റ് ചെയ്യാൻ
-    function enableEdit(fieldId) {
-        document.getElementById(fieldId).focus();
-    }
-
-    // ഫീൽഡ് ക്ലിയർ/ഡിലീറ്റ് ചെയ്യാൻ
-    function clearField(fieldId) {
-        let field = document.getElementById(fieldId);
-        field.value = field.type === 'number' ? '0' : '';
-        calculateTotal();
-    }
-
-    // പുതിയ തൊഴിലാളിയെ ആഡ് ചെയ്യാൻ
-    function addNewWorkerPrompt() {
-        let newName = prompt("പുതിയ തൊഴിലാളിയുടെ പേര് നൽകുക:");
-        if (newName && newName.trim() !== "") {
-            registeredWorkers.push(newName.trim());
-            alert(`${newName.trim()} വിജയകരമായി ലിസ്റ്റിലേക്ക് ചേർത്തു!`);
+    async function fetchRegisteredWorkers() {
+        try {
+            const q = query(collection(db, "staffs"), where("meshtriOwner", "==", currentMeshtri));
+            const querySnapshot = await getDocs(q);
+            registeredWorkers = [];
+            querySnapshot.forEach((docSnap) => {
+                registeredWorkers.push({ id: docSnap.id, ...docSnap.data() });
+            });
             updateAllDropdowns();
+        } catch (e) {
+            console.error("സ്റ്റാഫുകളെ എടുക്കുന്നതിൽ പിഴവ്:", e);
         }
     }
 
@@ -303,19 +302,27 @@
         selects.forEach(select => {
             let currentValue = select.value;
             select.innerHTML = `<option value="">തൊഴിലാളി</option>` + 
-                registeredWorkers.map(w => `<option value="${w}">${w}</option>`).join('');
+                registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
             select.value = currentValue;
         });
     }
 
-    // മറ്റു ചെലവുകൾ റോ ചേർക്കാൻ (വിവരങ്ങളും തുകയും)
-    function addExpenseRow() {
+    window.enableEdit = function(fieldId) {
+        document.getElementById(fieldId).focus();
+    }
+
+    window.clearField = function(fieldId) {
+        let field = document.getElementById(fieldId);
+        field.value = field.type === 'number' ? '0' : '';
+        calculateTotal();
+    }
+
+    window.addExpenseRow = function() {
         const container = document.getElementById('expenseListContainer');
         const expId = Date.now();
-
         const rowHTML = `
             <div class="expense-row" id="exp-${expId}">
-                <input type="text" style="flex: 2;" placeholder="ചെലവിന്റെ വിവരം (ഉദാ: വാഹനം, മെറ്റീരിയൽ)" required>
+                <input type="text" style="flex: 2;" placeholder="ചെലവിന്റെ വിവരം (ഉദാ: വാഹനം, മെറ്റീരിയൽ)" class="expense-desc" required>
                 <input type="number" style="flex: 1;" placeholder="തുക" class="expense-amount" value="0" oninput="calculateTotal()" required>
                 <button type="button" class="btn-danger" onclick="removeExpenseRow('exp-${expId}')" title="ഡിലീറ്റ്">X</button>
             </div>
@@ -323,21 +330,22 @@
         container.insertAdjacentHTML('beforeend', rowHTML);
     }
 
-    function removeExpenseRow(expId) {
+    window.removeExpenseRow = function(expId) {
         document.getElementById(expId).remove();
         calculateTotal();
     }
 
-    // തൊഴിലാളി റോ ചേർക്കാൻ
-    function addWorkerRow() {
+    window.addWorkerRow = function() {
         const container = document.getElementById('workerListContainer');
         const rowId = Date.now();
+
+        const optionsHTML = registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
 
         const rowHTML = `
             <div class="worker-row" id="row-${rowId}" data-worker="">
                 <select style="flex: 2;" class="worker-select" onchange="updateRowData(this, '${rowId}')" required>
                     <option value="">തൊഴിലാളി</option>
-                    ${registeredWorkers.map(w => `<option value="${w}">${w}</option>`).join('')}
+                    ${optionsHTML}
                 </select>
                 <input type="text" style="flex: 2;" class="worker-job" placeholder="പണി" oninput="updateRowData(this, '${rowId}')" required>
                 <input type="number" style="flex: 1;" placeholder="കൂലി" class="worker-wage" value="0" oninput="calculateTotal()" required>
@@ -347,24 +355,26 @@
         container.insertAdjacentHTML('beforeend', rowHTML);
     }
 
-    function updateRowData(element, rowId) {
+    window.updateRowData = function(element, rowId) {
         let row = document.getElementById(`row-${rowId}`);
-        let selectVal = row.querySelector('.worker-select').value;
+        let selectVal = row.querySelector('.worker-select');
+        let selectedOption = selectVal.options[selectVal.selectedIndex];
+        let workerName = selectedOption ? selectedOption.getAttribute('data-name') : '';
         let jobVal = row.querySelector('.worker-job').value;
-        row.setAttribute('data-worker', selectVal.toLowerCase() + ' ' + jobVal.toLowerCase());
+        row.setAttribute('data-worker', (workerName + ' ' + jobVal).toLowerCase());
     }
 
-    function removeWorkerRow(rowId) {
+    window.removeWorkerRow = function(rowId) {
         document.getElementById(rowId).remove();
         calculateTotal();
     }
 
-    function filterWorkers() {
-        let query = document.getElementById('searchBox').value.toLowerCase();
+    window.filterWorkers = function() {
+        let queryVal = document.getElementById('searchBox').value.toLowerCase();
         let rows = document.querySelectorAll('.worker-row');
         rows.forEach(row => {
             let data = row.getAttribute('data-worker') || '';
-            if (data.includes(query)) {
+            if (data.includes(queryVal)) {
                 row.style.display = '';
             } else {
                 row.style.display = 'none';
@@ -372,8 +382,7 @@
         });
     }
 
-    // തൽസമയ കണക്കുകൂട്ടൽ (Real-time calculation)
-    function calculateTotal() {
+    window.calculateTotal = function() {
         let income = parseFloat(document.getElementById('siteIncome').value) || 0;
         
         let totalOtherExpenses = 0;
@@ -395,21 +404,55 @@
         let balanceText = document.getElementById('grandTotal');
         balanceText.innerText = `₹ ${balance}`;
         if(balance < 0) {
-            balanceText.style.color = '#f87171'; // നഷ്ടം
+            balanceText.style.color = '#f87171';
         } else {
-            balanceText.style.color = '#4ade80'; // ബാക്കി/ലാഭം
+            balanceText.style.color = '#4ade80';
         }
     }
 
-    function saveSiteData(event) {
+    window.saveSiteData = async function(event) {
         event.preventDefault();
-        alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
-        document.getElementById('siteForm').reset();
-        document.getElementById('workerListContainer').innerHTML = '';
-        document.getElementById('expenseListContainer').innerHTML = '';
-        calculateTotal();
-        document.getElementById('entryDate').valueAsDate = new Date();
+        
+        const siteName = document.getElementById('siteName').value.trim();
+        const entryDate = document.getElementById('entryDate').value;
+
+        try {
+            // തൊഴിലാളികളുടെ കൂലി കണക്കുകൾ accounts കളക്ഷനിലേക്ക് സേവ് ചെയ്യുന്നു (സ്റ്റാഫ് പേജിൽ കിട്ടാൻ വേണ്ടി)
+            const workerRows = document.querySelectorAll('.worker-row');
+            for (let row of workerRows) {
+                const select = row.querySelector('.worker-select');
+                const staffId = select.value;
+                const selectedOption = select.options[select.selectedIndex];
+                const workerName = selectedOption ? selectedOption.getAttribute('data-name') : 'തൊഴിലാളി';
+                const wageAmount = parseFloat(row.querySelector('.worker-wage').value) || 0;
+
+                if (staffId && wageAmount > 0) {
+                    await addDoc(collection(db, "accounts"), {
+                        meshtriOwner: currentMeshtri,
+                        staffId: staffId,
+                        name: workerName + ` (കൂലി - സൈറ്റ് പണി)`,
+                        site: siteName,
+                        type: "wage",
+                        payment: "cash",
+                        amount: wageAmount,
+                        date: entryDate
+                    });
+                }
+            }
+
+            alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
+            document.getElementById('siteForm').reset();
+            document.getElementById('workerListContainer').innerHTML = '';
+            document.getElementById('expenseListContainer').innerHTML = '';
+            calculateTotal();
+            document.getElementById('entryDate').valueAsDate = new Date();
+        } catch (error) {
+            console.error("സേവ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
+            alert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!");
+        }
     }
+
+    fetchRegisteredWorkers();
 </script>
 
 </body>
