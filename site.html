@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>സൈറ്റ് മാനേജ്മെന്റ്</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #16a34a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        h2, h3 {
+            color: var(--primary-color);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .row .form-group {
+            flex: 1;
+        }
+
+        .worker-section {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .worker-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-danger {
+            background-color: #dc2626;
+            padding: 10px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .total-box {
+            background: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .save-btn-container {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .save-btn-container button {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>സൈറ്റ് കണക്ക് എൻട്രി</h2>
+    
+    <form id="siteForm" onsubmit="saveSiteData(event)">
+        <!-- Basic Site Info -->
+        <div class="row">
+            <div class="form-group">
+                <label for="siteName">സൈറ്റിന്റെ പേര്:</label>
+                <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര് നൽകുക">
+            </div>
+            <div class="form-group">
+                <label for="payerName">പണം തരുന്നയാൾ (Client / Payer):</label>
+                <input type="text" id="payerName" required placeholder="പേര് നൽകുക">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="entryDate">തീയതി:</label>
+                <input type="date" id="entryDate" required>
+            </div>
+            <div class="form-group">
+                <label for="siteIncome">ലഭിച്ച മുൻകൂർ/വരവ് (₹):</label>
+                <input type="number" id="siteIncome" value="0" placeholder="0">
+            </div>
+        </div>
+
+        <!-- Other Expenses -->
+        <h3>മറ്റു ചെലവുകൾ</h3>
+        <div class="row">
+            <div class="form-group">
+                <label for="transportCost">വാഹനച്ചെലവ് (₹):</label>
+                <input type="number" id="transportCost" value="0" oninput="calculateTotal()">
+            </div>
+            <div class="form-group">
+                <label for="foodCost">ഭക്ഷണച്ചെലവ് (₹):</label>
+                <input type="number" id="foodCost" value="0" oninput="calculateTotal()">
+            </div>
+            <div class="form-group">
+                <label for="materialCost">മെറ്റീരിയൽ ചെലവ് (₹):</label>
+                <input type="number" id="materialCost" value="0" oninput="calculateTotal()">
+            </div>
+        </div>
+
+        <!-- Workers Section -->
+        <div class="worker-section">
+            <h3>തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
+            <div id="workerListContainer">
+                <!-- Dynamic worker rows -->
+            </div>
+            <button type="button" class="btn btn-success" onclick="addWorkerRow()">+ തൊഴിലാളിയെ ചേർക്കുക</button>
+        </div>
+
+        <!-- Live Total Display -->
+        <div class="total-box">
+            ആകെ സൈറ്റ് ചെലവ്: ₹ <span id="grandTotal">0</span>
+        </div>
+
+        <!-- Save Button -->
+        <div class="save-btn-container">
+            <button type="submit" class="btn">കണക്ക് സേവ് ചെയ്യുക</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // നിലവിലുള്ള സ്റ്റാഫ് ലിസ്റ്റ് (ഇത് നിങ്ങളുടെ ഡാറ്റാബേസിൽ നിന്ന് എടുക്കുന്ന രീതിയിൽ മാറ്റാവുന്നതാണ്)
+    const registeredWorkers = [
+        { id: 1, name: "രാമൻ" },
+        { id: 2, name: "ചന്ദ്രൻ" },
+        { id: 3, name: "കുട്ടപ്പൻ" },
+        { id: 4, name: "സുരേഷ്" }
+    ];
+
+    // ഇന്നത്തെ തീയതി ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
+    document.getElementById('entryDate').valueAsDate = new Date();
+
+    function addWorkerRow() {
+        const container = document.getElementById('workerListContainer');
+        const rowId = Date.now();
+
+        const rowHTML = `
+            <div class="worker-row" id="row-${rowId}">
+                <select style="flex: 2;" required>
+                    <option value="">തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക</option>
+                    ${registeredWorkers.map(w => `<option value="${w.name}">${w.name}</option>`).join('')}
+                </select>
+                <input type="text" style="flex: 2;" placeholder="ചെയ്ത പണി (ഉദാ: കോൺക്രീറ്റ്)" required>
+                <input type="number" style="flex: 1;" placeholder="കൂലി (₹)" class="worker-wage" value="0" oninput="calculateTotal()" required>
+                <button type="button" class="btn btn-danger" onclick="removeWorkerRow('row-${rowId}')">X</button>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', rowHTML);
+    }
+
+    function removeWorkerRow(rowId) {
+        document.getElementById(rowId).remove();
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        let transport = parseFloat(document.getElementById('transportCost').value) || 0;
+        let food = parseFloat(document.getElementById('foodCost').value) || 0;
+        let material = parseFloat(document.getElementById('materialCost').value) || 0;
+        
+        let totalWages = 0;
+        document.querySelectorAll('.worker-wage').forEach(input => {
+            totalWages += parseFloat(input.value) || 0;
+        });
+
+        let grandTotal = transport + food + material + totalWages;
+        document.getElementById('grandTotal').innerText = grandTotal;
+    }
+
+    function saveSiteData(event) {
+        event.preventDefault();
+        
+        // ഇവിടെ ഡാറ്റാബേസ് സേവിംഗ് ലോജിക് നൽകാം:
+        // 1. ലേബർ തുക ഉൾപ്പെടെയുള്ള മൊത്തം ചെലവ് 'വരവ്-ചിലവ്' പേജിലേക്ക് സൈറ്റിന്റെ പേരിൽ പോകും.
+        // 2. തൊഴിലാളികൾ ചെയ്ത പണിയും കൂലിയും 'സ്റ്റാഫ് പേജിലേക്ക്' സേവ് ആകും.
+        
+        alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
+        document.getElementById('siteForm').reset();
+        document.getElementById('workerListContainer').innerHTML = '';
+        document.getElementById('grandTotal').innerText = '0';
+        document.getElementById('entryDate').valueAsDate = new Date();
+    }
+</script>
+
+</body>
+</html>
