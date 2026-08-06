@@ -3,39 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>സൈറ്റ് മാനേജ്മെന്റ്</title>
+    <title>സൈറ്റ് മാനേജ്മെന്റ് - മേസ്തിരി പ്രോ</title>
     <style>
-        :root {
-            --primary-color: #2563eb;
-            --success-color: #16a34a;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
-            --border-color: #cbd5e1;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #0b0f19;
+            color: #ffffff;
             margin: 0;
             padding: 15px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
-            background: var(--card-bg);
+            background: #111827;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1f2937;
+        }
+
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            border: 1px solid #334155;
         }
 
         h2, h3 {
-            color: var(--primary-color);
-        }
-
-        h2 {
+            color: #fbbf24;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -46,22 +52,31 @@
 
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #94a3b8;
+            font-size: 14px;
         }
 
         input[type="text"], input[type="number"], input[type="date"], select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
+            padding: 12px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            color: #ffffff;
+            border-radius: 10px;
             box-sizing: border-box;
             font-size: 16px;
         }
 
+        input:focus, select:focus {
+            border-color: #fbbf24;
+            outline: none;
+        }
+
         .row {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
 
         .row .form-group {
@@ -69,79 +84,85 @@
         }
 
         .worker-section {
-            background: #f1f5f9;
+            background: #1f2937;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-top: 20px;
+            border: 1px solid #374151;
         }
 
         .worker-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 10px;
             align-items: center;
         }
 
         .btn {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 15px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000000;
+            padding: 12px 20px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: bold;
+            width: 100%;
+            text-align: center;
         }
 
         .btn-success {
-            background-color: var(--success-color);
+            background: #059669;
+            color: #ffffff;
+            width: auto;
+            padding: 10px 15px;
+            font-size: 14px;
         }
 
         .btn-danger {
-            background-color: #dc2626;
-            padding: 10px;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
+            background: #dc2626;
+            color: white;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
         }
 
         .total-box {
-            background: #e2e8f0;
+            background: #1f2937;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-top: 20px;
             font-size: 18px;
             font-weight: bold;
-            text-align: right;
+            text-align: center;
+            border: 1px solid #374151;
+            color: #4ade80;
         }
 
         .save-btn-container {
             margin-top: 25px;
-            text-align: center;
-        }
-
-        .save-btn-container button {
-            width: 100%;
-            padding: 12px;
-            font-size: 18px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="header-flex">
+        <a href="dashboard.html" class="back-btn">← ഡാഷ്‌ബോർഡ്</a>
+        <span style="font-size: 14px; color: #94a3b8;">സൈറ്റ് മാനേജ്മെന്റ്</span>
+    </div>
+
     <h2>സൈറ്റ് കണക്ക് എൻട്രി</h2>
     
     <form id="siteForm" onsubmit="saveSiteData(event)">
-        <!-- Basic Site Info -->
         <div class="row">
             <div class="form-group">
                 <label for="siteName">സൈറ്റിന്റെ പേര്:</label>
                 <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര് നൽകുക">
             </div>
             <div class="form-group">
-                <label for="payerName">പണം തരുന്നയാൾ (Client / Payer):</label>
+                <label for="payerName">പണം തരുന്നയാൾ (Client):</label>
                 <input type="text" id="payerName" required placeholder="പേര് നൽകുക">
             </div>
         </div>
@@ -153,42 +174,36 @@
             </div>
             <div class="form-group">
                 <label for="siteIncome">ലഭിച്ച മുൻകൂർ/വരവ് (₹):</label>
-                <input type="number" id="siteIncome" value="0" placeholder="0">
+                <input type="number" id="siteIncome" placeholder="തുക നൽകുക">
             </div>
         </div>
 
-        <!-- Other Expenses -->
-        <h3>മറ്റു ചെലവുകൾ</h3>
+        <h3 style="text-align: left; font-size: 16px; margin-top: 20px;">മറ്റു ചെലവുകൾ</h3>
         <div class="row">
             <div class="form-group">
-                <label for="transportCost">വാഹനച്ചെലവ് (₹):</label>
-                <input type="number" id="transportCost" value="0" oninput="calculateTotal()">
+                <label for="transportCost">വാഹനം (₹):</label>
+                <input type="number" id="transportCost" placeholder="0" oninput="calculateTotal()">
             </div>
             <div class="form-group">
-                <label for="foodCost">ഭക്ഷണച്ചെലവ് (₹):</label>
-                <input type="number" id="foodCost" value="0" oninput="calculateTotal()">
+                <label for="foodCost">ഭക്ഷണം (₹):</label>
+                <input type="number" id="foodCost" placeholder="0" oninput="calculateTotal()">
             </div>
             <div class="form-group">
-                <label for="materialCost">മെറ്റീരിയൽ ചെലവ് (₹):</label>
-                <input type="number" id="materialCost" value="0" oninput="calculateTotal()">
+                <label for="materialCost">മെറ്റീരിയൽ (₹):</label>
+                <input type="number" id="materialCost" placeholder="0" oninput="calculateTotal()">
             </div>
         </div>
 
-        <!-- Workers Section -->
         <div class="worker-section">
-            <h3>തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
-            <div id="workerListContainer">
-                <!-- Dynamic worker rows -->
-            </div>
+            <h3 style="text-align: left; font-size: 16px;">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
+            <div id="workerListContainer"></div>
             <button type="button" class="btn btn-success" onclick="addWorkerRow()">+ തൊഴിലാളിയെ ചേർക്കുക</button>
         </div>
 
-        <!-- Live Total Display -->
         <div class="total-box">
             ആകെ സൈറ്റ് ചെലവ്: ₹ <span id="grandTotal">0</span>
         </div>
 
-        <!-- Save Button -->
         <div class="save-btn-container">
             <button type="submit" class="btn">കണക്ക് സേവ് ചെയ്യുക</button>
         </div>
@@ -196,7 +211,7 @@
 </div>
 
 <script>
-    // നിലവിലുള്ള സ്റ്റാഫ് ലിസ്റ്റ് (ഇത് നിങ്ങളുടെ ഡാറ്റാബേസിൽ നിന്ന് എടുക്കുന്ന രീതിയിൽ മാറ്റാവുന്നതാണ്)
+    // ഇവിടെ നിങ്ങളുടെ സ്റ്റാഫ് പേജിൽ രജിസ്റ്റർ ചെയ്തിട്ടുള്ള യഥാർത്ഥ തൊഴിലാളികളുടെ ലിസ്റ്റ് ലോഡ് ചെയ്യാം
     const registeredWorkers = [
         { id: 1, name: "രാമൻ" },
         { id: 2, name: "ചന്ദ്രൻ" },
@@ -204,7 +219,6 @@
         { id: 4, name: "സുരേഷ്" }
     ];
 
-    // ഇന്നത്തെ തീയതി ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
     document.getElementById('entryDate').valueAsDate = new Date();
 
     function addWorkerRow() {
@@ -217,9 +231,9 @@
                     <option value="">തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക</option>
                     ${registeredWorkers.map(w => `<option value="${w.name}">${w.name}</option>`).join('')}
                 </select>
-                <input type="text" style="flex: 2;" placeholder="ചെയ്ത പണി (ഉദാ: കോൺക്രീറ്റ്)" required>
-                <input type="number" style="flex: 1;" placeholder="കൂലി (₹)" class="worker-wage" value="0" oninput="calculateTotal()" required>
-                <button type="button" class="btn btn-danger" onclick="removeWorkerRow('row-${rowId}')">X</button>
+                <input type="text" style="flex: 2;" placeholder="ചെയ്ത പണി" required>
+                <input type="number" style="flex: 1;" placeholder="കൂലി" class="worker-wage" placeholder="0" oninput="calculateTotal()" required>
+                <button type="button" class="btn-danger" onclick="removeWorkerRow('row-${rowId}')">X</button>
             </div>
         `;
         container.insertAdjacentHTML('beforeend', rowHTML);
@@ -246,11 +260,6 @@
 
     function saveSiteData(event) {
         event.preventDefault();
-        
-        // ഇവിടെ ഡാറ്റാബേസ് സേവിംഗ് ലോജിക് നൽകാം:
-        // 1. ലേബർ തുക ഉൾപ്പെടെയുള്ള മൊത്തം ചെലവ് 'വരവ്-ചിലവ്' പേജിലേക്ക് സൈറ്റിന്റെ പേരിൽ പോകും.
-        // 2. തൊഴിലാളികൾ ചെയ്ത പണിയും കൂലിയും 'സ്റ്റാഫ് പേജിലേക്ക്' സേവ് ആകും.
-        
         alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
         document.getElementById('siteForm').reset();
         document.getElementById('workerListContainer').innerHTML = '';
