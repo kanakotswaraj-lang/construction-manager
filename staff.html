@@ -3,414 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>സൈറ്റ് മാനേജ്മെന്റ് - മേസ്തിരി പ്രോ</title>
+    <title>സ്റ്റാഫ് മാനേജ്മെന്റ് - മേസ്തിരി പ്രോ</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0b0f19;
-            color: #ffffff;
-            margin: 0;
-            padding: 15px;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #111827;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            border: 1px solid #1f2937;
-        }
-
-        .header-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .back-btn {
-            background: #1e293b;
-            color: #38bdf8;
-            padding: 8px 15px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 14px;
-            border: 1px solid #334155;
-        }
-
-        h2, h3 {
-            color: #fbbf24;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 4px;
-            font-weight: 500;
-            color: #94a3b8;
-            font-size: 13px;
-        }
-
-        .input-group-flex {
-            display: flex;
-            gap: 6px;
-        }
-
-        input[type="text"], input[type="number"], input[type="date"], select {
-            width: 100%;
-            padding: 10px;
-            background: #1f2937;
-            border: 1px solid #374151;
-            color: #ffffff;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 15px;
-        }
-
-        input:focus, select:focus {
-            border-color: #fbbf24;
-            outline: none;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .expense-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-            align-items: center;
-        }
-
-        .worker-section, .other-expense-section {
-            background: #1f2937;
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 15px;
-            border: 1px solid #374151;
-        }
-
-        .worker-row {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 8px;
-            align-items: center;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #000000;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            text-align: center;
-        }
-
-        .btn-success {
-            background: #059669;
-            color: #ffffff;
-            width: auto;
-            padding: 8px 12px;
-            font-size: 13px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-            padding: 8px 10px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-edit {
-            background: #2563eb;
-            color: white;
-            padding: 8px 10px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .summary-box {
-            background: #1f2937;
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 15px;
-            border: 1px solid #374151;
-            font-size: 14px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-        }
-
-        .summary-row.total {
-            font-weight: bold;
-            font-size: 16px;
-            border-top: 1px solid #374151;
-            padding-top: 6px;
-            color: #4ade80;
-        }
-
-        .save-btn-container {
-            margin-top: 20px;
-        }
+        body { font-family: 'Manjari', sans-serif; }
     </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
 
-<div class="container">
-    <div class="header-flex">
-        <a href="dashboard.html" class="back-btn">← ഡാഷ്‌ബോർഡ്</a>
-        <span style="font-size: 14px; color: #94a3b8;">സൈറ്റ് മാനേജ്മെന്റ്</span>
+    <!-- ടോപ്പ് ഹെഡർ: ലോഗോയും Smart Site Manager ടാഗും -->
+    <div>
+        <div class="flex justify-between items-center mb-6 border-b border-blue-500/30 pb-4">
+            <a href="dashboard.html" class="bg-slate-900/80 text-blue-300 px-4 py-2 rounded-xl text-sm border border-blue-500/30 font-bold hover:bg-slate-800 transition">
+                ← ഡാഷ്‌ബോർഡ്
+            </a>
+            <div class="inline-flex items-center gap-3 bg-amber-500/20 text-amber-300 px-4 py-2 rounded-full border border-amber-300/50 shadow-md">
+                <span class="text-xl">🛠️</span>
+                <span class="text-base font-black text-amber-300 tracking-wide">മേസ്തിരി പ്രോ</span>
+            </div>
+        </div>
+
+        <div class="text-center pt-2">
+            <h1 class="text-3xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
+                സ്റ്റാഫ് മാനേജ്മെന്റ്
+            </h1>
+            <p class="text-sm text-blue-200 mt-1 font-bold">പുതിയ തൊഴിലാളികളുടെ വിവരങ്ങൾ ചേർക്കാം</p>
+        </div>
     </div>
 
-    <h2>സൈറ്റ് കണക്ക് എൻട്രി</h2>
-    
-    <!-- സെർച്ച് ബോക്സ് -->
-    <div class="form-group" style="margin-bottom: 15px;">
-        <input type="text" id="searchBox" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()">
+    <!-- സ്റ്റാഫ് എൻട്രി ഫോം കാർഡ് -->
+    <div class="bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 max-w-md mx-auto w-full my-4 space-y-4 shadow-xl">
+        <form id="staffForm" onsubmit="saveStaffData(event)">
+            <div class="mb-3">
+                <label class="block text-sm font-black text-amber-300 mb-1">തൊഴിലാളിയുടെ പേര്</label>
+                <input type="text" id="staffName" required placeholder="പേര് ഇവിടെ എഴുതുക" 
+                       class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-xl p-3 text-white text-base font-bold focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
+            </div>
+
+            <div class="mb-3">
+                <label class="block text-sm font-black text-amber-300 mb-1">ഫോൺ നമ്പർ</label>
+                <input type="tel" id="staffPhone" placeholder="മൊബൈൽ നമ്പർ" 
+                       class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-xl p-3 text-white text-base font-bold focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-black text-amber-300 mb-1">തൊഴിൽ / പണി</label>
+                <input type="text" id="staffRole" placeholder="ഉദാ: മേസ്തിരി / ഹെൽപ്പർ" 
+                       class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-xl p-3 text-white text-base font-bold focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
+            </div>
+
+            <button type="submit" id="btnSaveStaff" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-3.5 rounded-xl font-black text-base shadow-lg shadow-amber-950/50 transition">
+                സ്റ്റാഫിനെ സേവ് ചെയ്യുക
+            </button>
+        </form>
     </div>
 
-    <form id="siteForm" onsubmit="saveSiteData(event)">
-        <div class="grid-2">
-            <div class="form-group">
-                <label for="siteName">സൈറ്റിന്റെ പേര്:</label>
-                <div class="input-group-flex">
-                    <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര്">
-                    <button type="button" class="btn-edit" onclick="enableEdit('siteName')" title="എഡിറ്റ്">✏️</button>
-                    <button type="button" class="btn-danger" onclick="clearField('siteName')" title="ക്ലിയർ/ഡിലീറ്റ്">X</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="payerName">പണം തരുന്നയാൾ (Client):</label>
-                <div class="input-group-flex">
-                    <input type="text" id="payerName" required placeholder="പേര് നൽകുക">
-                    <button type="button" class="btn-edit" onclick="enableEdit('payerName')" title="എഡിറ്റ്">✏️</button>
-                    <button type="button" class="btn-danger" onclick="clearField('payerName')" title="ക്ലിയർ/ഡിലീറ്റ്">X</button>
-                </div>
-            </div>
+    <!-- നിലവിലെ സ്റ്റാഫ് ലിസ്റ്റ് ബോക്സ് -->
+    <div class="bg-white/5 backdrop-blur-md p-5 rounded-3xl border border-blue-500/30 max-w-md mx-auto w-full my-2 shadow-xl">
+        <h2 class="text-amber-300 font-black text-base mb-3 border-b border-blue-500/30 pb-2">നിലവിലെ സ്റ്റാഫ് ലിസ്റ്റ്</h2>
+        <div id="staffContainer" class="space-y-2 max-h-48 overflow-y-auto text-sm">
+            <p class="text-slate-400 text-center py-2 font-bold">ലോഡ് ചെയ്യുന്നു...</p>
         </div>
+    </div>
 
-        <div class="grid-2">
-            <div class="form-group">
-                <label for="entryDate">തീയതി:</label>
-                <input type="date" id="entryDate" required>
-            </div>
-            <div class="form-group">
-                <label for="siteIncome">ലഭിച്ച വരവ് (₹):</label>
-                <div class="input-group-flex">
-                    <input type="number" id="siteIncome" placeholder="തുക നൽകുക" value="0" oninput="calculateTotal()">
-                    <button type="button" class="btn-danger" onclick="clearField('siteIncome'); calculateTotal();" title="ഡിലീറ്റ്">X</button>
-                </div>
-            </div>
-        </div>
+    <!-- ഫൂട്ടർ -->
+    <div class="max-w-md mx-auto w-full text-center pb-2">
+        <p class="text-xs text-slate-400 font-bold">
+            മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
+        </p>
+    </div>
 
-        <!-- മറ്റു ചെലവുകൾ വിവരണ സഹിതം ചേർക്കാൻ -->
-        <div class="other-expense-section">
-            <h3 style="text-align: left; font-size: 15px; margin-bottom: 10px;">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ മുതലായവ)</h3>
-            <div id="expenseListContainer"></div>
-            <button type="button" class="btn-success" onclick="addExpenseRow()">+ ചെലവ് ചേർക്കുക</button>
-        </div>
+    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ -->
-        <div class="worker-section">
-            <h3 style="text-align: left; font-size: 15px; margin-bottom: 10px;">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
-            <div id="workerListContainer"></div>
-            
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-                <button type="button" class="btn-success" onclick="addWorkerRow()">+ തൊഴിലാളിയെ ചേർക്കുക</button>
-                <button type="button" class="btn-success" style="background: #2563eb;" onclick="addNewWorkerPrompt()">+ പുതിയ ആളെ ചേർക്കുക</button>
-            </div>
-        </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d"
+        };
 
-        <!-- Summary & Totals (Real-time) -->
-        <div class="summary-box">
-            <div class="summary-row">
-                <span>ആകെ വരവ്:</span>
-                <span id="displayIncome" style="color: #38bdf8;">₹ 0</span>
-            </div>
-            <div class="summary-row">
-                <span>ആകെ ചെലവ്:</span>
-                <span id="displayExpense" style="color: #f87171;">₹ 0</span>
-            </div>
-            <div class="summary-row total">
-                <span>ബാക്കി തുക / ബാലൻസ്:</span>
-                <span id="grandTotal">₹ 0</span>
-            </div>
-        </div>
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        <div class="save-btn-container">
-            <button type="submit" class="btn">കണക്ക് സേവ് ചെയ്യുക</button>
-        </div>
-    </form>
-</div>
+        // സ്റ്റാഫ് ഡാറ്റ ഫയർബേസിലേക്ക് സേവ് ചെയ്യൽ
+        window.saveStaffData = async function(event) {
+            event.preventDefault();
 
-<script>
-    let registeredWorkers = [
-        "രാമൻ",
-        "ചന്ദ്രൻ",
-        "കുട്ടപ്പൻ",
-        "സുരേഷ്"
-    ];
+            const name = document.getElementById('staffName').value.trim();
+            const phone = document.getElementById('staffPhone').value.trim();
+            const role = document.getElementById('staffRole').value.trim();
 
-    document.getElementById('entryDate').valueAsDate = new Date();
-
-    // ഫീൽഡ് എഡിറ്റ് ചെയ്യാൻ
-    function enableEdit(fieldId) {
-        document.getElementById(fieldId).focus();
-    }
-
-    // ഫീൽഡ് ക്ലിയർ/ഡിലീറ്റ് ചെയ്യാൻ
-    function clearField(fieldId) {
-        let field = document.getElementById(fieldId);
-        field.value = field.type === 'number' ? '0' : '';
-        calculateTotal();
-    }
-
-    // പുതിയ തൊഴിലാളിയെ ആഡ് ചെയ്യാൻ
-    function addNewWorkerPrompt() {
-        let newName = prompt("പുതിയ തൊഴിലാളിയുടെ പേര് നൽകുക:");
-        if (newName && newName.trim() !== "") {
-            registeredWorkers.push(newName.trim());
-            alert(`${newName.trim()} വിജയകരമായി ലിസ്റ്റിലേക്ക് ചേർത്തു!`);
-            updateAllDropdowns();
-        }
-    }
-
-    function updateAllDropdowns() {
-        const selects = document.querySelectorAll('.worker-select');
-        selects.forEach(select => {
-            let currentValue = select.value;
-            select.innerHTML = `<option value="">തൊഴിലാളി</option>` + 
-                registeredWorkers.map(w => `<option value="${w}">${w}</option>`).join('');
-            select.value = currentValue;
-        });
-    }
-
-    // മറ്റു ചെലവുകൾ റോ ചേർക്കാൻ (വിവരങ്ങളും തുകയും)
-    function addExpenseRow() {
-        const container = document.getElementById('expenseListContainer');
-        const expId = Date.now();
-
-        const rowHTML = `
-            <div class="expense-row" id="exp-${expId}">
-                <input type="text" style="flex: 2;" placeholder="ചെലവിന്റെ വിവരം (ഉദാ: വാഹനം, മെറ്റീരിയൽ)" required>
-                <input type="number" style="flex: 1;" placeholder="തുക" class="expense-amount" value="0" oninput="calculateTotal()" required>
-                <button type="button" class="btn-danger" onclick="removeExpenseRow('exp-${expId}')" title="ഡിലീറ്റ്">X</button>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', rowHTML);
-    }
-
-    function removeExpenseRow(expId) {
-        document.getElementById(expId).remove();
-        calculateTotal();
-    }
-
-    // തൊഴിലാളി റോ ചേർക്കാൻ
-    function addWorkerRow() {
-        const container = document.getElementById('workerListContainer');
-        const rowId = Date.now();
-
-        const rowHTML = `
-            <div class="worker-row" id="row-${rowId}" data-worker="">
-                <select style="flex: 2;" class="worker-select" onchange="updateRowData(this, '${rowId}')" required>
-                    <option value="">തൊഴിലാളി</option>
-                    ${registeredWorkers.map(w => `<option value="${w}">${w}</option>`).join('')}
-                </select>
-                <input type="text" style="flex: 2;" class="worker-job" placeholder="പണി" oninput="updateRowData(this, '${rowId}')" required>
-                <input type="number" style="flex: 1;" placeholder="കൂലി" class="worker-wage" value="0" oninput="calculateTotal()" required>
-                <button type="button" class="btn-danger" onclick="removeWorkerRow('row-${rowId}')" title="ഡിലീറ്റ്">X</button>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', rowHTML);
-    }
-
-    function updateRowData(element, rowId) {
-        let row = document.getElementById(`row-${rowId}`);
-        let selectVal = row.querySelector('.worker-select').value;
-        let jobVal = row.querySelector('.worker-job').value;
-        row.setAttribute('data-worker', selectVal.toLowerCase() + ' ' + jobVal.toLowerCase());
-    }
-
-    function removeWorkerRow(rowId) {
-        document.getElementById(rowId).remove();
-        calculateTotal();
-    }
-
-    function filterWorkers() {
-        let query = document.getElementById('searchBox').value.toLowerCase();
-        let rows = document.querySelectorAll('.worker-row');
-        rows.forEach(row => {
-            let data = row.getAttribute('data-worker') || '';
-            if (data.includes(query)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
+            if (!name) {
+                return alert("ദയവായി തൊഴിലാളിയുടെ പേര് നൽകുക!");
             }
-        });
-    }
 
-    // തൽസമയ കണക്കുകൂട്ടൽ (Real-time calculation)
-    function calculateTotal() {
-        let income = parseFloat(document.getElementById('siteIncome').value) || 0;
-        
-        let totalOtherExpenses = 0;
-        document.querySelectorAll('.expense-amount').forEach(input => {
-            totalOtherExpenses += parseFloat(input.value) || 0;
-        });
+            try {
+                await addDoc(collection(db, "staff"), {
+                    name: name,
+                    phone: phone,
+                    role: role,
+                    createdAt: new Date()
+                });
 
-        let totalWages = 0;
-        document.querySelectorAll('.worker-wage').forEach(input => {
-            totalWages += parseFloat(input.value) || 0;
-        });
+                alert("സ്റ്റാഫ് വിവരങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
+                document.getElementById('staffForm').reset();
+                loadStaffList();
 
-        let totalExpense = totalOtherExpenses + totalWages;
-        let balance = income - totalExpense;
+            } catch (error) {
+                console.error("പിഴവ്: ", error);
+                alert("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക!");
+            }
+        };
 
-        document.getElementById('displayIncome').innerText = `₹ ${income}`;
-        document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
-        
-        let balanceText = document.getElementById('grandTotal');
-        balanceText.innerText = `₹ ${balance}`;
-        if(balance < 0) {
-            balanceText.style.color = '#f87171'; // നഷ്ടം
-        } else {
-            balanceText.style.color = '#4ade80'; // ബാക്കി/ലാഭം
-        }
-    }
+        // ഫയർബേസിൽ നിന്ന് സ്റ്റാഫ് ലിസ്റ്റ് എടുത്ത് കാണിക്കൽ
+        window.loadStaffList = async function() {
+            const container = document.getElementById('staffContainer');
+            try {
+                const querySnapshot = await getDocs(collection(db, "staff"));
+                let html = "";
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    html += `
+                        <div class="bg-slate-900/80 p-3 rounded-xl border border-blue-500/30 flex justify-between items-center">
+                            <div>
+                                <span class="text-amber-300 font-black text-base block">${data.name}</span>
+                                <span class="text-blue-200 text-xs font-bold">${data.role || 'തൊഴിൽ ഇല്ല'} | ${data.phone || 'നമ്പർ ഇല്ല'}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html || '<p class="text-slate-400 text-center py-2 font-bold">സ്റ്റാഫുകൾ ആരും ലഭ്യമല്ല.</p>';
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<p class="text-red-400 text-center py-2 font-bold">ലിസ്റ്റ് ലോഡ് ചെയ്യുന്നതിൽ തടസ്സം നേരിട്ടു.</p>';
+            }
+        };
 
-    function saveSiteData(event) {
-        event.preventDefault();
-        alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
-        document.getElementById('siteForm').reset();
-        document.getElementById('workerListContainer').innerHTML = '';
-        document.getElementById('expenseListContainer').innerHTML = '';
-        calculateTotal();
-        document.getElementById('entryDate').valueAsDate = new Date();
-    }
-</script>
-
+        // പേജ് ലോഡ് ആകുമ്പോൾ ലിസ്റ്റ് വിളിക്കുക
+        loadStaffList();
+    </script>
 </body>
 </html>
