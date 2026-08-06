@@ -47,26 +47,26 @@
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: 500;
             color: #94a3b8;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         input[type="text"], input[type="number"], input[type="date"], select {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: #1f2937;
             border: 1px solid #374151;
             color: #ffffff;
-            border-radius: 10px;
+            border-radius: 8px;
             box-sizing: border-box;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         input:focus, select:focus {
@@ -74,34 +74,37 @@
             outline: none;
         }
 
-        .row {
-            display: flex;
-            gap: 12px;
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
-        .row .form-group {
-            flex: 1;
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
         }
 
         .worker-section {
             background: #1f2937;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
             border: 1px solid #374151;
         }
 
         .worker-row {
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 6px;
+            margin-bottom: 8px;
             align-items: center;
         }
 
         .btn {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             color: #000000;
-            padding: 12px 20px;
+            padding: 12px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
@@ -115,33 +118,56 @@
             background: #059669;
             color: #ffffff;
             width: auto;
-            padding: 10px 15px;
-            font-size: 14px;
+            padding: 8px 12px;
+            font-size: 13px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-danger {
             background: #dc2626;
             color: white;
-            padding: 10px 12px;
-            border-radius: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
             border: none;
             cursor: pointer;
         }
 
-        .total-box {
+        .btn-edit {
+            background: #2563eb;
+            color: white;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .summary-box {
             background: #1f2937;
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
+            margin-top: 15px;
             border: 1px solid #374151;
+            font-size: 14px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .summary-row.total {
+            font-weight: bold;
+            font-size: 16px;
+            border-top: 1px solid #374151;
+            padding-top: 6px;
             color: #4ade80;
         }
 
         .save-btn-container {
-            margin-top: 25px;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -155,11 +181,16 @@
 
     <h2>സൈറ്റ് കണക്ക് എൻട്രി</h2>
     
+    <!-- സെർച്ച് ബോക്സ് -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <input type="text" id="searchBox" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()">
+    </div>
+
     <form id="siteForm" onsubmit="saveSiteData(event)">
-        <div class="row">
+        <div class="grid-2">
             <div class="form-group">
                 <label for="siteName">സൈറ്റിന്റെ പേര്:</label>
-                <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര് നൽകുക">
+                <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര്">
             </div>
             <div class="form-group">
                 <label for="payerName">പണം തരുന്നയാൾ (Client):</label>
@@ -167,19 +198,19 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="grid-2">
             <div class="form-group">
                 <label for="entryDate">തീയതി:</label>
                 <input type="date" id="entryDate" required>
             </div>
             <div class="form-group">
-                <label for="siteIncome">ലഭിച്ച മുൻകൂർ/വരവ് (₹):</label>
-                <input type="number" id="siteIncome" placeholder="തുക നൽകുക">
+                <label for="siteIncome">ലഭിച്ച വരവ് (₹):</label>
+                <input type="number" id="siteIncome" placeholder="തുക നൽകുക" value="0" oninput="calculateTotal()">
             </div>
         </div>
 
-        <h3 style="text-align: left; font-size: 16px; margin-top: 20px;">മറ്റു ചെലവുകൾ</h3>
-        <div class="row">
+        <h3 style="text-align: left; font-size: 15px; margin-top: 15px;">മറ്റു ചെലവുകൾ</h3>
+        <div class="grid-3">
             <div class="form-group">
                 <label for="transportCost">വാഹനം (₹):</label>
                 <input type="number" id="transportCost" placeholder="0" oninput="calculateTotal()">
@@ -193,15 +224,35 @@
                 <input type="number" id="materialCost" placeholder="0" oninput="calculateTotal()">
             </div>
         </div>
-
-        <div class="worker-section">
-            <h3 style="text-align: left; font-size: 16px;">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
-            <div id="workerListContainer"></div>
-            <button type="button" class="btn btn-success" onclick="addWorkerRow()">+ തൊഴിലാളിയെ ചേർക്കുക</button>
+        <div class="form-group">
+            <label for="extraCost">മറ്റ് പൊതു ചെലവുകൾ (₹):</label>
+            <input type="number" id="extraCost" placeholder="മറ്റ് ചെലവുകൾ ഉണ്ടെങ്കിൽ നൽകുക" value="0" oninput="calculateTotal()">
         </div>
 
-        <div class="total-box">
-            ആകെ സൈറ്റ് ചെലവ്: ₹ <span id="grandTotal">0</span>
+        <div class="worker-section">
+            <h3 style="text-align: left; font-size: 15px; margin-bottom: 10px;">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
+            <div id="workerListContainer"></div>
+            
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button type="button" class="btn-success" onclick="addWorkerRow()">+ തൊഴിലാളിയെ ചേർക്കുക</button>
+                <button type="button" class="btn-success" style="background: #2563eb;" onclick="addNewWorkerPrompt()">+ പുതിയ ആളെ ചേർക്കുക</button>
+            </div>
+        </div>
+
+        <!-- Summary & Totals -->
+        <div class="summary-box">
+            <div class="summary-row">
+                <span>ആകെ വരവ്:</span>
+                <span id="displayIncome" style="color: #38bdf8;">₹ 0</span>
+            </div>
+            <div class="summary-row">
+                <span>ആകെ ചെലവ്:</span>
+                <span id="displayExpense" style="color: #f87171;">₹ 0</span>
+            </div>
+            <div class="summary-row total">
+                <span>ബാക്കി തുക / ബാലൻസ്:</span>
+                <span id="grandTotal">₹ 0</span>
+            </div>
         </div>
 
         <div class="save-btn-container">
@@ -211,32 +262,65 @@
 </div>
 
 <script>
-    // ഇവിടെ നിങ്ങളുടെ സ്റ്റാഫ് പേജിൽ രജിസ്റ്റർ ചെയ്തിട്ടുള്ള യഥാർത്ഥ തൊഴിലാളികളുടെ ലിസ്റ്റ് ലോഡ് ചെയ്യാം
-    const registeredWorkers = [
-        { id: 1, name: "രാമൻ" },
-        { id: 2, name: "ചന്ദ്രൻ" },
-        { id: 3, name: "കുട്ടപ്പൻ" },
-        { id: 4, name: "സുരേഷ്" }
+    let registeredWorkers = [
+        "രാമൻ",
+        "ചന്ദ്രൻ",
+        "കുട്ടപ്പൻ",
+        "സുരേഷ്"
     ];
 
     document.getElementById('entryDate').valueAsDate = new Date();
+
+    function addNewWorkerPrompt() {
+        let newName = prompt("പുതിയ തൊഴിലാളിയുടെ പേര് നൽകുക:");
+        if (newName && newName.trim() !== "") {
+            registeredWorkers.push(newName.trim());
+            alert(`${newName.trim()} വിജയകരമായി ലിസ്റ്റിലേക്ക് ചേർത്തു!`);
+            updateAllDropdowns();
+        }
+    }
+
+    function updateAllDropdowns() {
+        const selects = document.querySelectorAll('.worker-select');
+        selects.forEach(select => {
+            let currentValue = select.value;
+            select.innerHTML = `<option value="">തൊഴിലാളി</option>` + 
+                registeredWorkers.map(w => `<option value="${w}">${w}</option>`).join('');
+            select.value = currentValue;
+        });
+    }
 
     function addWorkerRow() {
         const container = document.getElementById('workerListContainer');
         const rowId = Date.now();
 
         const rowHTML = `
-            <div class="worker-row" id="row-${rowId}">
-                <select style="flex: 2;" required>
-                    <option value="">തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക</option>
-                    ${registeredWorkers.map(w => `<option value="${w.name}">${w.name}</option>`).join('')}
+            <div class="worker-row" id="row-${rowId}" data-worker="">
+                <select style="flex: 2;" class="worker-select" onchange="updateRowData(this, '${rowId}')" required>
+                    <option value="">തൊഴിലാളി</option>
+                    ${registeredWorkers.map(w => `<option value="${w}">${w}</option>`).join('')}
                 </select>
-                <input type="text" style="flex: 2;" placeholder="ചെയ്ത പണി" required>
-                <input type="number" style="flex: 1;" placeholder="കൂലി" class="worker-wage" placeholder="0" oninput="calculateTotal()" required>
-                <button type="button" class="btn-danger" onclick="removeWorkerRow('row-${rowId}')">X</button>
+                <input type="text" style="flex: 2;" class="worker-job" placeholder="പണി" oninput="updateRowData(this, '${rowId}')" required>
+                <input type="number" style="flex: 1;" placeholder="കൂലി" class="worker-wage" oninput="calculateTotal()" required>
+                <button type="button" class="btn-edit" onclick="editWorkerRow('${rowId}')" title="എഡിറ്റ് ചെയ്യാം">✏️</button>
+                <button type="button" class="btn-danger" onclick="removeWorkerRow('row-${rowId}')" title="ഡിലീറ്റ് ചെയ്യാം">X</button>
             </div>
         `;
         container.insertAdjacentHTML('beforeend', rowHTML);
+    }
+
+    function updateRowData(element, rowId) {
+        let row = document.getElementById(`row-${rowId}`);
+        let selectVal = row.querySelector('.worker-select').value;
+        let jobVal = row.querySelector('.worker-job').value;
+        row.setAttribute('data-worker', selectVal.toLowerCase() + ' ' + jobVal.toLowerCase());
+    }
+
+    function editWorkerRow(rowId) {
+        let row = document.getElementById(`row-${rowId}`);
+        let wageInput = row.querySelector('.worker-wage');
+        wageInput.focus();
+        alert("ഫീൽഡിൽ ക്ലിക്ക് ചെയ്ത് കൂലിയോ വിവരങ്ങളോ മാറ്റാവുന്നതാണ്.");
     }
 
     function removeWorkerRow(rowId) {
@@ -244,18 +328,48 @@
         calculateTotal();
     }
 
+    function filterWorkers() {
+        let query = document.getElementById('searchBox').value.toLowerCase();
+        let rows = document.querySelectorAll('.worker-row');
+        rows.forEach(row => {
+            let data = row.getAttribute('data-worker') || '';
+            if (data.includes(query)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
     function calculateTotal() {
+        let income = parseFloat(document.getElementById('siteIncome').value) || 0;
         let transport = parseFloat(document.getElementById('transportCost').value) || 0;
         let food = parseFloat(document.getElementById('foodCost').value) || 0;
         let material = parseFloat(document.getElementById('materialCost').value) || 0;
+        let extra = parseFloat(document.getElementById('extraCost').value) || 0;
         
         let totalWages = 0;
-        document.querySelectorAll('.worker-wage').forEach(input => {
-            totalWages += parseFloat(input.value) || 0;
+        document.querySelectorAll('.worker-row').forEach(row => {
+            // വിസിബിൾ ആയതോ അല്ലാത്തതോ ആയ എല്ലാ തൊഴിലാളികളുടെയും കൂലി കൂട്ടാം
+            let wageInput = row.querySelector('.worker-wage');
+            if(wageInput) {
+                totalWages += parseFloat(wageInput.value) || 0;
+            }
         });
 
-        let grandTotal = transport + food + material + totalWages;
-        document.getElementById('grandTotal').innerText = grandTotal;
+        let totalExpense = transport + food + material + extra + totalWages;
+        let balance = income - totalExpense;
+
+        document.getElementById('displayIncome').innerText = `₹ ${income}`;
+        document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
+        
+        let balanceText = document.getElementById('grandTotal');
+        balanceText.innerText = `₹ ${balance}`;
+        if(balance < 0) {
+            balanceText.style.color = '#f87171'; 
+        } else {
+            balanceText.style.color = '#4ade80'; 
+        }
     }
 
     function saveSiteData(event) {
@@ -263,7 +377,7 @@
         alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
         document.getElementById('siteForm').reset();
         document.getElementById('workerListContainer').innerHTML = '';
-        document.getElementById('grandTotal').innerText = '0';
+        calculateTotal();
         document.getElementById('entryDate').valueAsDate = new Date();
     }
 </script>
