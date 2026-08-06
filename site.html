@@ -80,13 +80,7 @@
             gap: 10px;
         }
 
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-        }
-
-        .worker-section {
+        .worker-section, .other-expense-section {
             background: #1f2937;
             padding: 12px;
             border-radius: 10px;
@@ -94,7 +88,7 @@
             border: 1px solid #374151;
         }
 
-        .worker-row {
+        .worker-row, .expense-row {
             display: flex;
             gap: 6px;
             margin-bottom: 8px;
@@ -127,15 +121,6 @@
 
         .btn-danger {
             background: #dc2626;
-            color: white;
-            padding: 8px 10px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-edit {
-            background: #2563eb;
             color: white;
             padding: 8px 10px;
             border-radius: 6px;
@@ -189,8 +174,13 @@
     <form id="siteForm" onsubmit="saveSiteData(event)">
         <div class="grid-2">
             <div class="form-group">
-                <label for="siteName">സൈറ്റിന്റെ പേര്:</label>
-                <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര്">
+                <label for="siteNameSelect">സൈറ്റ് തിരഞ്ഞെടുക്കുക:</label>
+                <select id="siteNameSelect" required>
+                    <option value="">സൈറ്റ് തിരഞ്ഞെടുക്കുക</option>
+                    <option value="Kannavam">Kannavam</option>
+                    <option value="Kallachi">Kallachi</option>
+                    <option value="Nadapuram">Nadapuram</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="payerName">പണം തരുന്നയാൾ (Client):</label>
@@ -209,26 +199,14 @@
             </div>
         </div>
 
-        <h3 style="text-align: left; font-size: 15px; margin-top: 15px;">മറ്റു ചെലവുകൾ</h3>
-        <div class="grid-3">
-            <div class="form-group">
-                <label for="transportCost">വാഹനം (₹):</label>
-                <input type="number" id="transportCost" placeholder="0" oninput="calculateTotal()">
-            </div>
-            <div class="form-group">
-                <label for="foodCost">ഭക്ഷണം (₹):</label>
-                <input type="number" id="foodCost" placeholder="0" oninput="calculateTotal()">
-            </div>
-            <div class="form-group">
-                <label for="materialCost">മെറ്റീരിയൽ (₹):</label>
-                <input type="number" id="materialCost" placeholder="0" oninput="calculateTotal()">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="extraCost">മറ്റ് പൊതു ചെലവുകൾ (₹):</label>
-            <input type="number" id="extraCost" placeholder="മറ്റ് ചെലവുകൾ ഉണ്ടെങ്കിൽ നൽകുക" value="0" oninput="calculateTotal()">
+        <!-- മറ്റു ചെലവുകൾ (വിവരവും തുകയും ചേർക്കാൻ) -->
+        <div class="other-expense-section">
+            <h3 style="text-align: left; font-size: 15px; margin-bottom: 10px;">മറ്റു ചെലവുകൾ (വാഹനം, മെറ്റീരിയൽ മുതലായവ)</h3>
+            <div id="expenseListContainer"></div>
+            <button type="button" class="btn-success" onclick="addExpenseRow()">+ ചെലവ് ചേർക്കുക</button>
         </div>
 
+        <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ -->
         <div class="worker-section">
             <h3 style="text-align: left; font-size: 15px; margin-bottom: 10px;">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
             <div id="workerListContainer"></div>
@@ -247,7 +225,7 @@
             </div>
             <div class="summary-row">
                 <span>ആകെ ചെലവ്:</span>
-                <span id="displayExpense" style="color: #f87171;">₹ 0</span>
+                <span id="f87171" style="color: #f87171;"><span id="displayExpense">₹ 0</span></span>
             </div>
             <div class="summary-row total">
                 <span>ബാക്കി തുക / ബാലൻസ്:</span>
@@ -290,37 +268,43 @@
         });
     }
 
-    function addWorkerRow() {
-        const container = document.getElementById('workerListContainer');
-        const rowId = Date.now();
+    // മറ്റു ചെലവുകൾ റോ (വിവരവും തുകയും)
+    function addExpenseRow() {
+        const container = document.getElementById('expenseListContainer');
+        const expId = Date.now();
 
         const rowHTML = `
-            <div class="worker-row" id="row-${rowId}" data-worker="">
-                <select style="flex: 2;" class="worker-select" onchange="updateRowData(this, '${rowId}')" required>
-                    <option value="">തൊഴിലാളി</option>
-                    ${registeredWorkers.map(w => `<option value="${w}">${w}</option>`).join('')}
-                </select>
-                <input type="text" style="flex: 2;" class="worker-job" placeholder="പണി" oninput="updateRowData(this, '${rowId}')" required>
-                <input type="number" style="flex: 1;" placeholder="കൂലി" class="worker-wage" oninput="calculateTotal()" required>
-                <button type="button" class="btn-edit" onclick="editWorkerRow('${rowId}')" title="എഡിറ്റ് ചെയ്യാം">✏️</button>
-                <button type="button" class="btn-danger" onclick="removeWorkerRow('row-${rowId}')" title="ഡിലീറ്റ് ചെയ്യാം">X</button>
+            <div class="expense-row" id="exp-${expId}">
+                <input type="text" style="flex: 2;" placeholder="ചെലവിന്റെ വിവരം (ഉദാ: വാഹനം, സിമന്റ്)" required>
+                <input type="number" style="flex: 1;" placeholder="തുക" class="expense-amount" value="0" oninput="calculateTotal()" required>
+                <button type="button" class="btn-danger" onclick="removeExpenseRow('exp-${expId}')" title="ഡിലീറ്റ്">X</button>
             </div>
         `;
         container.insertAdjacentHTML('beforeend', rowHTML);
     }
 
-    function updateRowData(element, rowId) {
-        let row = document.getElementById(`row-${rowId}`);
-        let selectVal = row.querySelector('.worker-select').value;
-        let jobVal = row.querySelector('.worker-job').value;
-        row.setAttribute('data-worker', selectVal.toLowerCase() + ' ' + jobVal.toLowerCase());
+    function removeExpenseRow(expId) {
+        document.getElementById(expId).remove();
+        calculateTotal();
     }
 
-    function editWorkerRow(rowId) {
-        let row = document.getElementById(`row-${rowId}`);
-        let wageInput = row.querySelector('.worker-wage');
-        wageInput.focus();
-        alert("ഫീൽഡിൽ ക്ലിക്ക് ചെയ്ത് കൂലിയോ വിവരങ്ങളോ മാറ്റാവുന്നതാണ്.");
+    // തൊഴിലാളി റോ
+    function addWorkerRow() {
+        const container = document.getElementById('workerListContainer');
+        const rowId = Date.now();
+
+        const rowHTML = `
+            <div class="worker-row" id="row-${rowId}">
+                <select style="flex: 2;" class="worker-select" required>
+                    <option value="">തൊഴിലാളി</option>
+                    ${registeredWorkers.map(w => `<option value="${w}">${w}</option>`).join('')}
+                </select>
+                <input type="text" style="flex: 2;" class="worker-job" placeholder="പണി" required>
+                <input type="number" style="flex: 1;" placeholder="കൂലി" class="worker-wage" value="0" oninput="calculateTotal()" required>
+                <button type="button" class="btn-danger" onclick="removeWorkerRow('row-${rowId}')" title="ഡിലീറ്റ്">X</button>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', rowHTML);
     }
 
     function removeWorkerRow(rowId) {
@@ -328,36 +312,41 @@
         calculateTotal();
     }
 
+    // സെർച്ച് ഫംഗ്ഷൻ (തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ തിരയാൻ)
     function filterWorkers() {
         let query = document.getElementById('searchBox').value.toLowerCase();
         let rows = document.querySelectorAll('.worker-row');
+        
         rows.forEach(row => {
-            let data = row.getAttribute('data-worker') || '';
-            if (data.includes(query)) {
-                row.style.display = '';
+            let selectElem = row.querySelector('.worker-select');
+            let jobElem = row.querySelector('.worker-job');
+            
+            let workerName = selectElem ? selectElem.value.toLowerCase() : '';
+            let jobName = jobElem ? jobElem.value.toLowerCase() : '';
+            
+            if (workerName.includes(query) || jobName.includes(query)) {
+                row.style.display = 'flex';
             } else {
                 row.style.display = 'none';
             }
         });
     }
 
+    // തൽസമയ കണക്കുകൂട്ടൽ
     function calculateTotal() {
         let income = parseFloat(document.getElementById('siteIncome').value) || 0;
-        let transport = parseFloat(document.getElementById('transportCost').value) || 0;
-        let food = parseFloat(document.getElementById('foodCost').value) || 0;
-        let material = parseFloat(document.getElementById('materialCost').value) || 0;
-        let extra = parseFloat(document.getElementById('extraCost').value) || 0;
         
-        let totalWages = 0;
-        document.querySelectorAll('.worker-row').forEach(row => {
-            // വിസിബിൾ ആയതോ അല്ലാത്തതോ ആയ എല്ലാ തൊഴിലാളികളുടെയും കൂലി കൂട്ടാം
-            let wageInput = row.querySelector('.worker-wage');
-            if(wageInput) {
-                totalWages += parseFloat(wageInput.value) || 0;
-            }
+        let totalOtherExpenses = 0;
+        document.querySelectorAll('.expense-amount').forEach(input => {
+            totalOtherExpenses += parseFloat(input.value) || 0;
         });
 
-        let totalExpense = transport + food + material + extra + totalWages;
+        let totalWages = 0;
+        document.querySelectorAll('.worker-wage').forEach(input => {
+            totalWages += parseFloat(input.value) || 0;
+        });
+
+        let totalExpense = totalOtherExpenses + totalWages;
         let balance = income - totalExpense;
 
         document.getElementById('displayIncome').innerText = `₹ ${income}`;
@@ -377,6 +366,7 @@
         alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
         document.getElementById('siteForm').reset();
         document.getElementById('workerListContainer').innerHTML = '';
+        document.getElementById('expenseListContainer').innerHTML = '';
         calculateTotal();
         document.getElementById('entryDate').valueAsDate = new Date();
     }
