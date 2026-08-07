@@ -280,7 +280,7 @@
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
 
-        window.saveSiteData = async function(event) {
+                window.saveSiteData = async function(event) {
             event.preventDefault();
             const siteName = document.getElementById('siteName').value.trim();
             const entryDate = document.getElementById('entryDate').value;
@@ -320,7 +320,7 @@
                     }
                 }
 
-                // 3. തൊഴിലാളികളുടെ കൂലി സേവ് ചെയ്യുന്നു
+                // 3. തൊഴിലാളികളുടെ കൂലി സേവ് ചെയ്യുന്നു (പേര് മാത്രം സേവ് ആകുന്ന രീതിയിൽ)
                 const workerRows = document.querySelectorAll('.worker-row');
                 for (let row of workerRows) {
                     const select = row.querySelector('.worker-select');
@@ -334,9 +334,10 @@
                         await addDoc(collection(db, "accounts"), {
                             meshtriOwner: currentMeshtri,
                             staffId: staffId,
-                            name: `${workerName} (${jobTitle})`,
+                            name: workerName, // തൊഴിലാളിയുടെ പേര് മാത്രം സേവ് ചെയ്യാൻ
+                            job: jobTitle,    // പണി আলাদা ആയി സേവ് ചെയ്യുന്നു
                             site: siteName,
-                            type: "wage",
+                            type: "wage",     // കൂലി ആയതിനാൽ type 'wage' ആയിരിക്കും, ഇത് അക്കൗണ്ട്സിൽ ചെലവായി കണക്കാക്കും
                             payment: "cash",
                             amount: wageAmount,
                             date: entryDate
@@ -351,6 +352,7 @@
                 alert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!");
             }
         };
+        
 
         fetchData();
     </script>
