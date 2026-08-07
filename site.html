@@ -54,9 +54,9 @@
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-4">
                 <div>
                     <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
-                    <div class="flex gap-2">
+                    <div class="space-y-2">
                         <select id="siteSelectDropdown" onchange="onSiteSelectChange()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
-                            <option value="">+ പുതിയ സൈറ്റ് ചേർക്കുക</option>
+                            <option value="">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>
                         </select>
                         <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                     </div>
@@ -64,7 +64,6 @@
 
                 <div>
                     <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">പണം തരുന്നയാൾ (Client):</label>
-                    <!-- മാറ്റം വരുത്തിയത്: required ഒഴിവാക്കി -->
                     <input type="text" id="payerName" placeholder="പേര് നൽകുക (ആവശ്യമെങ്കിൽ മാത്രം)" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                 </div>
 
@@ -278,7 +277,6 @@
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
 
-        // മാറ്റം വരുത്തിയത്: saveSiteData ഫങ്ഷൻ
         window.saveSiteData = async function(event) {
             event.preventDefault();
             const siteName = document.getElementById('siteName').value.trim();
@@ -324,7 +322,7 @@
                     const staffId = select.value;
                     const selectedOption = select.options[select.selectedIndex];
                     const workerName = selectedOption ? selectedOption.getAttribute('data-name') : 'തൊഴിലാളി';
-                    const jobTitle = row.querySelector('.worker-job').value.trim() || "പണി";
+                    const jobTitle = row.querySelector('.worker-job').value.trim() / 1 || row.querySelector('.worker-job').value.trim() || "പണി";
                     const wageAmount = parseFloat(row.querySelector('.worker-wage').value) || 0;
 
                     if (staffId && wageAmount > 0) {
@@ -332,7 +330,7 @@
                             meshtriOwner: currentMeshtri,
                             staffId: staffId,
                             name: workerName,
-                            job: jobTitle,
+                            job: row.querySelector('.worker-job').value.trim() || "പണി",
                             site: siteName,
                             type: "wage",
                             payment: "cash",
