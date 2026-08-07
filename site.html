@@ -4,456 +4,355 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>സൈറ്റ് മാനേജ്മെന്റ് - മേസ്തിരി പ്രോ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0b0f19;
-            color: #ffffff;
-            margin: 0;
-            padding: 15px;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #111827;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            border: 1px solid #1f2937;
-        }
-
-        .header-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .back-btn {
-            background: #1e293b;
-            color: #38bdf8;
-            padding: 8px 15px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 14px;
-            border: 1px solid #334155;
-        }
-
-        h2, h3 {
-            color: #fbbf24;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 4px;
-            font-weight: 500;
-            color: #94a3b8;
-            font-size: 13px;
-        }
-
-        .input-group-flex {
-            display: flex;
-            gap: 6px;
-        }
-
-        input[type="text"], input[type="number"], input[type="date"], select {
-            width: 100%;
-            padding: 10px;
-            background: #1f2937;
-            border: 1px solid #374151;
-            color: #ffffff;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 15px;
-        }
-
-        input:focus, select:focus {
-            border-color: #fbbf24;
-            outline: none;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .expense-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-            align-items: center;
-        }
-
-        .worker-section, .other-expense-section {
-            background: #1f2937;
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 15px;
-            border: 1px solid #374151;
-        }
-
-        .worker-row {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 8px;
-            align-items: center;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #000000;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            text-align: center;
-        }
-
-        .btn-success {
-            background: #059669;
-            color: #ffffff;
-            width: auto;
-            padding: 8px 12px;
-            font-size: 13px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-            padding: 8px 10px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-edit {
-            background: #2563eb;
-            color: white;
-            padding: 8px 10px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .summary-box {
-            background: #1f2937;
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 15px;
-            border: 1px solid #374151;
-            font-size: 14px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-        }
-
-        .summary-row.total {
-            font-weight: bold;
-            font-size: 16px;
-            border-top: 1px solid #374151;
-            padding-top: 6px;
-            color: #4ade80;
-        }
-
-        .save-btn-container {
-            margin-top: 20px;
-        }
+        body { font-family: 'Manjari', sans-serif; }
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
-<body>
+<body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
 
-<div class="container">
-    <div class="header-flex">
-        <a href="dashboard.html" class="back-btn">← ഡാഷ്‌ബോർഡ്</a>
-        <span style="font-size: 14px; color: #94a3b8;">സൈറ്റ് മാനേജ്മെന്റ്</span>
-    </div>
-
-    <h2>സൈറ്റ് കണക്ക് എൻട്രി</h2>
-    
-    <div class="form-group" style="margin-bottom: 15px;">
-        <input type="text" id="searchBox" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()">
-    </div>
-
-    <form id="siteForm" onsubmit="saveSiteData(event)">
-        <div class="grid-2">
-            <div class="form-group">
-                <label for="siteName">സൈറ്റിന്റെ പേര്:</label>
-                <div class="input-group-flex">
-                    <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര്">
-                    <button type="button" class="btn-edit" onclick="enableEdit('siteName')" title="എഡിറ്റ്">✏️</button>
-                    <button type="button" class="btn-danger" onclick="clearField('siteName')" title="ക്ലിയർ/ഡിലീറ്റ്">X</button>
+    <div class="max-w-md mx-auto space-y-4">
+        
+        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം -->
+        <div class="flex flex-col items-center pt-2 pb-2">
+            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md">
+                <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
+                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col text-left">
+                    <span class="text-amber-400 font-black text-sm tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
+                    <span class="text-[10px] font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="payerName">പണം തരുന്നയാൾ (Client):</label>
-                <div class="input-group-flex">
-                    <input type="text" id="payerName" required placeholder="പേര് നൽകുക">
-                    <button type="button" class="btn-edit" onclick="enableEdit('payerName')" title="എഡിറ്റ്">✏️</button>
-                    <button type="button" class="btn-danger" onclick="clearField('payerName')" title="ക്ലിയർ/ഡിലീറ്റ്">X</button>
-                </div>
+            <div class="mt-3 text-center">
+                <span id="loggedInMeshtri" class="text-sm font-black tracking-wide text-cyan-300 bg-cyan-500/15 px-4 py-1.5 rounded-full border border-cyan-400/40 shadow-lg">
+                    സ്വാഗതം, ലോഡിങ്...
+                </span>
             </div>
         </div>
 
-        <div class="grid-2">
-            <div class="form-group">
-                <label for="entryDate">തീയതി:</label>
-                <input type="date" id="entryDate" required>
+        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
+            <div>
+                <h1 class="text-lg font-black text-white">സൈറ്റ് കണക്ക് എൻട്രി</h1>
             </div>
-            <div class="form-group">
-                <label for="siteIncome">ലഭിച്ച വരവ് (₹):</label>
-                <div class="input-group-flex">
-                    <input type="number" id="siteIncome" placeholder="തുക നൽകുക" value="0" oninput="calculateTotal()">
-                    <button type="button" class="btn-danger" onclick="clearField('siteIncome'); calculateTotal();" title="ഡിലീറ്റ്">X</button>
-                </div>
-            </div>
+            <a href="dashboard.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
+                <span>←</span> ഡാഷ്‌ബോർഡ്
+            </a>
         </div>
 
-        <div class="other-expense-section">
-            <h3 style="text-align: left; font-size: 15px; margin-bottom: 10px;">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ മുതലായവ)</h3>
-            <div id="expenseListContainer"></div>
-            <button type="button" class="btn-success" onclick="addExpenseRow()">+ ചെലവ് ചേർക്കുക</button>
+        <!-- തിരയുന്ന ഭാഗം -->
+        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
+            <input type="text" id="searchBox" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
         </div>
 
-        <div class="worker-section">
-            <h3 style="text-align: left; font-size: 15px; margin-bottom: 10px;">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
-            <div id="workerListContainer"></div>
+        <form id="siteForm" onsubmit="saveSiteData(event)" class="space-y-4">
             
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-                <button type="button" class="btn-success" onclick="addWorkerRow()">+ തൊഴിലാളിയെ ചേർക്കുക</button>
-                <a href="staff.html" class="btn-success" style="background: #2563eb; text-decoration: none; text-align: center; display: inline-block; line-height: normal;">+ പുതിയ ആളെ ചേർക്കുക</a>
+            <!-- സൈറ്റും ക്ലയന്റും -->
+            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-4">
+                <div>
+                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
+                    <div class="flex gap-2">
+                        <select id="siteSelectDropdown" onchange="onSiteSelectChange()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                            <option value="">+ പുതിയ സൈറ്റ് ചേർക്കുക</option>
+                        </select>
+                        <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">പണം തരുന്നയാൾ (Client):</label>
+                    <input type="text" id="payerName" required placeholder="പേര് നൽകുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">തീയതി:</label>
+                        <input type="date" id="entryDate" required class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">ലഭിച്ച വരവ് (₹):</label>
+                        <input type="number" id="siteIncome" placeholder="0" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="summary-box">
-            <div class="summary-row">
-                <span>ആകെ വരവ്:</span>
-                <span id="displayIncome" style="color: #38bdf8;">₹ 0</span>
+            <!-- മറ്റ് ചെലവുകൾ -->
+            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
+                <h3 class="text-sm font-black text-amber-400">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ)</h3>
+                <div id="expenseListContainer" class="space-y-2"></div>
+                <button type="button" onclick="addExpenseRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
             </div>
-            <div class="summary-row">
-                <span>ആകെ ചെലവ്:</span>
-                <span id="displayExpense" style="color: #f87171;">₹ 0</span>
+
+            <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ (കൂടുതൽ സ്ഥലമുള്ള രൂപകൽപ്പന) -->
+            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
+                <h3 class="text-sm font-black text-amber-400">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
+                <div id="workerListContainer" class="space-y-3"></div>
+                
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <button type="button" onclick="addWorkerRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ തൊഴിലാളിയെ ചേർക്കുക</button>
+                    <a href="staff.html" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
+                </div>
             </div>
-            <div class="summary-row total">
-                <span>ബാക്കി തുക / ബാലൻസ്:</span>
-                <span id="grandTotal">₹ 0</span>
+
+            <!-- സംഗ്രഹം & ലാഭം/നഷ്ടം -->
+            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-2.5 text-sm">
+                <div class="flex justify-between font-bold text-slate-300">
+                    <span>ആകെ വരവ്:</span>
+                    <span id="displayIncome" class="text-cyan-400">₹ 0</span>
+                </div>
+                <div class="flex justify-between font-bold text-slate-300">
+                    <span>ആകെ ചെലവ്:</span>
+                    <span id="displayExpense" class="text-red-400">₹ 0</span>
+                </div>
+                <div class="flex justify-between font-black text-base border-t border-slate-800 pt-2">
+                    <span>ബാക്കി തുക / ബാലൻസ് (ലാഭം/നഷ്ടം):</span>
+                    <span id="grandTotal" class="text-amber-400">₹ 0</span>
+                </div>
             </div>
-        </div>
 
-        <div class="save-btn-container">
-            <button type="submit" class="btn">കണക്ക് സേവ് ചെയ്യുക</button>
-        </div>
-    </form>
-</div>
+            <!-- സേവ് ബട്ടൺ -->
+            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black text-base transition shadow-lg">കണക്ക് സേവ് ചെയ്യുക</button>
+        </form>
+    </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-        authDomain: "mesthri-app.firebaseapp.com",
-        projectId: "mesthri-app",
-        storageBucket: "mesthri-app.appspot.com",
-        messagingSenderId: "1060617901864",
-        appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.appspot.com",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
-    let registeredWorkers = [];
+        let registeredWorkers = [];
+        let allAccountsData = [];
 
-    document.getElementById('entryDate').valueAsDate = new Date();
+        document.getElementById('entryDate').valueAsDate = new Date();
 
-    async function fetchRegisteredWorkers() {
-        try {
-            const q = query(collection(db, "staffs"), where("meshtriOwner", "==", currentMeshtri));
-            const querySnapshot = await getDocs(q);
-            registeredWorkers = [];
-            querySnapshot.forEach((docSnap) => {
-                registeredWorkers.push({ id: docSnap.id, ...docSnap.data() });
-            });
-            updateAllDropdowns();
-        } catch (e) {
-            console.error("സ്റ്റാഫുകളെ എടുക്കുന്നതിൽ പിഴവ്:", e);
-        }
-    }
+        async function fetchData() {
+            try {
+                // സ്റ്റാഫുകളെ എടുക്കുന്നു
+                const staffQuery = query(collection(db, "staffs"), where("meshtriOwner", "==", currentMeshtri));
+                const staffSnap = await getDocs(staffQuery);
+                registeredWorkers = [];
+                staffSnap.forEach(doc => registeredWorkers.push({ id: doc.id, ...doc.data() }));
 
-    function updateAllDropdowns() {
-        const selects = document.querySelectorAll('.worker-select');
-        selects.forEach(select => {
-            let currentValue = select.value;
-            select.innerHTML = `<option value="">തൊഴിലാളി</option>` + 
-                registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
-            select.value = currentValue;
-        });
-    }
+                // നിലവിലുള്ള അക്കൗണ്ട്സ് / സൈറ്റ് കണക്കുകൾ എടുക്കുന്നു (സൈറ്റ് ഡ്രോപ്പ്ഡൗണിനും ഹിസ്റ്ററിക്കും)
+                const accQuery = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+                const accSnap = await getDocs(accQuery);
+                allAccountsData = [];
+                const siteSet = new Set();
+                accSnap.forEach(doc => {
+                    const d = doc.data();
+                    allAccountsData.push(d);
+                    if (d.site) siteSet.add(d.site);
+                });
 
-    window.enableEdit = function(fieldId) {
-        document.getElementById(fieldId).focus();
-    }
+                const siteDropdown = document.getElementById('siteSelectDropdown');
+                siteDropdown.innerHTML = '<option value="">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>';
+                siteSet.forEach(s => {
+                    siteDropdown.innerHTML += `<option value="${s}">${s}</option>`;
+                });
 
-    window.clearField = function(fieldId) {
-        let field = document.getElementById(fieldId);
-        field.value = field.type === 'number' ? '0' : '';
-        calculateTotal();
-    }
-
-    window.addExpenseRow = function() {
-        const container = document.getElementById('expenseListContainer');
-        const expId = Date.now();
-        const rowHTML = `
-            <div class="expense-row" id="exp-${expId}">
-                <input type="text" style="flex: 2;" placeholder="ചെലവിന്റെ വിവരം (ഉദാ: വാഹനം, മെറ്റീരിയൽ)" class="expense-desc" required>
-                <input type="number" style="flex: 1;" placeholder="തുക" class="expense-amount" value="0" oninput="calculateTotal()" required>
-                <button type="button" class="btn-danger" onclick="removeExpenseRow('exp-${expId}')" title="ഡിലീറ്റ്">X</button>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', rowHTML);
-    }
-
-    window.removeExpenseRow = function(expId) {
-        document.getElementById(expId).remove();
-        calculateTotal();
-    }
-
-    window.addWorkerRow = function() {
-        const container = document.getElementById('workerListContainer');
-        const rowId = Date.now();
-
-        const optionsHTML = registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
-
-        const rowHTML = `
-            <div class="worker-row" id="row-${rowId}" data-worker="">
-                <select style="flex: 2;" class="worker-select" onchange="updateRowData(this, '${rowId}')" required>
-                    <option value="">തൊഴിലാളി</option>
-                    ${optionsHTML}
-                </select>
-                <input type="text" style="flex: 2;" class="worker-job" placeholder="പണി" oninput="updateRowData(this, '${rowId}')" required>
-                <input type="number" style="flex: 1;" placeholder="കൂലി" class="worker-wage" value="0" oninput="calculateTotal()" required>
-                <button type="button" class="btn-danger" onclick="removeWorkerRow('row-${rowId}')" title="ഡിലീറ്റ്">X</button>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', rowHTML);
-    }
-
-    window.updateRowData = function(element, rowId) {
-        let row = document.getElementById(`row-${rowId}`);
-        let selectVal = row.querySelector('.worker-select');
-        let selectedOption = selectVal.options[selectVal.selectedIndex];
-        let workerName = selectedOption ? selectedOption.getAttribute('data-name') : '';
-        let jobVal = row.querySelector('.worker-job').value;
-        row.setAttribute('data-worker', (workerName + ' ' + jobVal).toLowerCase());
-    }
-
-    window.removeWorkerRow = function(rowId) {
-        document.getElementById(rowId).remove();
-        calculateTotal();
-    }
-
-    window.filterWorkers = function() {
-        let queryVal = document.getElementById('searchBox').value.toLowerCase();
-        let rows = document.querySelectorAll('.worker-row');
-        rows.forEach(row => {
-            let data = row.getAttribute('data-worker') || '';
-            if (data.includes(queryVal)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
+                updateAllDropdowns();
+            } catch (e) {
+                console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", e);
             }
-        });
-    }
-
-    window.calculateTotal = function() {
-        let income = parseFloat(document.getElementById('siteIncome').value) || 0;
-        
-        let totalOtherExpenses = 0;
-        document.querySelectorAll('.expense-amount').forEach(input => {
-            totalOtherExpenses += parseFloat(input.value) || 0;
-        });
-
-        let totalWages = 0;
-        document.querySelectorAll('.worker-wage').forEach(input => {
-            totalWages += parseFloat(input.value) || 0;
-        });
-
-        let totalExpense = totalOtherExpenses + totalWages;
-        let balance = income - totalExpense;
-
-        document.getElementById('displayIncome').innerText = `₹ ${income}`;
-        document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
-        
-        let balanceText = document.getElementById('grandTotal');
-        balanceText.innerText = `₹ ${balance}`;
-        if(balance < 0) {
-            balanceText.style.color = '#f87171';
-        } else {
-            balanceText.style.color = '#4ade80';
         }
-    }
 
-    window.saveSiteData = async function(event) {
-        event.preventDefault();
-        
-        const siteName = document.getElementById('siteName').value.trim();
-        const entryDate = document.getElementById('entryDate').value;
+        window.onSiteSelectChange = function() {
+            const selectedSite = document.getElementById('siteSelectDropdown').value;
+            const siteInput = document.getElementById('siteName');
+            if (selectedSite) {
+                siteInput.value = selectedSite;
+                siteInput.readOnly = true;
+                siteInput.classList.add('opacity-60');
+            } else {
+                siteInput.value = '';
+                siteInput.readOnly = false;
+                siteInput.classList.remove('opacity-60');
+            }
+            calculateTotal();
+        }
 
-        try {
-            // തൊഴിലാളികളുടെ കൂലി കണക്കുകൾ accounts കളക്ഷനിലേക്ക് സേവ് ചെയ്യുന്നു (സ്റ്റാഫ് പേജിൽ കിട്ടാൻ വേണ്ടി)
-            const workerRows = document.querySelectorAll('.worker-row');
-            for (let row of workerRows) {
-                const select = row.querySelector('.worker-select');
-                const staffId = select.value;
-                const selectedOption = select.options[select.selectedIndex];
-                const workerName = selectedOption ? selectedOption.getAttribute('data-name') : 'തൊഴിലാളി';
-                const wageAmount = parseFloat(row.querySelector('.worker-wage').value) || 0;
+        function updateAllDropdowns() {
+            document.querySelectorAll('.worker-select').forEach(select => {
+                let currentValue = select.value;
+                select.innerHTML = `<option value="">തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക</option>` + 
+                    registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
+                select.value = currentValue;
+            });
+        }
 
-                if (staffId && wageAmount > 0) {
+        window.addExpenseRow = function() {
+            const container = document.getElementById('expenseListContainer');
+            const expId = Date.now();
+            container.insertAdjacentHTML('beforeend', `
+                <div class="flex gap-2 items-center" id="exp-${expId}">
+                    <input type="text" placeholder="വിവരം (ഉദാ: വാഹനം, മെറ്റീരിയൽ)" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" required>
+                    <input type="number" placeholder="തുക" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()" required>
+                    <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3 py-3 rounded-xl font-bold text-xs">X</button>
+                </div>
+            `);
+        }
+
+        window.addWorkerRow = function() {
+            const container = document.getElementById('workerListContainer');
+            const rowId = Date.now();
+            const optionsHTML = registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
+
+            container.insertAdjacentHTML('beforeend', `
+                <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2 worker-row" id="row-${rowId}" data-worker="">
+                    <select class="worker-select w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" onchange="updateRowData(this, '${rowId}')" required>
+                        <option value="">തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക</option>
+                        ${optionsHTML}
+                    </select>
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="പണി (ഉദാ: മേസ്തിരി പണി)" class="worker-job w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="updateRowData(this, '${rowId}')" required>
+                        <input type="number" placeholder="കൂലി (₹)" class="worker-wage w-32 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()" required>
+                        <button type="button" onclick="document.getElementById('row-${rowId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3.5 py-3 rounded-xl font-bold text-xs">X</button>
+                    </div>
+                </div>
+            `);
+        }
+
+        window.updateRowData = function(element, rowId) {
+            let row = document.getElementById(`row-${rowId}`);
+            let selectVal = row.querySelector('.worker-select');
+            let selectedOption = selectVal.options[selectVal.selectedIndex];
+            let workerName = selectedOption ? selectedOption.getAttribute('data-name') : '';
+            let jobVal = row.querySelector('.worker-job').value;
+            row.setAttribute('data-worker', (workerName + ' ' + jobVal).toLowerCase());
+        }
+
+        window.filterWorkers = function() {
+            let queryVal = document.getElementById('searchBox').value.toLowerCase();
+            document.querySelectorAll('.worker-row').forEach(row => {
+                let data = row.getAttribute('data-worker') || '';
+                row.style.display = data.includes(queryVal) ? '' : 'none';
+            });
+        }
+
+        window.calculateTotal = function() {
+            let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
+            let pastIncome = 0;
+            let pastExpense = 0;
+
+            // ഈ സൈറ്റിൽ മുൻപ് നടന്ന ആകെ വരവ്-ചെലവുകൾ കണക്കാക്കുന്നു
+            if (currentSite) {
+                allAccountsData.forEach(d => {
+                    if ((d.site || '').toLowerCase() === currentSite) {
+                        if (d.type === 'income') pastIncome += parseFloat(d.amount) || 0;
+                        else pastExpense += parseFloat(d.amount) || 0;
+                    }
+                });
+            }
+
+            let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
+            let totalIncome = pastIncome + todayIncome;
+
+            let todayOtherExp = 0;
+            document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
+
+            let todayWages = 0;
+            document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
+
+            let totalExpense = pastExpense + todayOtherExp + todayWages;
+            let balance = totalIncome - totalExpense;
+
+            document.getElementById('displayIncome').innerText = `₹ ${totalIncome}`;
+            document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
+            
+            let balanceText = document.getElementById('grandTotal');
+            balanceText.innerText = `₹ ${balance}`;
+            balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+        }
+
+        window.saveSiteData = async function(event) {
+            event.preventDefault();
+            const siteName = document.getElementById('siteName').value.trim();
+            const entryDate = document.getElementById('entryDate').value;
+            const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
+
+            if (!siteName) return alert("സൈറ്റിന്റെ പേര് നൽകുക!");
+
+            try {
+                // 1. സൈറ്റിന്റെ വരവ് സേവ് ചെയ്യുന്നു
+                if (siteIncome > 0) {
                     await addDoc(collection(db, "accounts"), {
                         meshtriOwner: currentMeshtri,
-                        staffId: staffId,
-                        name: workerName + ` (കൂലി - സൈറ്റ് പണി)`,
+                        name: document.getElementById('payerName').value.trim() || "ക്ലയന്റ്",
                         site: siteName,
-                        type: "wage",
+                        type: "income",
                         payment: "cash",
-                        amount: wageAmount,
+                        amount: siteIncome,
                         date: entryDate
                     });
                 }
+
+                // 2. മറ്റ് ചെലവുകൾ സേവ് ചെയ്യുന്നു
+                const expRows = document.querySelectorAll('#expenseListContainer > div');
+                for (let r of expRows) {
+                    const desc = r.querySelector('.expense-desc').value.trim();
+                    const amt = parseFloat(r.querySelector('.expense-amount').value) || 0;
+                    if (desc && amt > 0) {
+                        await addDoc(collection(db, "accounts"), {
+                            meshtriOwner: currentMeshtri,
+                            name: desc,
+                            site: siteName,
+                            type: "other",
+                            payment: "cash",
+                            amount: amt,
+                            date: entryDate
+                        });
+                    }
+                }
+
+                // 3. തൊഴിലാളികളുടെ കൂലി സേവ് ചെയ്യുന്നു
+                const workerRows = document.querySelectorAll('.worker-row');
+                for (let row of workerRows) {
+                    const select = row.querySelector('.worker-select');
+                    const staffId = select.value;
+                    const selectedOption = select.options[select.selectedIndex];
+                    const workerName = selectedOption ? selectedOption.getAttribute('data-name') : 'തൊഴിലാളി';
+                    const jobTitle = row.querySelector('.worker-job').value.trim() || "പണി";
+                    const wageAmount = parseFloat(row.querySelector('.worker-wage').value) || 0;
+
+                    if (staffId && wageAmount > 0) {
+                        await addDoc(collection(db, "accounts"), {
+                            meshtriOwner: currentMeshtri,
+                            staffId: staffId,
+                            name: `${workerName} (${jobTitle})`,
+                            site: siteName,
+                            type: "wage",
+                            payment: "cash",
+                            amount: wageAmount,
+                            date: entryDate
+                        });
+                    }
+                }
+
+                alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
+                location.reload();
+            } catch (error) {
+                console.error("സേവ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
+                alert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!");
             }
+        };
 
-            alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
-            document.getElementById('siteForm').reset();
-            document.getElementById('workerListContainer').innerHTML = '';
-            document.getElementById('expenseListContainer').innerHTML = '';
-            calculateTotal();
-            document.getElementById('entryDate').valueAsDate = new Date();
-        } catch (error) {
-            console.error("സേവ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
-            alert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!");
-        }
-    }
-
-    fetchRegisteredWorkers();
-</script>
-
+        fetchData();
+    </script>
 </body>
 </html>
