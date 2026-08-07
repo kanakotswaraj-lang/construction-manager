@@ -39,7 +39,7 @@
         <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
         <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
             <div>
-                <h1 class="text-lg font-black text-white">വരവ് - ചെലവ്</h1>
+                <h1 class="text-lg font-black text-white">വരവ് - ചെലവ് കണക്കുകൾ</h1>
             </div>
             <a href="dashboard.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
                 <span>←</span> ഡാഷ്‌ബോർഡ്
@@ -53,7 +53,7 @@
                 <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
             </div>
             <div class="bg-red-600 text-white p-4 rounded-2xl shadow-md text-center border border-red-500/30">
-                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black">ചെലവ്</p>
+                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black">ചെലവ് / കൂലി</p>
                 <h2 id="totalExpense" class="text-xl font-black mt-1">₹0</h2>
             </div>
             <div class="col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 text-white p-5 rounded-2xl shadow-lg text-center border border-slate-700">
@@ -85,8 +85,8 @@
                 <input type="date" id="transDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
             </div>
             
-            <input type="text" id="ownerName" placeholder="പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
-            <input type="text" id="siteName" placeholder="സ്ഥലം/സൈറ്റ്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+            <input type="text" id="ownerName" placeholder="പേര് / വിവരം" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+            <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
 
             <div class="grid grid-cols-2 gap-3">
                 <select id="type" class="p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
@@ -104,7 +104,7 @@
                 </select>
             </div>
 
-            <input type="number" id="amount" placeholder="തുക" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
             
             <button id="saveBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black text-sm transition shadow-lg mt-2">സേവ് ചെയ്യുക</button>
         </div>
@@ -132,7 +132,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് എടുക്കുന്നു
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
@@ -141,8 +140,8 @@
         document.getElementById('saveBtn').onclick = async () => {
             const data = {
                 meshtriOwner: currentMeshtri,
-                name: document.getElementById('ownerName').value,
-                site: document.getElementById('siteName').value.trim(),
+                name: document.getElementById('ownerName').value.trim(),
+                site: document.getElementById('siteName').value.trim() || "പ്രധാന സൈറ്റ്",
                 type: document.getElementById('type').value,
                 payment: document.getElementById('paymentMethod').value,
                 amount: parseFloat(document.getElementById('amount').value) || 0,
@@ -150,6 +149,7 @@
             };
 
             if (!data.name) return alert("പേര് നൽകുക!");
+            if (!data.date) return alert("തീയതി നൽകുക!");
 
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.innerText = "സേവ് ആകുന്നുണ്ട്...";
@@ -170,7 +170,7 @@
                 document.getElementById('siteName').value = '';
                 document.getElementById('amount').value = '';
                 document.getElementById('transDate').value = '';
-                alert("വിവരങ്ങൾ സേവ് ആയി!");
+                alert("വിവരങ്ങൾ വിജയകരമായി സേവ് ആയി!");
             } catch (error) {
                 saveBtn.disabled = false;
                 saveBtn.innerText = "സേവ് ചെയ്യുക";
@@ -193,7 +193,6 @@
                 }
             });
 
-            // സൈറ്റ് ഡ്രോപ്പ്ഡൗൺ ഓട്ടോമാറ്റിക്കായി ഫിൽ ചെയ്യുന്നു
             const siteSelect = document.getElementById('filterSite');
             const currentSelectedSite = siteSelect.value;
             siteSelect.innerHTML = '<option value="">എല്ലാ സൈറ്റുകളും (All Sites)</option>';
@@ -205,7 +204,6 @@
             renderList();
         });
 
-        // ലിസ്റ്റും കണക്കുകളും റെൻഡർ ചെയ്യാനും സൈറ്റ് വെച്ച് ഫിൽട്ടർ ചെയ്യാനുമുള്ള ഫംഗ്ഷൻ
         window.renderList = () => {
             const selectedSite = document.getElementById('filterSite').value.toLowerCase();
             const selectedDate = document.getElementById('filterDate').value;
@@ -217,7 +215,6 @@
                 const itemSite = (d.site || '').toLowerCase();
                 const itemDate = d.date || '';
 
-                // സൈറ്റും തീയതിയും ഫിൽട്ടർ ചെയ്യൽ
                 const matchesSite = !selectedSite || itemSite === selectedSite;
                 const matchesDate = !selectedDate || itemDate === selectedDate;
 
@@ -225,9 +222,9 @@
                     let categoryColor = "text-red-400";
                     if(d.type === 'income') {
                         categoryColor = "text-emerald-400";
-                        inc += parseFloat(d.amount);
+                        inc += parseFloat(d.amount) || 0;
                     } else {
-                        exp += parseFloat(d.amount);
+                        exp += parseFloat(d.amount) || 0;
                     }
 
                     let typeName = d.type === 'income' ? 'വരവ്' : 
@@ -243,9 +240,9 @@
                         <div class="bg-slate-900/90 text-white p-4 rounded-2xl shadow-xl mb-3 border border-slate-800 backdrop-blur-sm flex justify-between items-center">
                             <div>
                                 <p class="font-black text-base text-white">${d.name}</p>
-                                <p class="text-xs text-slate-400 font-bold">${d.date || ''} • ${d.site || 'സൈറ്റ് ഇല്ല'} • 
+                                <p class="text-xs text-slate-400 font-bold">${d.date || ''} • 📍 ${d.site || 'സൈറ്റ് ഇല്ല'} • 
                                    <span class="font-bold text-slate-300">${paymentText}</span> • 
-                                   <span class="capitalize font-bold">${typeName}</span>
+                                   <span class="capitalize font-bold text-amber-400">${typeName}</span>
                                 </p>
                             </div>
                             <div class="text-right">
@@ -281,7 +278,7 @@
         };
 
         window.del = async (id) => { 
-            if(confirm("ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "accounts", id)); 
+            if(confirm("ഈ കണക്ക് ഡിലീറ്റ് ചെയ്യണോ?")) await deleteDoc(doc(db, "accounts", id)); 
         };
     </script>
 </body>
