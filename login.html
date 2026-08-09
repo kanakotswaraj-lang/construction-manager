@@ -73,8 +73,7 @@
         </p>
     </div>
 
-                  
-      <script type="module">
+           <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
@@ -90,66 +89,77 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        const usernameInput = document.getElementById("username");
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
+        const btnLogin = document.getElementById("btnLogin");
+        const btnForgot = document.getElementById("btnForgot");
 
-        // പാസ്‌വേർഡ് കാണാനുള്ള കണ്ണ് ബട്ടൺ
-        togglePassword.addEventListener("click", () => {
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                togglePassword.style.opacity = "1";
-            } else {
-                passwordInput.type = "password";
-                togglePassword.style.opacity = "0.6";
-            }
-        });
-
-        // ലോഗിൻ ബട്ടൺ
-        document.getElementById("btnLogin").addEventListener("click", () => {
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
-
-            if (!user || !pass) {
-                return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
-            }
-
-            const docRef = doc(db, "users", user);
-            getDoc(docRef).then((docSnap) => {
-                if (!docSnap.exists()) {
-                    return alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
-                }
-                const data = docSnap.data();
-                if (data.password !== pass) {
-                    return alert("പാസ്‌വേർഡ് തെറ്റാണ്!");
-                }
-                localStorage.setItem('userName', user);
-                window.location.href = "dashboard.html";
-            }).catch((error) => {
-                console.error(error);
-                alert("ലോഗിൻ പരാജയപ്പെട്ടു. ഇന്റർനെറ്റ് പരിശോധിക്കുക.");
-            });
-        });
-
-        // പാസ്‌വേർഡ് മറന്നുപോയോ?
-        document.getElementById("btnForgot").addEventListener("click", () => {
-            const user = document.getElementById('username').value.trim();
-            if (!user) {
-                return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
-            }
-
-            const docRef = doc(db, "users", user);
-            getDoc(docRef).then((docSnap) => {
-                if (docSnap.exists()) {
-                    alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + docSnap.data().password);
+        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനും ഉള്ള കണ്ണ് ഐക്കൺ വർക്ക് ചെയ്യാൻ
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener("click", () => {
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    togglePassword.style.opacity = "1";
                 } else {
-                    alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
+                    passwordInput.type = "password";
+                    togglePassword.style.opacity = "0.6";
                 }
-            }).catch((error) => {
-                console.error(error);
-                alert("ഡാറ്റ എടുക്കുന്നതിൽ തടസ്സം നേരിട്ടു.");
             });
-        });
+        }
+
+        // ലോഗിൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
+        if (btnLogin) {
+            btnLogin.addEventListener("click", () => {
+                const user = usernameInput.value.trim();
+                const pass = passwordInput.value.trim();
+
+                if (!user || !pass) {
+                    return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
+                }
+
+                const docRef = doc(db, "users", user);
+                getDoc(docRef).then((docSnap) => {
+                    if (!docSnap.exists()) {
+                        return alert("ഈ യൂസർനെയിം നിലവിലില്ല! പുതിയതായി രജിസ്റ്റർ ചെയ്യുക.");
+                    }
+                    const data = docSnap.data();
+                    if (data.password !== pass) {
+                        return alert("പാസ്‌വേർഡ് തെറ്റാണ്!");
+                    }
+                    localStorage.setItem('userName', user);
+                    window.location.href = "dashboard.html";
+                }).catch((error) => {
+                    console.error(error);
+                    alert("ലോഗിൻ പരാജയപ്പെട്ടു. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.");
+                });
+            });
+        }
+
+        // പാസ്‌വേർഡ് മറന്നുപോയോ? ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
+        if (btnForgot) {
+            btnForgot.addEventListener("click", () => {
+                const user = usernameInput.value.trim();
+                if (!user) {
+                    return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
+                }
+
+                const docRef = doc(db, "users", user);
+                getDoc(docRef).then((docSnap) => {
+                    if (docSnap.exists()) {
+                        alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + docSnap.data().password);
+                    } else {
+                        alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
+                    }
+                }).catch((error) => {
+                    console.error(error);
+                    alert("ഡാറ്റ എടുക്കുന്നതിൽ തടസ്സം നേരിട്ടു.");
+                });
+            });
+        }
     </script>
+           
+
 
 
 </body>
