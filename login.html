@@ -73,7 +73,8 @@
         </p>
     </div>
 
-                  <script type="module">
+                  
+      <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
@@ -103,8 +104,8 @@
             }
         });
 
-        // ലോഗിൻ ബട്ടൺ വർക്ക് ചെയ്യുന്ന രീതി
-        document.getElementById("btnLogin").addEventListener("click", async () => {
+        // ലോഗിൻ ബട്ടൺ
+        document.getElementById("btnLogin").addEventListener("click", () => {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
 
@@ -112,54 +113,44 @@
                 return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
             }
 
-            try {
-                // ഫയർസ്റ്റോറിലെ users കളക്ഷനിൽ യൂസർ ഉണ്ടോ എന്ന് നോക്കുന്നു
-                const docRef = doc(db, "users", user);
-                const docSnap = await getDoc(docRef);
-
+            const docRef = doc(db, "users", user);
+            getDoc(docRef).then((docSnap) => {
                 if (!docSnap.exists()) {
-                    return alert("ഈ യൂസർനെയിം നിലവിലില്ല! പുതിയതായി രജിസ്റ്റർ ചെയ്യുക.");
+                    return alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
                 }
-
                 const data = docSnap.data();
                 if (data.password !== pass) {
                     return alert("പാസ്‌വേർഡ് തെറ്റാണ്!");
                 }
-
-                // ലോഗിൻ വിജയിച്ചാൽ ഡാഷ്‌ബോർഡിലേക്ക് പോകും
                 localStorage.setItem('userName', user);
                 window.location.href = "dashboard.html";
-
-            } catch (error) {
-                console.error("Login Error:", error);
-                alert("ലോഗിൻ പരാജയപ്പെട്ടു. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.");
-            }
+            }).catch((error) => {
+                console.error(error);
+                alert("ലോഗിൻ പരാജയപ്പെട്ടു. ഇന്റർനെറ്റ് പരിശോധിക്കുക.");
+            });
         });
 
-        // പാസ്‌വേർഡ് മറന്നുപോയോ? ബട്ടൺ വർക്ക് ചെയ്യുന്ന രീതി
-        document.getElementById("btnForgot").addEventListener("click", async () => {
+        // പാസ്‌വേർഡ് മറന്നുപോയോ?
+        document.getElementById("btnForgot").addEventListener("click", () => {
             const user = document.getElementById('username').value.trim();
             if (!user) {
                 return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
             }
 
-            try {
-                const docRef = doc(db, "users", user);
-                const docSnap = await getDoc(docRef);
-
+            const docRef = doc(db, "users", user);
+            getDoc(docRef).then((docSnap) => {
                 if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + data.password);
+                    alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + docSnap.data().password);
                 } else {
                     alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
                 }
-            } catch (error) {
-                console.error("Forgot Password Error:", error);
+            }).catch((error) => {
+                console.error(error);
                 alert("ഡാറ്റ എടുക്കുന്നതിൽ തടസ്സം നേരിട്ടു.");
-            }
+            });
         });
     </script>
-  
+
 
 </body>
 </html>
