@@ -100,10 +100,18 @@
         const togglePassword = document.getElementById("togglePassword");
         const eyeIcon = document.getElementById("eyeIcon");
 
-        togglePassword.addEventListener("click", () => {
+                togglePassword.addEventListener("click", () => {
             const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
             passwordInput.setAttribute("type", type);
             
+            // കണ്ണ് ഐക്കണിന്റെ നിറം മാറ്റുകയോ ലളിതമായി പ്രവർത്തിപ്പിക്കുകയോ ചെയ്യാം
+            if (type === "text") {
+                togglePassword.style.color = "#fbbf24"; // മഞ്ഞ നിറം (തുറന്ന അവസ്ഥ സൂചിപ്പിക്കാൻ)
+            } else {
+                togglePassword.style.color = "#93c5fd"; // നീല നിറം
+            }
+        });
+
             if (type === "text") {
                 eyeIcon.innerHTML = `
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.03 10.03 0 012.23-3.38m3.54-2.54A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
