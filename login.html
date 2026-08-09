@@ -73,10 +73,8 @@
         </p>
     </div>
 
-                <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
-    <script type="module">
+                  <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -89,20 +87,12 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app); // 👉 ലോഗിൻ പേജിന് സ്റ്റാൻഡേർഡ് ഫയർസ്റ്റോർ ഉപയോഗിക്കുന്നു
-
-        // മുമ്പ് ലോഗിൻ ചെയ്തിട്ടുണ്ടെങ്കിൽ ഓട്ടോമാറ്റിക് ആയി ഡാഷ്‌ബോർഡിലേക്ക് പോകും
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                window.location.href = "dashboard.html";
-            }
-        });
+        const db = getFirestore(app);
 
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
 
-        // പാസ്‌വേർഡ് കാണാനുള്ള കണ്ണ് ബട്ടൺ വർക്ക് ചെയ്യാൻ
+        // പാസ്‌വേർഡ് കാണാനുള്ള കണ്ണ് ബട്ടൺ
         togglePassword.addEventListener("click", () => {
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
@@ -113,8 +103,8 @@
             }
         });
 
-        // ലോഗിൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
-        document.getElementById("btnLogin").addEventListener("click", () => {
+        // ലോഗിൻ ബട്ടൺ വർക്ക് ചെയ്യുന്ന രീതി
+        document.getElementById("btnLogin").addEventListener("click", async () => {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
 
@@ -122,23 +112,36 @@
                 return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
             }
 
-            const email = user.includes("@") ? user : `${user}@mesthri.com`;
+            try {
+                // ഫയർസ്റ്റോറിലെ users കളക്ഷനിൽ യൂസർ ഉണ്ടോ എന്ന് നോക്കുന്നു
+                const docRef = doc(db, "users", user);
+                const docSnap = await getDoc(docRef);
 
-            signInWithEmailAndPassword(auth, email, pass)
-                .then(() => {
-                    localStorage.setItem('userName', user);
-                    window.location.href = "dashboard.html";
-                })
-                .catch((error) => {
-                    console.error(error);
-                    alert("ലോഗിൻ പരാജയപ്പെട്ടു! യൂസർനെയിമോ പാസ്‌വേർഡോ തെറ്റാണ്.");
-                });
+                if (!docSnap.exists()) {
+                    return alert("ഈ യൂസർനെയിം നിലവിലില്ല! പുതിയതായി രജിസ്റ്റർ ചെയ്യുക.");
+                }
+
+                const data = docSnap.data();
+                if (data.password !== pass) {
+                    return alert("പാസ്‌വേർഡ് തെറ്റാണ്!");
+                }
+
+                // ലോഗിൻ വിജയിച്ചാൽ ഡാഷ്‌ബോർഡിലേക്ക് പോകും
+                localStorage.setItem('userName', user);
+                window.location.href = "dashboard.html";
+
+            } catch (error) {
+                console.error("Login Error:", error);
+                alert("ലോഗിൻ പരാജയപ്പെട്ടു. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.");
+            }
         });
 
-        // പാസ്‌വേർഡ് മറന്നുപോയാൽ
+        // പാസ്‌വേർഡ് മറന്നുപോയോ? ബട്ടൺ വർക്ക് ചെയ്യുന്ന രീതി
         document.getElementById("btnForgot").addEventListener("click", async () => {
             const user = document.getElementById('username').value.trim();
-            if(!user) return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
+            if (!user) {
+                return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
+            }
 
             try {
                 const docRef = doc(db, "users", user);
@@ -150,13 +153,13 @@
                 } else {
                     alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
                 }
-            } catch (e) {
-                alert("ഡാറ്റ എടുക്കുന്നതിൽ തടസ്സം നേരിട്ടു. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.");
+            } catch (error) {
+                console.error("Forgot Password Error:", error);
+                alert("ഡാറ്റ എടുക്കുന്നതിൽ തടസ്സം നേരിട്ടു.");
             }
         });
     </script>
-
-
+  
 
 </body>
 </html>
