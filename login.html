@@ -73,11 +73,11 @@
         </p>
     </div>
 
-    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
+        <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -90,7 +90,13 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
+        
+        // 👉 ഓഫ്‌ലൈൻ കാഷെ സപ്പോർട്ടോട് കൂടി ഫയർസ്റ്റോർ സെറ്റ് ചെയ്യുന്നു
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({
+                tabManager: persistentMultipleTabManager()
+            })
+        });
 
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
@@ -144,5 +150,6 @@
             }
         });
     </script>
+
 </body>
 </html>
