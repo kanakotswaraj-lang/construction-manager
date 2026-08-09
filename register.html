@@ -16,10 +16,10 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- ലോഹോയും ഹെഡറും -->
+    <!-- ഒറിജിനൽ ലോഗോയും ഹെഡറും -->
     <div class="text-center mb-6">
-        <div class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-amber-400 p-1 shadow-lg bg-slate-800 flex items-center justify-center">
-            <span class="text-3xl">👷‍♂️</span>
+        <div class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-amber-400 p-1 shadow-lg bg-slate-800 flex items-center justify-center overflow-hidden">
+            <img src="https://i.ibb.co/6y45086/image.png" alt="മേസ്തിരി പ്രോ ലോഗോ" class="w-full h-full object-cover rounded-full">
         </div>
         <h1 class="text-2xl font-bold text-amber-400 tracking-wider">മേസ്തിരി പ്രോ</h1>
         <p class="text-xs text-slate-300 font-semibold tracking-widest mt-1">SMART SITE MANAGER</p>
@@ -98,7 +98,6 @@
         const eyeIcon = document.getElementById("eyeIcon");
         const btnRegister = document.getElementById("btnRegister");
 
-        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനും ഉള്ള കണ്ണ് ഐക്കൺ ഫംഗ്ഷൻ
         if (togglePassword && passwordInput && eyeIcon) {
             togglePassword.addEventListener("click", () => {
                 const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
@@ -116,7 +115,6 @@
             });
         }
 
-        // രജിസ്ട്രേഷൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
         if (btnRegister) {
             btnRegister.addEventListener("click", async () => {
                 const user = usernameInput.value.trim().toLowerCase();
@@ -132,7 +130,6 @@
                 }
 
                 try {
-                    // Realtime Database-ൽ യൂസർനെയിം കീ ആയി സേവ് ചെയ്യുന്നു
                     await set(ref(db, 'users/' + user), {
                         username: user,
                         phone: phone,
