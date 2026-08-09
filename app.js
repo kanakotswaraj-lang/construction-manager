@@ -4,10 +4,12 @@ import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager
 const firebaseConfig = {
     apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
     authDomain: "mesthri-app.firebaseapp.com",
+    databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
     projectId: "mesthri-app",
-    storageBucket: "mesthri-app.appspot.com",
+    storageBucket: "mesthri-app.firebasestorage.app",
     messagingSenderId: "1060617901864",
-    appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+    appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+    measurementId: "G-J9Y5TW9D7T"
 };
 
 // ഫയർബേസ് ഇനിഷ്യലൈസ് ചെയ്യുക
