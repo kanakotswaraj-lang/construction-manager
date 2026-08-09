@@ -73,11 +73,11 @@
         </p>
     </div>
 
-            <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
+                <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -90,17 +90,19 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        
-        const db = initializeFirestore(app, {
-            localCache: persistentLocalCache({
-                tabManager: persistentMultipleTabManager()
-            })
+        const db = getFirestore(app); // 👉 ലോഗിൻ പേജിന് സ്റ്റാൻഡേർഡ് ഫയർസ്റ്റോർ ഉപയോഗിക്കുന്നു
+
+        // മുമ്പ് ലോഗിൻ ചെയ്തിട്ടുണ്ടെങ്കിൽ ഓട്ടോമാറ്റിക് ആയി ഡാഷ്‌ബോർഡിലേക്ക് പോകും
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = "dashboard.html";
+            }
         });
 
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
 
-        // കണ്ണ് ബട്ടൺ വർക്ക് ചെയ്യാൻ ലളിതമായ രീതി
+        // പാസ്‌വേർഡ് കാണാനുള്ള കണ്ണ് ബട്ടൺ വർക്ക് ചെയ്യാൻ
         togglePassword.addEventListener("click", () => {
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
@@ -111,6 +113,7 @@
             }
         });
 
+        // ലോഗിൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
         document.getElementById("btnLogin").addEventListener("click", () => {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
@@ -126,13 +129,13 @@
                     localStorage.setItem('userName', user);
                     window.location.href = "dashboard.html";
                 })
-                            .catch((error) => {
-                console.error(error);
-                alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
-            });
-
+                .catch((error) => {
+                    console.error(error);
+                    alert("ലോഗിൻ പരാജയപ്പെട്ടു! യൂസർനെയിമോ പാസ്‌വേർഡോ തെറ്റാണ്.");
+                });
         });
 
+        // പാസ്‌വേർഡ് മറന്നുപോയാൽ
         document.getElementById("btnForgot").addEventListener("click", async () => {
             const user = document.getElementById('username').value.trim();
             if(!user) return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
@@ -152,6 +155,7 @@
             }
         });
     </script>
+
 
 
 </body>
