@@ -78,15 +78,15 @@
         </p>
     </div>
 
-    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
+        <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ (Realtime Database) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
+            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
             projectId: "mesthri-app",
             storageBucket: "mesthri-app.firebasestorage.app",
             messagingSenderId: "1060617901864",
@@ -94,8 +94,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
 
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
@@ -119,7 +118,7 @@
         });
 
         document.getElementById("btnRegister").addEventListener("click", async () => {
-            const user = document.getElementById('username').value.trim();
+            const user = document.getElementById('username').value.trim().toLowerCase();
             const pass = document.getElementById('password').value.trim();
             const phone = document.getElementById('phone').value.trim();
 
@@ -132,30 +131,23 @@
             }
 
             try {
-                await createUserWithEmailAndPassword(auth, `${user}@mesthri.com`, pass);
-                
-                await setDoc(doc(db, "users", user), {
+                // Realtime Database-ൽ യൂസർനെയിം നേരിട്ട് കീ ആയി സേവ് ചെയ്യുന്നു
+                await set(ref(db, 'users/' + user), {
                     username: user,
                     phone: phone,
                     password: pass
                 });
-
-                const webAppUrl = "https://script.google.com/macros/s/AKfycbznevcjdsSz7JgWrKeyaO2gOnxnrd-8-rMMiycABRruqFJQ_hfz4Ac79aLqyvnqf09FXg/exec";
-                fetch(webAppUrl, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name: user, phone: phone })
-                }).catch(err => console.log(err));
 
                 alert("വിജയകരമായി രജിസ്റ്റർ ചെയ്തു!");
                 localStorage.setItem('userName', user);
                 window.location.href = "dashboard.html";
 
             } catch (error) {
-                alert("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു! ഈ യൂസർനെയിം നേരത്തെ ഉണ്ടാകാം.");
+                console.error(error);
+                alert("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു!");
             }
         });
     </script>
+
 </body>
 </html>
