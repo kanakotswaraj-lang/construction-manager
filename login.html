@@ -126,10 +126,11 @@
                     localStorage.setItem('userName', user);
                     window.location.href = "dashboard.html";
                 })
-                .catch((error) => {
-                    console.error(error);
-                    alert("ലോഗിൻ പരാജയപ്പെട്ടു! യൂസർനെയിമോ പാസ്‌വേർഡോ തെറ്റാണ്.");
-                });
+                            .catch((error) => {
+                console.error(error);
+                alert("ലോഗിൻ പരാജയപ്പെട്ടു: " + error.message);
+            });
+
         });
 
         document.getElementById("btnForgot").addEventListener("click", async () => {
