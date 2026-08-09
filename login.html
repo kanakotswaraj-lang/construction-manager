@@ -95,19 +95,20 @@
         const togglePassword = document.getElementById("togglePassword");
         const btnLogin = document.getElementById("btnLogin");
         const btnForgot = document.getElementById("btnForgot");
-
         // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനും ഉള്ള കണ്ണ് ഐക്കൺ
         if (togglePassword && passwordInput) {
             togglePassword.addEventListener("click", () => {
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    togglePassword.style.opacity = "1";
+                const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+                passwordInput.setAttribute("type", type);
+                
+                if (type === "text") {
+                    togglePassword.style.color = "#fbbf24"; // മഞ്ഞ നിറം
                 } else {
-                    passwordInput.type = "password";
-                    togglePassword.style.opacity = "0.6";
+                    togglePassword.style.color = "#93c5fd"; // നീല നിറം
                 }
             });
         }
+
 
         // ലോഗിൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
         if (btnLogin) {
