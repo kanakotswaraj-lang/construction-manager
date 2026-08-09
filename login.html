@@ -6,7 +6,6 @@
     <title>ലോഗിൻ - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
-    <script type="module" src="app.js"></script>
     <style>
         body { font-family: 'Manjari', sans-serif; }
     </style>
@@ -73,21 +72,10 @@
         </p>
     </div>
 
-           <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.firebasestorage.app",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    <!-- ഫയർബേസ് ലോഗിൻ ലോജിക്കൽ സ്ക്രിപ്റ്റ് -->
+    <script type="module">
+        import { db } from "./db.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const usernameInput = document.getElementById("username");
         const passwordInput = document.getElementById("password");
@@ -111,7 +99,7 @@
         // ലോഗിൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
         if (btnLogin) {
             btnLogin.addEventListener("click", () => {
-                const user = usernameInput.value.trim();
+                const user = usernameInput.value.trim().toLowerCase();
                 const pass = passwordInput.value.trim();
 
                 if (!user || !pass) {
@@ -139,7 +127,7 @@
         // പാസ്‌വേർഡ് മറന്നുപോയോ? ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
         if (btnForgot) {
             btnForgot.addEventListener("click", () => {
-                const user = usernameInput.value.trim();
+                const user = usernameInput.value.trim().toLowerCase();
                 if (!user) {
                     return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
                 }
@@ -158,9 +146,6 @@
             });
         }
     </script>
-           
-
-
 
 </body>
 </html>
