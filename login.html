@@ -73,7 +73,7 @@
         </p>
     </div>
 
-        <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
+            <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
@@ -91,7 +91,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         
-        // 👉 ഓഫ്‌ലൈൻ കാഷെ സപ്പോർട്ടോട് കൂടി ഫയർസ്റ്റോർ സെറ്റ് ചെയ്യുന്നു
         const db = initializeFirestore(app, {
             localCache: persistentLocalCache({
                 tabManager: persistentMultipleTabManager()
@@ -100,22 +99,15 @@
 
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
-        const eyeIcon = document.getElementById("eyeIcon");
 
+        // കണ്ണ് ബട്ടൺ വർക്ക് ചെയ്യാൻ ലളിതമായ രീതി
         togglePassword.addEventListener("click", () => {
-            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-            passwordInput.setAttribute("type", type);
-            
-            if (type === "text") {
-                eyeIcon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.03 10.03 0 012.23-3.38m3.54-2.54A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
-                `;
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                togglePassword.style.opacity = "1";
             } else {
-                eyeIcon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                `;
+                passwordInput.type = "password";
+                togglePassword.style.opacity = "0.6";
             }
         });
 
@@ -127,29 +119,39 @@
                 return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
             }
 
-            signInWithEmailAndPassword(auth, `${user}@mesthri.com`, pass)
+            const email = user.includes("@") ? user : `${user}@mesthri.com`;
+
+            signInWithEmailAndPassword(auth, email, pass)
                 .then(() => {
                     localStorage.setItem('userName', user);
                     window.location.href = "dashboard.html";
                 })
-                .catch(() => alert("ലോഗിൻ പരാജയപ്പെട്ടു! യൂസർനെയിമോ പാസ്‌വേർഡോ തെറ്റാണ്."));
+                .catch((error) => {
+                    console.error(error);
+                    alert("ലോഗിൻ പരാജയപ്പെട്ടു! യൂസർനെയിമോ പാസ്‌വേർഡോ തെറ്റാണ്.");
+                });
         });
 
         document.getElementById("btnForgot").addEventListener("click", async () => {
             const user = document.getElementById('username').value.trim();
             if(!user) return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
 
-            const docRef = doc(db, "users", user);
-            const docSnap = await getDoc(docRef);
+            try {
+                const docRef = doc(db, "users", user);
+                const docSnap = await getDoc(docRef);
 
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + data.password);
-            } else {
-                alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + data.password);
+                } else {
+                    alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
+                }
+            } catch (e) {
+                alert("ഡാറ്റ എടുക്കുന്നതിൽ തടസ്സം നേരിട്ടു. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.");
             }
         });
     </script>
+
 
 </body>
 </html>
