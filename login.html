@@ -73,9 +73,22 @@
     </div>
 
     <!-- ഫയർബേസ് ലോഗിൻ ലോജിക്കൽ സ്ക്രിപ്റ്റ് -->
-    <script type="module">
-        import { db } from "./db.js";
-        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
         const usernameInput = document.getElementById("username");
         const passwordInput = document.getElementById("password");
@@ -83,7 +96,7 @@
         const btnLogin = document.getElementById("btnLogin");
         const btnForgot = document.getElementById("btnForgot");
 
-        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനും ഉള്ള കണ്ണ് ഐക്കൺ വർക്ക് ചെയ്യാൻ
+        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനും ഉള്ള കണ്ണ് ഐക്കൺ
         if (togglePassword && passwordInput) {
             togglePassword.addEventListener("click", () => {
                 if (passwordInput.type === "password") {
@@ -106,12 +119,12 @@
                     return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
                 }
 
-                const docRef = doc(db, "users", user);
-                getDoc(docRef).then((docSnap) => {
-                    if (!docSnap.exists()) {
+                const dbRef = ref(db);
+                get(child(dbRef, `users/${user}`)).then((snapshot) => {
+                    if (!snapshot.exists()) {
                         return alert("ഈ യൂസർനെയിം നിലവിലില്ല! പുതിയതായി രജിസ്റ്റർ ചെയ്യുക.");
                     }
-                    const data = docSnap.data();
+                    const data = snapshot.val();
                     if (data.password !== pass) {
                         return alert("പാസ്‌വേർഡ് തെറ്റാണ്!");
                     }
@@ -124,7 +137,7 @@
             });
         }
 
-        // പാസ്‌വേർഡ് മറന്നുപോയോ? ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
+        // പാസ്‌വേർഡ് മറന്നുപോയോ? ബട്ടൺ
         if (btnForgot) {
             btnForgot.addEventListener("click", () => {
                 const user = usernameInput.value.trim().toLowerCase();
@@ -132,10 +145,10 @@
                     return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
                 }
 
-                const docRef = doc(db, "users", user);
-                getDoc(docRef).then((docSnap) => {
-                    if (docSnap.exists()) {
-                        alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + docSnap.data().password);
+                const dbRef = ref(db);
+                get(child(dbRef, `users/${user}`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + snapshot.val().password);
                     } else {
                         alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
                     }
@@ -146,6 +159,7 @@
             });
         }
     </script>
+
 
 </body>
 </html>
