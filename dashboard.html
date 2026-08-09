@@ -7,22 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-        <style>
-        body { 
-            font-family: 'Manjari', sans-serif; 
-            background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important;
-        }
-        .glass-card {
-            background: rgba(19, 28, 46, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .glow-gold {
-            box-shadow: 0 0 25px rgba(251, 191, 36, 0.2);
-        }
-    </style>
-
     <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ (Firebase SDKs 9.22.0) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -60,7 +44,6 @@
                 if (userSnap.exists()) {
                     const userData = userSnap.data();
                     
-                    // പ്രൊഫൈൽ ഫോട്ടോ സെറ്റ് ചെയ്യുന്നു
                     if (userData.profilePhoto) {
                         document.getElementById('profileImage').src = userData.profilePhoto;
                         localStorage.setItem('profilePhoto', userData.profilePhoto);
@@ -68,7 +51,6 @@
                         setFallbackProfile(userName);
                     }
 
-                    // കവർ ഫോട്ടോ സെറ്റ് ചെയ്യുന്നു
                     if (userData.coverPhoto) {
                         document.getElementById('coverImage').src = userData.coverPhoto;
                         localStorage.setItem('coverPhoto', userData.coverPhoto);
@@ -96,7 +78,6 @@
                 dateElement.innerText = `ഇന്ന്: ${dayName}, ${dateStr}`;
             }
 
-            // ഫയർബേസിൽ നിന്ന് തത്സമയം കണക്കുകൾ എടുക്കുന്നു
             fetchDashboardData(db, userName);
         });
 
@@ -116,7 +97,6 @@
             }
         }
 
-        // പ്രൊഫൈൽ ഫോട്ടോ ഓട്ടോമാറ്റിക്കായി കംപ്രസ് ചെയ്ത് ഫയർബേസിലും ലോക്കൽ സ്റ്റോറേജിലും സേവ് ചെയ്യുന്നു
         window.updateProfilePhoto = function(event) {
             const file = event.target.files[0];
             let userName = localStorage.getItem('userName') || 'സുരാജ്';
@@ -154,7 +134,6 @@
                         document.getElementById('profileImage').src = compressedData;
                         localStorage.setItem('profilePhoto', compressedData);
 
-                        // ഫയർബേസിലേക്ക് സേവ് ചെയ്യുന്നു
                         try {
                             const userDocRef = doc(db, "users", userName);
                             await setDoc(userDocRef, { profilePhoto: compressedData }, { merge: true });
@@ -167,7 +146,6 @@
             }
         };
 
-        // കവർ ഫോട്ടോ ഓട്ടോമാറ്റിക്കായി കംപ്രസ് ചെയ്ത് ഫയർബേസിലും ലോക്കൽ സ്റ്റോറേജിലും സേവ് ചെയ്യുന്നു
         window.updateCoverPhoto = function(event) {
             const file = event.target.files[0];
             let userName = localStorage.getItem('userName') || 'സുരാജ്';
@@ -205,7 +183,6 @@
                         document.getElementById('coverImage').src = compressedData;
                         localStorage.setItem('coverPhoto', compressedData);
 
-                        // ഫയർബേസിലേക്ക് സേവ് ചെയ്യുന്നു
                         try {
                             const userDocRef = doc(db, "users", userName);
                             await setDoc(userDocRef, { coverPhoto: compressedData }, { merge: true });
@@ -275,23 +252,22 @@
             background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important;
         }
         .glass-card {
-            background: rgba(15, 23, 42, 0.75);
+            background: rgba(19, 28, 46, 0.85);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .glow-gold {
-            box-shadow: 0 0 25px rgba(251, 191, 36, 0.15);
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.2);
         }
     </style>
 
     <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
 </head>
- 
 <body class="text-white min-h-screen p-4 font-sans pb-16">
     <div class="max-w-md mx-auto space-y-4">
 
-        <!-- ടോപ്പ് കവർ & പ്രൊഫൈൽ ഫോട്ടോ സെക്ഷൻ (ലോഗിൻ പേജ് മോഡൽ) -->
+        <!-- പ്രധാന ഹെഡർ & പ്രൊഫൈൽ ഭാഗം (Modern Glassmorphic Banner) -->
         <div class="glass-card rounded-[2.5rem] shadow-2xl relative overflow-hidden border border-white/10">
             
             <!-- കവർ ബാനർ ഭാഗം -->
@@ -334,26 +310,26 @@
             </div>
         </div>
 
-        <!-- ബ്രാൻഡിംഗ് കാർഡും സ്വാഗതം പേരും -->
-        <div class="flex flex-col items-center gap-2.5 pt-1">
-            <div class="w-full inline-flex items-center gap-4 px-6 py-4 rounded-2xl glass-card border border-amber-400/30 shadow-xl shadow-amber-500/10">
-                <div class="w-12 h-12 rounded-xl overflow-hidden border border-amber-400/50 flex-shrink-0 bg-slate-900 flex items-center justify-center shadow-inner">
+        <!-- ബ്രാൻഡിംഗ് കാർഡും സ്വാഗതം പേരും (കൂടുതൽ വലിപ്പത്തിലും ഗ്ലോ ലുക്കിലും) -->
+        <div class="flex flex-col items-center gap-3 pt-1">
+            <div class="w-full inline-flex items-center gap-4 px-6 py-5 rounded-3xl glass-card border border-amber-400/50 shadow-2xl glow-gold">
+                <div class="w-14 h-14 rounded-2xl overflow-hidden border-2 border-amber-400 flex-shrink-0 bg-slate-900 flex items-center justify-center shadow-inner">
                     <img src="icon.png" alt="Logo" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=M&background=0D1117&color=FBBF24&bold=true'">
                 </div>
                 <div class="flex flex-col text-left">
-                    <span class="text-amber-400 font-black text-lg tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
-                    <span class="text-[10px] font-bold text-slate-400 tracking-widest uppercase">SMART SITE MANAGER</span>
+                    <span class="text-amber-400 font-black text-xl tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
+                    <span class="text-[11px] font-bold text-slate-300 tracking-widest uppercase">SMART SITE MANAGER</span>
                 </div>
             </div>
             
             <div class="w-full text-center">
-                <span id="loggedInMeshtri" class="block w-full py-3 rounded-xl text-xs font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/30 shadow-lg">
+                <span id="loggedInMeshtri" class="block w-full py-4 rounded-2xl text-base font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
                     സ്വാഗതം, സുരാജ്
                 </span>
             </div>
         </div>
 
-        <!-- സാമ്പത്തിക സംഗ്രഹ ബോക്സുകൾ (വരുമാനം, ചെലവ്, നഷ്ടം) -->
+        <!-- ലാഭ-നഷ്ട സംഗ്രഹ ബോക്സുകൾ -->
         <div class="grid grid-cols-3 gap-2.5 pt-1">
             <div class="glass-card border-emerald-500/30 p-3.5 rounded-2xl text-center shadow-lg hover:border-emerald-500/60 transition">
                 <span class="text-[11px] font-black text-emerald-400 block tracking-wider uppercase">വരുമാനം</span>
@@ -369,59 +345,59 @@
             </div>
         </div>
 
-        <!-- പ്രധാന മെനു നാവിഗേഷൻ ലിങ്കുകൾ (ടച്ച് ഫ്രണ്ട്‌ലി & പ്രീമിയം ലുക്ക്) -->
-        <div class="space-y-3 pt-2">
-            <a href="site.html" class="glass-card p-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
+        <!-- പ്രധാന മെനു നാവിഗേഷൻ ലിങ്കുകൾ (ഹൈറ്റ് കുറച്ചുള്ള കോംപാക്റ്റ് ലുക്ക്) -->
+        <div class="space-y-2.5 pt-1">
+            <a href="site.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-lg">🏗️</div>
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-base">🏗️</div>
                     <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">സൈറ്റ് വിവരങ്ങൾ</p>
                 </div>
                 <span class="text-amber-400 font-bold text-lg group-hover:translate-x-1 transition">→</span>
             </a>
 
-            <a href="history.html" class="glass-card p-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-yellow-500 group">
+            <a href="history.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-yellow-500 group">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-lg">📋</div>
+                    <div class="w-9 h-9 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-base">📋</div>
                     <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</p>
                 </div>
                 <span class="text-yellow-400 font-bold text-lg group-hover:translate-x-1 transition">→</span>
             </a>
 
-            <a href="staff.html" class="glass-card p-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-indigo-500 group">
+            <a href="staff.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-indigo-500 group">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-lg">👥</div>
+                    <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-base">👥</div>
                     <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">ജീവനക്കാരുടെ ശമ്പളം</p>
                 </div>
                 <span class="text-indigo-400 font-bold text-lg group-hover:translate-x-1 transition">→</span>
             </a>
 
-            <a href="rentals.html" class="glass-card p-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-emerald-500 group">
+            <a href="rentals.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-emerald-500 group">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-lg">🛠️</div>
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-base">🛠️</div>
                     <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">വാടക ഉപകരണങ്ങൾ</p>
                 </div>
                 <span class="text-emerald-400 font-bold text-lg group-hover:translate-x-1 transition">→</span>
             </a>
 
-            <a href="materials.html" class="glass-card p-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-blue-500 group">
+            <a href="materials.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-blue-500 group">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-lg">🧱</div>
+                    <div class="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-base">🧱</div>
                     <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">മെറ്റീരിയൽസ്</p>
                 </div>
                 <span class="text-blue-400 font-bold text-lg group-hover:translate-x-1 transition">→</span>
             </a>
 
-            <a href="accounts.html" class="glass-card p-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-rose-500 group">
+            <a href="accounts.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-rose-500 group">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-lg">📊</div>
+                    <div class="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-base">📊</div>
                     <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">വരവ് - ചെലവ്</p>
                 </div>
                 <span class="text-rose-400 font-bold text-lg group-hover:translate-x-1 transition">→</span>
             </a>
 
-            <a href="estimator.html" class="glass-card p-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
+            <a href="estimator.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-lg">📐</div>
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-base">📐</div>
                     <p class="text-base font-black tracking-wide group-hover:translate-x-1 transition duration-300">മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്</p>
                 </div>
                 <span class="text-amber-400 font-bold text-lg group-hover:translate-x-1 transition">→</span>
@@ -436,4 +412,3 @@
     </div>
 </body>
 </html>
-
