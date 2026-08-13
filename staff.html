@@ -117,7 +117,7 @@
         </div>
     </div>
 
-    <!-- Edit Staff Modal -->
+    <!-- Edit Staff Modal (പേര്, ജോലി, കൂലി മാറ്റാനുള്ള വിൻഡോ) -->
     <div id="editStaffModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex justify-center items-center p-4">
         <div class="bg-slate-900 text-white w-full max-w-sm p-6 rounded-3xl shadow-2xl border border-slate-800">
             <div class="flex justify-between items-center mb-4">
@@ -373,9 +373,9 @@
                     </button>
                 </div>
 
-                <div class="flex gap-2">
-                    <button onclick="openEditStaffModal('${staffId}', '${s.name || ''}', '${s.job || ''}', '${s.wage || 0}', '${s.site || ''}', '${s.phone || ''}', '${s.bank || ''}')" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-amber-400">✏️ Edit Details</button>
-                    <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ${rawBalance < 0 ? 'തൊഴിലാളി തരാനുള്ളത്' : 'കിട്ടാനുള്ള ബാക്കി തുക'}: ₹${displayBalance}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
+                <div class="flex flex-col gap-2">
+                    <button onclick="openEditStaffModal('${staffId}', '${s.name || ''}', '${s.job || ''}', '${s.wage || 0}', '${s.site || ''}', '${s.phone || ''}', '${s.bank || ''}')" class="w-full bg-slate-800 hover:bg-slate-700 border border-amber-400/50 p-3 rounded-xl text-xs font-black text-amber-400 shadow-md">✏️ Edit Details (പേര്, കൂലി മാറ്റാൻ)</button>
+                    <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ${rawBalance < 0 ? 'തൊഴിലാളി തരാനുള്ളത്' : 'കിട്ടാനുള്ള ബാക്കി തുക'}: ₹${displayBalance}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                 </div>
             `;
             list.appendChild(div);
