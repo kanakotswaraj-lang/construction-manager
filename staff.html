@@ -121,6 +121,40 @@
         </div>
     </div>
 
+    <!-- Edit Staff Details Modal -->
+    <div id="editStaffModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex justify-center items-center p-4">
+        <div class="bg-slate-900 text-white w-full max-w-sm p-6 rounded-3xl shadow-2xl border border-slate-800">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-black text-amber-400 text-base">തൊഴിലാളിയുടെ വിവരങ്ങൾ മാറ്റുക</h3>
+                <button onclick="closeEditStaffModal()" class="text-slate-400 hover:text-white font-bold text-xl">&times;</button>
+            </div>
+            <input type="hidden" id="editStaffId">
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-1">പേര്:</label>
+                    <input type="text" id="editStaffName" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-1">സാധാരണ കൂലി (₹):</label>
+                    <input type="number" id="editStaffWage" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-amber-400 font-black outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-1">പ്രാഥമിക സൈറ്റ്:</label>
+                    <input type="text" id="editStaffSite" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-1">WhatsApp നമ്പർ (91...):</label>
+                    <input type="tel" id="editStaffPhone" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-1">ബാങ്ക് / GPay നമ്പർ:</label>
+                    <input type="text" id="editStaffBank" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
+                </div>
+                <button id="saveEditStaffBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 p-3 rounded-xl text-xs font-black shadow-lg transition mt-2">മാറ്റങ്ങൾ സേവ് ചെയ്യുക</button>
+            </div>
+        </div>
+    </div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, addDoc, deleteDoc, doc, updateDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
@@ -339,7 +373,7 @@
                     </div>
 
                     <div class="flex gap-2">
-                        <button id="edit-${staffId}" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-slate-200">Edit Details</button>
+                        <button onclick="openEditStaffModal('${staffId}', '${s.name || ''}', '${s.wage || 0}', '${s.site || ''}', '${s.phone || ''}', '${s.bank || ''}')" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-slate-200">Edit Details</button>
                         <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ${rawBalance < 0 ? 'തൊഴിലാളി തരാനുള്ളത്' : 'കിട്ടാനുള്ള ബാക്കി തുക'}: ₹${displayBalance}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                     </div>
                 `;
@@ -399,28 +433,6 @@
                         loadStaffAndAccounts();
                     }
                 };
-                
-                document.getElementById(`edit-${staffId}`).onclick = () => {
-                    const newName = prompt("പേര് മാറ്റുക:", s.name);
-                    if(newName === null) return;
-                    const newWage = prompt("സാധാരണ കൂലി:", s.wage);
-                    if(newWage === null) return;
-                    const newSite = prompt("സൈറ്റ് മാറ്റുക:", s.site);
-                    if(newSite === null) return;
-                    const newBank = prompt("ബാങ്ക് / GPay നമ്പർ:", s.bank);
-                    if(newBank === null) return;
-                    const newPhone = prompt("WhatsApp നമ്പർ (91...):", s.phone);
-                    if(newPhone === null) return;
-
-                    updateDoc(doc(db, 'staffs', staffId), { 
-                        name: newName, 
-                        wage: parseFloat(newWage) || 0,
-                        site: newSite,
-                        bank: newBank,
-                        phone: newPhone
-                    });
-                    loadStaffAndAccounts();
-                };
             });
         }
 
@@ -434,6 +446,20 @@
 
         window.closeEditLogModal = function() {
             document.getElementById('editLogModal').classList.add('hidden');
+        }
+
+        window.openEditStaffModal = function(staffId, name, wage, site, phone, bank) {
+            document.getElementById('editStaffId').value = staffId;
+            document.getElementById('editStaffName').value = name;
+            document.getElementById('editStaffWage').value = wage;
+            document.getElementById('editStaffSite').value = site;
+            document.getElementById('editStaffPhone').value = phone;
+            document.getElementById('editStaffBank').value = bank;
+            document.getElementById('editStaffModal').classList.remove('hidden');
+        }
+
+        window.closeEditStaffModal = function() {
+            document.getElementById('editStaffModal').classList.add('hidden');
         }
 
         window.deleteLog = async function(logId) {
@@ -462,6 +488,29 @@
 
             alert("കണക്ക് വിജയകരമായി എഡിറ്റ് ചെയ്ത് സേവ് ചെയ്തു!");
             closeEditLogModal();
+            loadStaffAndAccounts();
+        };
+
+        document.getElementById('saveEditStaffBtn').onclick = async () => {
+            const staffId = document.getElementById('editStaffId').value;
+            const newName = document.getElementById('editStaffName').value.trim();
+            const newWage = parseFloat(document.getElementById('editStaffWage').value) || 0;
+            const newSite = document.getElementById('editStaffSite').value.trim();
+            const newPhone = document.getElementById('editStaffPhone').value.trim();
+            const newBank = document.getElementById('editStaffBank').value.trim();
+
+            if (!newName) return alert("പേര് നൽകുക!");
+
+            await updateDoc(doc(db, 'staffs', staffId), {
+                name: newName,
+                wage: newWage,
+                site: newSite,
+                phone: newPhone,
+                bank: newBank
+            });
+
+            alert("തൊഴിലാളിയുടെ വിവരങ്ങൾ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!");
+            closeEditStaffModal();
             loadStaffAndAccounts();
         };
 
