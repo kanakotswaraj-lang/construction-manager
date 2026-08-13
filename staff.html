@@ -492,6 +492,7 @@
         loadStaffAndAccounts();
     };
 
+    // ഇവിടെയാണ് സൈറ്റും മറ്റു വിവരങ്ങളും അപ്ഡേറ്റ് ചെയ്യുന്ന പ്രധാന കോഡ് ശരിയാക്കിയിരിക്കുന്നത്
     document.getElementById('saveEditStaffBtn').onclick = async () => {
         const staffId = document.getElementById('editStaffId').value;
         const newName = document.getElementById('editStaffName').value.trim();
@@ -502,6 +503,7 @@
         const newBank = document.getElementById('editStaffBank').value.trim();
 
         if (!newName) return alert("പേര് നൽകുക!");
+        if (!newSite) return alert("സൈറ്റിന്റെ പേര് നൽകുക!");
 
         await updateDoc(doc(db, 'staffs', staffId), {
             name: newName,
@@ -512,7 +514,7 @@
             bank: newBank
         });
 
-        alert("തൊഴിലാളിയുടെ വിവരങ്ങൾ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!");
+        alert("തൊഴിലാളിയുടെ വിവരങ്ങളും സൈറ്റും വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!");
         closeEditStaffModal();
         loadStaffAndAccounts();
     };
