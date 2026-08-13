@@ -171,7 +171,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-        const currentMeshtri = localStorage.getItem('userName') || "swaraj";
+        const currentMeshtri = localStorage.getItem('userName') || "സൂരാജ്";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
         const getTodayDate = () => {
