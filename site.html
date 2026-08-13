@@ -318,28 +318,28 @@
                 }
 
                 const workerRows = document.querySelectorAll('.worker-row');
-                for (let row of workerRows) {
-                    const select = row.querySelector('.worker-select');
-                    const staffId = select.value;
-                    const selectedOption = select.options[select.selectedIndex];
-                    const workerName = selectedOption ? selectedOption.getAttribute('data-name') : 'തൊഴിലാളി';
-                    const jobTitle = row.querySelector('.worker-job').value.trim() / 1 || row.querySelector('.worker-job').value.trim() || "പണി";
-                    const wageAmount = parseFloat(row.querySelector('.worker-wage').value) || 0;
+for (let row of workerRows) {
+    const select = row.querySelector('.worker-select');
+    const staffId = select.value;
+    const selectedOption = select.options[select.selectedIndex];
+    const workerName = selectedOption ? selectedOption.getAttribute('data-name') : 'തൊഴിലാളി';
+    const jobTitle = row.querySelector('.worker-job').value.trim() || "പണി";
+    const wageAmount = parseFloat(row.querySelector('.worker-wage').value) || 0;
 
-                    if (staffId && wageAmount > 0) {
-                        await addDoc(collection(db, "accounts"), {
-                            meshtriOwner: currentMeshtri,
-                            staffId: staffId,
-                            name: workerName,
-                            job: row.querySelector('.worker-job').value.trim() || "പണി",
-                            site: siteName,
-                            type: "wage",
-                            payment: "cash",
-                            amount: wageAmount,
-                            date: entryDate
-                        });
-                    }
-                }
+    if (staffId && wageAmount > 0) {
+        await addDoc(collection(db, "accounts"), {
+            meshtriOwner: currentMeshtri,
+            staffId: staffId,
+            name: workerName + ` (കൂലി - ${jobTitle})`,
+            site: siteName,
+            type: "wage",
+            payment: "cash",
+            amount: wageAmount,
+            date: entryDate
+        });
+    }
+}
+
 
                 alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
                 location.reload();
