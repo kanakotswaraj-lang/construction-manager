@@ -105,6 +105,10 @@
             <input type="hidden" id="editLogId">
             <div class="space-y-3">
                 <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-1">തീയതി:</label>
+                    <input type="date" id="editLogDate" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
+                </div>
+                <div>
                     <label class="text-xs font-bold text-slate-300 block mb-1">സൈറ്റ്:</label>
                     <input type="text" id="editLogSite" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
                 </div>
@@ -132,10 +136,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
-    
-
-        
 
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
@@ -256,7 +256,7 @@
                             <div class="flex justify-between items-center text-xs bg-slate-800 p-2.5 rounded-xl border border-slate-700 mb-1.5 shadow-sm">
                                 <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
                                 <div class="flex gap-1.5">
-                                    <button onclick="openEditLog('${log.id}', '${log.site || ''}', '${log.amount}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold hover:bg-blue-900">Edit</button>
+                                    <button onclick="openEditLog('${log.id}', '${log.site || ''}', '${log.amount}', '${log.date}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold hover:bg-blue-900">Edit</button>
                                     <button onclick="deleteLog('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2 py-1 rounded-lg font-bold hover:bg-red-900">Del</button>
                                 </div>
                             </div>
@@ -409,22 +409,26 @@
                     if(newSite === null) return;
                     const newBank = prompt("ബാങ്ക് / GPay നമ്പർ:", s.bank);
                     if(newBank === null) return;
+                    const newPhone = prompt("WhatsApp നമ്പർ (91...):", s.phone);
+                    if(newPhone === null) return;
 
                     updateDoc(doc(db, 'staffs', staffId), { 
                         name: newName, 
                         wage: parseFloat(newWage) || 0,
                         site: newSite,
-                        bank: newBank
+                        bank: newBank,
+                        phone: newPhone
                     });
                     loadStaffAndAccounts();
                 };
             });
         }
 
-        window.openEditLog = function(logId, site, amount) {
+        window.openEditLog = function(logId, site, amount, date) {
             document.getElementById('editLogId').value = logId;
             document.getElementById('editLogSite').value = site;
             document.getElementById('editLogAmount').value = amount;
+            document.getElementById('editLogDate').value = date;
             document.getElementById('editLogModal').classList.remove('hidden');
         }
 
@@ -444,6 +448,7 @@
             const logId = document.getElementById('editLogId').value;
             const newSite = document.getElementById('editLogSite').value.trim();
             const newAmount = parseFloat(document.getElementById('editLogAmount').value) || 0;
+            const newDate = document.getElementById('editLogDate').value;
 
             if (newAmount <= 0) {
                 return alert("ശരിയായ തുക നൽകുക!");
@@ -451,7 +456,8 @@
 
             await updateDoc(doc(db, 'accounts', logId), {
                 site: newSite,
-                amount: newAmount
+                amount: newAmount,
+                date: newDate
             });
 
             alert("കണക്ക് വിജയകരമായി എഡിറ്റ് ചെയ്ത് സേവ് ചെയ്തു!");
