@@ -135,6 +135,10 @@
                     <input type="text" id="editStaffName" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
                 </div>
                 <div>
+                    <label class="text-xs font-bold text-slate-300 block mb-1">ജോലി:</label>
+                    <input type="text" id="editStaffJob" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-white outline-none">
+                </div>
+                <div>
                     <label class="text-xs font-bold text-slate-300 block mb-1">സാധാരണ കൂലി (₹):</label>
                     <input type="number" id="editStaffWage" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-amber-400 font-black outline-none">
                 </div>
@@ -373,7 +377,7 @@
                 </div>
 
                 <div class="flex gap-2">
-                    <button onclick="openEditStaffModal('${staffId}', '${s.name || ''}', '${s.wage || 0}', '${s.site || ''}', '${s.phone || ''}', '${s.bank || ''}')" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-slate-200">Edit Details</button>
+                    <button onclick="openEditStaffModal('${staffId}', '${s.name || ''}', '${s.job || ''}', '${s.wage || 0}', '${s.site || ''}', '${s.phone || ''}', '${s.bank || ''}')" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 p-2.5 rounded-xl text-xs font-bold text-amber-400">✏️ Edit Details</button>
                     <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അഡ്വാൻസ്: ₹${advance}%0A- അധികം കൊടുത്തത്: ₹${extraPaid}%0A- ${rawBalance < 0 ? 'തൊഴിലാളി തരാനുള്ളത്' : 'കിട്ടാനുള്ള ബാക്കി തുക'}: ₹${displayBalance}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                 </div>
             `;
@@ -448,9 +452,10 @@
         document.getElementById('editLogModal').classList.add('hidden');
     }
 
-    window.openEditStaffModal = function(staffId, name, wage, site, phone, bank) {
+    window.openEditStaffModal = function(staffId, name, job, wage, site, phone, bank) {
         document.getElementById('editStaffId').value = staffId;
         document.getElementById('editStaffName').value = name;
+        document.getElementById('editStaffJob').value = job;
         document.getElementById('editStaffWage').value = wage;
         document.getElementById('editStaffSite').value = site;
         document.getElementById('editStaffPhone').value = phone;
@@ -494,6 +499,7 @@
     document.getElementById('saveEditStaffBtn').onclick = async () => {
         const staffId = document.getElementById('editStaffId').value;
         const newName = document.getElementById('editStaffName').value.trim();
+        const newJob = document.getElementById('editStaffJob').value.trim();
         const newWage = parseFloat(document.getElementById('editStaffWage').value) || 0;
         const newSite = document.getElementById('editStaffSite').value.trim();
         const newPhone = document.getElementById('editStaffPhone').value.trim();
@@ -503,6 +509,7 @@
 
         await updateDoc(doc(db, 'staffs', staffId), {
             name: newName,
+            job: newJob,
             wage: newWage,
             site: newSite,
             phone: newPhone,
@@ -525,7 +532,7 @@
     }
 
     document.getElementById('confirmWageBtn').onclick = async () => {
-        const staffId = document.getElementById('modalStaffId').value;
+        const staffId = document.getElementById('modalStaffId.value') || document.getElementById('modalStaffId').value;
         const staffName = document.getElementById('modalStaffName').value;
         const selectedDate = document.getElementById('modalLogDate').value || getTodayDate();
         const siteName = document.getElementById('modalSiteName').value.trim() || "പ്രധാന സൈറ്റ്";
