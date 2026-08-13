@@ -120,13 +120,14 @@
     </div>
     
 <!-- ടോസ്റ്റ് നോട്ടിഫിക്കേഷൻ ബോക്സ് -->
+
 <div id="toast" class="fixed inset-0 flex items-center justify-center z-50 hidden p-4">
-    <div class="bg-slate-900 text-white px-8 py-5 rounded-2xl shadow-2xl border-2 border-amber-400 font-bold text-lg flex items-center gap-3">
-        <span class="text-2xl text-emerald-400">✓</span>
-        <span id="toastMessage" class="text-amber-400">വിജയകരമായി സേവ് ചെയ്തു!</span>
+    <!-- bg-slate-800 എന്നത് bg-slate-700 ആക്കി, അപ്പോൾ കളർ കുറച്ചുകൂടി ലൈറ്റ് ആയി -->
+    <div class="bg-slate-700 text-white px-8 py-5 rounded-2xl shadow-2xl border-4 border-amber-400 font-bold text-lg flex items-center gap-3">
+        <span class="text-3xl text-emerald-300">✓</span>
+        <span id="toastMessage" class="text-amber-300">വിജയകരമായി സേവ് ചെയ്തു!</span>
     </div>
 </div>
-
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
