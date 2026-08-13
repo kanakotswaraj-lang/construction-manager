@@ -118,6 +118,14 @@
             <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black text-base transition shadow-lg">കണക്ക് സേവ് ചെയ്യുക</button>
         </form>
     </div>
+    
+<!-- ടോസ്റ്റ് നോട്ടിഫിക്കേഷൻ ബോക്സ് -->
+<div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden">
+    <div class="bg-emerald-500 text-white px-6 py-3 rounded-full shadow-2xl border border-emerald-400 font-bold text-sm flex items-center gap-2">
+        <span class="text-lg">✓</span>
+        <span id="toastMessage">വിജയകരമായി സേവ് ചെയ്തു!</span>
+    </div>
+</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -136,6 +144,15 @@
         const db = getFirestore(app);
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    toastMessage.innerText = message;
+    toast.classList.remove('hidden');
+    setTimeout(() => {
+        toast.classList.add('hidden');
+    }, 3000);
+}
 
         let registeredWorkers = [];
         let allAccountsData = [];
@@ -341,8 +358,9 @@ for (let row of workerRows) {
 }
 
 
-                alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
-                location.reload();
+                showToast("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
+setTimeout(() => { location.reload(); }, 1500);
+
             } catch (error) {
                 console.error("സേവ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
                 alert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!");
