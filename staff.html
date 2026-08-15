@@ -337,14 +337,13 @@
                 let advLogsHtml = '';
                 let extraLogsHtml = '';
 
+                
                 staffLogs.forEach(log => {
                     const dayName = getMalayalamDay(log.date);
                     const displayDateStr = dayName ? `${log.date} (${dayName})` : log.date;
 
-                    // സെറ്റിൽ ചെയ്ത തീയതിക്ക് ശേഷമുള്ള പുതിയ കണക്കുകൾ മാത്രം ഈ പേജിൽ കാണിക്കും
-                    if (s.lastSettledDate && log.date <= s.lastSettledDate && log.type !== 'extra' && log.note !== "മുൻപത്തെ ബാക്കി ബാലൻസ്") {
-                        return; 
-                    }
+                    // പ്രശ്നക്കാരനായ ആ 'lastSettledDate' ഫിൽട്ടറിംഗ് പൂർണ്ണമായി ഒഴിവാക്കി,
+                    // എല്ലാ പുതിയ ലോഗുകളും കൃത്യമായി കാണിക്കാൻ താഴെ കൊടുത്തിരിക്കുന്നു:
 
                     if (log.type === "wage") {
                         totalEarned += parseFloat(log.amount) || 0;
@@ -374,7 +373,7 @@
                                 <span class="font-bold text-slate-300">📅 ${displayDateStr} | അഡ്വാൻസ്: <span class="text-purple-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
                                 <div class="flex gap-1">
                                     <button onclick="openEditAdv('${log.id}', '${log.amount}', '${log.note || ''}')" class="text-blue-400 text-[10px] font-bold px-1.5 py-0.5 bg-blue-950/60 border border-blue-800/50 rounded">Edit</button>
-                                    <button onclick="deleteLog('${log.id}')" class="text-red-400 text-[10px] font-bold px-1.5 py-0.5 bg-red-950/60 border border-blue-800/50 rounded">Del</button>
+                                    <button onclick="deleteLog('${log.id}')" class="text-red-400 text-[10px] font-bold px-1.5 py-0.5 bg-red-950/60 border border-red-800/50 rounded">Del</button>
                                 </div>
                             </div>
                         `;
@@ -391,6 +390,8 @@
                         `;
                     }
                 });
+
+                    
 
                 const workedSitesList = workedSitesSet.size > 0 ? Array.from(workedSitesSet).join(', ') : (s.site || 'പ്രധാന സൈറ്റ്');
                 let rawBalance = (totalEarned + totalExtra) - totalAdvance;
