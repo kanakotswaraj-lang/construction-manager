@@ -322,7 +322,6 @@
                     const dayName = getMalayalamDay(log.date);
                     const displayDateStr = dayName ? `${log.date} (${dayName})` : log.date;
 
-                    // സെറ്റിൽ ചെയ്ത പഴയ കൂലി/അഡ്വാൻസ് കണക്കുകൾ ഹിസ്റ്ററിയിലേക്ക് മാറ്റുന്നു (എന്നാൽ അധികത്തുക അടുത്ത ആഴ്ചയിലേക്കും നിലനിൽക്കും)
                     if (s.lastSettledDate && log.date <= s.lastSettledDate && log.type !== 'extra') {
                         pastLogsHtml += `
                             <div class="text-[11px] bg-slate-900/90 p-2 rounded-xl border border-slate-800 mb-1 flex justify-between items-center text-slate-400">
@@ -374,8 +373,10 @@
                 });
 
                 const workedSitesList = workedSitesSet.size > 0 ? Array.from(workedSitesSet).join(', ') : (s.site || 'പ്രധാന സൈറ്റ്');
-                // ആകെ കൂലി + അധികത്തുക - അഡ്വാൻസ് = കൊടുക്കാനുള്ള ബാക്കി തുക
                 let rawBalance = (totalEarned + totalExtra) - totalAdvance;
+
+                // വാട്സാപ്പിൽ അയക്കുന്ന മെസ്സേജിലെ ബാലൻസ് ഭാഗം (സെറ്റിൽ ചെയ്തോ ഇല്ലയോ എന്ന് തിരിച്ചറിയാൻ)
+                let balanceTextForWa = s.lastSettledDate ? "₹0 (മുഴുവൻ തുകയും കൊടുത്തു തീർത്തു)" : `₹${rawBalance}`;
 
                 div.innerHTML = `
                     <div class="flex justify-between items-center mb-3">
@@ -468,7 +469,7 @@
                     ` : ''}
 
                     <div class="flex flex-col gap-2">
-                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അധികത്തുക: ₹${totalExtra}%0A- ആകെ അഡ്വാൻസ്: ₹${totalAdvance}%0A- ബാക്കി കൊടുത്തുതീർത്തത്/നൽകാനുള്ളത്: ₹${rawBalance}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
+                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അധികത്തുക: ₹${totalExtra}%0A- ആകെ അഡ്വാൻസ്: ₹${totalAdvance}%0A- ബാക്കി കൊടുത്തുതീർത്തത്/നൽകാനുള്ളത്: ${balanceTextForWa}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                     </div>
                 `;
                 list.appendChild(div);
