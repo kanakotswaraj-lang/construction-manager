@@ -418,17 +418,18 @@
                 }
             };
 
-            document.getElementById(`saveAdv-${staffId}`).onclick = async () => {
-                const newAdv = parseFloat(document.getElementById(`adv-${staffId}`).value) || 0;
-                const newExtra = parseFloat(document.getElementById(`extra-${staffId}`).value) || 0;
+                document.getElementById(`saveAdv-${staffId}`).onclick = async () => {
+        const newAdv = parseFloat(document.getElementById(`adv-${staffId}`).value) || 0;
+        const newExtra = parseFloat(document.getElementById(`extra-${staffId}`).value) || 0;
 
-                await updateDoc(doc(db, 'staffs', staffId), {
-                    advance: newAdv,
-                    extraPaid: newExtra
-                });
-                alert("മാറ്റങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
-                loadStaffAndAccounts();
-            };
+        await updateDoc(doc(db, 'staffs', staffId), {
+            advance: newAdv,
+            extraPaid: newExtra
+        });
+        alert("മാറ്റങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
+        loadStaffAndAccounts();
+    };
+
 
             document.getElementById(`del-${staffId}`).onclick = () => {
                 if(confirm("ഈ തൊഴിലാളിയെ ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
