@@ -377,7 +377,6 @@
 
                 let isRecentlySettled = s.lastSettledDate === today;
                 let finalBalanceForWa = isRecentlySettled ? 0 : rawBalance;
-                let balanceTextForWa = (rawBalance === 0 || isRecentlySettled) ? "₹0 (മുഴുവൻ തുകയും കൊടുത്തു തീർത്തു)" : `₹${rawBalance}`;
 
                 div.innerHTML = `
                     <div class="flex justify-between items-center mb-3">
@@ -433,7 +432,7 @@
                                 <input type="text" readonly value="${totalWorkedDays}" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-cyan-300 text-center">
                             </div>
                             <div>
-                                <label class="text-[9px] font-bold text-slate-400 block">അഡ്വാൻസ് (₹)</label>
+                                <label class="text-[9px] font-bold text-slate-400 block">ആകെ കൊടുത്തത് (₹)</label>
                                 <input type="text" readonly value="₹${totalAdvance}" class="w-full p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-purple-300 text-center">
                             </div>
                             <div>
@@ -449,7 +448,7 @@
                             </div>
                             <div class="h-10 w-[1px] bg-amber-400/30"></div>
                             <div class="text-white font-black text-sm text-right">
-                                ബാക്കി കൊടുക്കാനുള്ളത്:<br>
+                                നൽകാനുള്ള ബാക്കി:<br>
                                 <span class="text-emerald-400 text-xl font-black">₹${isRecentlySettled ? 0 : rawBalance}</span>
                             </div>
                         </div>
@@ -470,7 +469,7 @@
                     ` : ''}
 
                     <div class="flex flex-col gap-2">
-                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned + totalExtra}%0A- ആകെ അഡ്വാൻസ്: ₹${totalAdvance}%0A- ഇന്ന് നൽകിയത് (ബാക്കി): ₹${finalBalanceForWa}%0A- ആകെ കൊടുത്തത് (അഡ്വാൻസ് + ഇന്ന്): ₹${totalEarned + totalExtra}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
+                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned + totalExtra}%0A- ആകെ നൽകിയത്: ₹${totalAdvance}%0A- നൽകാനുള്ള ബാക്കി തുക: ₹${finalBalanceForWa}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                     </div>
                 `;
                 list.appendChild(div);
