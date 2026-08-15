@@ -375,8 +375,9 @@
                 const workedSitesList = workedSitesSet.size > 0 ? Array.from(workedSitesSet).join(', ') : (s.site || 'പ്രധാന സൈറ്റ്');
                 let rawBalance = (totalEarned + totalExtra) - totalAdvance;
 
-                // വാട്സാപ്പിൽ അയക്കുന്ന മെസ്സേജിലെ ബാലൻസ് ഭാഗം (സെറ്റിൽ ചെയ്തോ ഇല്ലയോ എന്ന് തിരിച്ചറിയാൻ)
-                let balanceTextForWa = s.lastSettledDate ? "₹0 (മുഴുവൻ തുകയും കൊടുത്തു തീർത്തു)" : `₹${rawBalance}`;
+                let isRecentlySettled = s.lastSettledDate === today;
+                let finalBalanceForWa = isRecentlySettled ? 0 : rawBalance;
+                let balanceTextForWa = (rawBalance === 0 || isRecentlySettled) ? "₹0 (മുഴുവൻ തുകയും കൊടുത്തു തീർത്തു)" : `₹${rawBalance}`;
 
                 div.innerHTML = `
                     <div class="flex justify-between items-center mb-3">
@@ -449,7 +450,7 @@
                             <div class="h-10 w-[1px] bg-amber-400/30"></div>
                             <div class="text-white font-black text-sm text-right">
                                 ബാക്കി കൊടുക്കാനുള്ളത്:<br>
-                                <span class="text-emerald-400 text-xl font-black">₹${rawBalance}</span>
+                                <span class="text-emerald-400 text-xl font-black">₹${isRecentlySettled ? 0 : rawBalance}</span>
                             </div>
                         </div>
      
@@ -469,7 +470,7 @@
                     ` : ''}
 
                     <div class="flex flex-col gap-2">
-                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned}%0A- അധികത്തുക: ₹${totalExtra}%0A- ആകെ അഡ്വാൻസ്: ₹${totalAdvance}%0A- ബാക്കി കൊടുത്തുതീർത്തത്/നൽകാനുള്ളത്: ${balanceTextForWa}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
+                        <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned + totalExtra}%0A- ആകെ അഡ്വാൻസ്: ₹${totalAdvance}%0A- ഇന്ന് നൽകിയത് (ബാക്കി): ₹${finalBalanceForWa}%0A- ആകെ കൊടുത്തത് (അഡ്വാൻസ് + ഇന്ന്): ₹${totalEarned + totalExtra}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                     </div>
                 `;
                 list.appendChild(div);
