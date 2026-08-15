@@ -181,6 +181,14 @@
                     const isRet = r.isReturned === true;
                     if ((currentFilter === 'active' && !isRet) || (currentFilter === 'returned' && isRet)) {
                         const bal = r.total - r.paid;
+                     // ഇന്നത്തെ തീയതി നോക്കി തുക ഓട്ടോമാറ്റിക് ആയി അപ്ഡേറ്റ് ചെയ്യുന്ന ഭാഗം
+const today = new Date();
+const endDate = new Date(r.end);
+if (today > endDate) {
+    let extraDays = Math.ceil((today - endDate) / (1000 * 60 * 60 * 24));
+    r.total = parseFloat(r.total) + (extraDays * (parseFloat(r.unitRent) || 0));
+}
+   
                         const div = document.createElement('div');
                         div.className = `bg-slate-900/90 border border-slate-800 p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-xl mb-4 text-white backdrop-blur-sm`;
                         div.innerHTML = `
