@@ -336,19 +336,13 @@
                 let logsHtml = '';
                 let advLogsHtml = '';
                 let extraLogsHtml = '';
-                let pastLogsHtml = '';
 
                 staffLogs.forEach(log => {
                     const dayName = getMalayalamDay(log.date);
                     const displayDateStr = dayName ? `${log.date} (${dayName})` : log.date;
 
-                    if (s.lastSettledDate && log.date <= s.lastSettledDate && log.type !== 'extra') {
-                        pastLogsHtml += `
-                            <div class="text-[11px] bg-slate-900/90 p-2 rounded-xl border border-slate-800 mb-1 flex justify-between items-center text-slate-400">
-                                <span>📅 ${displayDateStr} | ${log.type === 'wage' ? 'കൂലി: 📍 ' + (log.site||'സൈറ്റ്') : (log.note || 'അഡ്വാൻസ്')} | <span class="text-slate-300 font-bold">₹${log.amount}</span></span>
-                                <button onclick="deleteLog('${log.id}')" class="text-red-400 text-[10px] font-bold px-1.5 py-0.5 bg-red-950/60 rounded">Del</button>
-                            </div>
-                        `;
+                    // സെറ്റിൽ ചെയ്ത തീയതിക്ക് ശേഷമുള്ള പുതിയ കണക്കുകൾ മാത്രം ഈ പേജിൽ കാണിക്കും
+                    if (s.lastSettledDate && log.date <= s.lastSettledDate && log.type !== 'extra' && log.note !== "മുൻപത്തെ ബാക്കി ബാലൻസ്") {
                         return; 
                     }
 
@@ -380,7 +374,7 @@
                                 <span class="font-bold text-slate-300">📅 ${displayDateStr} | അഡ്വാൻസ്: <span class="text-purple-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
                                 <div class="flex gap-1">
                                     <button onclick="openEditAdv('${log.id}', '${log.amount}', '${log.note || ''}')" class="text-blue-400 text-[10px] font-bold px-1.5 py-0.5 bg-blue-950/60 border border-blue-800/50 rounded">Edit</button>
-                                    <button onclick="deleteLog('${log.id}')" class="text-red-400 text-[10px] font-bold px-1.5 py-0.5 bg-red-950/60 border border-red-800/50 rounded">Del</button>
+                                    <button onclick="deleteLog('${log.id}')" class="text-red-400 text-[10px] font-bold px-1.5 py-0.5 bg-red-950/60 border border-blue-800/50 rounded">Del</button>
                                 </div>
                             </div>
                         `;
@@ -484,16 +478,6 @@
                         </button>
                     </div>
 
-                    <!-- പഴയ കണക്കുകൾ / ഹിസ്റ്ററി സെക്ഷൻ -->
-                    ${pastLogsHtml ? `
-                        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-2xl mb-3">
-                            <p class="text-[11px] font-black text-slate-400 mb-2">🗂️ മുൻകാല സെറ്റിൽമെന്റ് ഹിസ്റ്ററി:</p>
-                            <div class="max-h-24 overflow-y-auto space-y-1">
-                                ${pastLogsHtml}
-                            </div>
-                        </div>
-                    ` : ''}
-
                     <div class="flex flex-col gap-2">
                         <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned + totalExtra}%0A- ആകെ നൽകിയത്: ₹${totalAdvance}%0A- നൽകാനുള്ള ബാക്കി തുക: ₹${finalBalanceForWa}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 text-center rounded-xl text-xs font-black shadow-sm">WhatsApp അയക്കുക</a>
                     </div>
@@ -534,7 +518,6 @@
                 document.getElementById(`settleBtn-${staffId}`).onclick = async () => {
                     if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള കണക്ക് തീർക്കണോ?\n(ബാക്കി നിൽക്കുന്ന തുക ഉണ്ടെങ്കിൽ അത് അടുത്ത സൈക്ലിലേക്ക് മുൻപത്തെ ബാലൻസ് ആയി മാറും)`)) {
                         
-                        // സെറ്റിൽ ചെയ്യുന്നതിന് തൊട്ടുമുമ്പുള്ള ബാക്കി തുക കണക്കാക്കുന്നു
                         if (rawBalance > 0) {
                             await addDoc(collection(db, "accounts"), {
                                 meshtriOwner: currentMeshtri,
