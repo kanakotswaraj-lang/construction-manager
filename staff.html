@@ -343,15 +343,14 @@
 
                     // പ്രശ്നക്കാരനായ ആ 'lastSettledDate' ഫിൽട്ടറിംഗ് പൂർണ്ണമായി ഒഴിവാക്കി,
                     // എല്ലാ പുതിയ ലോഗുകളും കൃത്യമായി കാണിക്കാൻ താഴെ കൊടുത്തിരിക്കുന്നു:
-
                     if (log.type === "wage") {
                         totalEarned += parseFloat(log.amount) || 0;
-                        const match = log.name ? log.name.match(/\((?:കൂലി|wage)\s*-\s*([\d.]+)\s*ദിവസം\)/i) : null;
-                        if (match) {
-                            totalWorkedDays += parseFloat(match[1]) || 0;
-                        } else {
-                            totalWorkedDays += 1;
-                        }
+                        
+                        // ദിവസങ്ങൾ കൃത്യമായി കൂട്ടാൻ (ഡീഫാൾട്ട് 1 ദിവസമോ അല്ലെങ്കിൽ കൂലി വെച്ച് കണക്കാക്കുകയോ ചെയ്യാം)
+                        const wagePerDay = s.wage || 1200;
+                        let daysThisLog = parseFloat(log.days) || (parseFloat(log.amount) / wagePerDay);
+                        totalWorkedDays += daysThisLog;
+
                         if (log.site) {
                             workedSitesSet.add(log.site);
                         }
@@ -360,11 +359,13 @@
                             <div class="flex justify-between items-center text-xs bg-slate-800 p-2.5 rounded-xl border border-slate-700 mb-1.5 shadow-sm">
                                 <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
                                 <div class="flex gap-1.5">
-                                    <button onclick="openEditLog('${log.id}', '${log.site || ''}', '${log.amount}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold">Edit</button>
+                                    <button onclick="openEditLog('${log.id}', '${log.site || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold">Edit</button>
                                     <button onclick="deleteLog('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2 py-1 rounded-lg font-bold">Del</button>
                                 </div>
                             </div>
                         `;
+                    }
+
                     } else if (log.type === "advance") {
                         totalAdvance += parseFloat(log.amount) || 0;
                         advLogsHtml += `
@@ -549,12 +550,16 @@
             });
         }
 
-        window.openEditLog = function(logId, site, amount) {
+                window.openEditLog = function(logId, site, amount, date) {
             document.getElementById('editLogId').value = logId;
             document.getElementById('editLogSite').value = site;
             document.getElementById('editLogAmount').value = amount;
+            // തീയതി കൂടി എഡിറ്റ് ചെയ്യാൻ ഫീൽഡ് സെറ്റ് ചെയ്യുക (എച്ച്ടിഎംഎൽ-ൽ date input ഉണ്ടായിരിക്കണം)
+            const dateField = document.getElementById('editLogDate');
+            if(dateField) dateField.value = date;
             document.getElementById('editLogModal').classList.remove('hidden');
         }
+
 
         window.closeEditLogModal = function() {
             document.getElementById('editLogModal').classList.add('hidden');
@@ -672,7 +677,7 @@
             document.getElementById('extraModal').classList.add('hidden');
         }
 
-        document.getElementById('confirmWageBtn').onclick = async () => {
+                document.getElementById('confirmWageBtn').onclick = async () => {
             const staffId = document.getElementById('modalStaffId').value;
             const staffName = document.getElementById('modalStaffName').value;
             const selectedDate = getTodayDate();
@@ -681,7 +686,6 @@
             const addedMoney = parseFloat(document.getElementById('modalWageAmount').value) || 0;
 
             if (addedMoney <= 0) return alert("ദയവായി ശരിയായ തുക നൽകുക!");
-            if (!siteName) return alert("ദയവായി സൈറ്റിന്റെ പേര് നൽകുക!");
 
             await addDoc(collection(db, "accounts"), {
                 meshtriOwner: currentMeshtri,
@@ -689,6 +693,7 @@
                 name: staffName + ` (കൂലി - ${addedDays} ദിവസം)`,
                 site: siteName,
                 type: "wage",
+                days: addedDays, // ദിവസങ്ങൾ കൃത്യമായി സേവ് ചെയ്യാൻ ഇത് സഹായിക്കും
                 payment: "cash",
                 amount: addedMoney,
                 date: selectedDate
@@ -699,28 +704,6 @@
             loadStaffAndAccounts();
         };
 
-        document.getElementById('confirmAdvBtn').onclick = async () => {
-            const staffId = document.getElementById('advModalStaffId').value;
-            const advDate = document.getElementById('advDate').value;
-            const advAmount = parseFloat(document.getElementById('advAmount').value) || 0;
-            const advNote = document.getElementById('advNote').value.trim();
-
-            if (advAmount <= 0) return alert("ശരിയായ തുക നൽകുക!");
-            if (!advDate) return alert("തീയതി തിരഞ്ഞെടുക്കുക!");
-
-            await addDoc(collection(db, "accounts"), {
-                meshtriOwner: currentMeshtri,
-                staffId: staffId,
-                type: "advance",
-                amount: advAmount,
-                date: advDate,
-                note: advNote
-            });
-
-            alert("അഡ്വാൻസ് വിവരം വിജയകരമായി ചേർത്തു!");
-            closeAdvModal();
-            loadStaffAndAccounts();
-        };
 
         document.getElementById('confirmExtraBtn').onclick = async () => {
             const staffId = document.getElementById('extraModalStaffId').value;
