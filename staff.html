@@ -239,8 +239,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
-        document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+        // ലോക്കൽ സ്റ്റോറേജിൽ നിന്ന് മേസ്തിരിയുടെ പേര് എടുക്കുന്ന ഭാഗം
+const currentMeshtri = localStorage.getItem('userName') || localStorage.getItem('meshtriName') || localStorage.getItem('name') || "മേസ്തിരി";
+
+const loggedElement = document.getElementById('loggedInMeshtri');
+if (loggedElement) {
+    loggedElement.innerText = "സ്വാഗതം, " + currentMeshtri;
+}
 
         const getTodayDate = () => {
             const d = new Date();
