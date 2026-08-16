@@ -45,9 +45,13 @@
         <!-- ഫോം ഭാഗം -->
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 mb-8 space-y-4 backdrop-blur-sm">
             <h2 class="font-black text-amber-400 mb-2 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
+            
             <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
             <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
             
+            <!-- സൈറ്റിന്റെ പേര് ചേർക്കാനുള്ള ഫീൽഡ് -->
+            <input type="text" id="siteName" placeholder="ഏത് സൈറ്റിലാണ് (Site Name)?" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-cyan-400 text-xs">
+
             <div class="grid grid-cols-2 gap-2">
                 <input type="text" id="shopName" placeholder="എടുത്ത കടയുടെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
                 <input type="text" id="clientName" placeholder="നൽകിയ ആളിന്റെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
@@ -74,9 +78,15 @@
         </div>
 
         <!-- ഫിൽട്ടർ ബട്ടണുകൾ -->
-        <div class="flex gap-2 mb-4">
+        <div class="flex gap-2 mb-2">
             <button onclick="setFilter('active')" id="filterActiveBtn" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 transition">നടന്നുകൊണ്ടിരിക്കുന്നത്</button>
             <button onclick="setFilter('returned')" id="filterReturnedBtn" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition">തിരികെ നൽകിയത്</button>
+        </div>
+
+        <!-- സെർച്ച് ബാർ -->
+        <div class="mb-6">
+            <input type="text" id="searchInput" placeholder="🔍 ഉപകരണത്തിന്റെ പേരോ കടയോ സൈറ്റോ സെർച്ച് ചെയ്യുക..." 
+                class="w-full p-4 bg-slate-900/50 text-white placeholder-slate-500 rounded-xl border border-slate-700 focus:outline-none focus:border-cyan-400 font-bold text-sm">
         </div>
 
         <section id="rentList" class="space-y-4 pb-12">
@@ -84,7 +94,7 @@
         </section>
     </div>
 
-    <!-- സെന്ററിൽ മനോഹരമായി വരുന്ന പോപ്പ്-അപ്പ് (Toast Notification) -->
+    <!-- സെന്ററിൽ മനോഹരമായി വരുന്ന പോപ്പ്-അപ്പ് -->
     <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center">
         ഫലം ഇവിടെ കാണിക്കും
     </div>
@@ -110,7 +120,6 @@
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
-        // സെന്ററിൽ വരുന്ന ടോസ്റ്റ് മെസ്സേജ് ഫങ്ഷൻ
         function showToast(message, isSuccess = true) {
             const toast = document.getElementById('customToast');
             toast.innerText = message;
@@ -141,9 +150,10 @@
         }
         document.querySelectorAll('input').forEach(input => input.addEventListener('input', calculateTotal));
 
-        window.editItemDetails = async (id, currentItem, currentQty, currentShop, currentClient) => {
+        window.editItemDetails = async (id, currentItem, currentQty, currentShop, currentClient, currentSite) => {
             const newName = prompt("ഉപകരണത്തിന്റെ പുതിയ പേര്:", currentItem);
             const newQty = prompt("പുതിയ എണ്ണം:", currentQty);
+            const newSite = prompt("സൈറ്റിന്റെ പേര്:", currentSite);
             const newShop = prompt("കടയുടെ പേര്:", currentShop);
             const newClient = prompt("നൽകിയ ആളിന്റെ പേര്:", currentClient);
 
@@ -151,6 +161,7 @@
                 await updateDoc(doc(db, "rentals", id), {
                     item: newName,
                     qty: newQty,
+                    site: newSite || '',
                     shop: newShop,
                     client: newClient || ''
                 });
@@ -186,8 +197,8 @@
             }
         };
 
-        window.shareWhatsApp = (item, qty, shop, client, total, paid, bal, totalDays) => {
-            const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} (${qty} എണ്ണം)\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nആകെ വാടക: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
+        window.shareWhatsApp = (item, qty, site, shop, client, total, paid, bal, totalDays) => {
+            const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} (${qty} എണ്ണം)\nസൈറ്റ്: ${site || 'പറഞ്ഞിട്ടില്ല'}\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nആകെ വാടക: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
             const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
             window.open(url, '_blank');
         };
@@ -200,6 +211,7 @@
                 meshtriOwner: currentMeshtri,
                 item: itemName,
                 qty: document.getElementById('itemQty').value || 1,
+                site: document.getElementById('siteName').value || '',
                 shop: document.getElementById('shopName').value || 'കട',
                 client: document.getElementById('clientName').value || '',
                 phone: document.getElementById('shopPhone').value || '',
@@ -214,6 +226,7 @@
             
             document.getElementById('itemName').value = '';
             document.getElementById('itemQty').value = '';
+            document.getElementById('siteName').value = '';
             document.getElementById('shopName').value = '';
             document.getElementById('clientName').value = '';
             document.getElementById('shopPhone').value = '';
@@ -222,15 +235,22 @@
             document.getElementById('paidRent').value = '';
         });
 
+        document.getElementById('searchInput').addEventListener('input', () => {
+            loadData();
+        });
+
         let cachedSnapshot = null;
         function loadData() {
             if (!cachedSnapshot) return;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const list = document.getElementById('rentList');
             list.innerHTML = `<h2 class="font-black text-white mb-2">${currentFilter === 'active' ? 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ' : 'തിരികെ നൽകിയ ഉപകരണങ്ങൾ'}</h2>`;
             
             cachedSnapshot.forEach((d) => {
                 const r = d.data();
-                if (r.meshtriOwner === currentMeshtri) {
+                const matchesSearch = r.item.toLowerCase().includes(searchTerm) || r.shop.toLowerCase().includes(searchTerm) || (r.site && r.site.toLowerCase().includes(searchTerm));
+                
+                if (r.meshtriOwner === currentMeshtri && matchesSearch) {
                     const isRet = r.isReturned === true;
                     if ((currentFilter === 'active' && !isRet) || (currentFilter === 'returned' && isRet)) {
                         
@@ -246,8 +266,6 @@
                             const extraDays = Math.ceil((today - endDate) / (1000 * 60 * 60 * 24));
                             const baseDays = totalDays;
                             totalDays += extraDays;
-                            const baseStart = startDate;
-                            const baseEnd = endDate;
                             calculatedTotal = (baseDays * unitPerDay) + (extraDays * unitPerDay);
                         }
 
@@ -259,12 +277,13 @@
                             <div class="flex justify-between items-start mb-1">
                                 <p class="font-black text-white text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
                                 <div class="flex gap-1">
-                                    <button onclick="editItemDetails('${d.id}', '${r.item}', '${r.qty}', '${r.shop}', '${r.client || ''}')" class="bg-cyan-900/50 text-cyan-300 border border-cyan-700/50 px-2 py-1 rounded-lg text-[10px] font-black">എഡിറ്റ്</button>
+                                    <button onclick="editItemDetails('${d.id}', '${r.item}', '${r.qty}', '${r.shop}', '${r.client || ''}', '${r.site || ''}')" class="bg-cyan-900/50 text-cyan-300 border border-cyan-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">എഡിറ്റ്</button>
                                     <button onclick="toggleReturn('${d.id}', ${isRet})" class="text-[10px] font-black px-2.5 py-1 rounded-lg border ${isRet ? 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50' : 'bg-slate-800 text-slate-300 border-slate-700'}">
                                         ${isRet ? '✓ തിരികെ നൽകി' : 'റിട്ടേൺ'}
                                     </button>
                                 </div>
                             </div>
+                            ${r.site ? `<p class="text-xs text-cyan-400 font-bold mb-1">🏗️ സൈറ്റ്: ${r.site}</p>` : ''}
                             <p class="text-xs text-slate-300 font-bold mb-1">കട: <span class="text-amber-400">${r.shop}</span> ${r.client ? `| ആർക്ക്: <span class="text-cyan-300">${r.client}</span>` : ''} | 📞 ${r.phone}</p>
                             <p class="text-[11px] text-slate-400 mb-2">തീയതി: ${r.start} മുതൽ ${r.end} വരെ | <strong class="text-amber-300">${totalDays} ദിവസങ്ങൾ</strong> (ഒരെണ്ണത്തിന് പ്രതിദിനം: ₹${r.unitRent})</p>
                             
@@ -274,7 +293,7 @@
                                     <span class="${bal > 0 ? 'text-red-400' : 'text-emerald-400'}">ബാലൻസ്: ₹${bal}</span>
                                 </div>
                                 <div class="flex justify-between items-center pt-1">
-                                    <button onclick="shareWhatsApp('${r.item}', '${r.qty}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-[11px] font-black flex items-center gap-1 shadow-md">
+                                    <button onclick="shareWhatsApp('${r.item}', '${r.qty}', '${r.site || ''}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-[11px] font-black flex items-center gap-1 shadow-md">
                                         💬 വാട്സാപ്പ് അയക്കുക
                                     </button>
                                     <div class="flex gap-1">
