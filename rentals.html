@@ -78,25 +78,40 @@
             <h2 class="font-black text-white mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>
         </section>
     </div>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+    <!-- സ്റ്റൈലിഷ് പോപ്പ്-അപ്പ് നോട്ടിഫിക്കേഷനുവേണ്ടിയുള്ള ഡിവിഷൻ -->
+    <div id="customToast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 border border-amber-400 text-amber-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 opacity-0 pointer-events-none">
+        ഫലം ഇവിടെ കാണിക്കും
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
-            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
             projectId: "mesthri-app",
-            storageBucket: "mesthri-app.firebasestorage.app",
+            storageBucket: "mesthri-app.appspot.com",
             messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-            measurementId: "G-J9Y5TW9D7T"
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
         };
-
+        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+
+        // മനോഹരമായ പോപ്പ്-അപ്പ് (Toast) കാണിക്കാനുള്ള ഫങ്ഷൻ
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('customToast');
+            toast.innerText = message;
+            toast.className = `fixed bottom-5 left-1/2 -translate-x-1/2 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 ${isSuccess ? 'bg-emerald-950 border border-emerald-500 text-emerald-300' : 'bg-red-950 border border-red-500 text-red-300'} opacity-100`;
+            setTimeout(() => {
+                toast.className = "fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 border border-amber-400 text-amber-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 opacity-0 pointer-events-none";
+            }, 3000);
+        }
 
         let currentFilter = 'active';
         window.setFilter = (filter) => {
@@ -106,7 +121,6 @@
             loadData();
         };
 
-        // ആകെ വാടക തുക ഓട്ടോമാറ്റിക് ആയി കണക്കാക്കാൻ
         function calculateTotal() {
             const start = new Date(document.getElementById('startDate').value);
             const end = new Date(document.getElementById('endDate').value);
@@ -124,26 +138,27 @@
             const extraPaid = prompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?");
             if(extraPaid) {
                 await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
-                alert("പെയ്മെന്റ് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!");
+                showToast("✨ പെയ്മെന്റ് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!");
             }
         };
 
         window.settleFull = async (id, total) => {
             if(confirm("ബാക്കി തുക മുഴുവൻ അടച്ചു തീർത്ത് അക്കൗണ്ട് ക്ലിയർ ചെയ്യണോ?")) {
                 await updateDoc(doc(db, "rentals", id), { paid: total });
-                alert("അക്കൗണ്ട് സെറ്റിൽ ചെയ്തു!");
+                showToast("🎉 അക്കൗണ്ട് വിജയകരമായി സെറ്റിൽ ചെയ്തു!");
             }
         };
 
         window.toggleReturn = async (id, currentStatus) => {
             const newStatus = !currentStatus;
             await updateDoc(doc(db, "rentals", id), { isReturned: newStatus });
+            showToast(newStatus ? "📦 ഉപകരണം തിരികെ നൽകിയതായി അടയാളപ്പെടുത്തി!" : "🔄 വാടക സ്റ്റാറ്റസ് മാറ്റിയിരിക്കുന്നു!");
         };
 
         window.deleteRent = async (id) => {
             if(confirm("ഈ ഡാറ്റ ഡിലീറ്റ് ചെയ്യണോ?")) {
                 await deleteDoc(doc(db, "rentals", id));
-                alert("വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+                showToast("🗑️ ഡാറ്റ വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!", false);
             }
         };
 
@@ -155,7 +170,7 @@
                 meshtriOwner: currentMeshtri,
                 item: itemName,
                 qty: document.getElementById('itemQty').value || 1,
-                shop: document.getElementById('shopNameother' || 'shopName').value || 'കട',
+                shop: document.getElementById('shopName').value || 'കട',
                 phone: document.getElementById('shopPhone').value || '',
                 start: document.getElementById('startDate').value,
                 end: document.getElementById('endDate').value,
@@ -164,7 +179,16 @@
                 paid: parseFloat(document.getElementById('paidRent').value) || 0,
                 isReturned: false
             });
-            alert("വാടക വിവരങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
+            showToast("🚀 വാടക വിവരങ്ങൾ വിജയകരമായി ചേർത്തു!");
+            
+            // ഫോം ഫീൽഡുകൾ ക്ലിയർ ചെയ്യാൻ
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemQty').value = '';
+            document.getElementById('shopName').value = '';
+            document.getElementById('shopPhone').value = '';
+            document.getElementById('unitRent').value = '';
+            document.getElementById('totalRent').value = '';
+            document.getElementById('paidRent').value = '';
         });
 
         let cachedSnapshot = null;
@@ -179,7 +203,6 @@
                     const isRet = r.isReturned === true;
                     if ((currentFilter === 'active' && !isRet) || (currentFilter === 'returned' && isRet)) {
                         
-                        // ഡെയ്‌ലി വാടക തുക ദിവസങ്ങൾ കഴിയുന്തോറും ഓട്ടോമാറ്റിക് ആയി കൂട്ടുന്ന ഭാഗം
                         let calculatedTotal = parseFloat(r.total) || 0;
                         const today = new Date();
                         const endDate = new Date(r.end);
@@ -187,7 +210,6 @@
 
                         if (!isRet && today > endDate) {
                             const extraDays = Math.ceil((today - endDate) / (1000 * 60 * 60 * 24));
-                            // ഒറിജിനൽ ടോട്ടലിന്റെ കൂടെ അധികം വന്ന ദിവസത്തെ വാടക കൂട്ടുന്നു
                             const baseStart = new Date(r.start);
                             const baseEnd = new Date(r.end);
                             const baseDays = Math.ceil((baseEnd - baseStart) / (1000 * 60 * 60 * 24)) + 1;
@@ -227,6 +249,5 @@
             loadData();
         });
     </script>
-
 </body>
 </html>
