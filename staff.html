@@ -8,9 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans Malayalam', sans-serif; }
+        #customAlert { transition: opacity 0.3s ease; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4">
+
+    <!-- കളർഫുൾ കസ്റ്റം അലേർട്ട് ബോക്സ് -->
+    <div id="customAlert" class="hidden fixed top-5 left-5 right-5 z-[9999] p-4 rounded-2xl border font-bold text-center shadow-2xl"></div>
 
     <div class="max-w-md mx-auto p-2">
         <!-- ഹെഡർ -->
@@ -31,13 +35,12 @@
             ➕ പുതിയ തൊഴിലാളിയെ ചേർക്കുക
         </button>
 
-        <!-- തൊഴിലാളികളുടെ ലിസ്റ്റ് വരുന്നത് ഇവിടെയാണ് -->
         <div id="staffList">
             <p class="text-center text-xs text-slate-400 font-bold">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
         </div>
     </div>
 
-    <!-- പുതിയ തൊഴിലാളിയെ ചേർക്കാനുള്ള മോഡൽ -->
+    <!-- മോഡലുകൾ -->
     <div id="addStaffModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl w-full max-w-sm space-y-3">
             <h3 class="font-black text-amber-400 text-sm">പുതിയ തൊഴിലാളി</h3>
@@ -54,7 +57,6 @@
         </div>
     </div>
 
-    <!-- കൂലി ചേർക്കാനുള്ള മോഡൽ -->
     <div id="wageModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl w-full max-w-sm space-y-3">
             <h3 id="modalWorkerTitle" class="font-black text-amber-400 text-sm">ഇന്നത്തെ കൂലി ചേർക്കുക</h3>
@@ -83,7 +85,6 @@
         </div>
     </div>
 
-    <!-- അഡ്വാൻസ് മോഡൽ -->
     <div id="advanceModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl w-full max-w-sm space-y-3">
             <h3 id="advModalTitle" class="font-black text-purple-300 text-sm">അഡ്വാൻസ് നൽകിയത്</h3>
@@ -98,7 +99,6 @@
         </div>
     </div>
 
-    <!-- അധികത്തുക മോഡൽ -->
     <div id="extraModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl w-full max-w-sm space-y-3">
             <h3 id="extraModalTitle" class="font-black text-rose-300 text-sm">അധികത്തുക ചേർക്കുക</h3>
@@ -113,16 +113,15 @@
         </div>
     </div>
 
-    <!-- എഡിറ്റ് ലോഗ് മോഡൽ -->
     <div id="editLogModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl w-full max-w-sm space-y-3">
-            <h3 class="font-black text-blue-400 text-sm">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
+            <h3 id="editModalTitle" class="font-black text-blue-400 text-sm">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
             <input type="hidden" id="editLogId">
             <div>
                 <label class="text-[10px] text-slate-400">തീയതി</label>
                 <input type="date" id="editLogDate" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
             </div>
-            <div>
+            <div id="editSiteContainer">
                 <label class="text-[10px] text-slate-400">സൈറ്റ് / കുറിപ്പ്</label>
                 <input type="text" id="editLogSite" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
             </div>
@@ -156,12 +155,28 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ പേര് എടുക്കാൻ
         let currentMeshtri = localStorage.getItem('userName') || localStorage.getItem('meshtriName') || localStorage.getItem('name') || "മേസ്തിരി";
         const loggedElement = document.getElementById('loggedInMeshtri');
         if (loggedElement) {
             loggedElement.innerText = "സ്വാഗതം, " + currentMeshtri;
         }
+
+        // കളർഫുൾ അലേർട്ട് ഫംഗ്‌ഷൻ
+        window.showAlert = function(message, type = 'success') {
+            const alertBox = document.getElementById('customAlert');
+            alertBox.innerText = message;
+            alertBox.className = "fixed top-5 left-5 right-5 z-[9999] p-4 rounded-2xl border font-bold text-center shadow-2xl transition-all duration-300";
+            
+            if (type === 'success') {
+                alertBox.classList.add('bg-emerald-950', 'border-emerald-500', 'text-emerald-300');
+            } else {
+                alertBox.classList.add('bg-rose-950', 'border-rose-500', 'text-rose-300');
+            }
+            
+            setTimeout(() => {
+                alertBox.classList.add('hidden');
+            }, 3000);
+        };
 
         const getTodayDate = () => {
             const d = new Date();
@@ -181,8 +196,8 @@
         document.getElementById('saveStaffBtn').addEventListener('click', async () => {
             const name = document.getElementById('staffName').value.trim();
             const site = document.getElementById('siteName').value.trim();
-            if (!name) return alert("പേര് നൽകുക!");
-            if (!site) return alert("സൈറ്റിന്റെ പേര് നൽകുക!");
+            if (!name) return showAlert("പേര് നൽകുക!", "error");
+            if (!site) return showAlert("സൈറ്റിന്റെ പേര് നൽകുക!", "error");
             
             await addDoc(collection(db, "staffs"), {
                 meshtriOwner: currentMeshtri,
@@ -194,7 +209,7 @@
                 bank: document.getElementById('bankDetails').value.trim(),
                 lastSettledDate: ""
             });
-            alert("വിവരങ്ങൾ വിജയകരമായി സേവ് ആയി!");
+            showAlert("വിവരങ്ങൾ വിജയകരമായി സേവ് ആയി! ✅", "success");
             
             document.getElementById('staffName').value = '';
             document.getElementById('siteName').value = '';
@@ -276,7 +291,7 @@
                             <div class="flex justify-between items-center text-xs bg-slate-800 p-2.5 rounded-xl border border-slate-700 mb-1.5 shadow-sm">
                                 <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
                                 <div class="flex gap-1.5">
-                                    <button onclick="openEditLog('${log.id}', '${log.site || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold">Edit</button>
+                                    <button onclick="openEditLog('${log.id}', 'wage', '${log.site || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold">Edit</button>
                                     <button onclick="deleteLog('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2 py-1 rounded-lg font-bold">Del</button>
                                 </div>
                             </div>
@@ -286,7 +301,8 @@
                         advLogsHtml += `
                             <div class="flex justify-between items-center text-xs bg-slate-800/90 p-2 rounded-xl border border-purple-900/40 mb-1">
                                 <span class="font-bold text-slate-300">📅 ${displayDateStr} | അഡ്വാൻസ്: <span class="text-purple-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
-                                <div class="flex gap-1">
+                                <div class="flex gap-1.5">
+                                    <button onclick="openEditLog('${log.id}', 'advance', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold">Edit</button>
                                     <button onclick="deleteLog('${log.id}')" class="text-red-400 text-[10px] font-bold px-1.5 py-0.5 bg-red-950/60 border border-red-800/50 rounded">Del</button>
                                 </div>
                             </div>
@@ -296,7 +312,8 @@
                         extraLogsHtml += `
                             <div class="flex justify-between items-center text-xs bg-slate-800/90 p-2 rounded-xl border border-rose-900/40 mb-1">
                                 <span class="font-bold text-slate-300">📅 ${displayDateStr} | അധികത്തുക: <span class="text-rose-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
-                                <div class="flex gap-1">
+                                <div class="flex gap-1.5">
+                                    <button onclick="openEditLog('${log.id}', 'extra', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2 py-1 rounded-lg font-bold">Edit</button>
                                     <button onclick="deleteLog('${log.id}')" class="text-red-400 text-[10px] font-bold px-1.5 py-0.5 bg-red-950/60 border border-red-800/50 rounded">Del</button>
                                 </div>
                             </div>
@@ -441,7 +458,7 @@
                             lastSettledDate: today
                         });
 
-                        alert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി!");
+                        showAlert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി! ✅", "success");
                         loadStaffAndAccounts();
                     }
                 };
@@ -449,18 +466,37 @@
                 document.getElementById(`del-${staffId}`).onclick = () => {
                     if(confirm("ഈ തൊഴിലാളിയെ ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
                         deleteDoc(doc(db, 'staffs', staffId));
+                        showAlert("തൊഴിലാളിയെ ഡിലീറ്റ് ചെയ്തു! 🗑️", "error");
                         loadStaffAndAccounts();
                     }
                 };
             });
         }
 
-        window.openEditLog = function(logId, site, amount, date) {
+        window.openEditLog = function(logId, type, siteOrNote, amount, date) {
             document.getElementById('editLogId').value = logId;
-            document.getElementById('editLogSite').value = site;
             document.getElementById('editLogAmount').value = amount;
             const dateField = document.getElementById('editLogDate');
             if(dateField) dateField.value = date;
+
+            const titleEl = document.getElementById('editModalTitle');
+            const siteLabelEl = document.querySelector('#editSiteContainer label');
+            const siteInputEl = document.getElementById('editLogSite');
+
+            if (type === 'wage') {
+                titleEl.innerText = "കൂലി കണക്ക് എഡിറ്റ് ചെയ്യുക";
+                siteLabelEl.innerText = "സൈറ്റ്";
+                siteInputEl.value = siteOrNote;
+            } else if (type === 'advance') {
+                titleEl.innerText = "അഡ്വാൻസ് എഡിറ്റ് ചെയ്യുക";
+                siteLabelEl.innerText = "കുറിപ്പ് (Note)";
+                siteInputEl.value = siteOrNote;
+            } else if (type === 'extra') {
+                titleEl.innerText = "അധികത്തുക എഡിറ്റ് ചെയ്യുക";
+                siteLabelEl.innerText = "കുറിപ്പ് (Note)";
+                siteInputEl.value = siteOrNote;
+            }
+
             document.getElementById('editLogModal').classList.remove('hidden');
         }
 
@@ -483,25 +519,32 @@
         window.deleteLog = async function(logId) {
             if (confirm("ഈ എൻട്രി ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
                 await deleteDoc(doc(db, 'accounts', logId));
-                alert("ഡിലീറ്റ് ചെയ്തു!");
+                showAlert("എൻട്രി ഡിലീറ്റ് ചെയ്തു! 🗑️", "error");
                 loadStaffAndAccounts();
             }
         }
 
         document.getElementById('saveEditLogBtn').onclick = async () => {
             const logId = document.getElementById('editLogId').value;
-            const newSite = document.getElementById('editLogSite').value.trim();
+            const newSiteOrNote = document.getElementById('editLogSite').value.trim();
             const newAmount = parseFloat(document.getElementById('editLogAmount').value) || 0;
             const newDate = document.getElementById('editLogDate').value;
 
-            if (newAmount <= 0) return alert("ശരിയായ തുക നൽകുക!");
+            if (newAmount <= 0) return showAlert("ശരിയായ തുക നൽകുക!", "error");
 
-            const updateData = { site: newSite, amount: newAmount };
+            const updateData = { amount: newAmount };
             if (newDate) updateData.date = newDate;
+
+            const siteLabelText = document.querySelector('#editSiteContainer label').innerText;
+            if (siteLabelText.includes('സൈറ്റ്')) {
+                updateData.site = newSiteOrNote;
+            } else {
+                updateData.note = newSiteOrNote;
+            }
 
             await updateDoc(doc(db, 'accounts', logId), updateData);
 
-            alert("വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!");
+            showAlert("വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു! ✅", "success");
             closeEditLogModal();
             loadStaffAndAccounts();
         };
@@ -520,7 +563,7 @@
             const addedDays = parseFloat(document.getElementById('modalDayAmount').value) || 1;
             const addedMoney = parseFloat(document.getElementById('modalWageAmount').value) || 0;
 
-            if (addedMoney <= 0) return alert("ദയവായി ശരിയായ തുക നൽകുക!");
+            if (addedMoney <= 0) return showAlert("ദയവായി ശരിയായ തുക നൽകുക!", "error");
 
             await addDoc(collection(db, "accounts"), {
                 meshtriOwner: currentMeshtri,
@@ -534,7 +577,7 @@
                 date: selectedDate
             });
 
-            alert(`ഇന്നത്തെ (${siteName}) ₹${addedMoney} കൂലി കണക്ക് ചേർത്തു!`);
+            showAlert("കൂലി കണക്ക് വിജയകരമായി ചേർത്തു! ✅", "success");
             closeWageModal();
             loadStaffAndAccounts();
         };
@@ -545,8 +588,8 @@
             const advAmount = parseFloat(document.getElementById('advAmount').value) || 0;
             const advNote = document.getElementById('advNote').value.trim();
 
-            if (advAmount <= 0) return alert("ശരിയായ തുക നൽകുക!");
-            if (!advDate) return alert("തീയതി തിരഞ്ഞെടുക്കുക!");
+            if (advAmount <= 0) return showAlert("ശരിയായ തുക നൽകുക!", "error");
+            if (!advDate) return showAlert("തീയതി തിരഞ്ഞെടുക്കുക!", "error");
 
             await addDoc(collection(db, "accounts"), {
                 meshtriOwner: currentMeshtri,
@@ -557,7 +600,7 @@
                 note: advNote
             });
 
-            alert("അഡ്വാൻസ് വിവരം വിജയകരമായി ചേർത്തു!");
+            showAlert("അഡ്വാൻസ് വിവരം വിജയകരമായി ചേർത്തു! ✅", "success");
             closeAdvModal();
             loadStaffAndAccounts();
         };
@@ -568,8 +611,8 @@
             const extraAmount = parseFloat(document.getElementById('extraAmount').value) || 0;
             const extraNote = document.getElementById('extraNote').value.trim();
 
-            if (extraAmount <= 0) return alert("ശരിയായ തുക നൽകുക!");
-            if (!extraDate) return alert("തീയതി തിരഞ്ഞെടുക്കുക!");
+            if (extraAmount <= 0) return showAlert("ശരിയായ തുക നൽകുക!", "error");
+            if (!extraDate) return showAlert("തീയതി തിരഞ്ഞെടുക്കുക!", "error");
 
             await addDoc(collection(db, "accounts"), {
                 meshtriOwner: currentMeshtri,
@@ -580,7 +623,7 @@
                 note: extraNote
             });
 
-            alert("അധികത്തുക വിജയകരമായി ചേർത്തു!");
+            showAlert("അധികത്തുക വിജയകരമായി ചേർത്തു! ✅", "success");
             closeExtraModal();
             loadStaffAndAccounts();
         };
