@@ -14,7 +14,7 @@
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം -->
+        <!-- ഹെഡർ ഭാഗം -->
         <div class="flex flex-col items-center pt-2 pb-2">
             <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md">
                 <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
@@ -47,7 +47,12 @@
             <h2 class="font-black text-amber-400 mb-2 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
             <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
             <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
-            <input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+            
+            <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="shopName" placeholder="എടുത്ത കടയുടെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+                <input type="text" id="clientName" placeholder="നൽകിയ ആളിന്റെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            </div>
+
             <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
             
             <div class="grid grid-cols-2 gap-3">
@@ -79,22 +84,24 @@
         </section>
     </div>
 
-    <!-- സ്റ്റൈലിഷ് പോപ്പ്-അപ്പ് നോട്ടിഫിക്കേഷനുവേണ്ടിയുള്ള ഡിവിഷൻ -->
-    <div id="customToast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 border border-amber-400 text-amber-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 opacity-0 pointer-events-none">
+    <!-- സെന്ററിൽ മനോഹരമായി വരുന്ന പോപ്പ്-അപ്പ് (Toast Notification) -->
+    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center">
         ഫലം ഇവിടെ കാണിക്കും
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
+            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
             projectId: "mesthri-app",
-            storageBucket: "mesthri-app.appspot.com",
+            storageBucket: "mesthri-app.firebasestorage.app",
             messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
         };
         
         const app = initializeApp(firebaseConfig);
@@ -103,14 +110,14 @@
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
-        // മനോഹരമായ പോപ്പ്-അപ്പ് (Toast) കാണിക്കാനുള്ള ഫങ്ഷൻ
+        // സെന്ററിൽ വരുന്ന ടോസ്റ്റ് മെസ്സേജ് ഫങ്ഷൻ
         function showToast(message, isSuccess = true) {
             const toast = document.getElementById('customToast');
             toast.innerText = message;
-            toast.className = `fixed bottom-5 left-1/2 -translate-x-1/2 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 ${isSuccess ? 'bg-emerald-950 border border-emerald-500 text-emerald-300' : 'bg-red-950 border border-red-500 text-red-300'} opacity-100`;
+            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-emerald-950 border-2 border-emerald-500 text-emerald-200' : 'bg-red-950 border-2 border-red-500 text-red-200'} opacity-100 scale-105`;
             setTimeout(() => {
-                toast.className = "fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 border border-amber-400 text-amber-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 opacity-0 pointer-events-none";
-            }, 3000);
+                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
+            }, 2500);
         }
 
         let currentFilter = 'active';
@@ -133,6 +140,23 @@
             }
         }
         document.querySelectorAll('input').forEach(input => input.addEventListener('input', calculateTotal));
+
+        window.editItemDetails = async (id, currentItem, currentQty, currentShop, currentClient) => {
+            const newName = prompt("ഉപകരണത്തിന്റെ പുതിയ പേര്:", currentItem);
+            const newQty = prompt("പുതിയ എണ്ണം:", currentQty);
+            const newShop = prompt("കടയുടെ പേര്:", currentShop);
+            const newClient = prompt("നൽകിയ ആളിന്റെ പേര്:", currentClient);
+
+            if(newName && newShop) {
+                await updateDoc(doc(db, "rentals", id), {
+                    item: newName,
+                    qty: newQty,
+                    shop: newShop,
+                    client: newClient || ''
+                });
+                showToast("✏️ വിവരങ്ങൾ വിജയകരമായി എഡിറ്റ് ചെയ്തു!");
+            }
+        };
 
         window.editRent = async (id, currentPaid) => {
             const extraPaid = prompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?");
@@ -162,6 +186,12 @@
             }
         };
 
+        window.shareWhatsApp = (item, qty, shop, client, total, paid, bal, totalDays) => {
+            const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} (${qty} എണ്ണം)\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nആകെ വാടക: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        };
+
         document.getElementById('saveRentBtn').addEventListener('click', async () => {
             const itemName = document.getElementById('itemName').value;
             if (!itemName) return alert("ഉപകരണത്തിന്റെ പേര് നൽകുക!");
@@ -171,6 +201,7 @@
                 item: itemName,
                 qty: document.getElementById('itemQty').value || 1,
                 shop: document.getElementById('shopName').value || 'കട',
+                client: document.getElementById('clientName').value || '',
                 phone: document.getElementById('shopPhone').value || '',
                 start: document.getElementById('startDate').value,
                 end: document.getElementById('endDate').value,
@@ -181,10 +212,10 @@
             });
             showToast("🚀 വാടക വിവരങ്ങൾ വിജയകരമായി ചേർത്തു!");
             
-            // ഫോം ഫീൽഡുകൾ ക്ലിയർ ചെയ്യാൻ
             document.getElementById('itemName').value = '';
             document.getElementById('itemQty').value = '';
             document.getElementById('shopName').value = '';
+            document.getElementById('clientName').value = '';
             document.getElementById('shopPhone').value = '';
             document.getElementById('unitRent').value = '';
             document.getElementById('totalRent').value = '';
@@ -205,14 +236,18 @@
                         
                         let calculatedTotal = parseFloat(r.total) || 0;
                         const today = new Date();
+                        const startDate = new Date(r.start);
                         const endDate = new Date(r.end);
                         const unitPerDay = (parseFloat(r.unitRent) || 0) * (parseFloat(r.qty) || 1);
 
+                        let totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
                         if (!isRet && today > endDate) {
                             const extraDays = Math.ceil((today - endDate) / (1000 * 60 * 60 * 24));
-                            const baseStart = new Date(r.start);
-                            const baseEnd = new Date(r.end);
-                            const baseDays = Math.ceil((baseEnd - baseStart) / (1000 * 60 * 60 * 24)) + 1;
+                            const baseDays = totalDays;
+                            totalDays += extraDays;
+                            const baseStart = startDate;
+                            const baseEnd = endDate;
                             calculatedTotal = (baseDays * unitPerDay) + (extraDays * unitPerDay);
                         }
 
@@ -223,18 +258,30 @@
                         div.innerHTML = `
                             <div class="flex justify-between items-start mb-1">
                                 <p class="font-black text-white text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
-                                <button onclick="toggleReturn('${d.id}', ${isRet})" class="text-[10px] font-black px-2.5 py-1 rounded-lg border ${isRet ? 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50' : 'bg-slate-800 text-slate-300 border-slate-700'}">
-                                    ${isRet ? '✓ തിരികെ നൽകി' : 'റിട്ടേൺ ചെയ്യുക'}
-                                </button>
-                            </div>
-                            <p class="text-xs text-slate-300 font-bold mb-1">കട: <span class="text-amber-400">${r.shop}</span> | 📞 ${r.phone}</p>
-                            <p class="text-[11px] text-slate-400 mb-2">തീയതി: ${r.start} മുതൽ ${r.end} വരെ (ഒരെണ്ണത്തിന് പ്രതിദിനം: ₹${r.unitRent})</p>
-                            <div class="border-t border-slate-800 pt-2 flex justify-between items-center">
-                                <p class="text-xs font-black text-slate-200">ആകെ വാടക: ₹${calculatedTotal} | നൽകിയത്: ₹${r.paid} | <span class="${bal > 0 ? 'text-red-400' : 'text-emerald-400'}">ബാലൻസ്: ₹${bal}</span></p>
                                 <div class="flex gap-1">
-                                    ${bal > 0 ? `<button onclick="settleFull('${d.id}', ${calculatedTotal})" class="bg-emerald-600 text-white px-2 py-1 rounded-lg text-[10px] font-black">സെറ്റിൽ</button>` : ''}
-                                    <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 text-slate-950 px-2 py-1 rounded-lg text-[10px] font-black">പെയ്മെന്റ്</button>
-                                    <button onclick="deleteRent('${d.id}')" class="bg-red-900/50 text-red-300 border border-red-700/50 px-2 py-1 rounded-lg text-[10px] font-black">ഡിലീറ്റ്</button>
+                                    <button onclick="editItemDetails('${d.id}', '${r.item}', '${r.qty}', '${r.shop}', '${r.client || ''}')" class="bg-cyan-900/50 text-cyan-300 border border-cyan-700/50 px-2 py-1 rounded-lg text-[10px] font-black">എഡിറ്റ്</button>
+                                    <button onclick="toggleReturn('${d.id}', ${isRet})" class="text-[10px] font-black px-2.5 py-1 rounded-lg border ${isRet ? 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50' : 'bg-slate-800 text-slate-300 border-slate-700'}">
+                                        ${isRet ? '✓ തിരികെ നൽകി' : 'റിട്ടേൺ'}
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-300 font-bold mb-1">കട: <span class="text-amber-400">${r.shop}</span> ${r.client ? `| ആർക്ക്: <span class="text-cyan-300">${r.client}</span>` : ''} | 📞 ${r.phone}</p>
+                            <p class="text-[11px] text-slate-400 mb-2">തീയതി: ${r.start} മുതൽ ${r.end} വരെ | <strong class="text-amber-300">${totalDays} ദിവസങ്ങൾ</strong> (ഒരെണ്ണത്തിന് പ്രതിദിനം: ₹${r.unitRent})</p>
+                            
+                            <div class="border-t border-slate-800 pt-2 flex flex-col gap-2">
+                                <div class="flex justify-between items-center text-xs font-black text-slate-200">
+                                    <span>ആകെ: ₹${calculatedTotal} | നൽകിയത്: ₹${r.paid}</span>
+                                    <span class="${bal > 0 ? 'text-red-400' : 'text-emerald-400'}">ബാലൻസ്: ₹${bal}</span>
+                                </div>
+                                <div class="flex justify-between items-center pt-1">
+                                    <button onclick="shareWhatsApp('${r.item}', '${r.qty}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-[11px] font-black flex items-center gap-1 shadow-md">
+                                        💬 വാട്സാപ്പ് അയക്കുക
+                                    </button>
+                                    <div class="flex gap-1">
+                                        ${bal > 0 ? `<button onclick="settleFull('${d.id}', ${calculatedTotal})" class="bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black">സെറ്റിൽ</button>` : ''}
+                                        <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 text-slate-950 px-2.5 py-1.5 rounded-xl text-[10px] font-black">പെയ്മെന്റ്</button>
+                                        <button onclick="deleteRent('${d.id}')" class="bg-red-900/50 text-red-300 border border-red-700/50 px-2.5 py-1.5 rounded-xl text-[10px] font-black">ഡിലീറ്റ്</button>
+                                    </div>
                                 </div>
                             </div>
                         `;
