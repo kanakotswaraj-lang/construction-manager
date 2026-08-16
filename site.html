@@ -3,79 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മേസ്തിരി പ്രോ</title>
+    <title>മേസ്തിരി പ്രോ - SMART SITE MANAGER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans Malayalam', sans-serif; background-color: #2e1065; } /* വയലറ്റ് ബാക്ക്ഗ്രൗണ്ട് */
-        .glass-card { background: rgba(124, 58, 237, 0.2); backdrop-filter: blur(10px); border: 2px solid #fbbf24; } /* ഗോൾഡൻ ബോർഡർ */
+        body { font-family: 'Noto Sans Malayalam', sans-serif; background-color: #0b0f19; color: #f8fafc; }
+        .app-card { background: #111827; border: 1px solid #1f2937; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); }
+        .header-card { background: #111827; border: 1px solid rgba(251, 191, 36, 0.3); box-shadow: 0 0 15px rgba(251, 191, 36, 0.15); }
         .text-gold { color: #fbbf24; }
+        .welcome-badge { background: #082f49; border: 1px solid #0ea5e9; color: #38bdf8; }
     </style>
 </head>
-<body class="p-4">
+<body class="p-4 min-h-screen pb-12">
 
-    <div class="max-w-md mx-auto">
-        <!-- ഹെഡർ ലോഗോയും സ്വാഗതവും -->
-        <div class="glass-card p-5 rounded-3xl mb-6 shadow-[0_0_20px_rgba(251,191,36,0.3)]">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-amber-400 rounded-full flex items-center justify-center font-black text-slate-900 text-xl">MP</div>
-                <div>
-                    <h1 class="text-gold font-black text-xl">മേസ്തിരി പ്രോ</h1>
-                    <p id="loggedInMeshtri" class="text-white text-xs font-bold">സ്വാഗതം...</p>
+    <div class="max-w-md mx-auto space-y-4">
+        
+        <!-- ഹെഡർ യഥാർത്ഥ ലോഗോയും സ്വാഗതവും -->
+        <div class="header-card p-4 rounded-3xl text-center space-y-3">
+            <div class="inline-flex items-center gap-3 bg-slate-900/90 px-4 py-2.5 rounded-2xl border border-slate-800 shadow-inner">
+                <div class="w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center shadow-md text-lg">👷‍♂️</div>
+                <div class="text-left">
+                    <h1 class="text-gold font-black text-sm tracking-wider">മേസ്തിരി പ്രോ</h1>
+                    <p class="text-[9px] text-slate-300 font-bold tracking-wider">SMART SITE MANAGER</p>
                 </div>
+            </div>
+            <div>
+                <span id="loggedInMeshtri" class="welcome-badge inline-block px-4 py-1 rounded-full text-xs font-bold">സ്വാഗതം, swaraj</span>
             </div>
         </div>
 
-        <div class="mb-4">
-            <input type="text" id="searchSiteInput" placeholder="🔍 സൈറ്റ് തിരയുക..." onkeyup="filterSites()" class="w-full p-4 glass-card rounded-2xl text-white placeholder-slate-300 focus:outline-none">
+        <!-- ഡാഷ്‌ബോർഡ് ബട്ടൺ & ടൈറ്റിൽ -->
+        <div class="app-card p-4 rounded-3xl flex justify-between items-center">
+            <h2 class="text-base font-black text-gold">സൈറ്റ് കണക്കുകൾ</h2>
+            <a href="dashboard.html" class="bg-slate-900 border border-slate-700 text-amber-400 px-3 py-1.5 rounded-xl text-xs font-bold">← ഡാഷ്‌ബോർഡ്</a>
         </div>
 
-        <button onclick="openAddModal()" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl text-sm font-black shadow-lg mb-6">
+        <!-- സെർച്ച് ബാർ -->
+        <div class="app-card p-4 rounded-3xl space-y-2">
+            <label class="text-xs text-slate-400 font-bold">സൈറ്റ് പേര് വെച്ച് തിരയാൻ</label>
+            <input type="text" id="searchSiteInput" placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക..." onkeyup="filterSites()" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+        </div>
+
+        <!-- പുതിയ കണക്ക് ചേർക്കാനുള്ള ബട്ടൺ -->
+        <button onclick="openAddModal()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl text-xs font-black shadow-lg">
             ➕ പുതിയ സൈറ്റ് കണക്ക് ചേർക്കുക
         </button>
 
-        <div id="siteEntriesList" class="space-y-4">
-            <p class="text-center text-white font-bold">ലോഡ് ചെയ്യുന്നു...</p>
+        <!-- സൈറ്റ് എൻട്രികളുടെ ലിസ്റ്റ് -->
+        <div id="siteEntriesList" class="space-y-3">
+            <p class="text-center text-xs text-slate-400 font-bold py-6">കണക്കുകൾ പരിശോധിക്കുന്നു...</p>
         </div>
     </div>
 
-    <!-- മോഡൽ കോഡ് പഴയതുപോലെ തന്നെ (ഡിസൈൻ മാത്രം മാറ്റി) -->
-    <div id="addSiteModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50">
-        <div class="glass-card p-6 rounded-3xl w-full max-w-sm text-white">
-            <h3 class="font-black text-gold text-lg mb-4">പുതിയ സൈറ്റ് കണക്ക്</h3>
-            <input type="text" id="siteNameInput" placeholder="സൈറ്റ് പേര്" class="w-full p-3 bg-violet-950 rounded-xl mb-3 border border-slate-600">
-            <div class="grid grid-cols-2 gap-2 mb-3">
-                <input type="date" id="siteDateInput" class="p-3 bg-violet-950 rounded-xl border border-slate-600">
-                <input type="number" id="siteIncomeInput" placeholder="വരവ് (₹)" class="p-3 bg-violet-950 rounded-xl border border-slate-600">
+    <!-- മോഡൽ വിൻഡോ -->
+    <div id="addSiteModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="app-card p-5 rounded-3xl w-full max-w-sm space-y-3 my-auto">
+            <h3 class="font-black text-gold text-sm">പുതിയ സൈറ്റ് കണക്ക് ചേർക്കുക</h3>
+            
+            <div>
+                <label class="text-[10px] text-slate-400 font-bold">സൈറ്റിന്റെ പേര് / സ്ഥലം</label>
+                <input type="text" id="siteNameInput" placeholder="ഉദാ: Edumba" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
             </div>
-            
-            <div id="expensesContainer" class="space-y-2 mb-2"></div>
-            <button onclick="addExpenseRow()" class="w-full bg-green-700 text-white p-2 rounded-xl text-xs font-bold mb-2">+ ചെലവ്</button>
-            
-            <div id="workersContainer" class="space-y-2 mb-4"></div>
-            <button onclick="addWorkerRow()" class="w-full bg-blue-700 text-white p-2 rounded-xl text-xs font-bold mb-4">+ തൊഴിലാളി</button>
 
-            <div class="flex gap-2">
-                <button id="saveSiteEntryBtn" class="flex-1 bg-amber-500 text-slate-950 p-3 rounded-xl font-black">സേവ്</button>
-                <button onclick="document.getElementById('addSiteModal').classList.add('hidden')" class="flex-1 bg-slate-700 p-3 rounded-xl">ക്യാൻസൽ</button>
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold">തീയതി</label>
+                    <input type="date" id="siteDateInput" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+                </div>
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold">ലഭിച്ച വരവ് (₹)</label>
+                    <input type="number" id="siteIncomeInput" value="0" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+                </div>
+            </div>
+
+            <div class="border border-slate-800 p-3 rounded-2xl bg-slate-950/50 space-y-2">
+                <p class="text-xs font-black text-gold">മറ്റ് ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ)</p>
+                <div id="expensesContainer" class="space-y-2"></div>
+                <button onclick="addExpenseRow()" class="w-full bg-emerald-600 text-white p-2 rounded-xl text-xs font-bold">+ ചെലവ് ചേർക്കുക</button>
+            </div>
+
+            <div class="border border-slate-800 p-3 rounded-2xl bg-slate-950/50 space-y-2">
+                <p class="text-xs font-black text-gold">തൊഴിലാളികളുടെ വിവരങ്ങൾ</p>
+                <div id="workersContainer" class="space-y-2"></div>
+                <button onclick="addWorkerRow()" class="w-full bg-blue-600 text-white p-2 rounded-xl text-xs font-bold">+ തൊഴിലാളിയെ ചേർക്കുക</button>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button id="saveSiteEntryBtn" class="flex-1 bg-amber-500 text-slate-950 p-2.5 rounded-xl text-xs font-black">കണക്ക് സേവ് ചെയ്യുക</button>
+                <button onclick="document.getElementById('addSiteModal').classList.add('hidden')" class="flex-1 bg-slate-800 text-slate-300 p-2.5 rounded-xl text-xs font-bold">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
 
+    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
-        // മുൻപ് നൽകിയ അതേ ലോജിക് തന്നെയാണ് ഇവിടെയും ഉപയോഗിച്ചിരിക്കുന്നത്.
-        // ഫയർബേസ് കണക്ഷൻ സെറ്റ് ചെയ്യുക.
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { firebaseConfig } from "./firebase-config.js";
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const currentMeshtri = localStorage.getItem('userName') || "മേസ്തിരി";
+
+        const currentMeshtri = localStorage.getItem('userName') || localStorage.getItem('meshtriName') || "swaraj";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
-        // ബാക്കി ഫങ്ക്ഷനുകൾ (loadSiteEntries, addExpenseRow, etc) ഇവിടെ പേസ്റ്റ് ചെയ്യുക.
-        // എല്ലാം മുൻപ് നൽകിയതുപോലെ കൃത്യമായി പ്രവർത്തിക്കും.
+        let allEntries = [];
+
+        const getTodayDate = () => {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        window.openAddModal = function() {
+            document.getElementById('siteNameInput').value = '';
+            document.getElementById('siteDateInput').value = getTodayDate();
+            document.getElementById('siteIncomeInput').value = '0';
+            document.getElementById('expensesContainer').innerHTML = '';
+            document.getElementById('workersContainer').innerHTML = '';
+            document.getElementById('addSiteModal').classList.remove('hidden');
+        }
+
+        window.addExpenseRow = function(note = '', amount = '') {
+            const container = document.getElementById('expensesContainer');
+            const div = document.createElement('div');
+            div.className = "flex gap-2 items-center";
+            div.innerHTML = `
+                <input type="text" placeholder="ചെലവ് വിവരണം" value="${note}" class="exp-note flex-1 p-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+                <input type="number" placeholder="തുക" value="${amount}" class="exp-amount w-20 p-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+                <button onclick="this.parentElement.remove()" class="bg-red-600 text-white px-2 py-2 rounded-xl text-xs font-bold">X</button>
+            `;
+            container.appendChild(div);
+        }
+
+        window.addWorkerRow = function(name = '', days = '1') {
+            const container = document.getElementById('workersContainer');
+            const div = document.createElement('div');
+            div.className = "flex gap-2 items-center";
+            div.innerHTML = `
+                <input type="text" placeholder="തൊഴിലാളിയുടെ പേര്" value="${name}" class="worker-name flex-1 p-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+                <input type="number" step="0.5" placeholder="ദിവസം" value="${days}" class="worker-days w-16 p-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white text-center">
+                <button onclick="this.parentElement.remove()" class="bg-red-600 text-white px-2 py-2 rounded-xl text-xs font-bold">X</button>
+            `;
+            container.appendChild(div);
+        }
+
+        document.getElementById('saveSiteEntryBtn').addEventListener('click', async () => {
+            const siteName = document.getElementById('siteNameInput').value.trim();
+            const date = document.getElementById('siteDateInput').value;
+            const income = parseFloat(document.getElementById('siteIncomeInput').value) || 0;
+
+            if (!siteName) return alert("സൈറ്റിന്റെ പേര് നൽകുക!");
+
+            let expenses = [];
+            document.querySelectorAll('#expensesContainer > div').forEach(row => {
+                const note = row.querySelector('.exp-note').value.trim();
+                const amt = parseFloat(row.querySelector('.exp-amount').value) || 0;
+                if (amt > 0) expenses.push({ note, amount: amt });
+            });
+
+            let workers = [];
+            document.querySelectorAll('#workersContainer > div').forEach(row => {
+                const name = row.querySelector('.worker-name').value.trim();
+                const days = parseFloat(row.querySelector('.worker-days').value) || 0;
+                if (name) workers.push({ name, days });
+            });
+
+            try {
+                await addDoc(collection(db, "siteEntries"), {
+                    meshtriOwner: currentMeshtri,
+                    siteName,
+                    date,
+                    income,
+                    expenses,
+                    workers
+                });
+                alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു! ✅");
+                document.getElementById('addSiteModal').classList.add('hidden');
+                loadSiteEntries();
+            } (err) => {
+                console.error(err);
+                alert("സേവ് ചെയ്യുന്നതിൽ തടസ്സം നേരിട്ടു!");
+            }
+        });
+
+        async function loadSiteEntries() {
+            const list = document.getElementById('siteEntriesList');
+            list.innerHTML = '<p class="text-center text-xs text-slate-400 font-bold py-6">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>';
+
+            try {
+                // ഫിൽട്ടറിങ് പ്രശ്നം ഒഴിവാക്കാൻ മുഴുവൻ ഡാറ്റയും എടുത്ത് ലോക്കൽ ആയി സോർട്ട് ചെയ്യുന്നു
+                const snapshot = await getDocs(collection(db, "siteEntries"));
+
+                allEntries = [];
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    // നിലവിലെ മേസ്തിരിയുടെ ഡാറ്റ മാത്രം എടുക്കുക (അല്ലെങ്കിൽ ഫിൽട്ടർ ഒഴിവാക്കി പൂർണ്ണമായും കാണിക്കുക)
+                    if (!data.meshtriOwner || data.meshtriOwner === currentMeshtri || currentMeshtri === "swaraj") {
+                        allEntries.push({ id: docSnap.id, ...data });
+                    }
+                });
+
+                displayEntries(allEntries);
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<p class="text-center text-xs text-rose-400 font-bold py-6">കണക്കുകൾ ലോഡ് ചെയ്യുന്നതിൽ പിശക്.</p>';
+            }
+        }
+
+        function displayEntries(entries) {
+            const list = document.getElementById('siteEntriesList');
+            list.innerHTML = '';
+
+            if (entries.length === 0) {
+                list.innerHTML = `
+                    <div class="app-card p-6 rounded-3xl text-center space-y-2">
+                        <p class="text-xs text-slate-300 font-bold">സൈറ്റ് കണക്കുകൾ ഒന്നും കണ്ടെത്തിയില്ല!</p>
+                        <p class="text-[10px] text-slate-400">പുതിയ സൈറ്റ് കണക്ക് ചേർക്കാൻ മുകളിലെ ബട്ടൺ ക്ലിക്ക് ചെയ്യുക.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            entries.forEach(data => {
+                let totalExpense = (data.expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
+                let workerTotalCost = (data.workers || []).reduce((sum, w) => sum + (w.days * 1200), 0);
+                let grandTotalExpense = totalExpense + workerTotalCost;
+                let balance = (data.income || 0) - grandTotalExpense;
+
+                let expHtml = (data.expenses || []).map(e => `<p class="text-xs text-slate-300">🔹 ${e.note}: ₹${e.amount}</p>`).join('');
+                let workHtml = (data.workers || []).map(w => `<p class="text-xs text-cyan-300">👷 ${w.name} - ${w.days} ദിവസം</p>`).join('');
+
+                const div = document.createElement('div');
+                div.className = "app-card p-4 rounded-3xl space-y-3 text-white";
+                div.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-black text-base text-gold">🏗️ ${data.siteName || 'സൈറ്റ്'}</h3>
+                            <p class="text-[11px] text-slate-400">📅 തീയതി: ${data.date || ''}</p>
+                        </div>
+                        <button onclick="deleteEntry('${data.id}')" class="text-red-400 text-xs font-bold px-2.5 py-1.5 bg-red-950/60 border border-red-800/50 rounded-xl">Delete</button>
+                    </div>
+
+                    ${(data.income || 0) > 0 ? `<div class="bg-slate-900 p-2.5 rounded-xl text-xs"><span class="text-slate-400 font-bold">ലഭിച്ച വരവ്:</span> <span class="text-emerald-400 font-black">₹${data.income}</span></div>` : ''}
+                    
+                    ${(data.expenses || []).length > 0 ? `<div class="bg-slate-900 p-2.5 rounded-xl space-y-1"><p class="text-[10px] font-bold text-slate-400">മറ്റ് ചെലവുകൾ:</p>${expHtml}</div>` : ''}
+                    
+                    ${(data.workers || []).length > 0 ? `<div class="bg-slate-900 p-2.5 rounded-xl space-y-1"><p class="text-[10px] font-bold text-slate-400">തൊഴിലാളികൾ:</p>${workHtml}</div>` : ''}
+
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-900 flex justify-between items-center text-xs">
+                        <div>ആകെ ചെലവ്: <span class="text-rose-400 font-bold">₹${grandTotalExpense}</span></div>
+                        <div class="text-right">ബാക്കി/ബാലൻസ്: <span class="${balance >= 0 ? 'text-emerald-400' : 'text-rose-400'} font-black text-sm">₹${balance}</span></div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        window.filterSites = function() {
+            const searchVal = document.getElementById('searchSiteInput').value.toLowerCase();
+            const filtered = allEntries.filter(e => (e.siteName || '').toLowerCase().includes(searchVal));
+            displayEntries(filtered);
+        }
+
+        window.deleteEntry = async function(id) {
+            if (confirm("ഈ സൈറ്റ് കണക്ക് ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
+                await deleteDoc(doc(db, 'siteEntries', id));
+                loadSiteEntries();
+            }
+        }
+
+        loadSiteEntries();
     </script>
 </body>
 </html>
