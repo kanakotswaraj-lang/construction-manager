@@ -18,10 +18,11 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ യഥാർത്ഥ ലോഗോയും സ്വാഗതവും -->
+        <!-- ഹെഡർ ലോഗോയും സ്വാഗതവും -->
         <div class="header-card p-4 rounded-3xl text-center space-y-3">
             <div class="inline-flex items-center gap-3 bg-slate-900/90 px-4 py-2.5 rounded-2xl border border-slate-800 shadow-inner">
-                <div class="w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center shadow-md text-lg">👷‍♂️</div>
+                <img src="icon.png" alt="Logo" class="w-10 h-10 rounded-full object-cover bg-amber-400" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
+                <div id="fallbackLogo" class="w-10 h-10 bg-amber-400 rounded-full items-center justify-center text-lg hidden">👷‍♂️</div>
                 <div class="text-left">
                     <h1 class="text-gold font-black text-sm tracking-wider">മേസ്തിരി പ്രോ</h1>
                     <p class="text-[9px] text-slate-300 font-bold tracking-wider">SMART SITE MANAGER</p>
@@ -51,7 +52,7 @@
 
         <!-- സൈറ്റ് എൻട്രികളുടെ ലിസ്റ്റ് -->
         <div id="siteEntriesList" class="space-y-3">
-            <p class="text-center text-xs text-slate-400 font-bold py-6">കണക്കുകൾ പരിശോധിക്കുന്നു...</p>
+            <p class="text-center text-xs text-slate-400 font-bold py-6">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
         </div>
     </div>
 
@@ -62,7 +63,7 @@
             
             <div>
                 <label class="text-[10px] text-slate-400 font-bold">സൈറ്റിന്റെ പേര് / സ്ഥലം</label>
-                <input type="text" id="siteNameInput" placeholder="ഉദാ: Edumba" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+                <input type="text" id="siteNameInput" placeholder="ഉദാ: Manathana" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
             </div>
 
             <div class="grid grid-cols-2 gap-2">
@@ -183,7 +184,7 @@
                 alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു! ✅");
                 document.getElementById('addSiteModal').classList.add('hidden');
                 loadSiteEntries();
-            } (err) => {
+            } catch (err) {
                 console.error(err);
                 alert("സേവ് ചെയ്യുന്നതിൽ തടസ്സം നേരിട്ടു!");
             }
@@ -194,16 +195,11 @@
             list.innerHTML = '<p class="text-center text-xs text-slate-400 font-bold py-6">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>';
 
             try {
-                // ഫിൽട്ടറിങ് പ്രശ്നം ഒഴിവാക്കാൻ മുഴുവൻ ഡാറ്റയും എടുത്ത് ലോക്കൽ ആയി സോർട്ട് ചെയ്യുന്നു
                 const snapshot = await getDocs(collection(db, "siteEntries"));
-
                 allEntries = [];
+                
                 snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    // നിലവിലെ മേസ്തിരിയുടെ ഡാറ്റ മാത്രം എടുക്കുക (അല്ലെങ്കിൽ ഫിൽട്ടർ ഒഴിവാക്കി പൂർണ്ണമായും കാണിക്കുക)
-                    if (!data.meshtriOwner || data.meshtriOwner === currentMeshtri || currentMeshtri === "swaraj") {
-                        allEntries.push({ id: docSnap.id, ...data });
-                    }
+                    allEntries.push({ id: docSnap.id, ...docSnap.data() });
                 });
 
                 displayEntries(allEntries);
@@ -220,8 +216,8 @@
             if (entries.length === 0) {
                 list.innerHTML = `
                     <div class="app-card p-6 rounded-3xl text-center space-y-2">
-                        <p class="text-xs text-slate-300 font-bold">സൈറ്റ് കണക്കുകൾ ഒന്നും കണ്ടെത്തിയില്ല!</p>
-                        <p class="text-[10px] text-slate-400">പുതിയ സൈറ്റ് കണക്ക് ചേർക്കാൻ മുകളിലെ ബട്ടൺ ക്ലിക്ക് ചെയ്യുക.</p>
+                        <p class="text-xs text-slate-300 font-bold">കണക്കുകൾ ഒന്നും ലഭ്യമായില്ല!</p>
+                        <p class="text-[10px] text-slate-400">പുതിയ സൈറ്റ് കണക്ക് ചേർക്കാൻ മുകളിലെ ബട്ടൺ ഉപയോഗിക്കുക.</p>
                     </div>
                 `;
                 return;
