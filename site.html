@@ -105,10 +105,9 @@
             <div class="border border-slate-800 p-3 rounded-2xl bg-slate-950/50 space-y-2">
                 <div class="flex justify-between items-center">
                     <p class="text-xs font-black text-gold">തൊഴിലാളികളുടെ വിവരങ്ങൾ</p>
-                    <button onclick="openWorkerSelectModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold">+ ജീവനക്കാരുടെ ലിസ്റ്റിൽ നിന്ന് തിരഞ്ഞെടുക്കുക</button>
+                    <button onclick="openWorkerSelectModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-bold shadow">+ ജീവനക്കാരുടെ ലിസ്റ്റ് തുറക്കുക</button>
                 </div>
                 <div id="workersContainer" class="space-y-2"></div>
-                <button onclick="addWorkerRow()" class="w-full bg-blue-600 text-white p-2 rounded-xl text-xs font-bold">+ പുതിയ തൊഴിലാളിയെ ചേർക്കുക</button>
             </div>
 
             <div class="flex gap-2 pt-2">
@@ -122,30 +121,20 @@
     <div id="workerSelectModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="app-card p-5 rounded-3xl w-full max-w-xs space-y-3 border border-indigo-500/50">
             <h3 class="font-black text-indigo-400 text-sm">ജീവനക്കാരുടെ ലിസ്റ്റ്</h3>
-            <p class="text-[10px] text-slate-400">സൈറ്റിൽ ജോലി ചെയ്ത തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക:</p>
+            <p class="text-[10px] text-slate-400">ഈ സൈറ്റിൽ പണിയെടുത്ത തൊഴിലാളികളെ ഓരോരുത്തരായി തിരഞ്ഞെടുക്കുക:</p>
             <div id="workerSelectList" class="space-y-2 max-h-60 overflow-y-auto">
                 <p class="text-xs text-slate-400 text-center py-4">ജീവനക്കാരെ ലോഡ് ചെയ്യുന്നു...</p>
             </div>
-            <button onclick="document.getElementById('workerSelectModal').classList.add('hidden')" class="w-full bg-slate-800 text-slate-300 p-2 rounded-xl text-xs font-bold">ക്യാൻസൽ</button>
+            <button onclick="document.getElementById('workerSelectModal').classList.add('hidden')" class="w-full bg-slate-800 text-slate-300 p-2 rounded-xl text-xs font-bold">ക്ലോസ് ചെയ്യുക</button>
         </div>
     </div>
 
     <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { firebaseConfig } from "./firebase-config.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.appspot.com",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
@@ -167,7 +156,6 @@
             return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         };
 
-        // ജീവനക്കാരുടെ ഡാറ്റ ഫെച്ച് ചെയ്യാൻ
         async function fetchWorkersFromDatabase() {
             try {
                 const snapshot = await getDocs(collection(db, "workers"));
@@ -180,6 +168,7 @@
                 });
             } catch (err) {
                 console.error("Worker fetch error:", err);
+                savedWorkersList = [];
             }
         }
 
@@ -198,15 +187,14 @@
             listContainer.innerHTML = '';
 
             if (savedWorkersList.length === 0) {
-                listContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">സേവ് ചെയ്ത ജീവനക്കാർ ആരും ലഭ്യമല്ല!</p>';
+                listContainer.innerHTML = '<p class="text-xs text-amber-400 text-center py-4 font-bold">ജീവനക്കാരുടെ പേജിൽ ആരെയും സേവ് ചെയ്തിട്ടില്ല!</p>';
             } else {
                 savedWorkersList.forEach(w => {
                     const btn = document.createElement('button');
-                    btn.className = "w-full text-left p-2.5 bg-slate-900 hover:bg-indigo-950 border border-slate-800 rounded-xl text-xs text-white font-bold flex justify-between items-center";
+                    btn.className = "w-full text-left p-2.5 bg-slate-900 hover:bg-indigo-950 border border-slate-800 rounded-xl text-xs text-white font-bold flex justify-between items-center transition";
                     btn.innerHTML = `<span>👷 ${w.name}</span> <span class="text-[10px] text-indigo-400">${w.workType || ''}</span>`;
                     btn.onclick = () => {
                         addWorkerRow(w.name, w.workType || '', '1', w.wage || '1000');
-                        document.getElementById('workerSelectModal').classList.add('hidden');
                     };
                     listContainer.appendChild(btn);
                 });
@@ -231,19 +219,25 @@
             const div = document.createElement('div');
             div.className = "bg-slate-900 p-3 rounded-2xl border border-slate-800 space-y-2 relative";
             div.innerHTML = `
-                <div class="flex gap-2">
-                    <input type="text" placeholder="തൊഴിലാളിയുടെ പേര്" value="${name}" class="worker-name flex-1 p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
-                    <input type="text" placeholder="തൊഴിൽ (ഉദാ: കല്ല് കെട്ട്)" value="${workType}" class="worker-work flex-1 p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
-                    <button onclick="this.parentElement.parentElement.remove()" class="bg-red-600 text-white px-2.5 py-1 rounded-xl text-xs font-bold">X</button>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-black text-indigo-300">👷 ${name}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="bg-red-600 text-white px-2 py-0.5 rounded-lg text-[10px] font-bold">ഡിലീറ്റ്</button>
                 </div>
+                <input type="hidden" class="worker-name" value="${name}">
                 <div class="flex gap-2">
-                    <div class="flex-1 flex items-center gap-1 bg-slate-950 px-2 rounded-xl border border-slate-800">
-                        <span class="text-[10px] text-slate-300">ദിവസം:</span>
-                        <input type="number" step="0.5" value="${days}" class="worker-days w-full p-1.5 bg-transparent text-xs text-white text-center focus:outline-none">
+                    <div class="flex-1">
+                        <label class="text-[9px] text-slate-400">തൊഴിൽ വിവരണം</label>
+                        <input type="text" value="${workType}" class="worker-work w-full p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
                     </div>
-                    <div class="flex-1 flex items-center gap-1 bg-slate-950 px-2 rounded-xl border border-slate-800">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="flex items-center gap-1 bg-slate-950 px-2 py-1.5 rounded-xl border border-slate-800">
+                        <span class="text-[10px] text-slate-300">ദിവസം:</span>
+                        <input type="number" step="0.5" value="${days}" class="worker-days w-full bg-transparent text-xs text-white text-center focus:outline-none">
+                    </div>
+                    <div class="flex items-center gap-1 bg-slate-950 px-2 py-1.5 rounded-xl border border-slate-800">
                         <span class="text-[10px] text-slate-300">കൂലി(₹):</span>
-                        <input type="number" value="${wage}" class="worker-wage w-full p-1.5 bg-transparent text-xs text-white text-center focus:outline-none">
+                        <input type="number" value="${wage}" class="worker-wage w-full bg-transparent text-xs text-white text-center focus:outline-none">
                     </div>
                 </div>
             `;
@@ -266,7 +260,7 @@
 
             let workers = [];
             document.querySelectorAll('#workersContainer > div').forEach(row => {
-                const name = row.querySelector('.worker-name').value.trim();
+                const name = row.querySelector('.worker-name').value;
                 const workType = row.querySelector('.worker-work').value.trim();
                 const days = parseFloat(row.querySelector('.worker-days').value) || 0;
                 const wage = parseFloat(row.querySelector('.worker-wage').value) || 0;
