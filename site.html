@@ -146,6 +146,8 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
         const currentMeshtri = localStorage.getItem('userName') || localStorage.getItem('meshtriName') || "swaraj";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
@@ -378,3 +380,6 @@
         }
 
         loadSiteEntries();
+    </script>
+</body>
+</html>
