@@ -8,8 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans Malayalam', sans-serif; background-color: #0b0f19; color: #f8fafc; }
-        
-        /* പ്രധാന സൈറ്റ് കണക്ക് കാണിക്കുന്ന കാർഡ് (വയലറ്റ് + ഗോൾഡൻ ബോർഡർ) */
         .premium-card { 
             background: linear-gradient(145deg, #2e1065, #1e1b4b); 
             border: 2px solid #fbbf24; 
@@ -17,16 +15,13 @@
             color: #ffffff;
             border-radius: 24px;
         }
-        
-        /* നിങ്ങൾ ആവശ്യപ്പെട്ട സ്റ്റൈലിഷ് അലേർട്ട് / റിപ്ലൈ ബോക്സ് സ്റ്റൈൽ */
         .stylish-alert {
             background: linear-gradient(135deg, #4c1d95, #3b0764);
             border: 2px solid #fbbf24;
             color: #ffffff;
             box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
-            animation: fadeInOut 0.5s ease-in-out;
         }
-
+        .app-card { background: #111827; border: 1px solid #1f2937; }
         .header-card { background: #111827; border: 1px solid rgba(251, 191, 36, 0.3); box-shadow: 0 0 15px rgba(251, 191, 36, 0.15); }
         .text-gold { color: #fbbf24; }
         .welcome-badge { background: #082f49; border: 1px solid #0ea5e9; color: #38bdf8; }
@@ -51,20 +46,20 @@
             </div>
         </div>
 
-        <!-- സ്റ്റൈലിഷ് റിപ്ലൈ / സക്സസ് മെസ്സേജ് കാണിക്കുന്ന സ്ഥലം -->
+        <!-- സ്റ്റൈലിഷ് അലേർട്ട് ബോക്സ് -->
         <div id="customAlertBox" class="hidden stylish-alert p-4 rounded-2xl text-center space-y-1">
             <p id="alertTitle" class="text-gold font-black text-sm">വിജയകരമാണ്! ✨</p>
             <p id="alertMessage" class="text-xs font-bold text-white"></p>
         </div>
 
         <!-- ഡാഷ്‌ബോർഡ് ബട്ടൺ & ടൈറ്റിൽ -->
-        <div class="app-card p-4 rounded-3xl flex justify-between items-center bg-[#111827] border border-[#1f2937]">
+        <div class="app-card p-4 rounded-3xl flex justify-between items-center">
             <h2 class="text-base font-black text-gold">സൈറ്റ് കണക്കുകൾ</h2>
             <a href="dashboard.html" class="bg-slate-900 border border-slate-700 text-amber-400 px-3 py-1.5 rounded-xl text-xs font-bold">← ഡാഷ്‌ബോർഡ്</a>
         </div>
 
         <!-- സെർച്ച് ബാർ -->
-        <div class="app-card p-4 rounded-3xl space-y-2 bg-[#111827] border border-[#1f2937]">
+        <div class="app-card p-4 rounded-3xl space-y-2">
             <label class="text-xs text-slate-300 font-bold">സൈറ്റ് പേര് വെച്ച് തിരയാൻ</label>
             <input type="text" id="searchSiteInput" placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക..." onkeyup="filterSites()" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
         </div>
@@ -80,9 +75,9 @@
         </div>
     </div>
 
-    <!-- മോഡൽ വിൻഡോ -->
+    <!-- പുതിയ സൈറ്റ് കണക്ക് ചേർക്കാനുള്ള മോഡൽ -->
     <div id="addSiteModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
-        <div class="app-card p-5 rounded-3xl w-full max-w-sm space-y-3 my-auto max-h-[90vh] overflow-y-auto bg-[#111827] border border-[#1f2937]">
+        <div class="app-card p-5 rounded-3xl w-full max-w-sm space-y-3 my-auto max-h-[90vh] overflow-y-auto border border-amber-400/30">
             <h3 class="font-black text-gold text-sm">പുതിയ സൈറ്റ് കണക്ക് ചേർക്കുക</h3>
             
             <div>
@@ -96,7 +91,7 @@
                     <input type="date" id="siteDateInput" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
                 </div>
                 <div>
-                    <label class="text-[10px] text-slate-300 font-bold">മുതലാളി തന്ന പൈസ (₹)</label>
+                    <label class="text-[10px] text-slate-300 font-bold">ലഭിച്ച വരവ് (₹)</label>
                     <input type="number" id="siteIncomeInput" value="0" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
                 </div>
             </div>
@@ -108,15 +103,30 @@
             </div>
 
             <div class="border border-slate-800 p-3 rounded-2xl bg-slate-950/50 space-y-2">
-                <p class="text-xs font-black text-gold">തൊഴിലാളികളുടെ വിവരങ്ങൾ</p>
+                <div class="flex justify-between items-center">
+                    <p class="text-xs font-black text-gold">തൊഴിലാളികളുടെ വിവരങ്ങൾ</p>
+                    <button onclick="openWorkerSelectModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold">+ ജീവനക്കാരുടെ ലിസ്റ്റിൽ നിന്ന് തിരഞ്ഞെടുക്കുക</button>
+                </div>
                 <div id="workersContainer" class="space-y-2"></div>
-                <button onclick="addWorkerRow()" class="w-full bg-blue-600 text-white p-2 rounded-xl text-xs font-bold">+ തൊഴിലാളിയെ ചേർക്കുക</button>
+                <button onclick="addWorkerRow()" class="w-full bg-blue-600 text-white p-2 rounded-xl text-xs font-bold">+ പുതിയ തൊഴിലാളിയെ ചേർക്കുക</button>
             </div>
 
             <div class="flex gap-2 pt-2">
                 <button id="saveSiteEntryBtn" class="flex-1 bg-amber-500 text-slate-950 p-2.5 rounded-xl text-xs font-black">കണക്ക് സേവ് ചെയ്യുക</button>
                 <button onclick="document.getElementById('addSiteModal').classList.add('hidden')" class="flex-1 bg-slate-800 text-slate-300 p-2.5 rounded-xl text-xs font-bold">ക്യാൻസൽ</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ജീവനക്കാരുടെ ലിസ്റ്റിൽ നിന്ന് തിരഞ്ഞെടുക്കാനുള്ള പോപ്-അപ്പ് മോഡൽ -->
+    <div id="workerSelectModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="app-card p-5 rounded-3xl w-full max-w-xs space-y-3 border border-indigo-500/50">
+            <h3 class="font-black text-indigo-400 text-sm">ജീവനക്കാരുടെ ലിസ്റ്റ്</h3>
+            <p class="text-[10px] text-slate-400">സൈറ്റിൽ ജോലി ചെയ്ത തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക:</p>
+            <div id="workerSelectList" class="space-y-2 max-h-60 overflow-y-auto">
+                <p class="text-xs text-slate-400 text-center py-4">ജീവനക്കാരെ ലോഡ് ചെയ്യുന്നു...</p>
+            </div>
+            <button onclick="document.getElementById('workerSelectModal').classList.add('hidden')" class="w-full bg-slate-800 text-slate-300 p-2 rounded-xl text-xs font-bold">ക്യാൻസൽ</button>
         </div>
     </div>
 
@@ -141,34 +151,65 @@
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
         let allEntries = [];
+        let savedWorkersList = [];
 
-        // സ്റ്റൈലിഷ് അലേർട്ട് കാണിക്കുന്ന ഫങ്ഷൻ
         function showStylishMessage(message) {
             const alertBox = document.getElementById('customAlertBox');
             document.getElementById('alertMessage').innerText = message;
             alertBox.classList.remove('hidden');
-            
-            // 4 സെക്കൻഡിന് ശേഷം മെസ്സേജ് തനിയെ മറിഞ്ഞുപോകും
-            setTimeout(() => {
-                alertBox.classList.add('hidden');
-            }, 4000);
+            setTimeout(() => { alertBox.classList.add('hidden'); }, 4000);
         }
 
         const getTodayDate = () => {
             const d = new Date();
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         };
 
-        window.openAddModal = function() {
+        // ജീവനക്കാരുടെ ഡാറ്റ ഫെച്ച് ചെയ്യാൻ
+        async function fetchWorkersFromDatabase() {
+            try {
+                const snapshot = await getDocs(collection(db, "workers"));
+                savedWorkersList = [];
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (!data.meshtriOwner || data.meshtriOwner === currentMeshtri) {
+                        savedWorkersList.push(data);
+                    }
+                });
+            } catch (err) {
+                console.error("Worker fetch error:", err);
+            }
+        }
+
+        window.openAddModal = async function() {
             document.getElementById('siteNameInput').value = '';
             document.getElementById('siteDateInput').value = getTodayDate();
             document.getElementById('siteIncomeInput').value = '0';
             document.getElementById('expensesContainer').innerHTML = '';
             document.getElementById('workersContainer').innerHTML = '';
             document.getElementById('addSiteModal').classList.remove('hidden');
+            await fetchWorkersFromDatabase();
+        }
+
+        window.openWorkerSelectModal = function() {
+            const listContainer = document.getElementById('workerSelectList');
+            listContainer.innerHTML = '';
+
+            if (savedWorkersList.length === 0) {
+                listContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">സേവ് ചെയ്ത ജീവനക്കാർ ആരും ലഭ്യമല്ല!</p>';
+            } else {
+                savedWorkersList.forEach(w => {
+                    const btn = document.createElement('button');
+                    btn.className = "w-full text-left p-2.5 bg-slate-900 hover:bg-indigo-950 border border-slate-800 rounded-xl text-xs text-white font-bold flex justify-between items-center";
+                    btn.innerHTML = `<span>👷 ${w.name}</span> <span class="text-[10px] text-indigo-400">${w.workType || ''}</span>`;
+                    btn.onclick = () => {
+                        addWorkerRow(w.name, w.workType || '', '1', w.wage || '1000');
+                        document.getElementById('workerSelectModal').classList.add('hidden');
+                    };
+                    listContainer.appendChild(btn);
+                });
+            }
+            document.getElementById('workerSelectModal').classList.remove('hidden');
         }
 
         window.addExpenseRow = function(note = '', amount = '') {
@@ -186,12 +227,12 @@
         window.addWorkerRow = function(name = '', workType = '', days = '1', wage = '1000') {
             const container = document.getElementById('workersContainer');
             const div = document.createElement('div');
-            div.className = "bg-slate-900 p-2.5 rounded-xl border border-slate-800 space-y-2 relative";
+            div.className = "bg-slate-900 p-3 rounded-2xl border border-slate-800 space-y-2 relative";
             div.innerHTML = `
                 <div class="flex gap-2">
                     <input type="text" placeholder="തൊഴിലാളിയുടെ പേര്" value="${name}" class="worker-name flex-1 p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
                     <input type="text" placeholder="തൊഴിൽ (ഉദാ: കല്ല് കെട്ട്)" value="${workType}" class="worker-work flex-1 p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
-                    <button onclick="this.parentElement.parentElement.remove()" class="bg-red-600 text-white px-2 py-1 rounded-xl text-xs font-bold">X</button>
+                    <button onclick="this.parentElement.parentElement.remove()" class="bg-red-600 text-white px-2.5 py-1 rounded-xl text-xs font-bold">X</button>
                 </div>
                 <div class="flex gap-2">
                     <div class="flex-1 flex items-center gap-1 bg-slate-950 px-2 rounded-xl border border-slate-800">
@@ -241,10 +282,7 @@
                 });
                 
                 document.getElementById('addSiteModal').classList.add('hidden');
-                
-                // ഇവിടെയാണ് നിങ്ങൾ ആവശ്യപ്പെട്ട സ്റ്റൈലിഷ് സക്സസ് മെസ്സേജ് വരുന്നത്
                 showStylishMessage("നിങ്ങൾ സേവ് ചെയ്ത വിവരങ്ങൾ വിജയിച്ചിരിക്കുന്നു! ✅");
-                
                 loadSiteEntries();
             } catch (err) {
                 console.error(err);
@@ -309,7 +347,7 @@
                     </div>
 
                     <div class="bg-black/30 p-2.5 rounded-xl text-xs flex justify-between items-center">
-                        <span class="text-slate-300 font-bold">മുതലാളി തന്ന പൈസ (വരവ്):</span> 
+                        <span class="text-slate-300 font-bold">ലഭിച്ച വരവ്:</span> 
                         <span class="text-emerald-300 font-black">₹${data.income || 0}</span>
                     </div>
                     
@@ -340,6 +378,3 @@
         }
 
         loadSiteEntries();
-    </script>
-</body>
-</html>
