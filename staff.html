@@ -337,8 +337,7 @@
                 let advLogsHtml = '';
                 let extraLogsHtml = '';
 
-                
-                staffLogs.forEach(log => {
+                                staffLogs.forEach(log => {
                     const dayName = getMalayalamDay(log.date);
                     const displayDateStr = dayName ? `${log.date} (${dayName})` : log.date;
 
@@ -390,6 +389,8 @@
                         `;
                     }
                 });
+
+                
 
                     
 
