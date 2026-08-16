@@ -99,7 +99,7 @@
     <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { firebaseConfig } from "./firebase-config.js";
 
         const app = initializeApp(firebaseConfig);
@@ -195,7 +195,9 @@
             list.innerHTML = '<p class="text-center text-xs text-slate-400 font-bold py-6">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>';
 
             try {
-                const snapshot = await getDocs(collection(db, "siteEntries"));
+                // ലോഗിൻ ചെയ്ത മേസ്തിരിയുടെ ഡാറ്റ മാത്രം ഫിൽട്ടർ ചെയ്ത് എടുക്കുന്നു
+                const q = query(collection(db, "siteEntries"), where("meshtriOwner", "==", currentMeshtri));
+                const snapshot = await getDocs(q);
                 allEntries = [];
                 
                 snapshot.forEach(docSnap => {
