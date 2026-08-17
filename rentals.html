@@ -203,19 +203,15 @@
             window.open(url, '_blank');
         };
 
-                document.getElementById('saveRentBtn').addEventListener('click', async () => {
+        document.getElementById('saveRentBtn').addEventListener('click', async () => {
             const itemName = document.getElementById('itemName').value;
-            const paidAmount = parseFloat(document.getElementById('paidRent').value) || 0;
-            const siteName = document.getElementById('siteName').value || 'പൊതുവായത്';
-
             if (!itemName) return alert("ഉപകരണത്തിന്റെ പേര് നൽകുക!");
 
-            // 1. വാടക കണക്ക് ചേർക്കുന്നു
             await addDoc(collection(db, "rentals"), {
                 meshtriOwner: currentMeshtri,
                 item: itemName,
                 qty: document.getElementById('itemQty').value || 1,
-                site: siteName,
+                site: document.getElementById('siteName').value || '',
                 shop: document.getElementById('shopName').value || 'കട',
                 client: document.getElementById('clientName').value || '',
                 phone: document.getElementById('shopPhone').value || '',
@@ -223,29 +219,11 @@
                 end: document.getElementById('endDate').value,
                 unitRent: parseFloat(document.getElementById('unitRent').value) || 0,
                 total: parseFloat(document.getElementById('totalRent').value) || 0,
-                paid: paidAmount,
+                paid: parseFloat(document.getElementById('paidRent').value) || 0,
                 isReturned: false
             });
-
-            // 2. പണം നൽകിയിട്ടുണ്ടെങ്കിൽ മാത്രം വരവ്-ചെലവ് കണക്കിൽ ചേർക്കുന്നു (ഇത് ബുദ്ധിമുട്ടുണ്ടാക്കില്ല)
-            if (paidAmount > 0) {
-                await addDoc(collection(db, "expenses"), {
-                    meshtriOwner: currentMeshtri,
-                    category: "വാടക ഉപകരണങ്ങൾ",
-                    description: `${itemName} (${siteName})`,
-                    amount: paidAmount,
-                    date: new Date().toISOString().split('T')[0]
-                });
-            }
-
-            showToast("🚀 വാടക വിവരങ്ങളും ചിലവും വിജയകരമായി ചേർത്തു!");
+            showToast("🚀 വാടക വിവരങ്ങൾ വിജയകരമായി ചേർത്തു!");
             
-            // ഇൻപുട്ട് ഫീൽഡുകൾ ക്ലിയർ ചെയ്യുന്നു
-            document.getElementById('itemName').value = '';
-            document.getElementById('itemQty').value = '';
-            // ... ബാക്കി ഫീൽഡുകൾ ...
-        });
-
             document.getElementById('itemName').value = '';
             document.getElementById('itemQty').value = '';
             document.getElementById('siteName').value = '';
