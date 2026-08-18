@@ -10,6 +10,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { setupHeader } from './header.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -26,6 +27,11 @@
         const db = getFirestore(app);
 
         document.addEventListener("DOMContentLoaded", async () => {
+            // ഹെഡർ ഫയൽ ലോഡ് ചെയ്യാൻ
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader');
+            }
+
             let userName = localStorage.getItem('userName');
             if (!userName) {
                 userName = 'swaraj';
@@ -278,17 +284,9 @@
             </div>
         </div>
 
-        <!-- മേസ്തിരി പ്രോ ലോഗോയും പേരും (ശരിയായ ഹെഡർ ഡിസൈൻ) -->
+        <!-- മേസ്തിരി പ്രോ ലോഗോയും ഹെഡറും (header.js വഴി ഇവിടെ വരുമാറി സെറ്റ് ചെയ്തിരിക്കുന്നു) -->
         <div class="flex flex-col items-center gap-3 pt-1">
-            <div class="w-full inline-flex items-center gap-5 px-6 py-4 rounded-full border-2 border-amber-400 shadow-2xl glow-gold" style="background: linear-gradient(135deg, #452b12 0%, #2a1908 100%);">
-                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-400 flex-shrink-0 bg-slate-900 flex items-center justify-center shadow-inner">
-                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=M&background=0D1117&color=FBBF24&bold=true'">
-                </div>
-                <div class="flex flex-col text-left">
-                    <span class="text-amber-400 font-black text-2xl tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
-                    <span class="text-xs font-bold text-slate-200 tracking-widest uppercase">SMART SITE MANAGER</span>
-                </div>
-            </div>
+            <div id="appHeader" class="w-full"></div>
             
             <div class="w-full text-center">
                 <span id="loggedInMeshtri" class="block w-full py-4 rounded-2xl text-base font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
