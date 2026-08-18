@@ -9,17 +9,18 @@
     <style>
         body { font-family: 'Manjari', sans-serif; }
         @keyframes popUp {
-            from { transform: scale(0.8); opacity: 0; }
+            from { transform: scale(0.85); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
         .animate-pop-up {
-            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            /* സമയം 0.3 സെക്കൻഡിൽ നിന്ന് 0.5 സെക്കൻഡ് ആക്കി കൂട്ടിയിരിക്കുന്നു, ഇത് കൂടുതൽ സ്മൂത്ത് തരും */
+            animation: popUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
 
-    <!-- സെന്ററിലേക്ക് സ്മൂത്ത് ആയി പൊന്തിവരുന്ന മോഡൽ അലേർട്ട് -->
+    <!-- സെന്ററിൽ പതുക്കെ സ്മൂത്ത് ആയി പൊന്തിവരുന്ന മോഡൽ അലേർട്ട് -->
     <div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm transition-all">
         <div class="bg-slate-900 border-2 border-amber-400/50 rounded-3xl p-6 max-w-sm w-full shadow-[0_0_50px_rgba(251,191,36,0.3)] text-center space-y-4 animate-pop-up">
             <div class="text-4xl">⚠️</div>
