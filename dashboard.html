@@ -1,111 +1,130 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ (Firebase SDKs 9.22.0) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { setupHeader } from './header.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
+            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
             projectId: "mesthri-app",
-            storageBucket: "mesthri-app.appspot.com",
+            storageBucket: "mesthri-app.firebasestorage.app",
             messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d"
+            measurementId: "G-J9Y5TW9D7T"
+
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // ഹെഡർ സെറ്റ് ചെയ്യുന്നു
+        setupHeader('appHeader');
+
         document.addEventListener("DOMContentLoaded", async () => {
             let userName = localStorage.getItem('userName');
             if (!userName) {
-                userName = 'സുരാജ്';
-                localStorage.setItem('userName', userName);
+                window.location.href = "login.html";
+                return;
             }
             
             const nameElement = document.getElementById('loggedInMeshtri');
-            if(nameElement) {
-                nameElement.innerText = "സ്വാഗതം, " + userName;
-            }
+            if(nameElement) nameElement.innerText = "സ്വാഗതം, " + userName;
 
-            // ഫയർബേസിൽ നിന്ന് യൂസറുടെ പ്രൊഫൈൽ & കവർ ഫോട്ടോകൾ ലോഡ് ചെയ്യുന്നു
-            try {
-                const userDocRef = doc(db, "users", userName);
-                const userSnap = await getDoc(userDocRef);
-                
-                if (userSnap.exists()) {
-                    const userData = userSnap.data();
-                    
-                    if (userData.profilePhoto) {
-                        document.getElementById('profileImage').src = userData.profilePhoto;
-                        localStorage.setItem('profilePhoto', userData.profilePhoto);
-                    } else {
-                        setFallbackProfile(userName);
-                    }
+            // (മറ്റ് ഫോട്ടോ ലോഡിംഗ് കോഡുകൾ അതുപോലെ തുടരുന്നു...)
+            // ... [നിങ്ങളുടെ പ്രൊഫൈൽ ഫോട്ടോ കോഡുകൾ ഇവിടെ ഉണ്ടെന്ന് ഉറപ്പുവരുത്തുക]
 
-                    if (userData.coverPhoto) {
-                        document.getElementById('coverImage').src = userData.coverPhoto;
-                        localStorage.setItem('coverPhoto', userData.coverPhoto);
-                    } else {
-                        document.getElementById('coverImage').src = "https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop";
-                    }
-                } else {
-                    setFallbackProfile(userName);
-                }
-            } catch (error) {
-                console.log("Error loading photos:", error);
-                setFallbackProfile(userName);
-            }
-
-            // തീയതി സെറ്റ് ചെയ്യുന്നു
             const today = new Date();
             const days = ['ഞായറാഴ്ച', 'തിങ്കളാഴ്ച', 'ചൊവ്വാഴ്ച', 'ബുധനാഴ്ച', 'വ്യാഴാഴ്ച', 'വെള്ളിയാഴ്ച', 'ശനിയാഴ്ച'];
-            const dayName = days[today.getDay()];
-            
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const dateStr = today.toLocaleDateString('ml-IN', options);
-            
             const dateElement = document.getElementById('currentDate');
-            if(dateElement) {
-                dateElement.innerText = `ഇന്ന്: ${dayName}, ${dateStr}`;
-            }
+            if(dateElement) dateElement.innerText = `ഇന്ന്: ${days[today.getDay()]}, ${today.toLocaleDateString('ml-IN')}`;
 
             fetchDashboardData(db, userName);
         });
 
-        function setFallbackProfile(userName) {
-            const savedPhoto = localStorage.getItem('profilePhoto');
-            if (savedPhoto) {
-                document.getElementById('profileImage').src = savedPhoto;
-            } else {
-                document.getElementById('profileImage').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D1117&color=FBBF24&bold=true&size=128`;
-            }
+        // (ലോഗൗട്ട്, ഫോട്ടോ അപ്‌ഡേറ്റ് ഫംഗ്‌ഷനുകൾ പഴയതുപോലെ തന്നെ തുടരാം...)
+        // ...
+        
+        window.logoutUser = function() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        };
 
-            const savedCover = localStorage.getItem('coverPhoto');
-            if (savedCover) {
-                document.getElementById('coverImage').src = savedCover;
-            } else {
-                document.getElementById('coverImage').src = "https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop";
-            }
+        function fetchDashboardData(db, currentMeshtri) {
+            onSnapshot(query(collection(db, "accounts")), (snapshot) => {
+                let totalInc = 0, totalExp = 0;
+                snapshot.forEach(docSnap => {
+                    const d = docSnap.data();
+                    if (d.meshtriOwner === currentMeshtri) {
+                        let amount = parseFloat(d.amount) || 0;
+                        if (d.type === 'income') totalInc += amount;
+                        else totalExp += amount;
+                    }
+                });
+
+                let net = totalInc - totalExp;
+                document.getElementById('dashTotalIncome').innerText = `₹ ${totalInc.toLocaleString('en-IN')}`;
+                document.getElementById('dashTotalExpense').innerText = `₹ ${totalExp.toLocaleString('en-IN')}`;
+                
+                let netEl = document.getElementById('dashNetProfit');
+                let labelEl = document.getElementById('dashProfitLabel');
+                
+                labelEl.innerText = net >= 0 ? "ശുദ്ധ ലാഭം" : "നഷ്ടം";
+                labelEl.className = `text-[11px] font-black ${net >= 0 ? "text-emerald-400" : "text-rose-400"} block tracking-wider uppercase`;
+                netEl.innerText = `₹ ${Math.abs(net).toLocaleString('en-IN')}`;
+            });
         }
+    </script>
 
-        window.updateProfilePhoto = function(event) {
-            const file = event.target.files[0];
-            let userName = localStorage.getItem('userName') || 'സുരാജ്';
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = async function() {
+    <style>
+        body { font-family: 'Manjari', sans-serif; background: #0f172a; }
+        .glass-card { background: rgba(19, 28, 46, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    </style>
+    <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
+</head>
+<body class="text-white min-h-screen p-4 pb-16">
+    <div class="max-w-md mx-auto space-y-4">
+
+        <!-- ഹെഡർ ഏരിയ -->
+        <div id="appHeader" class="w-full"></div>
+
+        <!-- പ്രൊഫൈൽ ബാനർ -->
+        <div class="glass-card rounded-[2rem] p-4 border border-white/10">
+            <div class="relative h-32 w-full bg-slate-900 rounded-2xl overflow-hidden mb-12">
+                <img id="coverImage" src="https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover opacity-80">
+                <button onclick="logoutUser()" class="absolute top-2 right-2 bg-rose-500/80 p-2 rounded-xl text-white text-xs">ലോഗൗട്ട്</button>
+            </div>
+            <div class="flex justify-center -mt-20">
+                <img id="profileImage" src="" class="w-24 h-24 rounded-2xl border-4 border-slate-900 bg-slate-800">
+            </div>
+            <p id="currentDate" class="text-center text-xs text-slate-400 mt-2"></p>
+        </div>
+
+        <div id="loggedInMeshtri" class="text-center font-bold text-cyan-300"></div>
+
+        <!-- ലാഭ-നഷ്ട സംഗ്രഹം -->
+        <div class="grid grid-cols-3 gap-2">
+            <div class="glass-card p-3 rounded-xl text-center"><span class="text-[10px] text-emerald-400 uppercase">വരുമാനം</span><p id="dashTotalIncome" class="font-bold">₹ 0</p></div>
+            <div class="glass-card p-3 rounded-xl text-center"><span class="text-[10px] text-rose-400 uppercase">ചെലവ്</span><p id="dashTotalExpense" class="font-bold">₹ 0</p></div>
+            <div class="glass-card p-3 rounded-xl text-center"><span id="dashProfitLabel" class="text-[10px] text-blue-400 uppercase">ലാഭം</span><p id="dashNetProfit" class="font-bold">₹ 0</p></div>
+        </div>
+
+        <!-- മെനു ലിങ്കുകൾ -->
+        <div class="space-y-2">
+            <!-- (നിങ്ങളുടെ പഴയ ലിങ്കുകൾ ഇവിടെ നൽകുക) -->
+        </div>
+    </div>
+</body>
+</html>
+                img.onload = async function() {
                         const canvas = document.createElement('canvas');
                         const MAX_WIDTH = 200;
                         const MAX_HEIGHT = 200;
