@@ -10,36 +10,44 @@
 </head>
 <body class="bg-[#050B18] text-white min-h-screen flex items-center justify-center p-4">
 
-    <div class="w-full max-w-sm">
-        <!-- ഹെഡർ ലോഗോ -->
-        <div class="flex flex-col items-center mb-8">
-            <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-slate-900/90 border-2 border-amber-400/50 shadow-[0_0_20px_rgba(251,191,36,0.3)]">
-                <img src="icon.png" alt="Logo" class="w-12 h-12 rounded-full border border-amber-400">
-                <div class="text-left">
-                    <span class="block text-xl font-black text-amber-400 leading-none">മേസ്തിരി പ്രോ</span>
-                    <span class="text-[11px] font-bold text-blue-200 tracking-wider uppercase">Smart Site Manager</span>
+    <div class="w-full max-w-sm space-y-4">
+        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം -->
+        <div class="flex flex-col items-center pt-2 pb-2">
+            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md w-full max-w-sm justify-center">
+                <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
+                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col text-left">
+                    <span class="text-amber-400 font-black text-sm tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
+                    <span class="text-[10px] font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
                 </div>
             </div>
         </div>
 
-        <div class="bg-slate-900/90 p-8 rounded-3xl border border-slate-800 shadow-2xl">
-            <h2 class="text-2xl font-black text-white text-center mb-6">ലോഗിൻ ചെയ്യുക</h2>
+        <div class="bg-slate-900/90 p-6 rounded-3xl border border-slate-800 shadow-2xl space-y-4">
+            <div class="text-center">
+                <h2 class="text-xl font-black text-white">ലോഗിൻ ചെയ്യുക</h2>
+                <p class="text-xs font-bold text-slate-400 mt-1">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
+            </div>
             
-            <form id="loginForm" class="space-y-5">
+            <form id="loginForm" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-black text-slate-400 mb-2 uppercase">യൂസർനെയിം (പേര്)</label>
-                    <input type="text" id="username" required class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-white font-bold focus:border-amber-400 outline-none">
+                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">യൂസർനെയിം (പേര്)</label>
+                    <input type="text" id="username" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-400 mb-2 uppercase">പാസ്‌വേഡ്</label>
-                    <input type="password" id="password" required class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-white font-bold focus:border-amber-400 outline-none">
+                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">പാസ്‌വേഡ്</label>
+                    <input type="password" id="password" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                 </div>
                 
-                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/50 border border-white/20 transition">
+                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/50 border border-white/20 transition mt-3">
                     ലോഗിൻ ചെയ്യുക
                 </button>
             </form>
-            <p class="text-center mt-6 text-sm font-bold text-slate-400">അക്കൗണ്ട് ഇല്ലെങ്കിൽ? <a href="register.html" class="text-amber-400 underline">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a></p>
+            
+            <div class="text-center pt-2">
+                <p class="text-xs font-bold text-slate-400">അക്കൗണ്ട് ഇല്ലെങ്കിൽ? <a href="register.html" class="text-amber-400 underline font-black">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a></p>
+            </div>
         </div>
     </div>
 
@@ -83,8 +91,17 @@
 
         document.getElementById('loginForm').onsubmit = async (e) => {
             e.preventDefault();
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+
+            if (!user) {
+                showCustomAlert("ദയവായി യൂസർനെയിം നൽകുക!", "ശ്രദ്ധിക്കുക");
+                return;
+            }
+            if (!pass) {
+                showCustomAlert("ദയവായി പാസ്‌വേഡ് നൽകുക!", "ശ്രദ്ധിക്കുക");
+                return;
+            }
 
             try {
                 const q = query(collection(db, "users"), where("name", "==", user), where("password", "==", pass));
