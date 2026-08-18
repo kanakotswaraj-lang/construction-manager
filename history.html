@@ -7,104 +7,33 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <style>
-        body { font-family: 'Manjari', sans-serif; }
-    </style>
-</head>
-<body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
-
-    <div class="max-w-md mx-auto space-y-4">
-        
-        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം -->
-        <div class="flex flex-col items-center pt-2 pb-2">
-            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md">
-                <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
-                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover">
-                </div>
-                <div class="flex flex-col text-left">
-                    <span class="text-amber-400 font-black text-sm tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
-                    <span class="text-[10px] font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
-                </div>
-            </div>
-            <div class="mt-3 text-center">
-                <span id="loggedInMeshtri" class="text-sm font-black tracking-wide text-cyan-300 bg-cyan-500/15 px-4 py-1.5 rounded-full border border-cyan-400/40 shadow-lg">
-                    സ്വാഗതം, ലോഡിങ്...
-                </span>
-            </div>
-        </div>
-
-        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
-        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
-            <div>
-                <h1 class="text-lg font-black text-white">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</h1>
-            </div>
-            <a href="dashboard.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
-                <span>←</span> ഡാഷ്‌ബോർഡ്
-            </a>
-        </div>
-
-        <!-- തിരയുന്ന ഭാഗം (Search & Filter) -->
-        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-3">
-            <input type="text" id="searchHistory" placeholder="🔍 സൈറ്റിന്റെ പേരിലോ വിവരത്തിലോ തിരയുക..." oninput="filterHistory()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-        </div>
-
-        <!-- കണക്കുകൾ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
-        <div id="historyListContainer" class="space-y-3">
-            <div class="text-center text-slate-400 py-8 text-sm">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</div>
-        </div>
-
-    </div>
-
-    <!-- എഡിറ്റ് ചെയ്യുന്നതിനുള്ള മോഡൽ (Popup Modal) -->
-    <div id="editModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl">
-            <h3 class="text-base font-black text-amber-400">കണക്ക് തിരുത്തുക (Edit)</h3>
-            <input type="hidden" id="editDocId">
-            
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">വിവരം / പേര്:</label>
-                <input type="text" id="editName" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-            </div>
-
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">സൈറ്റ് പേര്:</label>
-                <input type="text" id="editSite" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-            </div>
-
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">തുക (₹):</label>
-                <input type="number" id="editAmount" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-            </div>
-
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">തീയതി:</label>
-                <input type="date" id="editDate" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-            </div>
-
-            <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeEditModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl font-black text-xs transition">വേണ്ട</button>
-                <button type="button" onclick="updateAccountData()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-3 rounded-xl font-black text-xs transition">അപ്ഡേറ്റ് ചെയ്യുക</button>
-            </div>
-        </div>
-    </div>
-
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { setupHeader } from './header.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
+            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
             projectId: "mesthri-app",
-            storageBucket: "mesthri-app.appspot.com",
+            storageBucket: "mesthri-app.firebasestorage.app",
             messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d352218"
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
-        document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader');
+            }
+            document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+            fetchHistory();
+        });
 
         let allHistoryData = [];
 
@@ -117,9 +46,7 @@
                     allHistoryData.push({ id: document.id, ...document.data() });
                 });
 
-                // തീയതിയുടെ അടിസ്ഥാനത്തിൽ പുതിയത് മുകളിൽ വരുന്ന രീതിയിൽ സോർട്ട് ചെയ്യാം
                 allHistoryData.sort((a, b) => new Date(b.date) - new Date(a.date));
-
                 displayHistory(allHistoryData);
             } catch (error) {
                 console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
@@ -153,8 +80,8 @@
                             <span class="font-black text-base text-amber-400">₹ ${item.amount || 0}</span>
                         </div>
                         <div class="flex gap-2 pt-1">
-                            <button onclick="openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold transition">എഡിറ്റ്</button>
-                            <button onclick="deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition">ഡിലീറ്റ്</button>
+                            <button type="button" onclick="openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold transition">എഡിറ്റ്</button>
+                            <button type="button" onclick="deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition">ഡിലീറ്റ്</button>
                         </div>
                     </div>
                 `;
@@ -220,8 +147,80 @@
                 }
             }
         }
-
-        fetchHistory();
     </script>
+
+    <style>
+        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
+    </style>
+</head>
+<body class="text-white min-h-screen pb-12 p-4 font-sans">
+
+    <div class="max-w-md mx-auto space-y-4">
+        
+        <!-- ഹെഡർ ലോഡ് ആകുന്ന കാൺടെയ്നർ -->
+        <div id="appHeader" class="w-full flex justify-center"></div>
+
+        <!-- സ്വാഗതം പേര് കാണിക്കുന്ന ഭാഗം -->
+        <div class="text-center w-full">
+            <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
+                സ്വാഗതം, ലോഡിങ്...
+            </span>
+        </div>
+
+        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <div>
+                <h1 class="text-lg font-black text-white">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</h1>
+            </div>
+            <a href="dashboard.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
+                <span>←</span> ഡാഷ്‌ബോർഡ്
+            </a>
+        </div>
+
+        <!-- തിരയുന്ന ഭാഗം -->
+        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
+            <input type="text" id="searchHistory" placeholder="🔍 സൈറ്റിന്റെ പേരിലോ വിവരത്തിലോ തിരയുക..." oninput="filterHistory()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+        </div>
+
+        <!-- കണക്കുകൾ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
+        <div id="historyListContainer" class="space-y-3">
+            <div class="text-center text-slate-400 py-8 text-sm">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</div>
+        </div>
+
+    </div>
+
+    <!-- എഡിറ്റ് ചെയ്യുന്നതിനുള്ള മോഡൽ -->
+    <div id="editModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl">
+            <h3 class="text-base font-black text-amber-400">കണക്ക് തിരുത്തുക (Edit)</h3>
+            <input type="hidden" id="editDocId">
+            
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1">വിവരം / പേര്:</label>
+                <input type="text" id="editName" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1">സൈറ്റ് പേര്:</label>
+                <input type="text" id="editSite" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1">തുക (₹):</label>
+                <input type="number" id="editAmount" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1">തീയതി:</label>
+                <input type="date" id="editDate" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="closeEditModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl font-black text-xs transition">വേണ്ട</button>
+                <button type="button" onclick="updateAccountData()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-3 rounded-xl font-black text-xs transition">അപ്ഡേറ്റ് ചെയ്യുക</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
