@@ -12,17 +12,20 @@
 </head>
 <body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
 
-    <!-- ലോഗിൻ പേജിന്റെ മുകൾ ഭാഗം ഇങ്ങനെ മാറ്റുക -->
-<div class="w-full max-w-sm mx-auto pt-6 text-center">
-    <!-- പഴയ കോഡ് മാറ്റി പകരം ഇത് നൽകി -->
-    <div id="appHeader" class="w-full"></div>
-    
-    <h1 class="text-3xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
-        ലോഗിൻ ചെയ്യുക
-    </h1>
-    <p class="text-sm text-blue-200 mt-1 font-bold">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
-</div>
-
+    <!-- ടോപ്പ് ഹെഡർ -->
+    <div class="w-full max-w-sm mx-auto pt-6 text-center">
+        <div class="flex items-center gap-4 bg-amber-500/30 text-amber-300 px-6 py-3 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.5)] w-full">
+            <img src="icon.png" alt="മേസ്തിരി പ്രോ ലോഗോ" class="rounded-full object-cover border-2 border-amber-200 shadow-lg flex-shrink-0" style="width: 54px; height: 54px;">
+            <div class="text-left">
+                <span class="text-xl font-black text-amber-300 tracking-wide block leading-tight">മേസ്തിരി പ്രോ</span>
+                <span class="text-[11px] font-bold text-blue-200 tracking-wider uppercase">Smart Site Manager</span>
+            </div>
+        </div>
+        <h1 class="text-3xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
+            ലോഗിൻ ചെയ്യുക
+        </h1>
+        <p class="text-sm text-blue-200 mt-1 font-bold">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
+    </div>
 
     <!-- ലോഗിൻ ഫോം കാർഡ് -->
     <div class="bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 max-w-sm mx-auto w-full my-4 space-y-4 shadow-xl">
@@ -67,23 +70,17 @@
         </p>
     </div>
 
+    
+        <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം -->
     <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-    
-    // modal-ഉം header-ഉം ഇമ്പോർട്ട് ചെയ്യുന്നു
-    import { setupModal } from './modal.js';
-    import { setupHeader } from './header.js';
-    
-    // രണ്ടും പേജിൽ സെറ്റ് ചെയ്യുന്നു
-    setupModal();
-    setupHeader('appHeader'); // ഇത് ലോഗോയെ കൃത്യമായി കാണിക്കും
-
-    // ... ബാക്കി ഫയർബേസ് കോഡുകൾ അതേപടി നിലനിർത്തുക ...
-</script>
-
-        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ മോഡൽ ആക്ടീവ് ആക്കുന്നു
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { setupModal } from './modal.js';
+        import { setupHeader } from './header.js';
+        
+        // ഇതെല്ലാം ഒരേ സ്ക്രിപ്റ്റ് ടാഗിനുള്ളിൽ ആയിരിക്കണം
         setupModal();
+        setupHeader('appHeader');
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -93,7 +90,7 @@
             storageBucket: "mesthri-app.firebasestorage.app",
             messagingSenderId: "1060617901864",
             appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-            measurementId: "G-XXXXXXXXXX" // ആവശ്യമുണ്ടെങ്കിൽ ഇവിടെ നൽകാം
+            measurementId: "G-XXXXXXXXXX"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -155,5 +152,6 @@
             });
         });
     </script>
+
 </body>
 </html>
