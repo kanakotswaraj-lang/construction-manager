@@ -16,19 +16,10 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- ഒറിജിനൽ ലോഗോയും ഹെഡറും -->
-  
-<!-- ലോഗോ ബോക്സ് പുതിയ ഡിസൈൻ (ഒരേ വിഡ്ത്ത് കിട്ടാൻ) -->
-<div class="w-full max-w-sm mx-auto mb-6">
-    <div class="flex items-center gap-4 bg-amber-500/30 text-amber-300 px-6 py-4 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.3)] w-full">
-        <img src="icon.png" alt="Mesthiri" class="rounded-full object-cover border-2 border-amber-200 shadow-lg" style="width: 50px; height: 50px;">
-        <div class="text-left">
-            <span class="text-xl font-black text-amber-300 block leading-tight">മേസ്തിരി പ്രോ</span>
-            <span class="text-[11px] font-bold text-blue-200 tracking-wider uppercase">Smart Site Manager</span>
-        </div>
+    <!-- ലോഗോ ഹെഡർ (header.js വഴി ഇവിടെ വരും) -->
+    <div class="w-full max-w-sm mx-auto mb-6">
+        <div id="appHeader" class="w-full"></div>
     </div>
-</div>
-
 
     <!-- രജിസ്ട്രേഷൻ കാർഡ് -->
     <div class="w-full max-w-sm bg-slate-900/80 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
@@ -80,8 +71,16 @@
 
     <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        
+        // മോഡലും ഹെഡറും ഇമ്പോർട്ട് ചെയ്യുന്നു
+        import { setupModal } from './modal.js';
+        import { setupHeader } from './header.js';
+
+        // ആക്ടിവേറ്റ് ചെയ്യുന്നു
+        setupModal();
+        setupHeader('appHeader');
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -95,7 +94,8 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
+
         const usernameInput = document.getElementById("username");
         const phoneInput = document.getElementById("phone");
         const passwordInput = document.getElementById("password");
@@ -127,11 +127,11 @@
                 const pass = passwordInput.value.trim();
 
                 if (!user || !phone || !pass) {
-                    return alert("ദയവായി എല്ലാ വിവരങ്ങളും നൽകുക!");
+                    return showModal("ദയവായി എല്ലാ വിവരങ്ങളും നൽകുക!", "ശ്രദ്ധിക്കുക", "⚠️");
                 }
 
                 if (pass.length < 6) {
-                    return alert("പാസ്‌വേർഡിന് കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം!");
+                    return showModal("പാസ്‌വേർഡിന് കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം!", "ശ്രദ്ധിക്കുക", "⚠️");
                 }
 
                 try {
@@ -141,13 +141,15 @@
                         password: pass
                     });
 
-                    alert("വിജയകരമായി രജിസ്റ്റർ ചെയ്തു!");
+                    showModal("വിജയകരമായി രജിസ്റ്റർ ചെയ്തു!", "വിജയം", "✅");
                     localStorage.setItem('userName', user);
-                    window.location.href = "dashboard.html";
+                    setTimeout(() => {
+                        window.location.href = "dashboard.html";
+                    }, 1500);
 
                 } catch (error) {
                     console.error(error);
-                    alert("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു! ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.");
+                    showModal("രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു! ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.", "തടസ്സം", "⚠️");
                 }
             });
         }
