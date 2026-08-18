@@ -10,7 +10,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-        import { setupHeader } from './header.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -28,15 +27,12 @@
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
         document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader');
-            }
             document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
-            document.getElementById('entryDate').valueAsDate = new Date();
+            const dateInput = document.getElementById('entryDate');
+            if(dateInput) dateInput.valueAsDate = new Date();
             fetchData();
         });
 
-        // കസ്റ്റം അലേർട്ട് ഫംഗ്ഷൻ
         function showCustomAlert(message, title = "ശ്രദ്ധിക്കുക", isConfirm = false, onConfirm = null) {
             const modal = document.getElementById('customModal');
             const modalTitle = document.getElementById('modalTitle');
@@ -94,10 +90,12 @@
                 });
 
                 const siteDropdown = document.getElementById('siteSelectDropdown');
-                siteDropdown.innerHTML = '<option value="">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>';
-                siteSet.forEach(s => {
-                    siteDropdown.innerHTML += `<option value="${s}">${s}</option>`;
-                });
+                if(siteDropdown) {
+                    siteDropdown.innerHTML = '<option value="">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>';
+                    siteSet.forEach(s => {
+                        siteDropdown.innerHTML += `<option value="${s}">${s}</option>`;
+                    });
+                }
 
                 updateAllDropdowns();
             } catch (e) {
@@ -212,49 +210,47 @@
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
 
-// സൈറ്റ് കണക്കുകൾ വാട്സാപ്പിൽ അയക്കാൻ
-window.shareSiteWhatsApp = function() {
-    const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
-    const entryDate = document.getElementById('entryDate').value;
-    const income = document.getElementById('siteIncome').value || 0;
-    
-    let details = "";
-    let otherExpTotal = 0;
-    
-    // മറ്റ് ചെലവുകൾ
-    document.querySelectorAll('#expenseListContainer > div').forEach(row => {
-        let desc = row.querySelector('.expense-desc').value.trim();
-        let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
-        if (desc && amt > 0) {
-            details += `➖ ${desc}: ₹ ${amt}\n`;
-            otherExpTotal += amt;
-        }
-    });
+        // 1. സൈറ്റ് കണക്കുകൾ വാട്സാപ്പിൽ അയക്കാൻ (ചെലവ് വിവരങ്ങൾ സഹിതം)
+        window.shareSiteWhatsApp = function() {
+            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
+            const entryDate = document.getElementById('entryDate').value;
+            const income = document.getElementById('siteIncome').value || 0;
+            
+            let details = "";
+            let otherExpTotal = 0;
+            
+            document.querySelectorAll('#expenseListContainer > div').forEach(row => {
+                let desc = row.querySelector('.expense-desc').value.trim();
+                let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
+                if (desc && amt > 0) {
+                    details += `➖ ${desc}: ₹ ${amt}\n`;
+                    otherExpTotal += amt;
+                }
+            });
 
-    let wagesTotal = 0;
-    document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
+            let wagesTotal = 0;
+            document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
 
-    let totalExp = otherExpTotal + wagesTotal;
-    let balance = income - totalExp;
+            let totalExp = otherExpTotal + wagesTotal;
+            let balance = income - totalExp;
 
-    let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
-    msg += `📅 തീയതി: ${entryDate}\n`;
-    msg += `📍 സൈറ്റ്: ${siteName}\n`;
-    msg += `--------------------------------\n`;
-    msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
-    msg += `💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
-    msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
-    msg += `--------------------------------\n`;
-    msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
-    msg += `💰 ബാലൻസ്: ₹ ${balance}\n`;
-    msg += `--------------------------------\n`;
-    msg += `👤 ${currentMeshtri}`; // ലോഗിൻ ചെയ്തിരിക്കുന്ന ആളുടെ പേര് വരുന്നു
+            let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
+            msg += `📅 തീയതി: ${entryDate}\n`;
+            msg += `📍 സൈറ്റ്: ${siteName}\n`;
+            msg += `--------------------------------\n`;
+            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
+            msg += `💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
+            msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
+            msg += `--------------------------------\n`;
+            msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
+            msg += `💰 ബാലൻസ്: ₹ ${balance}\n`;
+            msg += `--------------------------------\n`;
+            msg += `👤 ${currentMeshtri}`;
 
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-};
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        };
 
-
-        // 2. തൊഴിലാളികളുടെ കണക്ക് മാത്രം വാട്സാപ്പിൽ അയക്കാൻ
+        // 2. തൊഴിലാളികളുടെ കൂലി കണക്ക് മാത്രം വാട്സാപ്പിൽ അയക്കാൻ
         window.shareWorkersWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
             const entryDate = document.getElementById('entryDate').value;
@@ -282,23 +278,18 @@ window.shareSiteWhatsApp = function() {
                 return;
             }
 
-            // തൊഴിലാളികളുടെ കൂലി കണക്ക് അയക്കാൻ
-window.shareWorkersWhatsApp = function() {
-    // ... (മുകൾ ഭാഗം പഴയതുപോലെ തന്നെ)
-    
-    let msg = `👥 *തൊഴിലാളികളുടെ കൂലി കണക്ക്* 👥\n`;
-    msg += `📅 തീയതി: ${entryDate}\n`;
-    msg += `📍 സൈറ്റ്: ${siteName}\n`;
-    msg += `--------------------------------\n`;
-    msg += workerDetails;
-    msg += `--------------------------------\n`;
-    msg += `💵 ആകെ തൊഴിലാളി കൂലി: ₹ ${totalWages}\n`;
-    msg += `--------------------------------\n`;
-    msg += `👤 ${currentMeshtri}`; // ഇവിടെയും ലോഗിൻ ചെയ്ത ആളിന്റെ പേര് വരുന്നു
+            let msg = `👥 *തൊഴിലാളികളുടെ കൂലി കണക്ക്* 👥\n`;
+            msg += `📅 തീയതി: ${entryDate}\n`;
+            msg += `📍 സൈറ്റ്: ${siteName}\n`;
+            msg += `--------------------------------\n`;
+            msg += workerDetails;
+            msg += `--------------------------------\n`;
+            msg += `💵 ആകെ തൊഴിലാളി കൂലി: ₹ ${totalWages}\n`;
+            msg += `--------------------------------\n`;
+            msg += `👤 ${currentMeshtri}`;
 
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-};
-
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        };
 
         window.saveSiteData = async function(event) {
             event.preventDefault();
@@ -384,9 +375,17 @@ window.shareWorkersWhatsApp = function() {
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ലോഗോ (header.js വഴി വരുന്ന ഭാഗം) -->
-        <div class="flex flex-col items-center pt-1">
-            <div id="appHeader" class="w-full"></div>
+        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം -->
+        <div class="flex flex-col items-center pt-2 pb-2">
+            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md w-full max-w-sm justify-center">
+                <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
+                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col text-left">
+                    <span class="text-amber-400 font-black text-sm tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
+                    <span class="text-[10px] font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
+                </div>
+            </div>
             <div class="mt-3 text-center w-full">
                 <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
                     സ്വാഗതം, ലോഡിങ്...
