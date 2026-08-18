@@ -5,78 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ലോഗിൻ - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Manjari', sans-serif; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Manjari', sans-serif; }</style>
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
+<body class="bg-[#050B18] text-white min-h-screen flex items-center justify-center p-4">
 
-    <!-- ടോപ്പ് ഹെഡർ: ലോഗോയും ഫോം കാർഡിന്റെ അതേ അളവും -->
-    <div class="w-full max-w-sm mx-auto pt-6 text-center">
-        <div class="flex items-center gap-4 bg-amber-500/30 text-amber-300 px-6 py-3 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.5)] w-full">
-            <!-- ലോക്കൽ പിഎൻജി ഐക്കൺ (icon.png) -->
-            <img src="icon.png" alt="മേസ്തിരി പ്രോ ലോഗോ" class="rounded-full object-cover border-2 border-amber-200 shadow-lg flex-shrink-0" style="width: 54px; height: 54px;">
-            <div class="text-left">
-                <span class="text-xl font-black text-amber-300 tracking-wide block leading-tight">മേസ്തിരി പ്രോ</span>
-                <span class="text-[11px] font-bold text-blue-200 tracking-wider uppercase">Smart Site Manager</span>
+    <div class="w-full max-w-sm">
+        <!-- ഹെഡർ ലോഗോ -->
+        <div class="flex flex-col items-center mb-8">
+            <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-slate-900/90 border-2 border-amber-400/50 shadow-[0_0_20px_rgba(251,191,36,0.3)]">
+                <img src="icon.png" alt="Logo" class="w-12 h-12 rounded-full border border-amber-400">
+                <div class="text-left">
+                    <span class="block text-xl font-black text-amber-400 leading-none">മേസ്തിരി പ്രോ</span>
+                    <span class="text-[11px] font-bold text-blue-200 tracking-wider uppercase">Smart Site Manager</span>
+                </div>
             </div>
         </div>
-        <h1 class="text-3xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
-            ലോഗിൻ ചെയ്യുക
-        </h1>
-        <p class="text-sm text-blue-200 mt-1 font-bold">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
-    </div>
 
-    <!-- ലോഗിൻ ഫോം കാർഡ് -->
-    <div class="bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 max-w-sm mx-auto w-full my-4 space-y-4 shadow-xl">
-        <div>
-            <label class="block text-base font-black text-amber-300 mb-1.5">യൂസർനെയിം (പേര്)</label>
-            <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
-                   class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
-        </div>
-
-        <div>
-            <label class="block text-base font-black text-amber-300 mb-1.5">പാസ്‌വേർഡ്</label>
-            <div class="relative">
-                <input type="password" id="password" placeholder="കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക" 
-                       class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 pr-12 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
-                <!-- പാസ്‌വേർഡ് കാണാനുള്ള കണ്ണ് ഐക്കൺ -->
-                <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-300 hover:text-amber-400 focus:outline-none">
-                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
+        <div class="bg-slate-900/90 p-8 rounded-3xl border border-slate-800 shadow-2xl">
+            <h2 class="text-2xl font-black text-white text-center mb-6">ലോഗിൻ ചെയ്യുക</h2>
+            
+            <form id="loginForm" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-black text-slate-400 mb-2 uppercase">യൂസർനെയിം (പേര്)</label>
+                    <input type="text" id="username" required class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-white font-bold focus:border-amber-400 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-slate-400 mb-2 uppercase">പാസ്‌വേഡ്</label>
+                    <input type="password" id="password" required class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-white font-bold focus:border-amber-400 outline-none">
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/50 border border-white/20 transition">
+                    ലോഗിൻ ചെയ്യുക
                 </button>
-            </div>
-            <p class="text-sm text-blue-200 mt-2 font-bold leading-relaxed">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
+            </form>
+            <p class="text-center mt-6 text-sm font-bold text-slate-400">അക്കൗണ്ട് ഇല്ലെങ്കിൽ? <a href="register.html" class="text-amber-400 underline">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a></p>
         </div>
-
-        <!-- ലോഗിൻ ബട്ടൺ -->
-        <button id="btnLogin" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/50 transition mt-3">
-            ലോഗിൻ ചെയ്യുക
-        </button>
-
-        <button id="btnForgot" class="w-full text-amber-300 font-bold text-base hover:underline block text-center pt-2">
-            പാസ്‌വേർഡ് മറന്നുപോയോ?
-        </button>
     </div>
 
-    <!-- രജിസ്ട്രേഷൻ ലിങ്ക് -->
-    <div class="max-w-sm mx-auto w-full text-center pb-4 space-y-3">
-        <p class="text-base text-blue-100 font-bold">
-            അക്കൗണ്ട് ഇല്ലെങ്കിൽ? 
-            <a href="register.html" class="text-amber-400 font-black underline ml-1 text-lg">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
-        </p>
-        <p class="text-xs text-slate-400 font-bold pt-2">
-            മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
-        </p>
+    <!-- കസ്റ്റം അലേർട്ട് മോഡൽ -->
+    <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border-2 border-amber-400/50 rounded-3xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(251,191,36,0.3)] text-center space-y-4">
+            <div id="modalIcon" class="text-4xl">⚠️</div>
+            <h3 id="modalTitle" class="text-xl font-black text-amber-300">ശ്രദ്ധിക്കുക</h3>
+            <p id="modalMessage" class="text-sm font-bold text-blue-100 leading-relaxed"></p>
+            <button id="modalOkBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 p-3 rounded-2xl font-black text-base shadow-lg transition">ശരി</button>
+        </div>
     </div>
 
-    <!-- ഫയർബേസ് റിയൽടൈം ഡാറ്റാബേസ് ലോഗിൻ സ്ക്രിപ്റ്റ് -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -85,81 +64,41 @@
             projectId: "mesthri-app",
             storageBucket: "mesthri-app.firebasestorage.app",
             messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d"
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        const db = getFirestore(app);
 
-        const usernameInput = document.getElementById("username");
-        const passwordInput = document.getElementById("password");
-        const togglePassword = document.getElementById("togglePassword");
-        const btnLogin = document.getElementById("btnLogin");
-        const btnForgot = document.getElementById("btnForgot");
-
-        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനും ഉള്ള കണ്ണ് ഐക്കൺ
-        if (togglePassword && passwordInput) {
-            togglePassword.addEventListener("click", () => {
-                const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-                passwordInput.setAttribute("type", type);
-                
-                if (type === "text") {
-                    togglePassword.style.color = "#fbbf24";
-                } else {
-                    togglePassword.style.color = "#93c5fd";
-                }
-            });
+        function showCustomAlert(message, title = "ശ്രദ്ധിക്കുക") {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('customModal').classList.remove('hidden');
         }
 
-        // ലോഗിൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ
-        if (btnLogin) {
-            btnLogin.addEventListener("click", () => {
-                const user = usernameInput.value.trim().toLowerCase();
-                const pass = passwordInput.value.trim();
+        document.getElementById('modalOkBtn').addEventListener('click', () => {
+            document.getElementById('customModal').classList.add('hidden');
+        });
 
-                if (!user || !pass) {
-                    return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
-                }
+        document.getElementById('loginForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
 
-                const dbRef = ref(db);
-                get(child(dbRef, `users/${user}`)).then((snapshot) => {
-                    if (!snapshot.exists()) {
-                        return alert("ഈ യൂസർനെയിം നിലവിലില്ല! പുതിയതായി രജിസ്റ്റർ ചെയ്യുക.");
-                    }
-                    const data = snapshot.val();
-                    if (data.password !== pass) {
-                        return alert("പാസ്‌വേർഡ് തെറ്റാണ്!");
-                    }
+            try {
+                const q = query(collection(db, "users"), where("name", "==", user), where("password", "==", pass));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
                     localStorage.setItem('userName', user);
                     window.location.href = "dashboard.html";
-                }).catch((error) => {
-                    console.error(error);
-                    alert("ലോഗിൻ പരാജയപ്പെട്ടു. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.");
-                });
-            });
-        }
-
-        // പാസ്‌വേർഡ് മറന്നുപോയോ? ബട്ടൺ
-        if (btnForgot) {
-            btnForgot.addEventListener("click", () => {
-                const user = usernameInput.value.trim().toLowerCase();
-                if (!user) {
-                    return alert("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!");
+                } else {
+                    showCustomAlert("തെറ്റായ പേരോ പാസ്‌വേഡോ!", "പിഴവ്");
                 }
-
-                const dbRef = ref(db);
-                get(child(dbRef, `users/${user}`)).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        alert("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + snapshot.val().password);
-                    } else {
-                        alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
-                    }
-                }).catch((error) => {
-                    console.error(error);
-                    alert("ഡാറ്റ എടുക്കുന്നതിൽ തടസ്സം നേരിട്ടു.");
-                });
-            });
-        }
+            } catch (e) {
+                showCustomAlert("ലോഗിൻ ചെയ്യാൻ സാധിച്ചില്ല!", "പിഴവ്");
+            }
+        };
     </script>
 </body>
 </html>
