@@ -18,7 +18,7 @@
         
         <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം -->
         <div class="flex flex-col items-center pt-2 pb-2">
-            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md">
+            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md w-full max-w-sm justify-center">
                 <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
                     <img src="icon.png" alt="Logo" class="w-full h-full object-cover">
                 </div>
@@ -115,8 +115,26 @@
             </div>
 
             <!-- സേവ് ബട്ടൺ -->
-            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black text-base transition shadow-lg">കണക്ക് സേവ് ചെയ്യുക</button>
+            <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-base shadow-xl shadow-amber-950/50 border border-white/20 transition">കണക്ക് സേവ് ചെയ്യുക</button>
         </form>
+    </div>
+
+    <!-- കസ്റ്റം അലേർട്ട് / മോഡൽ കോഡ് -->
+    <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border-2 border-amber-400/50 rounded-3xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(251,191,36,0.3)] text-center space-y-4">
+            <div id="modalIcon" class="text-4xl">⚠️</div>
+            <h3 id="modalTitle" class="text-xl font-black text-amber-300">ശ്രദ്ധിക്കുക</h3>
+            <p id="modalMessage" class="text-sm font-bold text-blue-100 leading-relaxed">ഇവിടെ മെസ്സേജ് വരുന്നതായിരിക്കും...</p>
+            
+            <div class="flex gap-3 pt-2">
+                <button id="modalCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl font-black text-base transition border border-slate-700 hidden">
+                    വേണ്ട
+                </button>
+                <button id="modalOkBtn" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-3 rounded-2xl font-black text-base shadow-lg transition">
+                    ശരി
+                </button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -138,6 +156,43 @@
         const db = getFirestore(app);
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+
+        // കസ്റ്റം അലേർട്ട് ഫംഗ്ഷൻ
+        function showCustomAlert(message, title = "ശ്രദ്ധിക്കുക", isConfirm = false, onConfirm = null) {
+            const modal = document.getElementById('customModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalOkBtn = document.getElementById('modalOkBtn');
+            const modalCancelBtn = document.getElementById('modalCancelBtn');
+
+            modalTitle.innerText = title;
+            modalMessage.innerText = message;
+            modal.classList.remove('hidden');
+
+            if (isConfirm) {
+                modalCancelBtn.classList.remove('hidden');
+                modalOkBtn.innerText = "ഉവ്വ്";
+            } else {
+                modalCancelBtn.classList.add('hidden');
+                modalOkBtn.innerText = "ശരി";
+            }
+
+            const newOkBtn = modalOkBtn.cloneNode(true);
+            modalOkBtn.parentNode.replaceChild(newOkBtn, modalOkBtn);
+
+            const newCancelBtn = modalCancelBtn.cloneNode(true);
+            modalCancelBtn.parentNode.replaceChild(newCancelBtn, modalCancelBtn);
+
+            newOkBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+                if (onConfirm) onConfirm(true);
+            });
+
+            newCancelBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+                if (onConfirm) onConfirm(false);
+            });
+        }
 
         let registeredWorkers = [];
         let allAccountsData = [];
@@ -287,7 +342,10 @@
             const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
             const payerInput = document.getElementById('payerName').value.trim();
 
-            if (!siteName) return alert("സൈറ്റിന്റെ പേര് നൽകുക!");
+            if (!siteName) {
+                showCustomAlert("സൈറ്റിന്റെ പേര് നൽകുക!", "ശ്രദ്ധിക്കുക");
+                return;
+            }
 
             try {
                 if (siteIncome > 0) {
@@ -342,11 +400,12 @@
                     }
                 }
 
-                alert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!");
-                location.reload();
+                showCustomAlert("സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!", "വിജയം", false, () => {
+                    location.reload();
+                });
             } catch (error) {
                 console.error("സേവ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
-                alert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!");
+                showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
             }
         };
 
