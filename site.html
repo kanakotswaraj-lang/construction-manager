@@ -7,139 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <style>
-        body { font-family: 'Manjari', sans-serif; }
-        @media print { .no-print { display: none !important; } }
-    </style>
-</head>
-<body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
-
-    <div class="max-w-md mx-auto space-y-4">
-        
-        <!-- ഹെഡർ ലോഗോയും സ്വാഗതം പേരും ഒന്നിച്ചുള്ള ഭാഗം -->
-        <div class="flex flex-col items-center pt-2 pb-2">
-            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md w-full max-w-sm justify-center">
-                <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
-                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover">
-                </div>
-                <div class="flex flex-col text-left">
-                    <span class="text-amber-400 font-black text-sm tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
-                    <span class="text-[10px] font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
-                </div>
-            </div>
-            <div class="mt-3 text-center">
-                <span id="loggedInMeshtri" class="text-sm font-black tracking-wide text-cyan-300 bg-cyan-500/15 px-4 py-1.5 rounded-full border border-cyan-400/40 shadow-lg">
-                    സ്വാഗതം, ലോഡിങ്...
-                </span>
-            </div>
-        </div>
-
-        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
-        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
-            <div>
-                <h1 class="text-lg font-black text-white">സൈറ്റ് കണക്ക് എൻട്രി</h1>
-            </div>
-            <a href="dashboard.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
-                <span>←</span> ഡാഷ്‌ബോർഡ്
-            </a>
-        </div>
-
-        <!-- തിരയുന്ന ഭാഗം -->
-        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
-            <input type="text" id="searchBox" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-        </div>
-
-        <form id="siteForm" onsubmit="saveSiteData(event)" class="space-y-4">
-            
-            <!-- സൈറ്റും ക്ലയന്റും -->
-            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-4">
-                <div>
-                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
-                    <div class="space-y-2">
-                        <select id="siteSelectDropdown" onchange="onSiteSelectChange()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
-                            <option value="">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>
-                        </select>
-                        <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">പണം തരുന്നയാൾ (Client):</label>
-                    <input type="text" id="payerName" placeholder="പേര് നൽകുക (ആവശ്യമെങ്കിൽ മാത്രം)" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">തീയതി:</label>
-                        <input type="date" id="entryDate" required class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">ലഭിച്ച വരവ് (₹):</label>
-                        <input type="number" id="siteIncome" placeholder="0" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
-                    </div>
-                </div>
-            </div>
-
-            <!-- മറ്റ് ചെലവുകൾ -->
-            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
-                <h3 class="text-sm font-black text-amber-400">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ)</h3>
-                <div id="expenseListContainer" class="space-y-2"></div>
-                <button type="button" onclick="addExpenseRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
-            </div>
-
-            <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ -->
-            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
-                <h3 class="text-sm font-black text-amber-400">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
-                <div id="workerListContainer" class="space-y-3"></div>
-                
-                <div class="grid grid-cols-2 gap-2 pt-2">
-                    <button type="button" onclick="addWorkerRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ തൊഴിലാളിയെ ചേർക്കുക</button>
-                    <a href="staff.html" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
-                </div>
-            </div>
-
-            <!-- സംഗ്രഹം & ലാഭം/നഷ്ടം -->
-            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-2.5 text-sm">
-                <div class="flex justify-between font-bold text-slate-300">
-                    <span>ആകെ വരവ്:</span>
-                    <span id="displayIncome" class="text-cyan-400">₹ 0</span>
-                </div>
-                <div class="flex justify-between font-bold text-slate-300">
-                    <span>ആകെ ചെലവ്:</span>
-                    <span id="displayExpense" class="text-red-400">₹ 0</span>
-                </div>
-                <div class="flex justify-between font-black text-base border-t border-slate-800 pt-2">
-                    <span>ബാക്കി തുക / ബാലൻസ് (ലാഭം/നഷ്ടം):</span>
-                    <span id="grandTotal" class="text-amber-400">₹ 0</span>
-                </div>
-            </div>
-
-            <!-- സേവ് ബട്ടൺ -->
-            <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-base shadow-xl shadow-amber-950/50 border border-white/20 transition">കണക്ക് സേവ് ചെയ്യുക</button>
-        </form>
-    </div>
-
-    <!-- കസ്റ്റം അലേർട്ട് / മോഡൽ കോഡ് -->
-    <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border-2 border-amber-400/50 rounded-3xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(251,191,36,0.3)] text-center space-y-4">
-            <div id="modalIcon" class="text-4xl">⚠️</div>
-            <h3 id="modalTitle" class="text-xl font-black text-amber-300">ശ്രദ്ധിക്കുക</h3>
-            <p id="modalMessage" class="text-sm font-bold text-blue-100 leading-relaxed">ഇവിടെ മെസ്സേജ് വരുന്നതായിരിക്കും...</p>
-            
-            <div class="flex gap-3 pt-2">
-                <button id="modalCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl font-black text-base transition border border-slate-700 hidden">
-                    വേണ്ട
-                </button>
-                <button id="modalOkBtn" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-3 rounded-2xl font-black text-base shadow-lg transition">
-                    ശരി
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { setupHeader } from './header.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -155,7 +26,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
-        document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader');
+            }
+            document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+            document.getElementById('entryDate').valueAsDate = new Date();
+            fetchData();
+        });
 
         // കസ്റ്റം അലേർട്ട് ഫംഗ്ഷൻ
         function showCustomAlert(message, title = "ശ്രദ്ധിക്കുക", isConfirm = false, onConfirm = null) {
@@ -196,8 +75,6 @@
 
         let registeredWorkers = [];
         let allAccountsData = [];
-
-        document.getElementById('entryDate').valueAsDate = new Date();
 
         async function fetchData() {
             try {
@@ -335,6 +212,71 @@
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
 
+        // 1. സൈറ്റ് കണക്കുകൾ വാട്സാപ്പിൽ അയക്കാൻ
+        window.shareSiteWhatsApp = function() {
+            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
+            const entryDate = document.getElementById('entryDate').value;
+            const income = document.getElementById('siteIncome').value || 0;
+            
+            let otherExpTotal = 0;
+            document.querySelectorAll('.expense-amount').forEach(input => { otherExpTotal += parseFloat(input.value) || 0; });
+
+            let wagesTotal = 0;
+            document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
+
+            let totalExp = otherExpTotal + wagesTotal;
+
+            let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
+            msg += `📅 തീയതി: ${entryDate}\n`;
+            msg += `📍 സൈറ്റ്: ${siteName}\n`;
+            msg += `--------------------------------\n`;
+            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n`;
+            msg += `💸 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
+            msg += `--------------------------------\n`;
+            msg += `👤 മേസ്തിരി: ${currentMeshtri}`;
+
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        // 2. തൊഴിലാളികളുടെ കണക്ക് മാത്രം വാട്സാപ്പിൽ അയക്കാൻ
+        window.shareWorkersWhatsApp = function() {
+            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
+            const entryDate = document.getElementById('entryDate').value;
+            
+            let workerDetails = "";
+            let totalWages = 0;
+            let index = 1;
+
+            document.querySelectorAll('.worker-row').forEach(row => {
+                let select = row.querySelector('.worker-select');
+                let opt = select.options[select.selectedIndex];
+                let wName = opt ? opt.getAttribute('data-name') : 'തൊഴിലാളി';
+                let job = row.querySelector('.worker-job').value || 'പണി';
+                let wage = parseFloat(row.querySelector('.worker-wage').value) || 0;
+
+                if(wage > 0) {
+                    workerDetails += `${index}. ${wName} (${job}) - ₹ ${wage}\n`;
+                    totalWages += wage;
+                    index++;
+                }
+            });
+
+            if(totalWages === 0) {
+                showCustomAlert("വാട്സാപ്പിൽ അയക്കാൻ തൊഴിലാളികളുടെ കൂലി വിവരങ്ങൾ ചേർത്തിട്ടില്ല!", "ശ്രദ്ധിക്കുക");
+                return;
+            }
+
+            let msg = `👥 *തൊഴിലാളികളുടെ അന്നേ ദിവസത്തെ കൂലി കണക്ക്* 👥\n`;
+            msg += `📅 തീയതി: ${entryDate}\n`;
+            msg += `📍 സൈറ്റ്: ${siteName}\n`;
+            msg += `--------------------------------\n`;
+            msg += workerDetails;
+            msg += `--------------------------------\n`;
+            msg += `💵 ആകെ തൊഴിലാളി കൂലി: ₹ ${totalWages}`;
+
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
         window.saveSiteData = async function(event) {
             event.preventDefault();
             const siteName = document.getElementById('siteName').value.trim();
@@ -408,8 +350,139 @@
                 showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
             }
         };
-
-        fetchData();
     </script>
+
+    <style>
+        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body class="text-white min-h-screen pb-12 p-4 font-sans">
+
+    <div class="max-w-md mx-auto space-y-4">
+        
+        <!-- ഹെഡർ ലോഗോ (header.js വഴി വരുന്ന ഭാഗം) -->
+        <div class="flex flex-col items-center pt-1">
+            <div id="appHeader" class="w-full"></div>
+            <div class="mt-3 text-center w-full">
+                <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
+                    സ്വാഗതം, ലോഡിങ്...
+                </span>
+            </div>
+        </div>
+
+        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <div>
+                <h1 class="text-lg font-black text-white">സൈറ്റ് കണക്ക് എൻട്രി</h1>
+            </div>
+            <a href="dashboard.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
+                <span>←</span> ഡാഷ്‌ബോർഡ്
+            </a>
+        </div>
+
+        <!-- തിരയുന്ന ഭാഗം -->
+        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
+            <input type="text" id="searchBox" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+        </div>
+
+        <form id="siteForm" onsubmit="saveSiteData(event)" class="space-y-4">
+            
+            <!-- സൈറ്റും ക്ലയന്റും -->
+            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-4">
+                <div>
+                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
+                    <div class="space-y-2">
+                        <select id="siteSelectDropdown" onchange="onSiteSelectChange()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                            <option value="">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>
+                        </select>
+                        <input type="text" id="siteName" required placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">പണം തരുന്നയാൾ (Client):</label>
+                    <input type="text" id="payerName" placeholder="പേര് നൽകുക (ആവശ്യമെങ്കിൽ മാത്രം)" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">തീയതി:</label>
+                        <input type="date" id="entryDate" required class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">ലഭിച്ച വരവ് (₹):</label>
+                        <input type="number" id="siteIncome" placeholder="0" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                </div>
+            </div>
+
+            <!-- മറ്റ് ചെലവുകൾ -->
+            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
+                <h3 class="text-sm font-black text-amber-400">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ)</h3>
+                <div id="expenseListContainer" class="space-y-2"></div>
+                <button type="button" onclick="addExpenseRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
+            </div>
+
+            <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ -->
+            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
+                <h3 class="text-sm font-black text-amber-400">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
+                <div id="workerListContainer" class="space-y-3"></div>
+                
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <button type="button" onclick="addWorkerRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ തൊഴിലാളിയെ ചേർക്കുക</button>
+                    <a href="staff.html" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
+                </div>
+            </div>
+
+            <!-- സംഗ്രഹം & ലാഭം/നഷ്ടം -->
+            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-2.5 text-sm">
+                <div class="flex justify-between font-bold text-slate-300">
+                    <span>ആകെ വരവ്:</span>
+                    <span id="displayIncome" class="text-cyan-400">₹ 0</span>
+                </div>
+                <div class="flex justify-between font-bold text-slate-300">
+                    <span>ആകെ ചെലവ്:</span>
+                    <span id="displayExpense" class="text-red-400">₹ 0</span>
+                </div>
+                <div class="flex justify-between font-black text-base border-t border-slate-800 pt-2">
+                    <span>ബാക്കി തുക / ബാലൻസ് (ലാഭം/നഷ്ടം):</span>
+                    <span id="grandTotal" class="text-amber-400">₹ 0</span>
+                </div>
+            </div>
+
+            <!-- വാട്സാപ്പ് ഷെയർ ബട്ടണുകൾ -->
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+                <button type="button" onclick="shareSiteWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg transition flex items-center justify-center gap-1.5 border border-emerald-400/30">
+                    💬 സൈറ്റ് കണക്ക് WhatsApp
+                </button>
+                <button type="button" onclick="shareWorkersWhatsApp()" class="bg-teal-600 hover:bg-teal-700 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg transition flex items-center justify-center gap-1.5 border border-teal-400/30">
+                    👥 തൊഴിലാളി കൂലി WhatsApp
+                </button>
+            </div>
+
+            <!-- സേവ് ബട്ടൺ -->
+            <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-base shadow-xl shadow-amber-950/50 border border-white/20 transition">കണക്ക് സേവ് ചെയ്യുക</button>
+        </form>
+    </div>
+
+    <!-- കസ്റ്റം അലേർട്ട് / മോഡൽ കോഡ് -->
+    <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border-2 border-amber-400/50 rounded-3xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(251,191,36,0.3)] text-center space-y-4">
+            <div id="modalIcon" class="text-4xl">⚠️</div>
+            <h3 id="modalTitle" class="text-xl font-black text-amber-300">ശ്രദ്ധിക്കുക</h3>
+            <p id="modalMessage" class="text-sm font-bold text-blue-100 leading-relaxed">ഇവിടെ മെസ്സേജ് വരുന്നതായിരിക്കും...</p>
+            
+            <div class="flex gap-3 pt-2">
+                <button id="modalCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl font-black text-base transition border border-slate-700 hidden">
+                    വേണ്ട
+                </button>
+                <button id="modalOkBtn" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-3 rounded-2xl font-black text-base shadow-lg transition">
+                    ശരി
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
