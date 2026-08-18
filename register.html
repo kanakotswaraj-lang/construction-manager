@@ -17,13 +17,18 @@
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
     <!-- ഒറിജിനൽ ലോഗോയും ഹെഡറും -->
-    <div class="text-center mb-6">
-        <div class="w-20 h-20 mx-auto mb-3 rounded-full border-2 border-amber-400 p-1 shadow-lg bg-slate-800 flex items-center justify-center overflow-hidden">
-            <img src="https://i.ibb.co/6y45086/image.png" alt="മേസ്തിരി പ്രോ ലോഗോ" class="w-full h-full object-cover rounded-full">
+    <!-- ടോപ്പ് ഹെഡർ: രജിസ്ട്രേഷൻ പേജ് മോഡലിലുള്ള ലോഗോയും അളവും -->
+<div class="text-center pt-6">
+    <div class="inline-flex items-center gap-4 bg-amber-500/30 text-amber-300 px-6 py-3 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.5)]">
+        <!-- ലോക്കൽ പിഎൻജി ഐക്കൺ (icon.png) -->
+        <img src="icon.png" alt="മേസ്തിരി പ്രോ ലോഗോ" class="rounded-full object-cover border-2 border-amber-200 shadow-lg" style="width: 64px; height: 64px;">
+        <div class="text-left">
+            <span class="text-2xl font-black text-amber-300 tracking-wide block leading-tight">മേസ്തിരി പ്രോ</span>
+            <span class="text-[13px] font-bold text-blue-200 tracking-wider uppercase">Smart Site Manager</span>
         </div>
-        <h1 class="text-2xl font-bold text-amber-400 tracking-wider">മേസ്തിരി പ്രോ</h1>
-        <p class="text-xs text-slate-300 font-semibold tracking-widest mt-1">SMART SITE MANAGER</p>
     </div>
+</div>
+
 
     <!-- രജിസ്ട്രേഷൻ കാർഡ് -->
     <div class="w-full max-w-sm bg-slate-900/80 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
@@ -75,8 +80,8 @@
 
     <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -85,12 +90,12 @@
             projectId: "mesthri-app",
             storageBucket: "mesthri-app.firebasestorage.app",
             messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d"
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
+        const db = getFirestore(app);
         const usernameInput = document.getElementById("username");
         const phoneInput = document.getElementById("phone");
         const passwordInput = document.getElementById("password");
