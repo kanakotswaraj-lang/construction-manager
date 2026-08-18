@@ -212,31 +212,47 @@
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
 
-        // 1. സൈറ്റ് കണക്കുകൾ വാട്സാപ്പിൽ അയക്കാൻ
-        window.shareSiteWhatsApp = function() {
-            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
-            const entryDate = document.getElementById('entryDate').value;
-            const income = document.getElementById('siteIncome').value || 0;
-            
-            let otherExpTotal = 0;
-            document.querySelectorAll('.expense-amount').forEach(input => { otherExpTotal += parseFloat(input.value) || 0; });
+// സൈറ്റ് കണക്കുകൾ വാട്സാപ്പിൽ അയക്കാൻ
+window.shareSiteWhatsApp = function() {
+    const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
+    const entryDate = document.getElementById('entryDate').value;
+    const income = document.getElementById('siteIncome').value || 0;
+    
+    let details = "";
+    let otherExpTotal = 0;
+    
+    // മറ്റ് ചെലവുകൾ
+    document.querySelectorAll('#expenseListContainer > div').forEach(row => {
+        let desc = row.querySelector('.expense-desc').value.trim();
+        let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
+        if (desc && amt > 0) {
+            details += `➖ ${desc}: ₹ ${amt}\n`;
+            otherExpTotal += amt;
+        }
+    });
 
-            let wagesTotal = 0;
-            document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
+    let wagesTotal = 0;
+    document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
 
-            let totalExp = otherExpTotal + wagesTotal;
+    let totalExp = otherExpTotal + wagesTotal;
+    let balance = income - totalExp;
 
-            let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
-            msg += `📅 തീയതി: ${entryDate}\n`;
-            msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `--------------------------------\n`;
-            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n`;
-            msg += `💸 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
-            msg += `--------------------------------\n`;
-            msg += `👤 മേസ്തിരി: ${currentMeshtri}`;
+    let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
+    msg += `📅 തീയതി: ${entryDate}\n`;
+    msg += `📍 സൈറ്റ്: ${siteName}\n`;
+    msg += `--------------------------------\n`;
+    msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
+    msg += `💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
+    msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
+    msg += `--------------------------------\n`;
+    msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
+    msg += `💰 ബാലൻസ്: ₹ ${balance}\n`;
+    msg += `--------------------------------\n`;
+    msg += `👤 ${currentMeshtri}`; // ലോഗിൻ ചെയ്തിരിക്കുന്ന ആളുടെ പേര് വരുന്നു
 
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        };
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+};
+
 
         // 2. തൊഴിലാളികളുടെ കണക്ക് മാത്രം വാട്സാപ്പിൽ അയക്കാൻ
         window.shareWorkersWhatsApp = function() {
@@ -266,16 +282,23 @@
                 return;
             }
 
-            let msg = `👥 *തൊഴിലാളികളുടെ അന്നേ ദിവസത്തെ കൂലി കണക്ക്* 👥\n`;
-            msg += `📅 തീയതി: ${entryDate}\n`;
-            msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `--------------------------------\n`;
-            msg += workerDetails;
-            msg += `--------------------------------\n`;
-            msg += `💵 ആകെ തൊഴിലാളി കൂലി: ₹ ${totalWages}`;
+            // തൊഴിലാളികളുടെ കൂലി കണക്ക് അയക്കാൻ
+window.shareWorkersWhatsApp = function() {
+    // ... (മുകൾ ഭാഗം പഴയതുപോലെ തന്നെ)
+    
+    let msg = `👥 *തൊഴിലാളികളുടെ കൂലി കണക്ക്* 👥\n`;
+    msg += `📅 തീയതി: ${entryDate}\n`;
+    msg += `📍 സൈറ്റ്: ${siteName}\n`;
+    msg += `--------------------------------\n`;
+    msg += workerDetails;
+    msg += `--------------------------------\n`;
+    msg += `💵 ആകെ തൊഴിലാളി കൂലി: ₹ ${totalWages}\n`;
+    msg += `--------------------------------\n`;
+    msg += `👤 ${currentMeshtri}`; // ഇവിടെയും ലോഗിൻ ചെയ്ത ആളിന്റെ പേര് വരുന്നു
 
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        };
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+};
+
 
         window.saveSiteData = async function(event) {
             event.preventDefault();
