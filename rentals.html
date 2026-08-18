@@ -292,15 +292,18 @@
                                     <span>ആകെ: ₹${calculatedTotal} | നൽകിയത്: ₹${r.paid}</span>
                                     <span class="${bal > 0 ? 'text-red-400' : 'text-emerald-400'}">ബാലൻസ്: ₹${bal}</span>
                                 </div>
-                                <div class="flex items-center justify-between pt-2 gap-1">
+                                
+<div class="flex items-center justify-between pt-2 gap-1">
+    <!-- വാട്സാപ്പ് ബട്ടൺ മാത്രം ഇവിടെ -->
     <button onclick="shareWhatsApp('${r.item}', '${r.qty}', '${r.site || ''}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 shadow-md">
         💬 വാട്സാപ്പ്
     </button>
+    
+    <!-- ബാക്കി മൂന്ന് ബട്ടണുകളും ഇതേ ഗ്യാപ്പിൽ വരുന്നു -->
     <div class="flex items-center gap-1">
         ${bal > 0 ? `<button onclick="settleFull('${d.id}', ${calculatedTotal})" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black">സെറ്റിൽ</button>` : ''}
         <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1.5 rounded-xl text-[10px] font-black">പെയ്മെന്റ്</button>
         <button onclick="deleteRent('${d.id}')" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black shadow-md">ഡിലീറ്റ്</button>
-
     </div>
 </div>
 
