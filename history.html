@@ -36,6 +36,7 @@
         });
 
         let allHistoryData = [];
+        let currentFilter = 'all';
 
         async function fetchHistory() {
             try {
@@ -47,11 +48,56 @@
                 });
 
                 allHistoryData.sort((a, b) => new Date(b.date) - new Date(a.date));
-                displayHistory(allHistoryData);
+                updateSummary(allHistoryData);
+                filterAndDisplay();
             } catch (error) {
                 console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
                 document.getElementById('historyListContainer').innerHTML = `<div class="text-center text-red-400 text-xs">ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല!</div>`;
             }
+        }
+
+        function updateSummary(data) {
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            data.forEach(item => {
+                let amt = parseFloat(item.amount) || 0;
+                if (item.type === 'income') {
+                    totalIncome += amt;
+                } else if (item.type === 'expense' || item.type === 'wage') {
+                    totalExpense += amt;
+                }
+            });
+
+            document.getElementById('totalIncomeText').innerText = `₹ ${totalIncome}`;
+            document.getElementById('totalExpenseText').innerText = `₹ ${totalExpense}`;
+        }
+
+        window.setCategoryFilter = function(type) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('bg-amber-500', 'text-slate-950', 'border-amber-400');
+                tab.classList.add('bg-slate-800/80', 'text-slate-300', 'border-slate-700');
+            });
+            const activeTab = document.getElementById(`tab-${type}`);
+            if(activeTab) {
+                activeTab.classList.remove('bg-slate-800/80', 'text-slate-300', 'border-slate-700');
+                activeTab.classList.add('bg-amber-500', 'text-slate-950', 'border-amber-400');
+            }
+            filterAndDisplay();
+        }
+
+        window.filterAndDisplay = function() {
+            let queryVal = document.getElementById('searchHistory').value.toLowerCase();
+            
+            let filtered = allHistoryData.filter(item => {
+                let matchesCategory = (currentFilter === 'all') || (item.type === currentFilter);
+                let searchString = ((item.site || '') + ' ' + (item.name || '')).toLowerCase();
+                let matchesSearch = searchString.includes(queryVal);
+                return matchesCategory && matchesSearch;
+            });
+
+            displayHistory(filtered);
         }
 
         function displayHistory(dataList) {
@@ -67,7 +113,7 @@
                 let typeLabel = item.type === 'income' ? 'വരവ് (Income)' : item.type === 'wage' ? 'കൂലി (Wage)' : 'ചെലവ് (Expense)';
 
                 return `
-                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-2 history-card" data-search="${(item.site + ' ' + item.name).toLowerCase()}">
+                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-2 history-card hover:border-amber-500/40 transition duration-300">
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeColor}">${typeLabel}</span>
@@ -86,14 +132,6 @@
                     </div>
                 `;
             }).join('');
-        }
-
-        window.filterHistory = function() {
-            let queryVal = document.getElementById('searchHistory').value.toLowerCase();
-            document.querySelectorAll('.history-card').forEach(card => {
-                let searchData = card.getAttribute('data-search') || '';
-                card.style.display = searchData.includes(queryVal) ? '' : 'none';
-            });
         }
 
         window.openEditModal = function(id, name, site, amount, date) {
@@ -120,12 +158,7 @@
 
             try {
                 const docRef = doc(db, "accounts", id);
-                await updateDoc(docRef, {
-                    name: name,
-                    site: site,
-                    amount: amount,
-                    date: date
-                });
+                await updateDoc(docRef, { name, site, amount, date });
                 alert("കണക്ക് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!");
                 closeEditModal();
                 fetchHistory();
@@ -177,9 +210,29 @@
             </a>
         </div>
 
+        <!-- ടോട്ടൽ സമ്മറി കാർഡ് (Summary Cards) -->
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-slate-900/90 border border-cyan-500/30 p-3.5 rounded-2xl shadow-xl flex flex-col justify-between">
+                <span class="text-[11px] font-bold text-cyan-400">ആകെ വരവ് (Income)</span>
+                <span id="totalIncomeText" class="text-base font-black text-white mt-1">₹ 0</span>
+            </div>
+            <div class="bg-slate-900/90 border border-red-500/30 p-3.5 rounded-2xl shadow-xl flex flex-col justify-between">
+                <span class="text-[11px] font-bold text-red-400">ആകെ ചെലവ്/കൂലി</span>
+                <span id="totalExpenseText" class="text-base font-black text-white mt-1">₹ 0</span>
+            </div>
+        </div>
+
         <!-- തിരയുന്ന ഭാഗം -->
-        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
-            <input type="text" id="searchHistory" placeholder="🔍 സൈറ്റിന്റെ പേരിലോ വിവരത്തിലോ തിരയുക..." oninput="filterHistory()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-3">
+            <input type="text" id="searchHistory" placeholder="🔍 സൈറ്റിന്റെ പേരിലോ വിവരത്തിലോ തിരയുക..." oninput="filterAndDisplay()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            
+            <!-- ഫിൽട്ടർ ടാബുകൾ (Category Tabs) -->
+            <div class="grid grid-cols-4 gap-1.5 pt-1">
+                <button type="button" id="tab-all" onclick="setCategoryFilter('all')" class="filter-tab bg-amber-500 text-slate-950 border border-amber-400 py-2 rounded-xl text-[11px] font-black transition">എല്ലാം</button>
+                <button type="button" id="tab-income" onclick="setCategoryFilter('income')" class="filter-tab bg-slate-800/80 text-slate-300 border border-slate-700 py-2 rounded-xl text-[11px] font-black transition">വരവ്</button>
+                <button type="button" id="tab-wage" onclick="setCategoryFilter('wage')" class="filter-tab bg-slate-800/80 text-slate-300 border border-slate-700 py-2 rounded-xl text-[11px] font-black transition">കൂലി</button>
+                <button type="button" id="tab-expense" onclick="setCategoryFilter('expense')" class="filter-tab bg-slate-800/80 text-slate-300 border border-slate-700 py-2 rounded-xl text-[11px] font-black transition">ചെലവ്</button>
+            </div>
         </div>
 
         <!-- കണക്കുകൾ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
