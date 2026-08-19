@@ -42,15 +42,51 @@
                 <span>←</span> ഡാഷ്‌ബോർഡ്
             </a>
         </div>
+
+        <!-- 1. അനലിറ്റിക്സ് / ഗ്രാഫ് സംഗ്രഹം -->
+        <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-3xl shadow-xl backdrop-blur-sm space-y-3">
+            <h2 class="text-xs font-black text-amber-400 uppercase tracking-wider">📊 വാടക അനലിറ്റിക്സ്</h2>
+            <div class="grid grid-cols-2 gap-2 text-center">
+                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
+                    <p class="text-[10px] font-bold text-slate-400">ആകെ വാടക തുക</p>
+                    <p id="statTotalRent" class="text-sm font-black text-white">₹0</p>
+                </div>
+                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
+                    <p class="text-[10px] font-bold text-slate-400">നൽകാനുള്ള ബാലൻസ്</p>
+                    <p id="statTotalBal" class="text-sm font-black text-red-400">₹0</p>
+                </div>
+            </div>
+            <!-- പ്രോഗ്രസ് ബാർ ഗ്രാഫ് രൂപം -->
+            <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700 flex">
+                <div id="barPaid" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+                <div id="barBal" class="bg-red-500 h-full transition-all duration-500" style="width: 100%"></div>
+            </div>
+            <div class="flex justify-between text-[10px] font-bold text-slate-400">
+                <span class="text-emerald-400">■ അടച്ചത്</span>
+                <span class="text-red-400">■ ബാലൻസ്</span>
+            </div>
+        </div>
+
+        <!-- 2. റിമൈൻഡർ അലേർട്ട് ബോക്സ് (കാലഹരണപ്പെട്ടതോ അവസാനിച്ചതോ ആയവ) -->
+        <div id="reminderBox" class="hidden bg-amber-950/40 border border-amber-500/50 p-4 rounded-2xl shadow-lg space-y-2">
+            <h3 class="text-xs font-black text-amber-300 flex items-center gap-1">
+                <span>⚠️</span> കാലാവധി കഴിഞ്ഞ/തീർന്ന ഉപകരണങ്ങൾ ഉണ്ടോ? ശ്രദ്ധിക്കുക!
+            </h3>
+            <div id="reminderList" class="text-[11px] text-amber-200/80 space-y-1"></div>
+        </div>
         
-        <!-- ഫോം ഭാഗം -->
+        <!-- ഫോം ഭാഗം (വോയ്സ് ഇൻപുട്ട് സൗകര്യത്തോടെ) -->
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 mb-8 space-y-4 backdrop-blur-sm">
-            <h2 class="font-black text-amber-400 mb-2 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="font-black text-amber-400 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
+                <button type="button" onclick="startVoiceInput()" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/50 px-3 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 transition">
+                    <span>🎙️</span> സംസാരിച്ച് എഴുതാം
+                </button>
+            </div>
             
             <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
             <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
             
-            <!-- സൈറ്റിന്റെ പേര് ചേർക്കാനുള്ള ഫീൽഡ് -->
             <input type="text" id="siteName" placeholder="ഏത് സൈറ്റിലാണ് (Site Name)?" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-cyan-400 text-xs">
 
             <div class="grid grid-cols-2 gap-2">
@@ -152,6 +188,28 @@
                 toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
             }, 2500);
         }
+
+        // വോയ്സ് ഇൻപുട്ട് ഫങ്ഷൻ
+        window.startVoiceInput = () => {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("നിങ്ങളുടെ ബ്രൗസർ വോയ്സ് ഇൻപുട്ട് സപ്പോർട്ട് ചെയ്യുന്നില്ല!");
+                return;
+            }
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'ml-IN'; // മലയാളം തിരിച്ചറിയാൻ
+            showToast("🎙️ സംസാരിക്കൂ...");
+            
+            recognition.onresult = (event) => {
+                const speechText = event.results[0][0].transcript;
+                document.getElementById('itemName').value = speechText;
+                showToast("✓ കേട്ടെടുത്തു: " + speechText);
+            };
+            recognition.onerror = () => {
+                showToast("ശബ്ദം വ്യക്തമല്ല, വീണ്ടും ശ്രമിക്കുക.", false);
+            };
+            recognition.start();
+        };
 
         function openCustomPrompt(title, placeholder) {
             return new Promise((resolve) => {
@@ -344,29 +402,40 @@
             const list = document.getElementById('rentList');
             list.innerHTML = `<h2 class="font-black text-white mb-2 text-sm">${currentFilter === 'active' ? 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ' : 'തിരികെ നൽകിയ ഉപകരണങ്ങൾ'}</h2>`;
             
+            let grandTotalRent = 0;
+            let grandTotalPaid = 0;
+            let reminders = [];
+            const today = new Date();
+
             cachedSnapshot.forEach((d) => {
                 const r = d.data();
-                const matchesSearch = r.item.toLowerCase().includes(searchTerm) || r.shop.toLowerCase().includes(searchTerm) || (r.site && r.site.toLowerCase().includes(searchTerm));
-                
-                if (r.meshtriOwner === currentMeshtri && matchesSearch) {
+                if (r.meshtriOwner === currentMeshtri) {
                     const isRet = r.isReturned === true;
-                    if ((currentFilter === 'active' && !isRet) || (currentFilter === 'returned' && isRet)) {
+                    
+                    let calculatedTotal = parseFloat(r.total) || 0;
+                    const startDate = new Date(r.start);
+                    const endDate = new Date(r.end);
+                    const unitPerDay = (parseFloat(r.unitRent) || 0) * (parseFloat(r.qty) || 1);
+                    let totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+                    if (!isRet && today > endDate) {
+                        const extraDays = Math.ceil((today - endDate) / (1000 * 60 * 60 * 24));
+                        const baseDays = totalDays;
+                        totalDays += extraDays;
+                        calculatedTotal = (baseDays * unitPerDay) + (extraDays * unitPerDay);
                         
-                        let calculatedTotal = parseFloat(r.total) || 0;
-                        const today = new Date();
-                        const startDate = new Date(r.start);
-                        const endDate = new Date(r.end);
-                        const unitPerDay = (parseFloat(r.unitRent) || 0) * (parseFloat(r.qty) || 1);
+                        // റിമൈൻഡർ ലിസ്റ്റിലേക്ക് ചേർക്കുന്നു
+                        reminders.push(`${r.item} (${r.shop}) - കാലാവധി കഴിഞ്ഞിരിക്കുന്നു!`);
+                    }
 
-                        let totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+                    if (!isRet) {
+                        grandTotalRent += calculatedTotal;
+                        grandTotalPaid += (parseFloat(r.paid) || 0);
+                    }
 
-                        if (!isRet && today > endDate) {
-                            const extraDays = Math.ceil((today - endDate) / (1000 * 60 * 60 * 24));
-                            const baseDays = totalDays;
-                            totalDays += extraDays;
-                            calculatedTotal = (baseDays * unitPerDay) + (extraDays * unitPerDay);
-                        }
-
+                    const matchesSearch = r.item.toLowerCase().includes(searchTerm) || r.shop.toLowerCase().includes(searchTerm) || (r.site && r.site.toLowerCase().includes(searchTerm));
+                    
+                    if (matchesSearch && ((currentFilter === 'active' && !isRet) || (currentFilter === 'returned' && isRet))) {
                         const bal = calculatedTotal - (parseFloat(r.paid) || 0);
 
                         const div = document.createElement('div');
@@ -408,6 +477,26 @@
                     }
                 }
             });
+
+            // അനലിറ്റിക്സ് അപ്ഡേറ്റ് ചെയ്യൽ
+            const totalBal = grandTotalRent - grandTotalPaid;
+            document.getElementById('statTotalRent').innerText = `₹${grandTotalRent}`;
+            document.getElementById('statTotalBal').innerText = `₹${totalBal}`;
+            
+            const paidPercentage = grandTotalRent > 0 ? (grandTotalPaid / grandTotalRent) * 100 : 0;
+            const balPercentage = 100 - paidPercentage;
+            document.getElementById('barPaid').style.width = `${Math.min(paidPercentage, 100)}%`;
+            document.getElementById('barBal').style.width = `${Math.max(balPercentage, 0)}%`;
+
+            // റിമൈൻഡർ ബോക്സ് കാണിക്കൽ
+            const reminderBox = document.getElementById('reminderBox');
+            const reminderList = document.getElementById('reminderList');
+            if (reminders.length > 0) {
+                reminderBox.classList.remove('hidden');
+                reminderList.innerHTML = reminders.map(rem => `<p>• ${rem}</p>`).join('');
+            } else {
+                reminderBox.classList.add('hidden');
+            }
         }
 
         onSnapshot(collection(db, "rentals"), (snapshot) => {
