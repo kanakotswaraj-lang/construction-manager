@@ -95,7 +95,7 @@
         </section>
     </div>
 
-    <!-- കോസ്റ്റം പ്രോംപ്റ്റ് മോഡൽ (ബ്രൗസർ പ്രോംപ്റ്റിന് പകരം ഇത് വർക്ക് ചെയ്യും) -->
+    <!-- കോസ്റ്റം പ്രോംപ്റ്റ് മോഡൽ -->
     <div id="customPromptModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-900 border-2 border-amber-400 p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4">
             <h3 id="promptTitle" class="text-amber-400 font-black text-base">വിവരം നൽകുക</h3>
@@ -103,6 +103,17 @@
             <div class="flex gap-2">
                 <button id="promptCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-xl font-black text-xs">വേണ്ട</button>
                 <button id="promptOkBtn" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 py-3 rounded-xl font-black text-xs">ശരി</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- കോസ്റ്റം കൺഫർമേഷൻ മോഡൽ -->
+    <div id="customConfirmModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-slate-900 border-2 border-amber-400 p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center">
+            <h3 id="confirmTitle" class="text-amber-400 font-black text-base">തീരുമാനമെടുക്കുക</h3>
+            <div class="flex gap-2 pt-2">
+                <button id="confirmCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-xl font-black text-xs">വേണ്ട</button>
+                <button id="confirmOkBtn" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 py-3 rounded-xl font-black text-xs">ശരി</button>
             </div>
         </div>
     </div>
@@ -142,7 +153,6 @@
             }, 2500);
         }
 
-        // കോസ്റ്റം പ്രോംപ്റ്റ് ഫങ്ഷൻ
         function openCustomPrompt(title, placeholder) {
             return new Promise((resolve) => {
                 const modal = document.getElementById('customPromptModal');
@@ -166,6 +176,37 @@
                 const handleCancel = () => {
                     cleanup();
                     resolve(null);
+                };
+
+                const cleanup = () => {
+                    modal.classList.add('hidden');
+                    okBtn.removeEventListener('click', handleOk);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                };
+
+                okBtn.addEventListener('click', handleOk);
+                cancelBtn.addEventListener('click', handleCancel);
+            });
+        }
+
+        function openCustomConfirm(title) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customConfirmModal');
+                const titleEl = document.getElementById('confirmTitle');
+                const okBtn = document.getElementById('confirmOkBtn');
+                const cancelBtn = document.getElementById('confirmCancelBtn');
+
+                titleEl.innerText = title;
+                modal.classList.remove('hidden');
+
+                const handleOk = () => {
+                    cleanup();
+                    resolve(true);
+                };
+
+                const handleCancel = () => {
+                    cleanup();
+                    resolve(false);
                 };
 
                 const cleanup = () => {
@@ -233,7 +274,8 @@
         };
 
         window.settleFull = async (id, total) => {
-            if(confirm("ബാക്കി തുക മുഴുവൻ അടച്ചു തീർത്ത് അക്കൗണ്ട് ക്ലിയർ ചെയ്യണോ?")) {
+            const confirmed = await openCustomConfirm("ബാക്കി തുക മുഴുവൻ അടച്ചു തീർത്ത് അക്കൗണ്ട് ക്ലിയർ ചെയ്യണോ?");
+            if(confirmed) {
                 await updateDoc(doc(db, "rentals", id), { paid: total });
                 showToast("🎉 അക്കൗണ്ട് വിജയകരമായി സെറ്റിൽ ചെയ്തു!");
             }
@@ -246,7 +288,8 @@
         };
 
         window.deleteRent = async (id) => {
-            if(confirm("ഈ ഡാറ്റ ഡിലീറ്റ് ചെയ്യണോ?")) {
+            const confirmed = await openCustomConfirm("ഈ ഡാറ്റ ഡിലീറ്റ് ചെയ്യണോ?");
+            if(confirmed) {
                 await deleteDoc(doc(db, "rentals", id));
                 showToast("🗑️ ഡാറ്റ വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!", false);
             }
