@@ -9,9 +9,8 @@ const firebaseConfig = {
     projectId: "mesthri-app",
     storageBucket: "mesthri-app.firebasestorage.app",
     messagingSenderId: "1060617901864",
-    appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d"
+    appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
     measurementId: "G-J9Y5TW9D7T"
-
 };
 
 const app = initializeApp(firebaseConfig);
@@ -49,13 +48,13 @@ const translations = {
     }
 };
 
-// ഭാഷ മാറ്റാനുള്ള ഫങ്ഷൻ (എവിടെനിന്നും ഇത് വിളിക്കാം)
+// ഭാഷ മാറ്റാനുള്ള ഫങ്ഷൻ
 window.changeAppLanguage = (langCode) => {
     localStorage.setItem('appLang', langCode);
     applyLanguageTranslations();
 };
 
-// പേജിലെ ടെക്സ്റ്റുകളും പ്ലേസ്‌ഹോൾഡറുകളും തനിയെ മാറ്റുന്ന ഫങ്ഷൻ
+// പേജിലെ ടെക്സ്റ്റുകളും പ്ലേസ്‌ഹോൾഡറുകളും മാറ്റുന്ന ഫങ്ഷൻ
 function applyLanguageTranslations() {
     const currentLang = localStorage.getItem('appLang') || 'ml';
     document.querySelectorAll('[data-lang]').forEach(el => {
@@ -82,18 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. ഭാഷകൾ അപ്ലൈ ചെയ്യുക
     applyLanguageTranslations();
 
-    // 4. ഓട്ടോമാറ്റിക് മൈക്ക് ബട്ടൺ ഇൻസെർഷൻ (എല്ലാ text/number ഇൻപുട്ടുകളിലും മൈക്ക് തനിയെ വരും)
-    document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
-        if (!input.id) return; // ID ഇല്ലാത്ത ഇൻപുട്ടുകൾ ഒഴിവാക്കുന്നു
-        
-        // നിലവിൽ വ്രാപ്പർ ഇല്ലെങ്കിൽ മാത്രം മൈക്ക് ആഡ് ചെയ്യുക (ഡബിൾ ആവാതിരിക്കാൻ)
-        if (!input.parentNode.classList.contains('relative')) {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'relative flex items-center w-full';
-            input.parentNode.insertBefore(wrapper, input);
-            wrapper.appendChild(input);
-            
-                // 4. ഓട്ടോമാറ്റിക് മൈക്ക് ബട്ടൺ (വ്യക്തമായ മൈക്ക് ഐക്കൺ സഹിതം)
+    // 4. ഓട്ടോമാറ്റിക് മൈക്ക് ബട്ടൺ ഇൻസെർഷൻ (SVG ഐക്കൺ സഹിതം)
     document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
         if (!input.id) return; 
         
@@ -103,24 +91,28 @@ document.addEventListener("DOMContentLoaded", () => {
             input.parentNode.insertBefore(wrapper, input);
             wrapper.appendChild(input);
             
-            const micBtn = document.createElement('button');
+                        const micBtn = document.createElement('button');
             micBtn.type = 'button';
-            // ഇവിടെ വ്യക്തമായ മൈക്കിന്റെ SVG ഐക്കൺ നൽകിയിരിക്കുന്നു
+            // ഇവിടെ സൈസ് w-7 h-7 ആക്കി വലുതാക്കിയിട്ടുണ്ട്
             micBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-cyan-400 hover:text-cyan-300 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-cyan-400 hover:text-cyan-300 transition-colors drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
                     <path d="M19 10v1a7 7 0 0 1-14 0v-1"></path>
                     <line x1="12" x2="12" y1="19" y2="22"></line>
                 </svg>
             `;
             micBtn.className = 'absolute right-3.5 p-1 flex items-center justify-center z-10 cursor-pointer';
-            micBtn.onclick = () => startVoiceInputFor(input.id);
+            
+            // ഇൻപുട്ട് ടെക്സ്റ്റ് മൈക്കിൽ തടയാതിരിക്കാൻ പാഡിംഗ് നൽകുന്നു
+            input.style.paddingRight = '45px';
+            
             wrapper.appendChild(micBtn);
+
         }
     });
+});
 
-
-// വോയ്സ് ഇൻപുട്ട് ഫങ്ഷൻ (തിരഞ്ഞെടുക്കുന്ന ഭാഷ അനുസരിച്ച് മൈക്ക് ലാംഗ്വേജ് മാറും)
+// വോയ്സ് ഇൻപുട്ട് ഫങ്ഷൻ
 window.startVoiceInputFor = (fieldId) => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) return alert("ബ്രൗസർ വോയ്സ് സപ്പോർട്ട് ചെയ്യുന്നില്ല!");
@@ -128,13 +120,12 @@ window.startVoiceInputFor = (fieldId) => {
     const recognition = new SpeechRecognition();
     const currentLang = localStorage.getItem('appLang') || 'ml';
     
-    // ഭാഷയ്ക്കനുസരിച്ച് സ്പീച്ച് കോഡ് സെറ്റ് ചെയ്യുന്നു
     if (currentLang === 'en') {
         recognition.lang = 'en-US';
     } else if (currentLang === 'hi') {
         recognition.lang = 'hi-IN';
     } else {
-        recognition.lang = 'ml-IN'; // ഡിഫോൾട്ട് മലയാളം
+        recognition.lang = 'ml-IN'; 
     }
 
     showToast("🎙️ സംസാരിക്കൂ...");
