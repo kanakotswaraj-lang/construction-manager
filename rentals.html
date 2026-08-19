@@ -195,8 +195,16 @@
                 toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
             }, 2500);
         }
+        // നിലവിൽ ഫോക്കസ് ചെയ്തിരിക്കുന്ന ഇൻപുട്ട് ഫീൽഡ് കണ്ടുപിടിക്കാൻ
+        let activeInputEl = document.getElementById('itemName'); // ഡിഫോൾട്ട്
+        
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', (e) => {
+                activeInputEl = e.target;
+            });
+        });
 
-        // വോയ്സ് ഇൻപുട്ട് ഫങ്ഷൻ
+        // അപ്ഡേറ്റ് ചെയ്ത വോയ്സ് ഇൻപുട്ട് ഫങ്ഷൻ
         window.startVoiceInput = () => {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
@@ -204,12 +212,13 @@
                 return;
             }
             const recognition = new SpeechRecognition();
-            recognition.lang = 'ml-IN'; // മലയാളം തിരിച്ചറിയാൻ
+            recognition.lang = 'ml-IN'; 
             showToast("🎙️ സംസാരിക്കൂ...");
             
             recognition.onresult = (event) => {
                 const speechText = event.results[0][0].transcript;
-                document.getElementById('itemName').value = speechText;
+                activeInputEl.value = speechText; // ഏത് കള്ളിയിലാണോ ക്ലിക്ക് ചെയ്തത് അവിടെ ഫലം വരും
+                activeInputEl.dispatchEvent(new Event('input')); // ഓട്ടോ കാൽക്കുലേഷൻ വർക്ക് ചെയ്യാൻ
                 showToast("✓ കേട്ടെടുത്തു: " + speechText);
             };
             recognition.onerror = () => {
@@ -217,6 +226,7 @@
             };
             recognition.start();
         };
+
 
         function openCustomPrompt(title, placeholder) {
             return new Promise((resolve) => {
