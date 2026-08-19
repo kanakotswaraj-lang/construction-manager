@@ -6,30 +6,31 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     
+    <script type="module">
+        import { setupHeader } from './header.js';
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader');
+            }
+        });
+    </script>
+
     <style>
-        body { font-family: 'Manjari', sans-serif; }
+        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
     </style>
     <title>വാടക ഉപകരണങ്ങൾ</title>
 </head>
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ഭാഗം -->
-        <div class="flex flex-col items-center pt-2 pb-2">
-            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/90 border border-amber-400/50 shadow-lg shadow-amber-500/20 backdrop-blur-md">
-                <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-400 flex-shrink-0 bg-amber-400/10 flex items-center justify-center">
-                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover">
-                </div>
-                <div class="flex flex-col text-left">
-                    <span class="text-amber-400 font-black text-sm tracking-wide leading-tight">മേസ്തിരി പ്രോ</span>
-                    <span class="text-[10px] font-bold text-blue-200 tracking-wider uppercase">SMART SITE MANAGER</span>
-                </div>
-            </div>
-            <div class="mt-3 text-center">
-                <span id="loggedInMeshtri" class="text-sm font-black tracking-wide text-cyan-300 bg-cyan-500/15 px-4 py-1.5 rounded-full border border-cyan-400/40 shadow-lg">
-                    സ്വാഗതം, ലോഡിങ്...
-                </span>
-            </div>
+        <!-- ഹെഡർ ലോഡ് ആകുന്ന കാൺടെയ്നർ -->
+        <div id="appHeader" class="w-full flex justify-center"></div>
+
+        <!-- സ്വാഗതം പേര് കാണിക്കുന്ന ഭാഗം -->
+        <div class="text-center w-full">
+            <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
+                സ്വാഗതം, ലോഡിങ്...
+            </span>
         </div>
 
         <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
@@ -46,8 +47,8 @@
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 mb-8 space-y-4 backdrop-blur-sm">
             <h2 class="font-black text-amber-400 mb-2 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
             
-            <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
-            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+            <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
             
             <!-- സൈറ്റിന്റെ പേര് ചേർക്കാനുള്ള ഫീൽഡ് -->
             <input type="text" id="siteName" placeholder="ഏത് സൈറ്റിലാണ് (Site Name)?" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-cyan-400 text-xs">
@@ -57,24 +58,24 @@
                 <input type="text" id="clientName" placeholder="നൽകിയ ആളിന്റെ പേര്" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
             </div>
 
-            <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+            <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="text-[10px] font-black text-slate-400 ml-1">എടുത്ത തീയതി</label>
-                    <input type="date" id="startDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+                    <input type="date" id="startDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
                 </div>
                 <div class="space-y-1">
                     <label class="text-[10px] font-black text-slate-400 ml-1">തിരികെ നൽകേണ്ടത്</label>
-                    <input type="date" id="endDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+                    <input type="date" id="endDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
                 </div>
             </div>
             
-            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
-            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
-            <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400">
+            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
             
-            <button id="saveRentBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black shadow-lg transition">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
+            <button id="saveRentBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black shadow-lg transition text-xs">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
         <!-- ഫിൽട്ടർ ബട്ടണുകൾ -->
@@ -86,11 +87,11 @@
         <!-- സെർച്ച് ബാർ -->
         <div class="mb-6">
             <input type="text" id="searchInput" placeholder="🔍 ഉപകരണത്തിന്റെ പേരോ കടയോ സൈറ്റോ സെർച്ച് ചെയ്യുക..." 
-                class="w-full p-4 bg-slate-900/50 text-white placeholder-slate-500 rounded-xl border border-slate-700 focus:outline-none focus:border-cyan-400 font-bold text-sm">
+                class="w-full p-4 bg-slate-900/50 text-white placeholder-slate-500 rounded-xl border border-slate-700 focus:outline-none focus:border-cyan-400 font-bold text-xs">
         </div>
 
         <section id="rentList" class="space-y-4 pb-12">
-            <h2 class="font-black text-white mb-2">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>
+            <h2 class="font-black text-white mb-2 text-sm">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>
         </section>
     </div>
 
@@ -244,7 +245,7 @@
             if (!cachedSnapshot) return;
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const list = document.getElementById('rentList');
-            list.innerHTML = `<h2 class="font-black text-white mb-2">${currentFilter === 'active' ? 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ' : 'തിരികെ നൽകിയ ഉപകരണങ്ങൾ'}</h2>`;
+            list.innerHTML = `<h2 class="font-black text-white mb-2 text-sm">${currentFilter === 'active' ? 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ' : 'തിരികെ നൽകിയ ഉപകരണങ്ങൾ'}</h2>`;
             
             cachedSnapshot.forEach((d) => {
                 const r = d.data();
@@ -275,7 +276,7 @@
                         div.className = `bg-slate-900/90 border border-slate-800 p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-xl mb-4 text-white backdrop-blur-sm`;
                         div.innerHTML = `
                             <div class="flex justify-between items-start mb-1">
-                                <p class="font-black text-white text-lg">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
+                                <p class="font-black text-white text-base">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
                                 <div class="flex gap-1">
                                     <button onclick="editItemDetails('${d.id}', '${r.item}', '${r.qty}', '${r.shop}', '${r.client || ''}', '${r.site || ''}')" class="bg-cyan-900/50 text-cyan-300 border border-cyan-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">എഡിറ്റ്</button>
                                     <button onclick="toggleReturn('${d.id}', ${isRet})" class="text-[10px] font-black px-2.5 py-1 rounded-lg border ${isRet ? 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50' : 'bg-slate-800 text-slate-300 border-slate-700'}">
@@ -293,21 +294,18 @@
                                     <span class="${bal > 0 ? 'text-red-400' : 'text-emerald-400'}">ബാലൻസ്: ₹${bal}</span>
                                 </div>
                                 
-<div class="flex items-center justify-between pt-2 gap-1">
-    <!-- വാട്സാപ്പ് ബട്ടൺ മാത്രം ഇവിടെ -->
-    <button onclick="shareWhatsApp('${r.item}', '${r.qty}', '${r.site || ''}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 shadow-md">
-        💬 വാട്സാപ്പ്
-    </button>
-    
-    <!-- ബാക്കി മൂന്ന് ബട്ടണുകളും ഇതേ ഗ്യാപ്പിൽ വരുന്നു -->
-    <div class="flex items-center gap-1">
-        ${bal > 0 ? `<button onclick="settleFull('${d.id}', ${calculatedTotal})" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black">സെറ്റിൽ</button>` : ''}
-        <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1.5 rounded-xl text-[10px] font-black">പെയ്മെന്റ്</button>
-        <button onclick="deleteRent('${d.id}')" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black shadow-md">ഡിലീറ്റ്</button>
-    </div>
-</div>
-
-
+                                <div class="flex items-center justify-between pt-2 gap-1">
+                                    <button onclick="shareWhatsApp('${r.item}', '${r.qty}', '${r.site || ''}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 shadow-md">
+                                        💬 വാട്സാപ്പ്
+                                    </button>
+                                    
+                                    <div class="flex items-center gap-1">
+                                        ${bal > 0 ? `<button onclick="settleFull('${d.id}', ${calculatedTotal})" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black">സെറ്റിൽ</button>` : ''}
+                                        <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1.5 rounded-xl text-[10px] font-black">പെയ്മെന്റ്</button>
+                                        <button onclick="deleteRent('${d.id}')" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black shadow-md">ഡിലീറ്റ്</button>
+                                    </div>
+                                </div>
+                            </div>
                         `;
                         list.appendChild(div);
                     }
