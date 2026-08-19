@@ -74,17 +74,18 @@
         }
 
         window.setCategoryFilter = function(type) {
-    currentFilter = type;
-    // എല്ലാ ടാബുകളിൽ നിന്നും 'active' ക്ലാസ് മാറ്റുന്നു
-    document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-    
-    // സെലക്ട് ചെയ്ത ടാബിന് 'active' ക്ലാസ് നൽകുന്നു
-    const activeTab = document.getElementById(`tab-${type}`);
-    if(activeTab) activeTab.classList.add('active');
-    
-    filterAndDisplay();
-}
-
+            currentFilter = type;
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('bg-amber-500', 'text-slate-950', 'border-amber-400');
+                tab.classList.add('bg-slate-800/80', 'text-slate-300', 'border-slate-700');
+            });
+            const activeTab = document.getElementById(`tab-${type}`);
+            if(activeTab) {
+                activeTab.classList.remove('bg-slate-800/80', 'text-slate-300', 'border-slate-700');
+                activeTab.classList.add('bg-amber-500', 'text-slate-950', 'border-amber-400');
+            }
+            filterAndDisplay();
+        }
 
         window.filterAndDisplay = function() {
             let queryVal = document.getElementById('searchHistory').value.toLowerCase();
@@ -112,7 +113,7 @@
                 let typeLabel = item.type === 'income' ? 'വരവ് (Income)' : item.type === 'wage' ? 'കൂലി (Wage)' : 'ചെലവ് (Expense)';
 
                 return `
-                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-2 history-card hover:border-amber-500/40 transition duration-300">
+                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-2 history-card">
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeColor}">${typeLabel}</span>
@@ -180,16 +181,10 @@
             }
         }
     </script>
-<style>
-    /* നിലവിലെ സ്റ്റൈലിനൊപ്പം ഇത് കൂടി ചേർക്കുക */
-    .filter-tab.active {
-        background-color: #f59e0b !important; /* Amber-500 */
-        color: #020617 !important;            /* Slate-950 */
-        border-color: #fbbf24 !important;    /* Amber-400 */
-    }
-</style>
 
-    
+    <style>
+        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
+    </style>
 </head>
 <body class="text-white min-h-screen pb-12 p-4 font-sans">
 
@@ -198,7 +193,7 @@
         <!-- ഹെഡർ ലോഡ് ആകുന്ന കാൺടെയ്നർ -->
         <div id="appHeader" class="w-full flex justify-center"></div>
 
-        <!-- സ്വാഗതം പേര് കാണിക്കുന്ന ഭാഗം -->
+        <!-- സ്വാഗതം പേര് കാണിക്കുന്ന ഭാഗം (യഥാർത്ഥ ഒറിജിനൽ കളർ) -->
         <div class="text-center w-full">
             <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
                 സ്വാഗതം, ലോഡിങ്...
@@ -227,11 +222,11 @@
             </div>
         </div>
 
-        <!-- തിരയുന്ന ഭാഗം -->
+        <!-- തിരയുന്ന ഭാഗവും ഫിൽട്ടർ ടാബുകളും -->
         <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-3">
             <input type="text" id="searchHistory" placeholder="🔍 സൈറ്റിന്റെ പേരിലോ വിവരത്തിലോ തിരയുക..." oninput="filterAndDisplay()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
             
-            <!-- ഫിൽട്ടർ ടാബുകൾ (Category Tabs) -->
+            <!-- ഫിൽട്ടർ ടാബുകൾ -->
             <div class="grid grid-cols-4 gap-1.5 pt-1">
                 <button type="button" id="tab-all" onclick="setCategoryFilter('all')" class="filter-tab bg-amber-500 text-slate-950 border border-amber-400 py-2 rounded-xl text-[11px] font-black transition">എല്ലാം</button>
                 <button type="button" id="tab-income" onclick="setCategoryFilter('income')" class="filter-tab bg-slate-800/80 text-slate-300 border border-slate-700 py-2 rounded-xl text-[11px] font-black transition">വരവ്</button>
