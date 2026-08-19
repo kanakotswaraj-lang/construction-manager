@@ -43,29 +43,36 @@
             </a>
         </div>
 
-        <!-- 1. അനലിറ്റിക്സ് / ഗ്രാഫ് സംഗ്രഹം -->
-        <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-3xl shadow-xl backdrop-blur-sm space-y-3">
-            <h2 class="text-xs font-black text-amber-400 uppercase tracking-wider">📊 വാടക അനലിറ്റിക്സ്</h2>
-            <div class="grid grid-cols-2 gap-2 text-center">
-                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
-                    <p class="text-[10px] font-bold text-slate-400">ആകെ വാടക തുക</p>
-                    <p id="statTotalRent" class="text-sm font-black text-white">₹0</p>
-                </div>
-                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
-                    <p class="text-[10px] font-bold text-slate-400">നൽകാനുള്ള ബാലൻസ്</p>
-                    <p id="statTotalBal" class="text-sm font-black text-red-400">₹0</p>
-                </div>
-            </div>
-            <!-- പ്രോഗ്രസ് ബാർ ഗ്രാഫ് രൂപം -->
-            <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700 flex">
-                <div id="barPaid" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
-                <div id="barBal" class="bg-red-500 h-full transition-all duration-500" style="width: 100%"></div>
-            </div>
-            <div class="flex justify-between text-[10px] font-bold text-slate-400">
-                <span class="text-emerald-400">■ അടച്ചത്</span>
-                <span class="text-red-400">■ ബാലൻസ്</span>
-            </div>
+        <!-- 1. അനലിറ്റിക്സ് / ഗ്രാഫ് സംഗ്രഹം (അപ്ഡേറ്റ് ചെയ്തത്) -->
+<div class="bg-slate-900/90 border border-slate-800 p-5 rounded-3xl shadow-xl backdrop-blur-sm space-y-4">
+    <h2 class="text-xs font-black text-amber-400 uppercase tracking-wider">📊 വാടക അനലിറ്റിക്സ്</h2>
+    
+    <div class="grid grid-cols-2 gap-3 text-center">
+        <!-- ആകെ വാടക -->
+        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
+            <p class="text-[11px] font-bold text-slate-400 mb-1">ആകെ വാടക</p>
+            <p id="statTotalRent" class="text-xl font-black text-white">₹0</p>
         </div>
+        <!-- ബാലൻസ് -->
+        <div class="bg-slate-800 p-4 rounded-2xl border border-red-900/30">
+            <p class="text-[11px] font-bold text-red-300 mb-1">ബാലൻസ്</p>
+            <p id="statTotalBal" class="text-xl font-black text-red-400">₹0</p>
+        </div>
+    </div>
+
+    <!-- പ്രോഗ്രസ് ബാർ -->
+    <div class="w-full bg-slate-950 rounded-full h-4 overflow-hidden border border-slate-700 flex">
+        <div id="barPaid" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+        <div id="barBal" class="bg-red-500 h-full transition-all duration-500" style="width: 100%"></div>
+    </div>
+
+    <!-- അടച്ചത് / ബാലൻസ് ലേബൽ കൂടുതൽ വ്യക്തമായി -->
+    <div class="flex justify-between text-xs font-black px-1">
+        <span class="text-emerald-400 flex items-center gap-1">● അടച്ചത്</span>
+        <span class="text-red-400 flex items-center gap-1">● ബാലൻസ്</span>
+    </div>
+</div>
+
 
         <!-- 2. റിമൈൻഡർ അലേർട്ട് ബോക്സ് (കാലഹരണപ്പെട്ടതോ അവസാനിച്ചതോ ആയവ) -->
         <div id="reminderBox" class="hidden bg-amber-950/40 border border-amber-500/50 p-4 rounded-2xl shadow-lg space-y-2">
