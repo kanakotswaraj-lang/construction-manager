@@ -5,15 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
-    
-    <script type="module">
-        import { setupHeader } from './header.js';
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader');
-            }
-        });
-    </script>
 
     <style>
         body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
@@ -43,105 +34,94 @@
             </a>
         </div>
 
-        <!-- 1. അനലിറ്റിക്സ് / ഗ്രാഫ് സംഗ്രഹം (അപ്ഡേറ്റ് ചെയ്തത്) -->
-<div class="bg-slate-900/90 border border-slate-800 p-5 rounded-3xl shadow-xl backdrop-blur-sm space-y-4">
-    <h2 class="text-xs font-black text-amber-400 uppercase tracking-wider">📊 വാടക അനലിറ്റിക്സ്</h2>
-    
-    <div class="grid grid-cols-2 gap-3 text-center">
-        <!-- ആകെ വാടക -->
-        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-            <p class="text-[11px] font-bold text-slate-400 mb-1">ആകെ വാടക</p>
-            <p id="statTotalRent" class="text-xl font-black text-white">₹0</p>
+        <!-- 1. അനലിറ്റിക്സ് / ഗ്രാഫ് സംഗ്രഹം -->
+        <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-3xl shadow-xl backdrop-blur-sm space-y-4">
+            <h2 class="text-xs font-black text-amber-400 uppercase tracking-wider">📊 വാടക അനലിറ്റിക്സ്</h2>
+            
+            <div class="grid grid-cols-2 gap-3 text-center">
+                <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                    <p class="text-[11px] font-bold text-slate-400 mb-1">ആകെ വാടക</p>
+                    <p id="statTotalRent" class="text-xl font-black text-white">₹0</p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-2xl border border-red-900/30">
+                    <p class="text-[11px] font-bold text-red-300 mb-1">ബാലൻസ്</p>
+                    <p id="statTotalBal" class="text-xl font-black text-red-400">₹0</p>
+                </div>
+            </div>
+
+            <div class="w-full bg-slate-950 rounded-full h-4 overflow-hidden border border-slate-700 flex">
+                <div id="barPaid" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+                <div id="barBal" class="bg-red-500 h-full transition-all duration-500" style="width: 100%"></div>
+            </div>
+
+            <div class="flex justify-between text-xs font-black px-1">
+                <span class="text-emerald-400 flex items-center gap-1">● അടച്ചത്</span>
+                <span class="text-red-400 flex items-center gap-1">● ബാലൻസ്</span>
+            </div>
         </div>
-        <!-- ബാലൻസ് -->
-        <div class="bg-slate-800 p-4 rounded-2xl border border-red-900/30">
-            <p class="text-[11px] font-bold text-red-300 mb-1">ബാലൻസ്</p>
-            <p id="statTotalBal" class="text-xl font-black text-red-400">₹0</p>
-        </div>
-    </div>
 
-    <!-- പ്രോഗ്രസ് ബാർ -->
-    <div class="w-full bg-slate-950 rounded-full h-4 overflow-hidden border border-slate-700 flex">
-        <div id="barPaid" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
-        <div id="barBal" class="bg-red-500 h-full transition-all duration-500" style="width: 100%"></div>
-    </div>
-
-    <!-- അടച്ചത് / ബാലൻസ് ലേബൽ കൂടുതൽ വ്യക്തമായി -->
-    <div class="flex justify-between text-xs font-black px-1">
-        <span class="text-emerald-400 flex items-center gap-1">● അടച്ചത്</span>
-        <span class="text-red-400 flex items-center gap-1">● ബാലൻസ്</span>
-    </div>
-</div>
-
-
-        <!-- 2. റിമൈൻഡർ അലേർട്ട് ബോക്സ് (കാലഹരണപ്പെട്ടതോ അവസാനിച്ചതോ ആയവ) -->
+        <!-- 2. റിമൈൻഡർ അലേർട്ട് ബോക്സ് -->
         <div id="reminderBox" class="hidden bg-amber-950/40 border border-amber-500/50 p-4 rounded-2xl shadow-lg space-y-2">
             <h3 class="text-xs font-black text-amber-300 flex items-center gap-1">
                 <span>⚠️</span> കാലാവധി കഴിഞ്ഞ/തീർന്ന ഉപകരണങ്ങൾ ഉണ്ടോ? ശ്രദ്ധിക്കുക!
             </h3>
             <div id="reminderList" class="text-[11px] text-amber-200/80 space-y-1"></div>
         </div>
-        <!-- ഫോം ഭാഗം (ഓരോ കള്ളിയിലും മൈക്ക് സൗകര്യത്തോടെ) -->
-<div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 mb-8 space-y-4 backdrop-blur-sm">
-    <div class="flex justify-between items-center mb-2">
-        <h2 class="font-black text-amber-400 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
-    </div>
-    
-    <!-- 1. ഉപകരണത്തിന്റെ പേര് -->
-    <div class="relative">
-        <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-        <button type="button" onclick="startVoiceInputFor('itemName')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-base">🎙️</button>
-    </div>
 
-    <!-- 2. എത്ര എണ്ണം -->
-    <div class="relative">
-        <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-        <button type="button" onclick="startVoiceInputFor('itemQty')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-base">🎙️</button>
-    </div>
-    
-    <!-- 3. സൈറ്റ് പേര് -->
-    <div class="relative">
-        <input type="text" id="siteName" placeholder="ഏത് സൈറ്റിലാണ് (Site Name)?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-cyan-400 text-xs">
-        <button type="button" onclick="startVoiceInputFor('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-base">🎙️</button>
-    </div>
+        <!-- ഫോം ഭാഗം -->
+        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 mb-8 space-y-4 backdrop-blur-sm">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="font-black text-amber-400 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
+            </div>
+            
+            <div class="relative">
+                <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+                <button type="button" onclick="startVoiceInputFor('itemName')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-base">🎙️</button>
+            </div>
 
-    <div class="grid grid-cols-2 gap-2">
-        <!-- 4. കടയുടെ പേര് -->
-        <div class="relative">
-            <input type="text" id="shopName" placeholder="എടുത്ത കടയുടെ പേര്" class="w-full p-4 pr-10 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-            <button type="button" onclick="startVoiceInputFor('shopName')" class="absolute right-2 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-1 text-sm">🎙️</button>
-        </div>
-        <!-- 5. നൽകിയ ആളിന്റെ പേര് -->
-        <div class="relative">
-            <input type="text" id="clientName" placeholder="നൽകിയ ആളിന്റെ പേര്" class="w-full p-4 pr-10 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-            <button type="button" onclick="startVoiceInputFor('clientName')" class="absolute right-2 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-1 text-sm">🎙️</button>
-        </div>
-    </div>
+            <div class="relative">
+                <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+                <button type="button" onclick="startVoiceInputFor('itemQty')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-base">🎙️</button>
+            </div>
+            
+            <div class="relative">
+                <input type="text" id="siteName" placeholder="ഏത് സൈറ്റിലാണ് (Site Name)?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-cyan-400 text-xs">
+                <button type="button" onclick="startVoiceInputFor('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-base">🎙️</button>
+            </div>
 
-    <!-- 6. ഫോൺ നമ്പർ -->
-    <div class="relative">
-        <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-        <button type="button" onclick="startVoiceInputFor('shopPhone')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-base">🎙️</button>
-    </div>
-    
-    <div class="grid grid-cols-2 gap-3">
-        <div class="space-y-1">
-            <label class="text-[10px] font-black text-slate-400 ml-1">എടുത്ത തീയതി</label>
-            <input type="date" id="startDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-        </div>
-        <div class="space-y-1">
-            <label class="text-[10px] font-black text-slate-400 ml-1">തിരികെ നൽകേണ്ടത്</label>
-            <input type="date" id="endDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-        </div>
-    </div>
-    
-    <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-    <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-    <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-    
-    <button id="saveRentBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black shadow-lg transition text-xs">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
-</div>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="relative">
+                    <input type="text" id="shopName" placeholder="എടുത്ത കടയുടെ പേര്" class="w-full p-4 pr-10 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+                    <button type="button" onclick="startVoiceInputFor('shopName')" class="absolute right-2 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-1 text-sm">🎙️</button>
+                </div>
+                <div class="relative">
+                    <input type="text" id="clientName" placeholder="നൽകിയ ആളിന്റെ പേര്" class="w-full p-4 pr-10 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+                    <button type="button" onclick="startVoiceInputFor('clientName')" class="absolute right-2 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-1 text-sm">🎙️</button>
+                </div>
+            </div>
 
+            <div class="relative">
+                <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+                <button type="button" onclick="startVoiceInputFor('shopPhone')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-base">🎙️</button>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-400 ml-1">എടുത്ത തീയതി</label>
+                    <input type="date" id="startDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-400 ml-1">തിരികെ നൽകേണ്ടത്</label>
+                    <input type="date" id="endDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+                </div>
+            </div>
+            
+            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            
+            <button id="saveRentBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black shadow-lg transition text-xs">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
+        </div>
 
         <!-- ഫിൽട്ടർ ബട്ടണുകൾ -->
         <div class="flex gap-2 mb-2">
@@ -160,7 +140,7 @@
         </section>
     </div>
 
-    <!-- കോസ്റ്റം പ്രോംപ്റ്റ് മോഡൽ -->
+    <!-- മോഡലുകളും ടോസ്റ്റും -->
     <div id="customPromptModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-900 border-2 border-amber-400 p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4">
             <h3 id="promptTitle" class="text-amber-400 font-black text-base">വിവരം നൽകുക</h3>
@@ -172,7 +152,6 @@
         </div>
     </div>
 
-    <!-- കോസ്റ്റം കൺഫർമേഷൻ മോഡൽ -->
     <div id="customConfirmModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-900 border-2 border-amber-400 p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center">
             <h3 id="confirmTitle" class="text-amber-400 font-black text-base">തീരുമാനമെടുക്കുക</h3>
@@ -183,9 +162,11 @@
         </div>
     </div>
 
+    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center">
+        ഫലം ഇവിടെ കാണിക്കും
+    </div>
 
-
-        <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം പൂർണ്ണമായി മാറ്റിയെഴുതിയത് -->
+    <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം പൂർണ്ണമായി -->
     <script type="module">
         import { setupHeader } from './header.js';
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -211,29 +192,39 @@
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
-        // കോമൺ ഫങ്ഷനുകൾ (Toast & Voice)
-        window.showToast = (msg, isSuccess = true) => {
+        window.showToast = (message, isSuccess = true) => {
             const toast = document.getElementById('customToast');
-            toast.innerText = msg;
-            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl font-black text-sm z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-emerald-950 border-2 border-emerald-500 text-emerald-200' : 'bg-red-950 border-2 border-red-500 text-red-200'} opacity-100 scale-105`;
-            setTimeout(() => { toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-sm z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100"; }, 2500);
+            toast.innerText = message;
+            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-emerald-950 border-2 border-emerald-500 text-emerald-200' : 'bg-red-950 border-2 border-red-500 text-red-200'} opacity-100 scale-105`;
+            setTimeout(() => {
+                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
+            }, 2500);
         };
 
-        window.startVoiceInputFor = (id) => {
-            const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            rec.lang = 'ml-IN';
+        window.startVoiceInputFor = (fieldId) => {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert("ബ്രൗസർ സപ്പോർട്ട് ചെയ്യുന്നില്ല!");
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'ml-IN'; 
             showToast("🎙️ സംസാരിക്കൂ...");
-            rec.onresult = (e) => { document.getElementById(id).value = e.results[0][0].transcript; document.getElementById(id).dispatchEvent(new Event('input')); };
-            rec.start();
+            recognition.onresult = (e) => {
+                const target = document.getElementById(fieldId);
+                if (target) {
+                    target.value = e.results[0][0].transcript;
+                    target.dispatchEvent(new Event('input'));
+                }
+                showToast("✓ കേട്ടെടുത്തു!");
+            };
+            recognition.start();
         };
 
-        // മോഡൽ ഫങ്ഷനുകൾ
         window.openCustomPrompt = (title, placeholder) => new Promise(resolve => {
             const modal = document.getElementById('customPromptModal');
             document.getElementById('promptTitle').innerText = title;
             const input = document.getElementById('promptInput');
             input.placeholder = placeholder; input.value = '';
             modal.classList.remove('hidden');
+            input.focus();
             document.getElementById('promptOkBtn').onclick = () => { modal.classList.add('hidden'); resolve(input.value); };
             document.getElementById('promptCancelBtn').onclick = () => { modal.classList.add('hidden'); resolve(null); };
         });
@@ -246,44 +237,212 @@
             document.getElementById('confirmCancelBtn').onclick = () => { modal.classList.add('hidden'); resolve(false); };
         });
 
-        // ആക്ഷൻ ഫങ്ഷനുകൾ
+        let currentFilter = 'active';
+        window.setFilter = (filter) => {
+            currentFilter = filter;
+            document.getElementById('filterActiveBtn').className = `flex-1 py-2.5 rounded-xl text-xs font-black transition ${filter === 'active' ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-300 border border-slate-700'}`;
+            document.getElementById('filterReturnedBtn').className = `flex-1 py-2.5 rounded-xl text-xs font-black transition ${filter === 'returned' ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-300 border border-slate-700'}`;
+            loadData();
+        };
+
+        function calculateTotal() {
+            const start = new Date(document.getElementById('startDate').value);
+            const end = new Date(document.getElementById('endDate').value);
+            const unitRent = parseFloat(document.getElementById('unitRent').value) || 0;
+            const qty = parseFloat(document.getElementById('itemQty').value) || 1;
+            
+            if (start && end && end >= start) {
+                const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById('totalRent').value = diffDays * unitRent * qty;
+            }
+        }
+        document.querySelectorAll('input').forEach(input => input.addEventListener('input', calculateTotal));
+
+        window.editItemDetails = async (id, currentItem, currentQty, currentShop, currentClient, currentSite) => {
+            const newName = await openCustomPrompt("ഉപകരണത്തിന്റെ പുതിയ പേര്:", currentItem);
+            if (newName === null) return;
+            const newQty = await openCustomPrompt("പുതിയ എണ്ണം:", currentQty);
+            if (newQty === null) return;
+            const newSite = await openCustomPrompt("സൈറ്റിന്റെ പേര്:", currentSite);
+            if (newSite === null) return;
+            const newShop = await openCustomPrompt("കടയുടെ പേര്:", currentShop);
+            if (newShop === null) return;
+            const newClient = await openCustomPrompt("നൽകിയ ആളിന്റെ പേര്:", currentClient);
+            if (newClient === null) return;
+
+            if(newName && newShop) {
+                await updateDoc(doc(db, "rentals", id), { item: newName, qty: newQty, site: newSite || '', shop: newShop, client: newClient || '' });
+                showToast("✏️ വിവരങ്ങൾ എഡിറ്റ് ചെയ്തു!");
+            }
+        };
+
         window.editRent = async (id, currentPaid) => {
-            const val = await openCustomPrompt("പെയ്മെന്റ് തുക", "തുക (₹)");
-            if(val) { await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(val) }); showToast("✨ പെയ്മെന്റ് അപ്ഡേറ്റ് ചെയ്തു!"); }
+            const extraPaid = await openCustomPrompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?", "തുക (₹)");
+            if(extraPaid) {
+                await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
+                showToast("✨ പെയ്മെന്റ് അപ്ഡേറ്റ് ചെയ്തു!");
+            }
         };
 
         window.settleFull = async (id, total) => {
-            if(await openCustomConfirm("അക്കൗണ്ട് ക്ലിയർ ചെയ്യണോ?")) { await updateDoc(doc(db, "rentals", id), { paid: total }); showToast("🎉 സെറ്റിൽ ചെയ്തു!"); }
+            if(await openCustomConfirm("ബാക്കി തുക മുഴുവൻ അടച്ചു തീർത്ത് അക്കൗണ്ട് ക്ലിയർ ചെയ്യണോ?")) {
+                await updateDoc(doc(db, "rentals", id), { paid: total });
+                showToast("🎉 അക്കൗണ്ട് സെറ്റിൽ ചെയ്തു!");
+            }
+        };
+
+        window.toggleReturn = async (id, currentStatus) => {
+            const newStatus = !currentStatus;
+            await updateDoc(doc(db, "rentals", id), { isReturned: newStatus });
+            showToast(newStatus ? "📦 ഉപകരണം തിരികെ നൽകി!" : "🔄 വാടക സ്റ്റാറ്റസ് മാറ്റി!");
         };
 
         window.deleteRent = async (id) => {
-            if(await openCustomConfirm("ഈ ഡാറ്റ ഡിലീറ്റ് ചെയ്യണോ?")) { await deleteDoc(doc(db, "rentals", id)); showToast("🗑️ ഡിലീറ്റ് ചെയ്തു!", false); }
+            if(await openCustomConfirm("ഈ ഡാറ്റ ഡിലീറ്റ് ചെയ്യണോ?")) {
+                await deleteDoc(doc(db, "rentals", id));
+                showToast("🗑️ ഡിലീറ്റ് ചെയ്തു!", false);
+            }
         };
 
-        window.toggleReturn = async (id, status) => { await updateDoc(doc(db, "rentals", id), { isReturned: !status }); showToast(!status ? "📦 തിരികെ നൽകി!" : "🔄 സ്റ്റാറ്റസ് മാറ്റി!"); };
+        window.shareWhatsApp = (item, qty, site, shop, client, total, paid, bal, totalDays) => {
+            const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} (${qty} എണ്ണം)\nസൈറ്റ്: ${site || 'പറഞ്ഞിട്ടില്ല'}\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nആകെ വാടക: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+        };
 
-        // ഡാറ്റ ലോഡിങ്
+        document.getElementById('saveRentBtn').addEventListener('click', async () => {
+            const itemName = document.getElementById('itemName').value;
+            if (!itemName) return alert("ഉപകരണത്തിന്റെ പേര് നൽകുക!");
+
+            await addDoc(collection(db, "rentals"), {
+                meshtriOwner: currentMeshtri,
+                item: itemName,
+                qty: document.getElementById('itemQty').value || 1,
+                site: document.getElementById('siteName').value || '',
+                shop: document.getElementById('shopName').value || 'കട',
+                client: document.getElementById('clientName').value || '',
+                phone: document.getElementById('shopPhone').value || '',
+                start: document.getElementById('startDate').value,
+                end: document.getElementById('endDate').value,
+                unitRent: parseFloat(document.getElementById('unitRent').value) || 0,
+                total: parseFloat(document.getElementById('totalRent').value) || 0,
+                paid: parseFloat(document.getElementById('paidRent').value) || 0,
+                isReturned: false
+            });
+            showToast("🚀 വിജയകരമായി ചേർത്തു!");
+            
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemQty').value = '';
+            document.getElementById('siteName').value = '';
+            document.getElementById('shopName').value = '';
+            document.getElementById('clientName').value = '';
+            document.getElementById('shopPhone').value = '';
+            document.getElementById('unitRent').value = '';
+            document.getElementById('totalRent').value = '';
+            document.getElementById('paidRent').value = '';
+        });
+
+        document.getElementById('searchInput').addEventListener('input', () => loadData());
+
         let cachedSnapshot = null;
-        window.setFilter = (f) => { currentFilter = f; loadData(); };
-        let currentFilter = 'active';
-
         function loadData() {
             if (!cachedSnapshot) return;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const list = document.getElementById('rentList');
-            list.innerHTML = `<h2 class="font-black text-white mb-2 text-sm">${currentFilter === 'active' ? 'നടന്നുകൊണ്ടിരിക്കുന്നത്' : 'തിരികെ നൽകിയത്'}</h2>`;
-            let gRent = 0, gPaid = 0;
+            list.innerHTML = `<h2 class="font-black text-white mb-2 text-sm">${currentFilter === 'active' ? 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ' : 'തിരികെ നൽകിയ ഉപകരണങ്ങൾ'}</h2>`;
+            
+            let grandTotalRent = 0, grandTotalPaid = 0;
+            let reminders = [];
+            const today = new Date();
 
-            cachedSnapshot.forEach(d => {
+            cachedSnapshot.forEach((d) => {
                 const r = d.data();
-                if (r.meshtriOwner === currentFilter === (r.isReturned ? 'returned' : 'active')) {
-                    // ... മുമ്പത്തെ ലോജിക് തന്നെ ഇവിടെ കൊടുക്കുക ...
+                if (r.meshtriOwner === currentMeshtri) {
+                    const isRet = r.isReturned === true;
+                    let calculatedTotal = parseFloat(r.total) || 0;
+                    const startDate = new Date(r.start);
+                    const endDate = new Date(r.end);
+                    const unitPerDay = (parseFloat(r.unitRent) || 0) * (parseFloat(r.qty) || 1);
+                    let totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+                    if (!isRet && today > endDate) {
+                        const extraDays = Math.ceil((today - endDate) / (1000 * 60 * 60 * 24));
+                        totalDays += extraDays;
+                        calculatedTotal = ((totalDays - extraDays) * unitPerDay) + (extraDays * unitPerDay);
+                        reminders.push(`${r.item} (${r.shop}) - കാലാവധി കഴിഞ്ഞിരിക്കുന്നു!`);
+                    }
+
+                    if (!isRet) {
+                        grandTotalRent += calculatedTotal;
+                        grandTotalPaid += (parseFloat(r.paid) || 0);
+                    }
+
+                    const matchesSearch = r.item.toLowerCase().includes(searchTerm) || r.shop.toLowerCase().includes(searchTerm) || (r.site && r.site.toLowerCase().includes(searchTerm));
+                    
+                    if (matchesSearch && ((currentFilter === 'active' && !isRet) || (currentFilter === 'returned' && isRet))) {
+                        const bal = calculatedTotal - (parseFloat(r.paid) || 0);
+
+                        const div = document.createElement('div');
+                        div.className = `bg-slate-900/90 border border-slate-800 p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-xl mb-4 text-white backdrop-blur-sm`;
+                        div.innerHTML = `
+                            <div class="flex justify-between items-start mb-1">
+                                <p class="font-black text-white text-base">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
+                                <div class="flex gap-1">
+                                    <button onclick="editItemDetails('${d.id}', '${r.item}', '${r.qty}', '${r.shop}', '${r.client || ''}', '${r.site || ''}')" class="bg-cyan-900/50 text-cyan-300 border border-cyan-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">എഡിറ്റ്</button>
+                                    <button onclick="toggleReturn('${d.id}', ${isRet})" class="text-[10px] font-black px-2.5 py-1 rounded-lg border ${isRet ? 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50' : 'bg-slate-800 text-slate-300 border-slate-700'}">
+                                        ${isRet ? '✓ തിരികെ നൽകി' : 'റിട്ടേൺ'}
+                                    </button>
+                                </div>
+                            </div>
+                            ${r.site ? `<p class="text-xs text-cyan-400 font-bold mb-1">🏗️ സൈറ്റ്: ${r.site}</p>` : ''}
+                            <p class="text-xs text-slate-300 font-bold mb-1">കട: <span class="text-amber-400">${r.shop}</span> ${r.client ? `| ആർക്ക്: <span class="text-cyan-300">${r.client}</span>` : ''} | 📞 ${r.phone}</p>
+                            <p class="text-[11px] text-slate-400 mb-2">തീയതി: ${r.start} മുതൽ ${r.end} വരെ | <strong class="text-amber-300">${totalDays} ദിവസങ്ങൾ</strong></p>
+                            
+                            <div class="border-t border-slate-800 pt-2 flex flex-col gap-2">
+                                <div class="flex justify-between items-center text-xs font-black text-slate-200">
+                                    <span>ആകെ: ₹${calculatedTotal} | നൽകിയത്: ₹${r.paid}</span>
+                                    <span class="${bal > 0 ? 'text-red-400' : 'text-emerald-400'}">ബാലൻസ്: ₹${bal}</span>
+                                </div>
+                                
+                                <div class="flex items-center justify-between pt-2 gap-1">
+                                    <button onclick="shareWhatsApp('${r.item}', '${r.qty}', '${r.site || ''}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 shadow-md">
+                                        💬 വാട്സാപ്പ്
+                                    </button>
+                                    
+                                    <div class="flex items-center gap-1">
+                                        ${bal > 0 ? `<button onclick="settleFull('${d.id}', ${calculatedTotal})" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black">സെറ്റിൽ</button>` : ''}
+                                        <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1.5 rounded-xl text-[10px] font-black">പെയ്മെന്റ്</button>
+                                        <button onclick="deleteRent('${d.id}')" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black shadow-md">ഡിലീറ്റ്</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        list.appendChild(div);
+                    }
                 }
             });
-            // ... ബാക്കി ലോഡിങ് ലോജിക് ...
+
+            const totalBal = grandTotalRent - grandTotalPaid;
+            document.getElementById('statTotalRent').innerText = `₹${grandTotalRent}`;
+            document.getElementById('statTotalBal').innerText = `₹${totalBal}`;
+            
+            const paidPercentage = grandTotalRent > 0 ? (grandTotalPaid / grandTotalRent) * 100 : 0;
+            document.getElementById('barPaid').style.width = `${Math.min(paidPercentage, 100)}%`;
+            document.getElementById('barBal').style.width = `${Math.max(100 - paidPercentage, 0)}%`;
+
+            const reminderBox = document.getElementById('reminderBox');
+            const reminderList = document.getElementById('reminderList');
+            if (reminders.length > 0) {
+                reminderBox.classList.remove('hidden');
+                reminderList.innerHTML = reminders.map(rem => `<p>• ${rem}</p>`).join('');
+            } else {
+                reminderBox.classList.add('hidden');
+            }
         }
 
-        onSnapshot(collection(db, "rentals"), (snap) => { cachedSnapshot = snap; loadData(); });
+        onSnapshot(collection(db, "rentals"), (snapshot) => {
+            cachedSnapshot = snapshot;
+            loadData();
+        });
     </script>
-    
 </body>
 </html>
