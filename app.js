@@ -93,15 +93,32 @@ document.addEventListener("DOMContentLoaded", () => {
             input.parentNode.insertBefore(wrapper, input);
             wrapper.appendChild(input);
             
+                // 4. ഓട്ടോമാറ്റിക് മൈക്ക് ബട്ടൺ (വ്യക്തമായ മൈക്ക് ഐക്കൺ സഹിതം)
+    document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+        if (!input.id) return; 
+        
+        if (!input.parentNode.classList.contains('relative')) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'relative flex items-center w-full';
+            input.parentNode.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+            
             const micBtn = document.createElement('button');
             micBtn.type = 'button';
-            micBtn.innerHTML = '🎙️';
-            micBtn.className = 'absolute right-3 text-cyan-400 p-2 hover:scale-110 transition-transform z-10';
+            // ഇവിടെ വ്യക്തമായ മൈക്കിന്റെ SVG ഐക്കൺ നൽകിയിരിക്കുന്നു
+            micBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-cyan-400 hover:text-cyan-300 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                    <path d="M19 10v1a7 7 0 0 1-14 0v-1"></path>
+                    <line x1="12" x2="12" y1="19" y2="22"></line>
+                </svg>
+            `;
+            micBtn.className = 'absolute right-3.5 p-1 flex items-center justify-center z-10 cursor-pointer';
             micBtn.onclick = () => startVoiceInputFor(input.id);
             wrapper.appendChild(micBtn);
         }
     });
-});
+
 
 // വോയ്സ് ഇൻപുട്ട് ഫങ്ഷൻ (തിരഞ്ഞെടുക്കുന്ന ഭാഷ അനുസരിച്ച് മൈക്ക് ലാംഗ്വേജ് മാറും)
 window.startVoiceInputFor = (fieldId) => {
