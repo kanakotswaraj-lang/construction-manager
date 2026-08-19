@@ -74,18 +74,17 @@
         }
 
         window.setCategoryFilter = function(type) {
-            currentFilter = type;
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('bg-amber-500', 'text-slate-950', 'border-amber-400');
-                tab.classList.add('bg-slate-800/80', 'text-slate-300', 'border-slate-700');
-            });
-            const activeTab = document.getElementById(`tab-${type}`);
-            if(activeTab) {
-                activeTab.classList.remove('bg-slate-800/80', 'text-slate-300', 'border-slate-700');
-                activeTab.classList.add('bg-amber-500', 'text-slate-950', 'border-amber-400');
-            }
-            filterAndDisplay();
-        }
+    currentFilter = type;
+    // എല്ലാ ടാബുകളിൽ നിന്നും 'active' ക്ലാസ് മാറ്റുന്നു
+    document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+    
+    // സെലക്ട് ചെയ്ത ടാബിന് 'active' ക്ലാസ് നൽകുന്നു
+    const activeTab = document.getElementById(`tab-${type}`);
+    if(activeTab) activeTab.classList.add('active');
+    
+    filterAndDisplay();
+}
+
 
         window.filterAndDisplay = function() {
             let queryVal = document.getElementById('searchHistory').value.toLowerCase();
@@ -181,10 +180,16 @@
             }
         }
     </script>
+<style>
+    /* നിലവിലെ സ്റ്റൈലിനൊപ്പം ഇത് കൂടി ചേർക്കുക */
+    .filter-tab.active {
+        background-color: #f59e0b !important; /* Amber-500 */
+        color: #020617 !important;            /* Slate-950 */
+        border-color: #fbbf24 !important;    /* Amber-400 */
+    }
+</style>
 
-    <style>
-        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
-    </style>
+    
 </head>
 <body class="text-white min-h-screen pb-12 p-4 font-sans">
 
