@@ -95,7 +95,19 @@
         </section>
     </div>
 
-    <!-- സെന്ററിൽ മനോഹരമായി വരുന്ന പോപ്പ്-അപ്പ് -->
+    <!-- കോസ്റ്റം പ്രോംപ്റ്റ് മോഡൽ (ബ്രൗസർ പ്രോംപ്റ്റിന് പകരം ഇത് വർക്ക് ചെയ്യും) -->
+    <div id="customPromptModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-slate-900 border-2 border-amber-400 p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4">
+            <h3 id="promptTitle" class="text-amber-400 font-black text-base">വിവരം നൽകുക</h3>
+            <input type="text" id="promptInput" class="w-full p-4 bg-slate-800 text-white placeholder-slate-500 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-sm" placeholder="ഇവിടെ എഴുതുക...">
+            <div class="flex gap-2">
+                <button id="promptCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-xl font-black text-xs">വേണ്ട</button>
+                <button id="promptOkBtn" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 py-3 rounded-xl font-black text-xs">ശരി</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- സെന്ററിൽ മനോഹരമായി വരുന്ന ടോസ്റ്റ് പോപ്പ്-അപ്പ് -->
     <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center">
         ഫലം ഇവിടെ കാണിക്കും
     </div>
@@ -130,6 +142,43 @@
             }, 2500);
         }
 
+        // കോസ്റ്റം പ്രോംപ്റ്റ് ഫങ്ഷൻ
+        function openCustomPrompt(title, placeholder) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customPromptModal');
+                const titleEl = document.getElementById('promptTitle');
+                const inputEl = document.getElementById('promptInput');
+                const okBtn = document.getElementById('promptOkBtn');
+                const cancelBtn = document.getElementById('promptCancelBtn');
+
+                titleEl.innerText = title;
+                inputEl.placeholder = placeholder;
+                inputEl.value = '';
+                modal.classList.remove('hidden');
+                inputEl.focus();
+
+                const handleOk = () => {
+                    const val = inputEl.value;
+                    cleanup();
+                    resolve(val);
+                };
+
+                const handleCancel = () => {
+                    cleanup();
+                    resolve(null);
+                };
+
+                const cleanup = () => {
+                    modal.classList.add('hidden');
+                    okBtn.removeEventListener('click', handleOk);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                };
+
+                okBtn.addEventListener('click', handleOk);
+                cancelBtn.addEventListener('click', handleCancel);
+            });
+        }
+
         let currentFilter = 'active';
         window.setFilter = (filter) => {
             currentFilter = filter;
@@ -152,11 +201,16 @@
         document.querySelectorAll('input').forEach(input => input.addEventListener('input', calculateTotal));
 
         window.editItemDetails = async (id, currentItem, currentQty, currentShop, currentClient, currentSite) => {
-            const newName = prompt("ഉപകരണത്തിന്റെ പുതിയ പേര്:", currentItem);
-            const newQty = prompt("പുതിയ എണ്ണം:", currentQty);
-            const newSite = prompt("സൈറ്റിന്റെ പേര്:", currentSite);
-            const newShop = prompt("കടയുടെ പേര്:", currentShop);
-            const newClient = prompt("നൽകിയ ആളിന്റെ പേര്:", currentClient);
+            const newName = await openCustomPrompt("ഉപകരണത്തിന്റെ പുതിയ പേര്:", currentItem);
+            if (newName === null) return;
+            const newQty = await openCustomPrompt("പുതിയ എണ്ണം:", currentQty);
+            if (newQty === null) return;
+            const newSite = await openCustomPrompt("സൈറ്റിന്റെ പേര്:", currentSite);
+            if (newSite === null) return;
+            const newShop = await openCustomPrompt("കടയുടെ പേര്:", currentShop);
+            if (newShop === null) return;
+            const newClient = await openCustomPrompt("നൽകിയ ആളിന്റെ പേര്:", currentClient);
+            if (newClient === null) return;
 
             if(newName && newShop) {
                 await updateDoc(doc(db, "rentals", id), {
@@ -171,7 +225,7 @@
         };
 
         window.editRent = async (id, currentPaid) => {
-            const extraPaid = prompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?");
+            const extraPaid = await openCustomPrompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?", "തുക നൽകുക (₹)");
             if(extraPaid) {
                 await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
                 showToast("✨ പെയ്മെന്റ് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!");
