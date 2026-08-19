@@ -76,13 +76,13 @@
         window.setCategoryFilter = function(type) {
             currentFilter = type;
             document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('bg-amber-500', 'text-slate-950', 'border-amber-400');
-                tab.classList.add('bg-slate-800/80', 'text-slate-300', 'border-slate-700');
+                tab.classList.remove('bg-amber-500', 'text-slate-950', 'border-amber-400', 'font-black');
+                tab.classList.add('bg-slate-800', 'text-white', 'border-slate-700', 'font-bold');
             });
             const activeTab = document.getElementById(`tab-${type}`);
             if(activeTab) {
-                activeTab.classList.remove('bg-slate-800/80', 'text-slate-300', 'border-slate-700');
-                activeTab.classList.add('bg-amber-500', 'text-slate-950', 'border-amber-400');
+                activeTab.classList.remove('bg-slate-800', 'text-white', 'border-slate-700', 'font-bold');
+                activeTab.classList.add('bg-amber-500', 'text-slate-950', 'border-amber-400', 'font-black');
             }
             filterAndDisplay();
         }
@@ -108,8 +108,8 @@
             }
 
             container.innerHTML = dataList.map(item => {
-                let badgeColor = item.type === 'income' ? 'bg-cyan-500/15 text-cyan-400 border-cyan-400/30' : 
-                                 item.type === 'wage' ? 'bg-amber-500/15 text-amber-400 border-amber-400/30' : 'bg-red-500/15 text-red-400 border-red-400/30';
+                let badgeColor = item.type === 'income' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400/50' : 
+                                 item.type === 'wage' ? 'bg-amber-500/20 text-amber-300 border-amber-400/50' : 'bg-red-500/20 text-red-300 border-red-400/50';
                 let typeLabel = item.type === 'income' ? 'വരവ് (Income)' : item.type === 'wage' ? 'കൂലി (Wage)' : 'ചെലവ് (Expense)';
 
                 return `
@@ -193,7 +193,7 @@
         <!-- ഹെഡർ ലോഡ് ആകുന്ന കാൺടെയ്നർ -->
         <div id="appHeader" class="w-full flex justify-center"></div>
 
-        <!-- സ്വാഗതം പേര് കാണിക്കുന്ന ഭാഗം (യഥാർത്ഥ ഒറിജിനൽ കളർ) -->
+        <!-- സ്വാഗതം പേര് കാണിക്കുന്ന ഭാഗം -->
         <div class="text-center w-full">
             <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
                 സ്വാഗതം, ലോഡിങ്...
@@ -229,9 +229,9 @@
             <!-- ഫിൽട്ടർ ടാബുകൾ -->
             <div class="grid grid-cols-4 gap-1.5 pt-1">
                 <button type="button" id="tab-all" onclick="setCategoryFilter('all')" class="filter-tab bg-amber-500 text-slate-950 border border-amber-400 py-2 rounded-xl text-[11px] font-black transition">എല്ലാം</button>
-                <button type="button" id="tab-income" onclick="setCategoryFilter('income')" class="filter-tab bg-slate-800/80 text-slate-300 border border-slate-700 py-2 rounded-xl text-[11px] font-black transition">വരവ്</button>
-                <button type="button" id="tab-wage" onclick="setCategoryFilter('wage')" class="filter-tab bg-slate-800/80 text-slate-300 border border-slate-700 py-2 rounded-xl text-[11px] font-black transition">കൂലി</button>
-                <button type="button" id="tab-expense" onclick="setCategoryFilter('expense')" class="filter-tab bg-slate-800/80 text-slate-300 border border-slate-700 py-2 rounded-xl text-[11px] font-black transition">ചെലവ്</button>
+                <button type="button" id="tab-income" onclick="setCategoryFilter('income')" class="filter-tab bg-slate-800 text-white border border-slate-700 py-2 rounded-xl text-[11px] font-bold transition">വരവ്</button>
+                <button type="button" id="tab-wage" onclick="setCategoryFilter('wage')" class="filter-tab bg-slate-800 text-white border border-slate-700 py-2 rounded-xl text-[11px] font-bold transition">കൂലി</button>
+                <button type="button" id="tab-expense" onclick="setCategoryFilter('expense')" class="filter-tab bg-slate-800 text-white border border-slate-700 py-2 rounded-xl text-[11px] font-bold transition">ചെലവ്</button>
             </div>
         </div>
 
