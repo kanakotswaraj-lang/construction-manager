@@ -62,7 +62,7 @@
             <h2 id="totalMaterialCost" class="text-3xl font-black mt-1 text-emerald-400">₹0</h2>
         </div>
 
-        <!-- പുതിയ ഫീച്ചർ 1: മാസച്ചെലവ് ബാർ ചാർട്ട് സെക്ഷൻ -->
+        <!-- മാസച്ചെലവ് ബാർ ചാർട്ട് സെക്ഷൻ -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-2 no-print">
             <p class="text-xs font-black text-amber-400">📈 മാസത്തിലെ മെറ്റീരിയൽ ചെലവ് ചാർട്ട്</p>
             <div id="monthlyChartContainer" class="space-y-2 pt-2 border-t border-slate-800">
@@ -70,7 +70,7 @@
             </div>
         </div>
 
-        <!-- പുതിയ ഫീച്ചർ 2: സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ ട്രാക്കർ -->
+        <!-- സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ ട്രാക്കർ -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleLedgerList()">
                 <p class="text-xs font-black text-amber-400">🤝 സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ (ബാക്കി തുക)</p>
@@ -81,6 +81,24 @@
             </div>
         </div>
 
+        <!-- പുതിയ ഫീച്ചർ: സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
+                <p class="text-xs font-black text-emerald-400">📖 സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
+                <span id="supBookToggleIcon" class="text-xs text-slate-400 font-bold">▼ കാണുക</span>
+            </div>
+            <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
+                <div class="flex gap-2">
+                    <input type="text" id="newSupName" placeholder="സപ്ലയർ പേര്" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white">
+                    <input type="tel" id="newSupPhone" placeholder="ഫോൺ നമ്പർ" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white">
+                    <button onclick="window.saveSupplierContact()" class="bg-emerald-600 hover:bg-emerald-500 px-4 rounded-xl text-white font-black text-xs transition shadow-sm">+</button>
+                </div>
+                <div id="contactList" class="max-h-40 overflow-y-auto space-y-2 pt-1">
+                    <!-- കോൺടാക്റ്റുകൾ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
+                </div>
+            </div>
+        </div>
+
         <!-- സപ്ലയർ ലിസ്റ്റും ഫിൽട്ടറും -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="relative">
@@ -88,7 +106,7 @@
             </div>
         </div>
         
-        <!-- മെറ്റീരിയൽസ് ഫോം (ട്രാൻസ്ഫർ ഫീച്ചറും ഉൾപ്പെടെ) -->
+        <!-- മെറ്റീരിയൽസ് ഫോം -->
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4 backdrop-blur-sm no-print">
             <h2 id="formTitle" class="text-sm font-black text-amber-400">പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക</h2>
             
@@ -97,7 +115,6 @@
                 <input type="date" id="matDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
             </div>
             
-            <!-- പുതിയ ഫീച്ചർ 3: എൻട്രി ടൈപ്പ് (വാങ്ങിയത് അല്ലെങ്കിൽ സൈറ്റിലേക്ക് മാറ്റിയത്/Transfer) -->
             <div>
                 <label class="text-[10px] text-slate-400 font-bold block mb-1">പ്രവർത്തനം തിരഞ്ഞെടുക്കുക</label>
                 <select id="matActionType" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs font-bold text-white">
@@ -229,6 +246,44 @@
             else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
         };
 
+        // സപ്ലയർ കോൺടാക്ട് ബുക്ക് ടോഗ്ല് ഫങ്ഷൻ
+        window.toggleSupplierBook = () => {
+            const container = document.getElementById('supplierBookContainer');
+            const icon = document.getElementById('supBookToggleIcon');
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+        };
+
+        // സപ്ലയർ കോൺടാക്റ്റ് സേവ് ചെയ്യാൻ
+        window.saveSupplierContact = async () => {
+            const name = document.getElementById('newSupName').value.trim();
+            const phone = document.getElementById('newSupPhone').value.trim();
+            if (!name || !phone) {
+                window.showToast("പേരും ഫോൺ നമ്പറും നൽകുക!", false);
+                return;
+            }
+            try {
+                await addDoc(collection(db, "suppliers"), {
+                    meshtriOwner: currentMeshtri,
+                    name: name,
+                    phone: phone
+                });
+                document.getElementById('newSupName').value = '';
+                document.getElementById('newSupPhone').value = '';
+                window.showToast("👍 കോൺടാക്റ്റ് സേവ് ചെയ്തു!");
+            } catch (err) {
+                window.showToast("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല", false);
+            }
+        };
+
+        // സപ്ലയർ കോൺടാക്റ്റ് ഡിലീറ്റ് ചെയ്യാൻ
+        window.deleteSupplierContact = async (id) => {
+            if (await window.openCustomConfirm("ഈ കോൺടാക്റ്റ് ഡിലീറ്റ് ചെയ്യണോ?")) {
+                await deleteDoc(doc(db, "suppliers", id));
+                window.showToast("🗑️ നീക്കം ചെയ്തു!", false);
+            }
+        };
+
         document.getElementById('saveBtn').onclick = async () => {
             const name = document.getElementById('matName').value.trim();
             const site = document.getElementById('matSite').value.trim();
@@ -324,13 +379,11 @@
                         totalCost += price;
                     }
 
-                    // മാസച്ചെലവ് കണക്കാക്കാൻ (YYYY-MM)
                     if (d.date) {
                         const monthKey = d.date.substring(0, 7);
                         monthlyMap[monthKey] = (monthlyMap[monthKey] || 0) + (d.actionType !== 'transfer' ? price : 0);
                     }
 
-                    // സപ്ലയർ ലെഡ്ജർ ട്രാക്ക് ചെയ്യാൻ
                     if (d.phone || d.name) {
                         const supKey = d.phone ? `${d.phone}` : `${d.name} സപ്ലയർ`;
                         if (!suppliersLedgerMap.has(supKey)) {
@@ -349,7 +402,7 @@
 
                     let isTransfer = d.actionType === 'transfer';
                     let actionBadge = isTransfer 
-                        ? `<div class="text-xs font-black text-cyan-300 bg-cyan-950/60 p-2 rounded-xl border border-cyan-700/50 mb-2">🔄 മറ്റൊു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</div>` 
+                        ? `<div class="text-xs font-black text-cyan-300 bg-cyan-950/60 p-2 rounded-xl border border-cyan-700/50 mb-2">🔄 മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</div>` 
                         : '';
 
                     list.innerHTML += `
@@ -387,7 +440,6 @@
                 }
             });
 
-            // സപ്ലയർ ലെഡ്ജർ റെണ്ടർ ചെയ്യൽ
             const ledgerContainer = document.getElementById('ledgerContainer');
             if (suppliersLedgerMap.size > 0) {
                 let ledgerHtml = '';
@@ -413,7 +465,6 @@
                 ledgerContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</p>`;
             }
 
-            // മാസച്ചെലവ് ബാർ ചാർട്ട് റെണ്ടർ ചെയ്യൽ
             const chartContainer = document.getElementById('monthlyChartContainer');
             let chartHtml = '';
             let sortedMonths = Object.keys(monthlyMap).sort().reverse();
@@ -432,6 +483,32 @@
             }
 
             document.getElementById('totalMaterialCost').innerText = "₹" + totalCost;
+        });
+
+        // സപ്ലയർ കോൺടാക്റ്റ് ബുക്ക് ഡാറ്റ ഫയർബേസിൽ നിന്ന് എടുത്ത് കാണിക്കാൻ
+        onSnapshot(query(collection(db, "suppliers")), (snapshot) => {
+            const contactList = document.getElementById('contactList');
+            contactList.innerHTML = '';
+            let hasContacts = false;
+            
+            snapshot.forEach(docSnap => {
+                const s = docSnap.data();
+                if (s.meshtriOwner === currentMeshtri) {
+                    hasContacts = true;
+                    contactList.innerHTML += `
+                        <div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
+                            <div>
+                                <p class="font-black text-white">${s.name}</p>
+                                <a href="tel:${s.phone}" class="text-cyan-400 font-bold">📞 ${s.phone}</a>
+                            </div>
+                            <button onclick="window.deleteSupplierContact('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
+                        </div>`;
+                }
+            });
+
+            if (!hasContacts) {
+                contactList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
+            }
         });
 
         window.filterMaterials = () => {
@@ -479,7 +556,7 @@
             document.getElementById('formTitle').innerText = "മെറ്റീരിയൽ വിവരങ്ങൾ മാറ്റം വരുത്തുക";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
             document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' };
         };
 
         window.delMat = async (id) => {
