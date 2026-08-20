@@ -76,24 +76,31 @@
             
             <div class="relative">
                 <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-                <button type="button" onclick="startVoiceInputFor('itemName')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-sm font-bold bg-slate-700/50 rounded-xl">🎤 മൈക്ക്</button>
-            </div>
+                <button type="button" onclick="startVoiceInputFor('itemName')" class="mic-btn">
+    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="..."/></svg>
+</button>
+
 
             <div class="relative">
                 <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-                <button type="button" onclick="startVoiceInputFor('itemQty')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-sm font-bold bg-slate-700/50 rounded-xl">🎤 മൈക്ക്</button>
-            </div>
-            
+                <button type="button" onclick="startVoiceInputFor('itemName')" class="mic-btn">
+    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="..."/></svg>
+</button>
+
             <div class="relative">
                 <input type="text" id="siteName" placeholder="ഏത് സൈറ്റിലാണ് (Site Name)?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-cyan-400 text-xs">
-                <button type="button" onclick="startVoiceInputFor('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-2 text-sm font-bold bg-slate-700/50 rounded-xl">🎤 മൈക്ക്</button>
-            </div>
+                <button type="button" onclick="startVoiceInputFor('itemName')" class="mic-btn">
+    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="..."/></svg>
+</button>
+
 
             <div class="grid grid-cols-2 gap-2">
                 <div class="relative">
                     <input type="text" id="shopName" placeholder="എടുത്ത കടയുടെ പേര്" class="w-full p-4 pr-16 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-                    <button type="button" onclick="startVoiceInputFor('shopName')" class="absolute right-2 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-1.5 text-[11px] font-bold bg-slate-700/50 rounded-lg">🎤 മൈക്ക്</button>
-                </div>
+                    <button type="button" onclick="startVoiceInputFor('itemName')" class="mic-btn">
+    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="..."/></svg>
+</button>
+
                 <div class="relative">
                     <input type="text" id="clientName" placeholder="നൽകിയ ആളിന്റെ പേര്" class="w-full p-4 pr-16 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
                     <button type="button" onclick="startVoiceInputFor('clientName')" class="absolute right-2 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300 p-1.5 text-[11px] font-bold bg-slate-700/50 rounded-lg">🎤 മൈക്ക്</button>
@@ -201,14 +208,29 @@
             }, 2500);
         };
 
-        window.startVoiceInputFor = (fieldId) => {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return alert("ബ്രൗസർ സപ്പോർട്ട് ചെയ്യുന്നില്ല!");
-            
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'ml-IN'; 
-            recognition.continuous = false;
-            recognition.interimResults = false;
+        // ആപ്പിന്റെ ലുക്ക് ഭംഗിയാക്കാൻ മൈക്ക് എന്ന എഴുത്ത് പൂർണ്ണമായി ഒഴിവാക്കി
+window.startVoiceInputFor = (fieldId) => {
+    const target = document.getElementById(fieldId);
+    if (!target) return;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ml-IN';
+    recognition.start();
+
+    // മൈക്ക് ഓൺ ആകുമ്പോൾ ഒരു ചെറിയ വിഷ്വൽ എഫക്റ്റ് നൽകാം
+    target.style.borderColor = "#fbbf24"; 
+
+    recognition.onresult = (e) => {
+        target.value = e.results[0][0].transcript;
+        target.dispatchEvent(new Event('input'));
+    };
+
+    recognition.onend = () => {
+        target.style.borderColor = ""; // സാധാരണ നിലയിലേക്ക്
+    };
+};
+
 
             showToast("🎙️ സംസാരിക്കൂ...");
             
