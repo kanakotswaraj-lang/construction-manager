@@ -10,13 +10,13 @@
     <style>
         body { font-family: 'Manjari', sans-serif; }
         
-        input, select {
+        input, select, textarea {
             border: 2px solid rgba(51, 65, 85, 1);
             transition: all 0.3s ease;
             background-color: #1e293b !important;
         }
 
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             border-color: #22d3ee !important; 
             outline: none;
             box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2); 
@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് (പുതിയ ഫീച്ചർ) -->
+        <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
                 <p class="text-xs font-black text-emerald-400">📖 സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
@@ -95,6 +95,21 @@
                 </div>
                 <div id="contactList" class="max-h-40 overflow-y-auto space-y-2 pt-1">
                     <!-- കോൺടാക്റ്റുകൾ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
+                </div>
+            </div>
+        </div>
+
+        <!-- പ്രത്യേക കുറിപ്പുകൾ (പുതിയ ഫീച്ചർ) -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleNotesBook()">
+                <p class="text-xs font-black text-amber-400">📝 പ്രത്യേക കുറിപ്പുകൾ (Quick Notes)</p>
+                <span id="notesToggleIcon" class="text-xs text-slate-400 font-bold">▼ കാണുക</span>
+            </div>
+            <div id="notesContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
+                <textarea id="newNoteText" placeholder="ഇന്നത്തെ കുറിപ്പുകൾ ഇവിടെ എഴുതുക..." rows="2" class="w-full p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white"></textarea>
+                <button onclick="window.saveQuickNote()" class="w-full bg-amber-600 hover:bg-amber-500 py-2.5 rounded-xl text-slate-950 font-black text-xs transition shadow-sm">കുറിപ്പ് സേവ് ചെയ്യുക</button>
+                <div id="notesList" class="max-h-36 overflow-y-auto space-y-2 pt-1">
+                    <!-- കുറിപ്പുകൾ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
                 </div>
             </div>
         </div>
@@ -207,7 +222,7 @@
 
         let editId = null;
 
-                window.showToast = (message, isSuccess = true) => {
+        window.showToast = (message, isSuccess = true) => {
             const toast = document.getElementById('customToast');
             toast.innerText = message;
             toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 text-center backdrop-blur-md ${isSuccess ? 'bg-gradient-to-r from-emerald-900 to-teal-900 border-2 border-emerald-400 text-emerald-200 shadow-emerald-950/50' : 'bg-gradient-to-r from-red-900 to-rose-900 border-2 border-rose-400 text-rose-200 shadow-rose-950/50'} opacity-100 scale-105`;
@@ -215,7 +230,6 @@
                 toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
             }, 2500);
         };
-
 
         window.openCustomConfirm = (title) => new Promise(resolve => {
             const modal = document.getElementById('customConfirmModal');
@@ -254,6 +268,13 @@
             else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
         };
 
+        window.toggleNotesBook = () => {
+            const container = document.getElementById('notesContainer');
+            const icon = document.getElementById('notesToggleIcon');
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+        };
+
         window.saveSupplierContact = async () => {
             const name = document.getElementById('newSupName').value.trim();
             const phone = document.getElementById('newSupPhone').value.trim();
@@ -282,12 +303,38 @@
             }
         };
 
+        window.saveQuickNote = async () => {
+            const text = document.getElementById('newNoteText').value.trim();
+            if (!text) {
+                window.showToast("കുറിപ്പ് എഴുതുക!", false);
+                return;
+            }
+            try {
+                await addDoc(collection(db, "notes"), {
+                    meshtriOwner: currentMeshtri,
+                    text: text,
+                    date: new Date().toLocaleDateString()
+                });
+                document.getElementById('newNoteText').value = '';
+                window.showToast("👍 കുറിപ്പ് സേവ് ചെയ്തു!");
+            } catch (err) {
+                window.showToast("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല", false);
+            }
+        };
+
+        window.deleteQuickNote = async (id) => {
+            if (await window.openCustomConfirm("ഈ കുറിപ്പ് ഡിലീറ്റ് ചെയ്യണോ?")) {
+                await deleteDoc(doc(db, "notes", id));
+                window.showToast("🗑️ നീക്കം ചെയ്തു!", false);
+            }
+        };
+
         document.getElementById('saveBtn').onclick = async () => {
-            const name = document.getElementById('matName').value.trim();
+                        const name = document.getElementById('matName').value.trim();
             const site = document.getElementById('matSite').value.trim();
             
-            if (!name) return alert("മെറ്റീരിയൽ പേര് നൽകുക!");
-            if (!site) return alert("സൈറ്റിന്റെ പേര് നൽകുക!");
+            if (!name) { window.showToast("മെറ്റീരിയൽ പേര് നൽകുക!", false); return; }
+            if (!site) { window.showToast("സൈറ്റിന്റെ പേര് നൽകുക!", false); return; }
 
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.innerText = "സേവ് ആകുന്നുണ്ട്...";
@@ -398,6 +445,9 @@
                     const usedQty = parseFloat(d.used) || 0;
                     const remainingQty = totalQty - usedQty;
 
+                    // കുറഞ്ഞ സ്റ്റോക്ക് മുന്നറിയിപ്പ് ബാഡ്ജ് (പുതിയ ഫീച്ചർ)
+                    let stockWarning = remainingQty <= 2 ? `<div class="text-[10px] font-black text-amber-300 bg-amber-950/60 p-2 rounded-xl border border-amber-600/40 mb-2">⚠️ സ്റ്റോക്ക് കുറവാണ് / തീരാറായി!</div>` : '';
+
                     let isTransfer = d.actionType === 'transfer';
                     let actionBadge = isTransfer 
                         ? `<div class="text-xs font-black text-cyan-300 bg-cyan-950/60 p-2 rounded-xl border border-cyan-700/50 mb-2">🔄 മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</div>` 
@@ -414,6 +464,7 @@
                             </p>
                             
                             ${actionBadge}
+                            ${stockWarning}
 
                             <div class="bg-slate-800/80 p-3 rounded-2xl mb-3 border border-slate-700">
                                 <div class="flex justify-between text-xs font-bold text-slate-400 mb-1">
@@ -505,6 +556,32 @@
 
             if (!hasContacts) {
                 contactList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
+            }
+        });
+
+        onSnapshot(query(collection(db, "notes")), (snapshot) => {
+            const notesList = document.getElementById('notesList');
+            if(!notesList) return;
+            notesList.innerHTML = '';
+            let hasNotes = false;
+            
+            snapshot.forEach(docSnap => {
+                const n = docSnap.data();
+                if (n.meshtriOwner === currentMeshtri) {
+                    hasNotes = true;
+                    notesList.innerHTML += `
+                        <div class="flex justify-between items-start bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-bold">${n.date || ''}</p>
+                                <p class="font-bold text-white mt-0.5">${n.text}</p>
+                            </div>
+                            <button onclick="window.deleteQuickNote('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
+                        </div>`;
+                }
+            });
+
+            if (!hasNotes) {
+                notesList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</p>`;
             }
         });
 
