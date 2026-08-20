@@ -176,12 +176,21 @@
 
     <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം -->
     <script type="module">
+        
         import { setupHeader } from './header.js';
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         
         document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') setupHeader('appHeader');
+            try {
+                if (typeof setupHeader === 'function') {
+                    setupHeader('appHeader');
+                } else {
+                    document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
+                }
+            } catch (e) {
+                console.log("Header load error");
+            }
         });
 
         const firebaseConfig = {
