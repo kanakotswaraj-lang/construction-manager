@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ml">
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,9 +11,15 @@
     <style>
         body { font-family: 'Manjari', sans-serif; }
         @media print { .no-print { display: none !important; } }
+        /* Toast Animation */
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .toast-animate { animation: slideIn 0.3s ease-out forwards; }
     </style>
 </head>
 <body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 
     <div class="max-w-md mx-auto space-y-4">
         <div class="flex flex-col items-center pt-2 pb-2">
@@ -38,11 +43,11 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-4">
-            <div class="bg-emerald-600 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30">
+            <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
                 <p class="text-[10px] opacity-90 uppercase tracking-widest font-black">വരവ്</p>
                 <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
             </div>
-            <div class="bg-red-600 p-4 rounded-2xl shadow-md text-center border border-red-500/30">
+            <div class="bg-red-600/90 p-4 rounded-2xl shadow-md text-center border border-red-500/30 backdrop-blur-sm">
                 <p class="text-[10px] opacity-90 uppercase tracking-widest font-black">ചെലവ് / കൂലി</p>
                 <h2 id="totalExpense" class="text-xl font-black mt-1">₹0</h2>
             </div>
@@ -56,46 +61,46 @@
         <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
             <div>
                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
-                <select id="filterSite" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold">
+                <select id="filterSite" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                     <option value="">എല്ലാ സൈറ്റുകളും</option>
                 </select>
             </div>
             <div>
                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി വെച്ച് തിരയാൻ</label>
-                <input type="date" id="filterDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold">
+                <input type="date" id="filterDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
             </div>
             <div>
                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പേര് വെച്ച് തിരയാൻ</label>
-                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-500">
+                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-500 focus:outline-none focus:border-amber-400">
             </div>
         </div>
 
         <!-- പുതിയ കണക്ക് ഫോം -->
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
             <h2 class="text-base font-black text-amber-400 mb-2">പുതിയ കണക്ക് ചേർക്കുക</h2>
-            <input type="date" id="transDate" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold">
-            <input type="text" id="ownerName" placeholder="പേര് / വിവരം" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold">
-            <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold">
+            <input type="date" id="transDate" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+            <input type="text" id="ownerName" placeholder="പേര് / വിവരം" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+            <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
             <div class="grid grid-cols-2 gap-3">
-                <select id="type" class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold">
+                <select id="type" class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                     <option value="income">വരവ്</option>
                     <option value="wage">കൂലി</option>
                     <option value="material">മെറ്റീരിയൽസ്</option>
                     <option value="rent">വാടക</option>
                     <option value="other">മറ്റ് ചെലവ്</option>
                 </select>
-                <select id="paymentMethod" class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold">
+                <select id="paymentMethod" class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                     <option value="cash">ക്യാഷ്</option>
                     <option value="gpay">GPay</option>
                     <option value="UPI">യുപിഐ</option>
                     <option value="bank">ബാങ്ക്</option>
                 </select>
             </div>
-            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold">
-            <button id="saveBtn" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-sm">സേവ് ചെയ്യുക</button>
+            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+            <button id="saveBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition">സേവ് ചെയ്യുക</button>
         </div>
 
-        <button onclick="window.print()" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-black text-sm mb-6 no-print">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
+        <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-2xl font-black text-sm mb-6 shadow-lg shadow-blue-600/20 transition no-print">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
         <div id="transactionList" class="space-y-3 pb-10"></div>
     </div>
 
@@ -111,17 +116,60 @@
         let editId = null;
         let allTransactions = [];
 
+        // Toast Notification Function
+        window.showToast = function(message, isSuccess = true) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-animate pointer-events-auto px-5 py-3 rounded-2xl text-white font-bold text-sm shadow-2xl border backdrop-blur-md flex items-center gap-2 ${
+                isSuccess 
+                    ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-300' 
+                    : 'bg-gradient-to-r from-red-950 to-rose-950 border-red-500/50 text-white'
+            }`;
+            toast.innerText = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+
+        // Set default date to today
+        document.getElementById('transDate').valueAsDate = new Date();
+
         document.getElementById('saveBtn').onclick = async () => {
-            const data = { meshtriOwner: currentMeshtri, name: document.getElementById('ownerName').value.trim(), site: document.getElementById('siteName').value.trim() || "പ്രധാന സൈറ്റ്", type: document.getElementById('type').value, payment: document.getElementById('paymentMethod').value, amount: parseFloat(document.getElementById('amount').value) || 0, date: document.getElementById('transDate').value };
-            if (!data.name || !data.date) return alert("പേരും തീയതിയും നൽകുക!");
+            const data = { 
+                meshtriOwner: currentMeshtri, 
+                name: document.getElementById('ownerName').value.trim(), 
+                site: document.getElementById('siteName').value.trim() || "പ്രധാന സൈറ്റ്", 
+                type: document.getElementById('type').value, 
+                payment: document.getElementById('paymentMethod').value, 
+                amount: parseFloat(document.getElementById('amount').value) || 0, 
+                date: document.getElementById('transDate').value 
+            };
+            
+            if (!data.name) { window.showToast("പേര് / വിവരം നൽകുക!", false); return; }
+            if (!data.date) { window.showToast("തീയതി നൽകുക!", false); return; }
+            if (!data.amount || data.amount <= 0) { window.showToast("ശരിയായ തുക നൽകുക!", false); return; }
+
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.disabled = true;
             try {
-                if (editId) { await updateDoc(doc(db, "accounts", editId), data); editId = null; } 
-                else { await addDoc(collection(db, "accounts"), data); }
-                alert("വിവരങ്ങൾ സേവ് ആയി!");
+                if (editId) { 
+                    await updateDoc(doc(db, "accounts", editId), data); 
+                    editId = null; 
+                    window.showToast("കണക്ക് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!", true);
+                } else { 
+                    await addDoc(collection(db, "accounts"), data); 
+                    window.showToast("കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!", true);
+                }
+                document.getElementById('ownerName').value = '';
+                document.getElementById('amount').value = '';
                 saveBtn.disabled = false;
-            } catch (e) { alert("തടസ്സമുണ്ടായി."); saveBtn.disabled = false; }
+            } catch (e) { 
+                window.showToast("തടസ്സമുണ്ടായി, വീണ്ടും ശ്രമിക്കുക.", false); 
+                saveBtn.disabled = false; 
+            }
         };
 
         onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
@@ -159,13 +207,14 @@
                     if(isIncome) inc += parseFloat(d.amount) || 0; else exp += parseFloat(d.amount) || 0;
 
                     list.innerHTML += `
-                        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center">
+                        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
                             <div>
-                                <p class="font-black text-base">${d.name}</p>
-                                <p class="text-xs text-slate-400 font-bold">${d.date} • ${d.site} • ${d.type}</p>
+                                <p class="font-black text-base text-white">${d.name}</p>
+                                <p class="text-xs text-slate-400 font-bold mt-0.5">${d.date} • ${d.site} • <span class="text-amber-400/80 uppercase">${d.type}</span></p>
                             </div>
                             <div class="text-right">
-                                <p class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-red-400'}">₹${d.amount}</p>
+                                <p class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-red-400'}">${isIncome ? '+' : '-'}₹${d.amount}</p>
+                                <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md font-bold uppercase">${d.payment}</span>
                             </div>
                         </div>`;
                 }
