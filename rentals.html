@@ -5,18 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Manjari', sans-serif; }
-        /* മൈക്ക് ബട്ടൺ കൂടുതൽ കൃത്യവും ഭംഗിയുള്ളതുമാക്കിയിരിക്കുന്നു */
-        .mic-btn {
-            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-            color: #22d3ee; background: rgba(30, 41, 59, 0.8);
-            width: 32px; height: 32px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(34, 211, 238, 0.3);
-            display: flex; align-items: center; justify-content: center; font-size: 14px;
-        }
-        .mic-btn:hover { color: #67e8f9; background: rgba(51, 65, 85, 1); }
-        input:focus, select:focus { border-color: #22d3ee !important; box-shadow: 0 0 10px rgba(34, 211, 238, 0.3); }
-    </style>
+    body { font-family: 'Manjari', sans-serif; }
+    
+    /* ഇൻപുട്ട് ബോക്സ് സ്റ്റൈൽ */
+    input, select {
+        border: 2px solid transparent; /* ആദ്യം ബോർഡർ സുതാര്യമാക്കുന്നു */
+        transition: all 0.3s ease;     /* സ്മൂത്ത് ആനിമേഷന് വേണ്ടി */
+    }
+
+    /* ഫോക്കസ് ചെയ്യുമ്പോൾ വരുന്ന സ്റ്റൈൽ */
+    input:focus, select:focus {
+        border-color: #22d3ee !important; /* നീല നിറം */
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2); /* നീല നിറത്തിലുള്ള ഗ്ലോ */
+        background-color: #0f172a !important; /* ഫോക്കസ് ചെയ്യുമ്പോൾ ഉള്ളിൽ ചെറിയൊരു നിറം മാറ്റം */
+    }
+
+    .mic-btn {
+        position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+        color: #22d3ee; background: rgba(30, 41, 59, 0.9);
+        width: 30px; height: 30px; border-radius: 8px; cursor: pointer; border: 1px solid rgba(34, 211, 238, 0.4);
+        display: flex; align-items: center; justify-content: center; font-size: 13px;
+        z-index: 10;
+    }
+</style>
+
     <title>വാടക ഉപകരണങ്ങൾ</title>
 </head>
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
@@ -257,17 +272,17 @@
                     shop: newShop, 
                     client: newClient || '' 
                 });
-                showToast("✏️ വിവരങ്ങൾ എഡിറ്റ് ചെയ്തു!");
+                showToast("✏️ വിവരങ്ങൾ വിജയകരമായി മാറ്റം വരുത്തി!");
             }
-        };
 
-        window.editRent = async (id, currentPaid) => {
+                window.editRent = async (id, currentPaid) => {
             const extraPaid = await openCustomPrompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?", "തുക (₹)");
             if(extraPaid) {
                 await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
-                showToast("✨ പെയ്മെന്റ് അപ്ഡേറ്റ് ചെയ്തു!");
+                showToast("✨ പെയ്മെന്റ് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു! 👍");
             }
         };
+
 
         window.settleFull = async (id, total) => {
             if(await openCustomConfirm("ബാക്കി തുക മുഴുവൻ അടച്ചു തീർത്ത് അക്കൗണ്ട് ക്ലിയർ ചെയ്യണോ?")) {
@@ -282,12 +297,13 @@
             showToast(newStatus ? "📦 ഉപകരണം തിരികെ നൽകി!" : "🔄 വാടക സ്റ്റാറ്റസ് മാറ്റി!");
         };
 
-        window.deleteRent = async (id) => {
+                window.deleteRent = async (id) => {
             if(await openCustomConfirm("ഈ ഡാറ്റ ഡിലീറ്റ് ചെയ്യണോ?")) {
                 await deleteDoc(doc(db, "rentals", id));
-                showToast("🗑️ ഡിലീറ്റ് ചെയ്തു!", false);
+                showToast("🗑️ ഡാറ്റ വിജയകരമായി നീക്കം ചെയ്തു!", false);
             }
         };
+
 
         window.shareWhatsApp = (item, bedroom, qty, site, shop, client, total, paid, bal, totalDays) => {
             const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} ${bedroom ? `(ബെഡ്റൂം: ${bedroom})` : ''} (${qty} എണ്ണം)\nസൈറ്റ്: ${site || 'പറഞ്ഞിട്ടില്ല'}\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nആകെ വാടക: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
