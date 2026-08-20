@@ -207,14 +207,15 @@
 
         let editId = null;
 
-        window.showToast = (message, isSuccess = true) => {
+                window.showToast = (message, isSuccess = true) => {
             const toast = document.getElementById('customToast');
             toast.innerText = message;
-            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-emerald-950 border-2 border-emerald-500 text-emerald-200' : 'bg-red-950 border-2 border-red-500 text-red-200'} opacity-100 scale-105`;
+            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 text-center backdrop-blur-md ${isSuccess ? 'bg-gradient-to-r from-emerald-900 to-teal-900 border-2 border-emerald-400 text-emerald-200 shadow-emerald-950/50' : 'bg-gradient-to-r from-red-900 to-rose-900 border-2 border-rose-400 text-rose-200 shadow-rose-950/50'} opacity-100 scale-105`;
             setTimeout(() => {
                 toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
             }, 2500);
         };
+
 
         window.openCustomConfirm = (title) => new Promise(resolve => {
             const modal = document.getElementById('customConfirmModal');
