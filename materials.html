@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <!-- പുതിയ ഫീച്ചർ: സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
+        <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് (പുതിയ ഫീച്ചർ) -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
                 <p class="text-xs font-black text-emerald-400">📖 സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
@@ -246,7 +246,6 @@
             else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
         };
 
-        // സപ്ലയർ കോൺടാക്ട് ബുക്ക് ടോഗ്ല് ഫങ്ഷൻ
         window.toggleSupplierBook = () => {
             const container = document.getElementById('supplierBookContainer');
             const icon = document.getElementById('supBookToggleIcon');
@@ -254,7 +253,6 @@
             else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
         };
 
-        // സപ്ലയർ കോൺടാക്റ്റ് സേവ് ചെയ്യാൻ
         window.saveSupplierContact = async () => {
             const name = document.getElementById('newSupName').value.trim();
             const phone = document.getElementById('newSupPhone').value.trim();
@@ -276,7 +274,6 @@
             }
         };
 
-        // സപ്ലയർ കോൺടാക്റ്റ് ഡിലീറ്റ് ചെയ്യാൻ
         window.deleteSupplierContact = async (id) => {
             if (await window.openCustomConfirm("ഈ കോൺടാക്റ്റ് ഡിലീറ്റ് ചെയ്യണോ?")) {
                 await deleteDoc(doc(db, "suppliers", id));
@@ -485,7 +482,6 @@
             document.getElementById('totalMaterialCost').innerText = "₹" + totalCost;
         });
 
-        // സപ്ലയർ കോൺടാക്റ്റ് ബുക്ക് ഡാറ്റ ഫയർബേസിൽ നിന്ന് എടുത്ത് കാണിക്കാൻ
         onSnapshot(query(collection(db, "suppliers")), (snapshot) => {
             const contactList = document.getElementById('contactList');
             contactList.innerHTML = '';
@@ -556,7 +552,7 @@
             document.getElementById('formTitle').innerText = "മെറ്റീരിയൽ വിവരങ്ങൾ മാറ്റം വരുത്തുക";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
             document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
-            window.scrollTo({ top: 0, behavior: 'smooth' };
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.delMat = async (id) => {
