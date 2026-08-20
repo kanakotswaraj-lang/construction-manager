@@ -5,213 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
-    body { font-family: 'Manjari', sans-serif; }
-    
-    /* മൈക്ക് ബട്ടൺ ഡിസൈനും നീല ബോർഡർ എഫക്റ്റും */
-    .mic-btn {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #22d3ee;
-        background: rgba(51, 65, 85, 0.5);
-        padding: 8px;
-        border-radius: 12px;
-        cursor: pointer;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .mic-btn:hover { color: #67e8f9; }
-
-    /* എല്ലാ ഇൻപുട്ടുകൾക്കും മനോഹരമായ നീല ബോർഡർ സ്ഥിരമായി കിട്ടാൻ */
-    input:focus, select:focus {
-        border-color: #22d3ee !important;
-        box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
-    }
-</style>
-
-
-    
+        body { font-family: 'Manjari', sans-serif; }
+        .mic-btn {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            color: #22d3ee; background: rgba(51, 65, 85, 0.5);
+            padding: 8px; border-radius: 12px; cursor: pointer; border: none;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .mic-btn:hover { color: #67e8f9; }
+        input:focus, select:focus { border-color: #22d3ee !important; box-shadow: 0 0 10px rgba(34, 211, 238, 0.3); }
+    </style>
     <title>വാടക ഉപകരണങ്ങൾ</title>
 </head>
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ലോഡ് ആകുന്ന കാൺടെയ്നർ -->
+        <!-- ഹെഡർ ലോഡ് ആകുന്ന ഭാഗം -->
         <div id="appHeader" class="w-full flex justify-center"></div>
 
-        <!-- സ്വാഗതം പേര് കാണിക്കുന്ന ഭാഗം -->
         <div class="text-center w-full">
-            <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
-                സ്വാഗതം, ലോഡിങ്...
-            </span>
+            <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black text-cyan-300 bg-cyan-500/10 border border-cyan-400/40">സ്വാഗതം...</span>
         </div>
 
-        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
-        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
-            <div>
-                <h1 class="text-lg font-black text-white">വാടക ഉപകരണങ്ങൾ</h1>
-            </div>
-            <a href="dashboard.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
-                <span>←</span> ഡാഷ്‌ബോർഡ്
-            </a>
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <h1 class="text-lg font-black text-white">വാടക ഉപകരണങ്ങൾ</h1>
+            <a href="dashboard.html" class="px-3 py-1.5 bg-slate-800 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold">← ഡാഷ്‌ബോർഡ്</a>
         </div>
 
-        <!-- 1. അനലിറ്റിക്സ് / ഗ്രാഫ് സംഗ്രഹം -->
-        <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-3xl shadow-xl backdrop-blur-sm space-y-4">
-            <h2 class="text-xs font-black text-amber-400 uppercase tracking-wider">📊 വാടക അനലിറ്റിക്സ്</h2>
+        <!-- ഫോം ഭാഗം -->
+        <div class="bg-slate-900/90 p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4">
+            <h2 class="font-black text-amber-400 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
             
-            <div class="grid grid-cols-2 gap-3 text-center">
-                <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                    <p class="text-[11px] font-bold text-slate-400 mb-1">ആകെ വാടക</p>
-                    <p id="statTotalRent" class="text-xl font-black text-white">₹0</p>
-                </div>
-                <div class="bg-slate-800 p-4 rounded-2xl border border-red-900/30">
-                    <p class="text-[11px] font-bold text-red-300 mb-1">ബാലൻസ്</p>
-                    <p id="statTotalBal" class="text-xl font-black text-red-400">₹0</p>
-                </div>
-            </div>
-
-            <div class="w-full bg-slate-950 rounded-full h-4 overflow-hidden border border-slate-700 flex">
-                <div id="barPaid" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
-                <div id="barBal" class="bg-red-500 h-full transition-all duration-500" style="width: 100%"></div>
-            </div>
-
-            <div class="flex justify-between text-xs font-black px-1">
-                <span class="text-emerald-400 flex items-center gap-1">● അടച്ചത്</span>
-                <span class="text-red-400 flex items-center gap-1">● ബാലൻസ്</span>
-            </div>
+            <!-- ഓരോ ഇൻപുട്ടിനും മൈക്ക് ബട്ടൺ -->
+            <div class="relative"><input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button onclick="startVoiceInputFor('itemName')" class="mic-btn">🎙️</button></div>
+            <div class="relative"><input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button onclick="startVoiceInputFor('bedroomName')" class="mic-btn">🎙️</button></div>
+            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            
+            <button id="saveRentBtn" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
-        <!-- 2. റിമൈൻഡർ അലേർട്ട് ബോക്സ് -->
-        <div id="reminderBox" class="hidden bg-amber-950/40 border border-amber-500/50 p-4 rounded-2xl shadow-lg space-y-2">
-            <h3 class="text-xs font-black text-amber-300 flex items-center gap-1">
-                <span>⚠️</span> കാലാവധി കഴിഞ്ഞ/തീർന്ന ഉപകരണങ്ങൾ ഉണ്ടോ? ശ്രദ്ധിക്കുക!
-            </h3>
-            <div id="reminderList" class="text-[11px] text-amber-200/80 space-y-1"></div>
-        </div>
-
-        
-     <!-- ഫോം ഭാഗം -->
-
-<div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 mb-8 space-y-4 backdrop-blur-sm">
-    <div class="flex justify-between items-center mb-2">
-        <h2 class="font-black text-amber-400 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
+        <section id="rentList" class="space-y-4"></section>
     </div>
+
+    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 bg-slate-900 border border-amber-400 text-amber-300 px-6 py-3 rounded-2xl opacity-0 transition-opacity z-50">ഫലം...</div>
+
+    <script type="module">
+        import { setupHeader } from './header.js';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+        // ഹെഡർ ലോഡ് ചെയ്യുന്നു
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof setupHeader === 'function') setupHeader('appHeader');
+        });
+
+        // വോയിസ് ഇൻപുട്ട് ഫംഗ്ഷൻ
+        window.startVoiceInputFor = (fieldId) => {
+            const target = document.getElementById(fieldId);
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert("ബ്രൗസർ സപ്പോർട്ട് ചെയ്യുന്നില്ല");
+            
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'ml-IN';
+            recognition.start();
+            document.getElementById('customToast').innerText = "🎙️ സംസാരിക്കൂ...";
+            document.getElementById('customToast').style.opacity = 1;
+
+            recognition.onresult = (e) => {
+                target.value = e.results[0][0].transcript;
+                document.getElementById('customToast').style.opacity = 0;
+            };
+        };
+
     
-    <!-- 1. ഉപകരണത്തിന്റെ പേര് -->
-    <div class="relative w-full">
-        <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-        <button type="button" onclick="startVoiceInputFor('itemName')" class="mic-btn">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
-        </button>
-    </div>
-
-    <!-- 2. എത്ര എണ്ണം -->
-    <div class="relative w-full">
-        <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-        <button type="button" onclick="startVoiceInputFor('itemQty')" class="mic-btn">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
-        </button>
-    </div>
-
-    <!-- 3. സൈറ്റ് നെയിം -->
-    <div class="relative w-full">
-        <input type="text" id="siteName" placeholder="ഏത് സൈറ്റിലാണ് (Site Name)?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-        <button type="button" onclick="startVoiceInputFor('siteName')" class="mic-btn">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
-        </button>
-    </div>
-
-    <!-- 4. കടയുടെ പേരും ആളിന്റെ പേരും -->
-    <div class="grid grid-cols-2 gap-2">
-        <div class="relative w-full">
-            <input type="text" id="shopName" placeholder="എടുത്ത കടയുടെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-            <button type="button" onclick="startVoiceInputFor('shopName')" class="mic-btn">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
-            </button>
-        </div>
-        <div class="relative w-full">
-            <input type="text" id="clientName" placeholder="നൽകിയ ആളിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-            <button type="button" onclick="startVoiceInputFor('clientName')" class="mic-btn">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
-            </button>
-        </div>
-    </div>
-
-    <!-- 5. ഫോൺ നമ്പർ -->
-    <div class="relative w-full">
-        <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-        <button type="button" onclick="startVoiceInputFor('shopPhone')" class="mic-btn">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
-        </button>
-    </div>
-    
-    <div class="grid grid-cols-2 gap-3">
-        <div class="space-y-1">
-            <label class="text-[10px] font-black text-slate-400 ml-1">എടുത്ത തീയതി</label>
-            <input type="date" id="startDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-        </div>
-        <div class="space-y-1">
-            <label class="text-[10px] font-black text-slate-400 ml-1">തിരികെ നൽകേണ്ടത്</label>
-            <input type="date" id="endDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-        </div>
-    </div>
-    
-    <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-    <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-    <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
-    
-    <button id="saveRentBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black shadow-lg transition text-xs">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
-</div>
 
 
-        <!-- ഫിൽട്ടർ ബട്ടണുകൾ -->
-        <div class="flex gap-2 mb-2">
-            <button onclick="setFilter('active')" id="filterActiveBtn" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 transition">നടന്നുകൊണ്ടിരിക്കുന്നത്</button>
-            <button onclick="setFilter('returned')" id="filterReturnedBtn" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition">തിരികെ നൽകിയത്</button>
-        </div>
-
-        <!-- സെർച്ച് ബാർ -->
-        <div class="mb-6">
-            <input type="text" id="searchInput" placeholder="🔍 ഉപകരണത്തിന്റെ പേരോ കടയോ സൈറ്റോ സെർച്ച് ചെയ്യുക..." 
-                class="w-full p-4 bg-slate-900/50 text-white placeholder-slate-500 rounded-xl border border-slate-700 focus:outline-none focus:border-cyan-400 font-bold text-xs">
-        </div>
-
-        <section id="rentList" class="space-y-4 pb-12">
-            <h2 class="font-black text-white mb-2 text-sm">എടുത്ത ഉപകരണങ്ങളുടെ ഹിസ്റ്ററി</h2>
-        </section>
-    </div>
-
-    <!-- മോഡലുകളും ടോസ്റ്റും -->
-    <div id="customPromptModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-slate-900 border-2 border-amber-400 p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4">
-            <h3 id="promptTitle" class="text-amber-400 font-black text-base">വിവരം നൽകുക</h3>
-            <input type="text" id="promptInput" class="w-full p-4 bg-slate-800 text-white placeholder-slate-500 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-sm" placeholder="ഇവിടെ എഴുതുക...">
-            <div class="flex gap-2">
-                <button id="promptCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-xl font-black text-xs">വേണ്ട</button>
-                <button id="promptOkBtn" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 py-3 rounded-xl font-black text-xs">ശരി</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="customConfirmModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-slate-900 border-2 border-amber-400 p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center">
-            <h3 id="confirmTitle" class="text-amber-400 font-black text-base">തീരുമാനമെടുക്കുക</h3>
-            <div class="flex gap-2 pt-2">
-                <button id="confirmCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-xl font-black text-xs">വേണ്ട</button>
-                <button id="confirmOkBtn" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 py-3 rounded-xl font-black text-xs">ശരി</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center">
-        ഫലം ഇവിടെ കാണിക്കും
-    </div>
+       
 
     <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം പൂർണ്ണമായി -->
     <script type="module">
