@@ -37,7 +37,6 @@
     }
 </style>
 
-
     <title>വാടക ഉപകരണങ്ങൾ</title>
 </head>
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
@@ -89,6 +88,7 @@
                 <button id="filterReturnedBtn" onclick="setFilter('returned')" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition">തിരികെ നൽകിയത്</button>
             </div>
         </div>
+        
         <!-- ഫോം ഭാഗം (പുതിയ ഉപകരണം ചേർക്കാൻ) -->
         <div class="bg-slate-900/90 p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4">
             <h2 class="font-black text-amber-400 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
@@ -149,6 +149,8 @@
             <button id="saveRentBtn" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
+        <div id="rentList" class="space-y-3"></div>
+    </div>
 
     <!-- മോഡലുകളും ടോസ്റ്റും -->
     <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
@@ -176,7 +178,6 @@
 
     <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം -->
     <script type="module">
-        
         import { setupHeader } from './header.js';
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -190,6 +191,7 @@
                 }
             } catch (e) {
                 console.log("Header load error");
+                document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
             }
         });
 
@@ -232,18 +234,22 @@
             recognition.lang = 'ml-IN';
             
             target.style.borderColor = "#fbbf24"; 
-            showToast("🎙️ സംസാരിക്കൂ...");
+            window.showToast("🎙️ സംസാരിക്കൂ...");
 
-            recognition.start();
+            try {
+                recognition.start();
+            } catch (err) {
+                console.log(err);
+            }
 
             recognition.onresult = (e) => {
                 target.value = e.results[0][0].transcript;
                 target.dispatchEvent(new Event('input'));
-                showToast("✓ കേട്ടെടുത്തു!");
+                window.showToast("✓ കേട്ടെടുത്തു!");
             };
 
             recognition.onerror = () => {
-                showToast("ശബ്ദം വ്യക്തമല്ല, വീണ്ടും ശ്രമിക്കുക", false);
+                window.showToast("ശബ്ദം വ്യക്തമല്ല, വീണ്ടും ശ്രമിക്കുക", false);
             };
 
             recognition.onend = () => {
@@ -292,17 +298,17 @@
         document.querySelectorAll('input').forEach(input => input.addEventListener('input', calculateTotal));
 
         window.editItemDetails = async (id, currentItem, currentQty, currentShop, currentClient, currentSite, currentBedroom) => {
-            const newName = await openCustomPrompt("ഉപകരണത്തിന്റെ പുതിയ പേര്:", currentItem);
+            const newName = await window.openCustomPrompt("ഉപകരണത്തിന്റെ പുതിയ പേര്:", currentItem);
             if (newName === null) return;
-            const newBedroom = await openCustomPrompt("ബെഡ്റൂം പേര്/നമ്പർ:", currentBedroom || '');
+            const newBedroom = await window.openCustomPrompt("ബെഡ്റൂം പേര്/നമ്പർ:", currentBedroom || '');
             if (newBedroom === null) return;
-            const newQty = await openCustomPrompt("പുതിയ എണ്ണം:", currentQty);
+            const newQty = await window.openCustomPrompt("പുതിയ എണ്ണം:", currentQty);
             if (newQty === null) return;
-            const newSite = await openCustomPrompt("സൈറ്റിന്റെ പേര്:", currentSite);
+            const newSite = await window.openCustomPrompt("സൈറ്റിന്റെ പേര്:", currentSite);
             if (newSite === null) return;
-            const newShop = await openCustomPrompt("കടയുടെ പേര്:", currentShop);
+            const newShop = await window.openCustomPrompt("കടയുടെ പേര്:", currentShop);
             if (newShop === null) return;
-            const newClient = await openCustomPrompt("നൽകിയ ആളിന്റെ പേര്:", currentClient);
+            const newClient = await window.openCustomPrompt("നൽകിയ ആളിന്റെ പേര്:", currentClient);
             if (newClient === null) return;
 
             if(newName && newShop) {
@@ -314,38 +320,37 @@
                     shop: newShop, 
                     client: newClient || '' 
                 });
-                showToast("✏️ വിവരങ്ങൾ വിജയകരമായി മാറ്റം വരുത്തി!");
-            }
-
-                window.editRent = async (id, currentPaid) => {
-            const extraPaid = await openCustomPrompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?", "തുക (₹)");
-            if(extraPaid) {
-                await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
-                showToast("✨ പെയ്മെന്റ് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു! 👍");
+                window.showToast("✏️ വിവരങ്ങൾ വിജയകരമായി മാറ്റം വരുത്തി!");
             }
         };
 
+        window.editRent = async (id, currentPaid) => {
+            const extraPaid = await window.openCustomPrompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?", "തുക (₹)");
+            if(extraPaid) {
+                await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
+                window.showToast("✨ പെയ്മെന്റ് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു! 👍");
+            }
+        };
 
         window.settleFull = async (id, total) => {
-            if(await openCustomConfirm("ബാക്കി തുക മുഴുവൻ അടച്ചു തീർത്ത് അക്കൗണ്ട് ക്ലിയർ ചെയ്യണോ?")) {
+            if(await window.openCustomConfirm("ബാക്കി തുക മുഴുവൻ അടച്ചു തീർത്ത് അക്കൗണ്ട് ക്ലിയർ ചെയ്യണോ?")) {
                 await updateDoc(doc(db, "rentals", id), { paid: total });
-                showToast("🎉 അക്കൗണ്ട് സെറ്റിൽ ചെയ്തു!");
+                window.showToast("🎉 അക്കൗണ്ട് സെറ്റിൽ ചെയ്തു!");
             }
         };
 
         window.toggleReturn = async (id, currentStatus) => {
             const newStatus = !currentStatus;
             await updateDoc(doc(db, "rentals", id), { isReturned: newStatus });
-            showToast(newStatus ? "📦 ഉപകരണം തിരികെ നൽകി!" : "🔄 വാടക സ്റ്റാറ്റസ് മാറ്റി!");
+            window.showToast(newStatus ? "📦 ഉപകരണം തിരികെ നൽകി!" : "🔄 വാടക സ്റ്റാറ്റസ് മാറ്റി!");
         };
 
-                window.deleteRent = async (id) => {
-            if(await openCustomConfirm("ഈ ഡാറ്റ ഡിലീറ്റ് ചെയ്യണോ?")) {
+        window.deleteRent = async (id) => {
+            if(await window.openCustomConfirm("ഈ ഡാറ്റ ഡിലീറ്റ് ചെയ്യണോ?")) {
                 await deleteDoc(doc(db, "rentals", id));
-                showToast("🗑️ ഡാറ്റ വിജയകരമായി നീക്കം ചെയ്തു!", false);
+                window.showToast("🗑️ ഡാറ്റ വിജയകരമായി നീക്കം ചെയ്തു!", false);
             }
         };
-
 
         window.shareWhatsApp = (item, bedroom, qty, site, shop, client, total, paid, bal, totalDays) => {
             const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} ${bedroom ? `(ബെഡ്റൂം: ${bedroom})` : ''} (${qty} എണ്ണം)\nസൈറ്റ്: ${site || 'പറഞ്ഞിട്ടില്ല'}\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nആകെ വാടക: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
@@ -372,7 +377,7 @@
                 paid: parseFloat(document.getElementById('paidRent').value) || 0,
                 isReturned: false
             });
-            showToast("🚀 വിജയകരമായി ചേർത്തു!");
+            window.showToast("🚀 വിജയകരമായി ചേർത്തു!");
             
             document.getElementById('itemName').value = '';
             document.getElementById('bedroomName').value = '';
