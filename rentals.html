@@ -33,15 +33,67 @@
             <a href="dashboard.html" class="px-3 py-1.5 bg-slate-800 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold">← ഡാഷ്‌ബോർഡ്</a>
         </div>
 
-        <!-- ഫോം ഭാഗം -->
+        <!-- സ്റ്റാറ്റിസ്റ്റിക്സ് & ഫിൽട്ടർ -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
+            <div class="grid grid-cols-2 gap-3 text-center">
+                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
+                    <p class="text-[11px] text-slate-400 font-bold">ആകെ വാടക</p>
+                    <p id="statTotalRent" class="text-base font-black text-amber-400">₹0</p>
+                </div>
+                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
+                    <p class="text-[11px] text-slate-400 font-bold">ബാലൻസ് തുക</p>
+                    <p id="statTotalBal" class="text-base font-black text-red-400">₹0</p>
+                </div>
+            </div>
+
+            <!-- പ്രോഗ്രസ് ബാർ -->
+            <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden flex border border-slate-700">
+                <div id="barPaid" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+                <div id="barBal" class="bg-red-500 h-full transition-all duration-500" style="width: 100%"></div>
+            </div>
+
+            <!-- റിമൈൻഡർ ബോക്സ് -->
+            <div id="reminderBox" class="hidden bg-amber-500/10 border border-amber-500/40 p-3 rounded-2xl text-amber-300 text-xs space-y-1">
+                <p class="font-black">⚠️ ശ്രദ്ധിക്കുക:</p>
+                <div id="reminderList"></div>
+            </div>
+
+            <!-- സെർച്ച് ബോക്സ് -->
+            <input type="text" id="searchInput" placeholder="🔍 തിരയുക (ഉപകരണം, കട, സൈറ്റ്...)" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+
+            <!-- ആക്ടീവ് / റിട്ടേൺ ഫിൽട്ടർ ബട്ടണുകൾ -->
+            <div class="flex gap-2">
+                <button id="filterActiveBtn" onclick="setFilter('active')" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 transition">நடന്നുകൊണ്ടിരിക്കുന്നത്</button>
+                <button id="filterReturnedBtn" onclick="setFilter('returned')" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition">തിരികെ നൽകിയത്</button>
+            </div>
+        </div>
+
+        <!-- ഫോം ഭാഗം (പുതിയ ഉപകരണം ചേർക്കാൻ) -->
         <div class="bg-slate-900/90 p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4">
             <h2 class="font-black text-amber-400 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
             
-            <!-- ഓരോ ഇൻപുട്ടിനും മൈക്ക് ബട്ടൺ -->
-            <div class="relative"><input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button onclick="startVoiceInputFor('itemName')" class="mic-btn">🎙️</button></div>
-            <div class="relative"><input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button onclick="startVoiceInputFor('bedroomName')" class="mic-btn">🎙️</button></div>
+            <div class="relative"><input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('itemName')" class="mic-btn">🎙️</button></div>
+            <div class="relative"><input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('bedroomName')" class="mic-btn">🎙️</button></div>
+            <div class="relative"><input type="text" id="siteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('siteName')" class="mic-btn">🎙️</button></div>
+            <div class="relative"><input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('shopName')" class="mic-btn">🎙️</button></div>
+            <div class="relative"><input type="text" id="clientName" placeholder="വാങ്ങിയ ആളിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('clientName')" class="mic-btn">🎙️</button></div>
+            <input type="text" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1">ആരംഭ തീയതി</label>
+                    <input type="date" id="startDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+                </div>
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1">അവസാന തീയതി</label>
+                    <input type="date" id="endDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+                </div>
+            </div>
+
             <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
             <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            <input type="number" id="paidRent" placeholder="ഇതുവരെ നൽകിയ മുൻകൂർ തുക (₹)" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
             
             <button id="saveRentBtn" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
@@ -49,42 +101,31 @@
         <section id="rentList" class="space-y-4"></section>
     </div>
 
-    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 bg-slate-900 border border-amber-400 text-amber-300 px-6 py-3 rounded-2xl opacity-0 transition-opacity z-50">ഫലം...</div>
+    <!-- മോഡലുകളും ടോസ്റ്റും -->
+    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
 
-    <script type="module">
-        import { setupHeader } from './header.js';
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    <div id="customPromptModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl">
+            <h3 id="promptTitle" class="font-black text-amber-400 text-sm">ടൈറ്റിൽ</h3>
+            <input type="text" id="promptInput" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white">
+            <div class="flex gap-2">
+                <button id="promptCancelBtn" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black">ക്ൻസൽ</button>
+                <button id="promptOkBtn" class="flex-1 bg-amber-500 text-slate-950 py-3 rounded-2xl text-xs font-black">ശരി</button>
+            </div>
+        </div>
+    </div>
 
-        // ഹെഡർ ലോഡ് ചെയ്യുന്നു
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') setupHeader('appHeader');
-        });
+    <div id="customConfirmModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl text-center">
+            <h3 id="confirmTitle" class="font-black text-white text-sm">ഉറപ്പാണോ?</h3>
+            <div class="flex gap-2">
+                <button id="confirmCancelBtn" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black">ഇല്ല</button>
+                <button id="confirmOkBtn" class="flex-1 bg-red-600 text-white py-3 rounded-2xl text-xs font-black">ഉവ്വ്</button>
+            </div>
+        </div>
+    </div>
 
-        // വോയിസ് ഇൻപുട്ട് ഫംഗ്ഷൻ
-        window.startVoiceInputFor = (fieldId) => {
-            const target = document.getElementById(fieldId);
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return alert("ബ്രൗസർ സപ്പോർട്ട് ചെയ്യുന്നില്ല");
-            
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'ml-IN';
-            recognition.start();
-            document.getElementById('customToast').innerText = "🎙️ സംസാരിക്കൂ...";
-            document.getElementById('customToast').style.opacity = 1;
-
-            recognition.onresult = (e) => {
-                target.value = e.results[0][0].transcript;
-                document.getElementById('customToast').style.opacity = 0;
-            };
-        };
-
-    
-
-
-       
-
-    <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം പൂർണ്ണമായി -->
+    <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം -->
     <script type="module">
         import { setupHeader } from './header.js';
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -119,46 +160,37 @@
             }, 2500);
         };
 
-        // ആപ്പിന്റെ ലുക്ക് ഭംഗിയാക്കാൻ മൈക്ക് എന്ന എഴുത്ത് പൂർണ്ണമായി ഒഴിവാക്കി
-window.startVoiceInputFor = (fieldId) => {
-    const target = document.getElementById(fieldId);
-    if (!target) return;
+        window.startVoiceInputFor = (fieldId) => {
+            const target = document.getElementById(fieldId);
+            if (!target) return;
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'ml-IN';
-    recognition.start();
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("നിങ്ങളുടെ ബ്രൗസർ വോയിസ് ഇൻപുട്ട് പിന്തുണയ്ക്കുന്നില്ല.");
+                return;
+            }
 
-    // മൈക്ക് ഓൺ ആകുമ്പോൾ ഒരു ചെറിയ വിഷ്വൽ എഫക്റ്റ് നൽകാം
-    target.style.borderColor = "#fbbf24"; 
-
-    recognition.onresult = (e) => {
-        target.value = e.results[0][0].transcript;
-        target.dispatchEvent(new Event('input'));
-    };
-
-    recognition.onend = () => {
-        target.style.borderColor = ""; // സാധാരണ നിലയിലേക്ക്
-    };
-};
-
-
-            showToast("🎙️ സംസാരിക്കൂ...");
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'ml-IN';
             
+            target.style.borderColor = "#fbbf24"; 
+            showToast("🎙️ സംസാരിക്കൂ...");
+
+            recognition.start();
+
             recognition.onresult = (e) => {
-                const target = document.getElementById(fieldId);
-                if (target) {
-                    target.value = e.results[0][0].transcript;
-                    target.dispatchEvent(new Event('input'));
-                }
+                target.value = e.results[0][0].transcript;
+                target.dispatchEvent(new Event('input'));
                 showToast("✓ കേട്ടെടുത്തു!");
             };
 
-            recognition.onerror = (event) => {
+            recognition.onerror = () => {
                 showToast("ശബ്ദം വ്യക്തമല്ല, വീണ്ടും ശ്രമിക്കുക", false);
             };
 
-            recognition.start();
+            recognition.onend = () => {
+                target.style.borderColor = ""; 
+            };
         };
 
         window.openCustomPrompt = (title, placeholder) => new Promise(resolve => {
@@ -201,9 +233,11 @@ window.startVoiceInputFor = (fieldId) => {
         }
         document.querySelectorAll('input').forEach(input => input.addEventListener('input', calculateTotal));
 
-        window.editItemDetails = async (id, currentItem, currentQty, currentShop, currentClient, currentSite) => {
+        window.editItemDetails = async (id, currentItem, currentQty, currentShop, currentClient, currentSite, currentBedroom) => {
             const newName = await openCustomPrompt("ഉപകരണത്തിന്റെ പുതിയ പേര്:", currentItem);
             if (newName === null) return;
+            const newBedroom = await openCustomPrompt("ബെഡ്റൂം പേര്/നമ്പർ:", currentBedroom || '');
+            if (newBedroom === null) return;
             const newQty = await openCustomPrompt("പുതിയ എണ്ണം:", currentQty);
             if (newQty === null) return;
             const newSite = await openCustomPrompt("സൈറ്റിന്റെ പേര്:", currentSite);
@@ -214,7 +248,14 @@ window.startVoiceInputFor = (fieldId) => {
             if (newClient === null) return;
 
             if(newName && newShop) {
-                await updateDoc(doc(db, "rentals", id), { item: newName, qty: newQty, site: newSite || '', shop: newShop, client: newClient || '' });
+                await updateDoc(doc(db, "rentals", id), { 
+                    item: newName, 
+                    bedroom: newBedroom,
+                    qty: newQty, 
+                    site: newSite || '', 
+                    shop: newShop, 
+                    client: newClient || '' 
+                });
                 showToast("✏️ വിവരങ്ങൾ എഡിറ്റ് ചെയ്തു!");
             }
         };
@@ -247,8 +288,8 @@ window.startVoiceInputFor = (fieldId) => {
             }
         };
 
-        window.shareWhatsApp = (item, qty, site, shop, client, total, paid, bal, totalDays) => {
-            const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} (${qty} എണ്ണം)\nസൈറ്റ്: ${site || 'പറഞ്ഞിട്ടില്ല'}\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nആകെ വാടക: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
+        window.shareWhatsApp = (item, bedroom, qty, site, shop, client, total, paid, bal, totalDays) => {
+            const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} ${bedroom ? `(ബെഡ്റൂം: ${bedroom})` : ''} (${qty} എണ്ണം)\nസൈറ്റ്: ${site || 'പറഞ്ഞിട്ടില്ല'}\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nആകെ വാടക: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
@@ -259,6 +300,7 @@ window.startVoiceInputFor = (fieldId) => {
             await addDoc(collection(db, "rentals"), {
                 meshtriOwner: currentMeshtri,
                 item: itemName,
+                bedroom: document.getElementById('bedroomName').value || '',
                 qty: document.getElementById('itemQty').value || 1,
                 site: document.getElementById('siteName').value || '',
                 shop: document.getElementById('shopName').value || 'കട',
@@ -274,6 +316,7 @@ window.startVoiceInputFor = (fieldId) => {
             showToast("🚀 വിജയകരമായി ചേർത്തു!");
             
             document.getElementById('itemName').value = '';
+            document.getElementById('bedroomName').value = '';
             document.getElementById('itemQty').value = '';
             document.getElementById('siteName').value = '';
             document.getElementById('shopName').value = '';
@@ -319,7 +362,7 @@ window.startVoiceInputFor = (fieldId) => {
                         grandTotalPaid += (parseFloat(r.paid) || 0);
                     }
 
-                    const matchesSearch = r.item.toLowerCase().includes(searchTerm) || r.shop.toLowerCase().includes(searchTerm) || (r.site && r.site.toLowerCase().includes(searchTerm));
+                    const matchesSearch = r.item.toLowerCase().includes(searchTerm) || r.shop.toLowerCase().includes(searchTerm) || (r.site && r.site.toLowerCase().includes(searchTerm)) || (r.bedroom && r.bedroom.toLowerCase().includes(searchTerm));
                     
                     if (matchesSearch && ((currentFilter === 'active' && !isRet) || (currentFilter === 'returned' && isRet))) {
                         const bal = calculatedTotal - (parseFloat(r.paid) || 0);
@@ -330,12 +373,13 @@ window.startVoiceInputFor = (fieldId) => {
                             <div class="flex justify-between items-start mb-1">
                                 <p class="font-black text-white text-base">${r.item} <span class="text-xs font-normal text-slate-400">(${r.qty} എണ്ണം)</span></p>
                                 <div class="flex gap-1">
-                                    <button onclick="editItemDetails('${d.id}', '${r.item}', '${r.qty}', '${r.shop}', '${r.client || ''}', '${r.site || ''}')" class="bg-cyan-900/50 text-cyan-300 border border-cyan-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">എഡിറ്റ്</button>
+                                    <button onclick="editItemDetails('${d.id}', '${r.item}', '${r.qty}', '${r.shop}', '${r.client || ''}', '${r.site || ''}', '${r.bedroom || ''}')" class="bg-cyan-900/50 text-cyan-300 border border-cyan-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">എഡിറ്റ്</button>
                                     <button onclick="toggleReturn('${d.id}', ${isRet})" class="text-[10px] font-black px-2.5 py-1 rounded-lg border ${isRet ? 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50' : 'bg-slate-800 text-slate-300 border-slate-700'}">
                                         ${isRet ? '✓ തിരികെ നൽകി' : 'റിട്ടേൺ'}
                                     </button>
                                 </div>
                             </div>
+                            ${r.bedroom ? `<p class="text-xs text-amber-300 font-bold mb-1">🚪 ബെഡ്റൂം: ${r.bedroom}</p>` : ''}
                             ${r.site ? `<p class="text-xs text-cyan-400 font-bold mb-1">🏗️ സൈറ്റ്: ${r.site}</p>` : ''}
                             <p class="text-xs text-slate-300 font-bold mb-1">കട: <span class="text-amber-400">${r.shop}</span> ${r.client ? `| ആർക്ക്: <span class="text-cyan-300">${r.client}</span>` : ''} | 📞 ${r.phone}</p>
                             <p class="text-[11px] text-slate-400 mb-2">തീയതി: ${r.start} മുതൽ ${r.end} വരെ | <strong class="text-amber-300">${totalDays} ദിവസങ്ങൾ</strong></p>
@@ -347,7 +391,7 @@ window.startVoiceInputFor = (fieldId) => {
                                 </div>
                                 
                                 <div class="flex items-center justify-between pt-2 gap-1">
-                                    <button onclick="shareWhatsApp('${r.item}', '${r.qty}', '${r.site || ''}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 shadow-md">
+                                    <button onclick="shareWhatsApp('${r.item}', '${r.bedroom || ''}', '${r.qty}', '${r.site || ''}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 shadow-md">
                                         💬 വാട്സാപ്പ്
                                     </button>
                                     
