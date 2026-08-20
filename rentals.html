@@ -7,10 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        <style>
     body { font-family: 'Manjari', sans-serif; }
     
-    /* മൈക്ക് ബട്ടണിനുള്ള CSS */
+    /* മൈക്ക് ബട്ടൺ ഡിസൈനും നീല ബോർഡർ എഫക്റ്റും */
     .mic-btn {
         position: absolute;
         right: 12px;
@@ -27,9 +26,16 @@
         justify-content: center;
     }
     .mic-btn:hover { color: #67e8f9; }
+
+    /* എല്ലാ ഇൻപുട്ടുകൾക്കും മനോഹരമായ നീല ബോർഡർ സ്ഥിരമായി കിട്ടാൻ */
+    input:focus, select:focus {
+        border-color: #22d3ee !important;
+        box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
+    }
 </style>
 
-    </style>
+
+    
     <title>വാടക ഉപകരണങ്ങൾ</title>
 </head>
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
@@ -91,6 +97,7 @@
 
         
      <!-- ഫോം ഭാഗം -->
+
 <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 mb-8 space-y-4 backdrop-blur-sm">
     <div class="flex justify-between items-center mb-2">
         <h2 class="font-black text-amber-400 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
@@ -98,70 +105,69 @@
     
     <!-- 1. ഉപകരണത്തിന്റെ പേര് -->
     <div class="relative w-full">
-        <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+        <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
         <button type="button" onclick="startVoiceInputFor('itemName')" class="mic-btn">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.39-.98.88C16.2 14.71 14.32 16 12 16s-4.2-1.29-4.93-4.12c-.08-.49-.49-.88-.98-.88-.61 0-1.09.54-1 1.14.85 5.12 5.09 9 10.31 9s9.46-3.88 10.31-9c.09-.6-.39-1.14-1-1.14z"/></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
         </button>
     </div>
 
     <!-- 2. എത്ര എണ്ണം -->
     <div class="relative w-full">
-        <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+        <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
         <button type="button" onclick="startVoiceInputFor('itemQty')" class="mic-btn">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.39-.98.88C16.2 14.71 14.32 16 12 16s-4.2-1.29-4.93-4.12c-.08-.49-.49-.88-.98-.88-.61 0-1.09.54-1 1.14.85 5.12 5.09 9 10.31 9s9.46-3.88 10.31-9c.09-.6-.39-1.14-1-1.14z"/></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
         </button>
     </div>
 
     <!-- 3. സൈറ്റ് നെയിം -->
     <div class="relative w-full">
-        <input type="text" id="siteName" placeholder="ഏത് സൈറ്റിലാണ് (Site Name)?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-cyan-400 text-xs">
+        <input type="text" id="siteName" placeholder="ഏത് സൈറ്റിലാണ് (Site Name)?" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
         <button type="button" onclick="startVoiceInputFor('siteName')" class="mic-btn">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.39-.98.88C16.2 14.71 14.32 16 12 16s-4.2-1.29-4.93-4.12c-.08-.49-.49-.88-.98-.88-.61 0-1.09.54-1 1.14.85 5.12 5.09 9 10.31 9s9.46-3.88 10.31-9c.09-.6-.39-1.14-1-1.14z"/></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
         </button>
     </div>
 
     <!-- 4. കടയുടെ പേരും ആളിന്റെ പേരും -->
     <div class="grid grid-cols-2 gap-2">
         <div class="relative w-full">
-            <input type="text" id="shopName" placeholder="എടുത്ത കടയുടെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            <input type="text" id="shopName" placeholder="എടുത്ത കടയുടെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
             <button type="button" onclick="startVoiceInputFor('shopName')" class="mic-btn">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.39-.98.88C16.2 14.71 14.32 16 12 16s-4.2-1.29-4.93-4.12c-.08-.49-.49-.88-.98-.88-.61 0-1.09.54-1 1.14.85 5.12 5.09 9 10.31 9s9.46-3.88 10.31-9c.09-.6-.39-1.14-1-1.14z"/></svg>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
             </button>
         </div>
         <div class="relative w-full">
-            <input type="text" id="clientName" placeholder="നൽകിയ ആളിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            <input type="text" id="clientName" placeholder="നൽകിയ ആളിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
             <button type="button" onclick="startVoiceInputFor('clientName')" class="mic-btn">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.39-.98.88C16.2 14.71 14.32 16 12 16s-4.2-1.29-4.93-4.12c-.08-.49-.49-.88-.98-.88-.61 0-1.09.54-1 1.14.85 5.12 5.09 9 10.31 9s9.46-3.88 10.31-9c.09-.6-.39-1.14-1-1.14z"/></svg>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
             </button>
         </div>
     </div>
 
     <!-- 5. ഫോൺ നമ്പർ -->
     <div class="relative w-full">
-        <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+        <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 pr-12 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
         <button type="button" onclick="startVoiceInputFor('shopPhone')" class="mic-btn">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.39-.98.88C16.2 14.71 14.32 16 12 16s-4.2-1.29-4.93-4.12c-.08-.49-.49-.88-.98-.88-.61 0-1.09.54-1 1.14.85 5.12 5.09 9 10.31 9s9.46-3.88 10.31-9c.09-.6-.39-1.14-1-1.14z"/></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
         </button>
     </div>
     
     <div class="grid grid-cols-2 gap-3">
         <div class="space-y-1">
             <label class="text-[10px] font-black text-slate-400 ml-1">എടുത്ത തീയതി</label>
-            <input type="date" id="startDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            <input type="date" id="startDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
         </div>
         <div class="space-y-1">
             <label class="text-[10px] font-black text-slate-400 ml-1">തിരികെ നൽകേണ്ടത്</label>
-            <input type="date" id="endDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+            <input type="date" id="endDate" class="w-full p-4 bg-slate-800/80 text-white rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
         </div>
     </div>
     
-    <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-    <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
-    <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none focus:border-amber-400 text-xs">
+    <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
+    <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
+    <input type="number" id="paidRent" placeholder="നൽകിയ തുക (₹)" class="w-full p-4 bg-slate-800/80 text-white placeholder-slate-400 rounded-2xl border border-slate-700 font-bold focus:outline-none text-xs">
     
     <button id="saveRentBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-4 rounded-2xl font-black shadow-lg transition text-xs">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
 </div>
-   
 
 
         <!-- ഫിൽട്ടർ ബട്ടണുകൾ -->
