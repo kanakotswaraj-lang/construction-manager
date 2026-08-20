@@ -7,13 +7,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Manjari', sans-serif; }
+        /* മൈക്ക് ബട്ടൺ കൂടുതൽ കൃത്യവും ഭംഗിയുള്ളതുമാക്കിയിരിക്കുന്നു */
         .mic-btn {
-            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-            color: #22d3ee; background: rgba(51, 65, 85, 0.5);
-            padding: 8px; border-radius: 12px; cursor: pointer; border: none;
-            display: flex; align-items: center; justify-content: center;
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            color: #22d3ee; background: rgba(30, 41, 59, 0.8);
+            width: 32px; height: 32px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(34, 211, 238, 0.3);
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
         }
-        .mic-btn:hover { color: #67e8f9; }
+        .mic-btn:hover { color: #67e8f9; background: rgba(51, 65, 85, 1); }
         input:focus, select:focus { border-color: #22d3ee !important; box-shadow: 0 0 10px rgba(34, 211, 238, 0.3); }
     </style>
     <title>വാടക ഉപകരണങ്ങൾ</title>
@@ -63,7 +64,7 @@
 
             <!-- ആക്ടീവ് / റിട്ടേൺ ഫിൽട്ടർ ബട്ടണുകൾ -->
             <div class="flex gap-2">
-                <button id="filterActiveBtn" onclick="setFilter('active')" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 transition">நடന്നുകൊണ്ടിരിക്കുന്നത്</button>
+                <button id="filterActiveBtn" onclick="setFilter('active')" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 transition">നടന്നുകൊണ്ടിരിക്കുന്നത്</button>
                 <button id="filterReturnedBtn" onclick="setFilter('returned')" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition">തിരികെ നൽകിയത്</button>
             </div>
         </div>
@@ -72,12 +73,12 @@
         <div class="bg-slate-900/90 p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4">
             <h2 class="font-black text-amber-400 text-sm">പുതിയ ഉപകരണം ചേർക്കുക</h2>
             
-            <div class="relative"><input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('itemName')" class="mic-btn">🎙️</button></div>
-            <div class="relative"><input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('bedroomName')" class="mic-btn">🎙️</button></div>
-            <div class="relative"><input type="text" id="siteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('siteName')" class="mic-btn">🎙️</button></div>
-            <div class="relative"><input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('shopName')" class="mic-btn">🎙️</button></div>
-            <div class="relative"><input type="text" id="clientName" placeholder="വാങ്ങിയ ആളിന്റെ പേര്" class="w-full p-4 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('clientName')" class="mic-btn">🎙️</button></div>
-            <input type="text" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            <div class="relative"><input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('itemName')" class="mic-btn">🎙️</button></div>
+            <div class="relative"><input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('bedroomName')" class="mic-btn">🎙️</button></div>
+            <div class="relative"><input type="text" id="siteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('siteName')" class="mic-btn">🎙️</button></div>
+            <div class="relative"><input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('shopName')" class="mic-btn">🎙️</button></div>
+            <div class="relative"><input type="text" id="clientName" placeholder="വാങ്ങിയ ആളിന്റെ പേര്" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs"><button type="button" onclick="startVoiceInputFor('clientName')" class="mic-btn">🎙️</button></div>
+            <input type="text" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
             
             <div class="grid grid-cols-2 gap-2">
                 <div>
@@ -90,10 +91,10 @@
                 </div>
             </div>
 
-            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
-            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
-            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
-            <input type="number" id="paidRent" placeholder="ഇതുവരെ നൽകിയ മുൻകൂർ തുക (₹)" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            <input type="number" id="paidRent" placeholder="ഇതുവരെ നൽകിയ മുൻകൂർ തുക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
             
             <button id="saveRentBtn" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
