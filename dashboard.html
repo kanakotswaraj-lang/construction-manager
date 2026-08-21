@@ -205,12 +205,14 @@
 
                 if (net >= 0) {
                     labelEl.innerText = "ശുദ്ധ ലാഭം";
-                    labelEl.className = "text-[11px] font-black text-emerald-400 block tracking-wider uppercase";
+                    labelEl.className = "text-[11px] font-black text-emerald-400 block tracking-wider uppercase lang";
+                    labelEl.id = "profit";
                     netEl.innerText = `₹ ${net.toLocaleString('en-IN')}`;
                     netEl.style.color = "#34d399";
                 } else {
                     labelEl.innerText = "നഷ്ടം";
-                    labelEl.className = "text-[11px] font-black text-rose-400 block tracking-wider uppercase";
+                    labelEl.className = "text-[11px] font-black text-rose-400 block tracking-wider uppercase lang";
+                    labelEl.id = "loss_label";
                     netEl.innerText = `₹ ${Math.abs(net).toLocaleString('en-IN')}`;
                     netEl.style.color = "#fb7185";
                 }
@@ -249,7 +251,7 @@
 <body class="text-white min-h-screen p-4 font-sans pb-16">
     <div class="max-w-md mx-auto space-y-4">
 
-        <!-- പഴയതുപോലെയുള്ള മനോഹരമായ കവർ & പ്രൊഫൈൽ ഹെഡർ -->
+        <!-- കവർ & പ്രൊഫൈൽ ഹെഡർ -->
         <div class="glass-card rounded-[2.5rem] shadow-2xl relative overflow-hidden border border-white/10 pb-4">
             
             <!-- കവർ ബാനർ ഭാഗം -->
@@ -259,7 +261,7 @@
                 </label>
                 <input type="file" id="coverUpload" class="hidden" accept="image/*" onchange="updateCoverPhoto(event)">
                 
-                <!-- ലോഗ് ഔട്ട് ബട്ടൺ (മുകളിൽ വലതുഭാഗത്ത്) -->
+                <!-- ലോഗ് ഔട്ട് ബട്ടൺ -->
                 <button onclick="logoutUser()" class="absolute top-3 right-3 w-10 h-10 rounded-2xl bg-slate-900/80 backdrop-blur-xl text-rose-400 border border-white/10 flex items-center justify-center shadow-lg hover:bg-rose-500 hover:text-white transition duration-300 z-10" title="ലോഗ് ഔട്ട്">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -267,7 +269,7 @@
                 </button>
             </div>
 
-            <!-- പ്രൊഫൈൽ ഫോട്ടോയും തീയതിയും (പഴയതുപോലെ സെന്ററിൽ/നേരെ താഴെ വരുന്ന രീതി) -->
+            <!-- പ്രൊഫൈൽ ഫോട്ടോയും തീയതിയും -->
             <div class="flex flex-col items-center -mt-16 px-4 relative z-10">
                 <label for="photoUpload" class="cursor-pointer group relative inline-block">
                     <div class="relative p-1.5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-3xl shadow-2xl glow-gold bg-slate-900">
@@ -284,7 +286,7 @@
             </div>
         </div>
 
-        <!-- മേസ്തിരി പ്രോ ലോഗോയും ഹെഡറും (header.js വഴി ഇവിടെ വരുമാറി സെറ്റ് ചെയ്തിരിക്കുന്നു) -->
+        <!-- മേസ്തിരി പ്രോ ലോഗോയും ഹെഡറും -->
         <div class="flex flex-col items-center gap-3 pt-1">
             <div id="appHeader" class="w-full"></div>
             
@@ -298,15 +300,15 @@
         <!-- ലാഭ-നഷ്ട സംഗ്രഹ ബോക്സുകൾ -->
         <div class="grid grid-cols-3 gap-2.5 pt-1">
             <div class="glass-card border-emerald-500/30 p-3.5 rounded-2xl text-center shadow-lg">
-                <span class="text-[11px] font-black text-emerald-400 block tracking-wider uppercase">വരുമാനം</span>
+                <span class="text-[11px] font-black text-emerald-400 block tracking-wider uppercase lang" id="income">വരുമാനം</span>
                 <p id="dashTotalIncome" class="text-sm font-black text-white mt-1">₹ 0</p>
             </div>
             <div class="glass-card border-rose-500/30 p-3.5 rounded-2xl text-center shadow-lg">
-                <span class="text-[11px] font-black text-rose-400 block tracking-wider uppercase">ചെലവ്</span>
+                <span class="text-[11px] font-black text-rose-400 block tracking-wider uppercase lang" id="expense">ചെലവ്</span>
                 <p id="dashTotalExpense" class="text-sm font-black text-white mt-1">₹ 0</p>
             </div>
             <div class="glass-card border-blue-500/30 p-3.5 rounded-2xl text-center shadow-lg">
-                <span id="dashProfitLabel" class="text-[11px] font-black text-blue-400 block tracking-wider uppercase">ലാഭം</span>
+                <span id="dashProfitLabel" class="text-[11px] font-black text-blue-400 block tracking-wider uppercase lang" id="profit">ലാഭം</span>
                 <p id="dashNetProfit" class="text-sm font-black text-white mt-1">₹ 0</p>
             </div>
         </div>
@@ -316,7 +318,7 @@
             <a href="site.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-base">🏗️</div>
-                    <p class="text-base font-black tracking-wide">സൈറ്റ് വിവരങ്ങൾ</p>
+                    <p class="text-base font-black tracking-wide lang" id="site_details">സൈറ്റ് വിവരങ്ങൾ</p>
                 </div>
                 <span class="text-amber-400 font-bold text-lg">→</span>
             </a>
@@ -324,7 +326,7 @@
             <a href="history.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-yellow-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-base">📋</div>
-                    <p class="text-base font-black tracking-wide">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</p>
+                    <p class="text-base font-black tracking-wide lang" id="history_edit">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</p>
                 </div>
                 <span class="text-yellow-400 font-bold text-lg">→</span>
             </a>
@@ -332,7 +334,7 @@
             <a href="staff.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-indigo-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-base">👥</div>
-                    <p class="text-base font-black tracking-wide">ജീവനക്കാരുടെ ശമ്പളം</p>
+                    <p class="text-base font-black tracking-wide lang" id="staff_salary">ജീവനക്കാരുടെ ശമ്പളം</p>
                 </div>
                 <span class="text-indigo-400 font-bold text-lg">→</span>
             </a>
@@ -340,7 +342,7 @@
             <a href="rentals.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-emerald-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-base">🛠️</div>
-                    <p class="text-base font-black tracking-wide">വാടക ഉപകരണങ്ങൾ</p>
+                    <p class="text-base font-black tracking-wide lang" id="rentals">വാടക ഉപകരണങ്ങൾ</p>
                 </div>
                 <span class="text-emerald-400 font-bold text-lg">→</span>
             </a>
@@ -348,7 +350,7 @@
             <a href="materials.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-blue-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-base">🧱</div>
-                    <p class="text-base font-black tracking-wide">മെറ്റീരിയൽസ്</p>
+                    <p class="text-base font-black tracking-wide lang" id="materials">മെറ്റീരിയൽസ്</p>
                 </div>
                 <span class="text-blue-400 font-bold text-lg">→</span>
             </a>
@@ -356,7 +358,7 @@
             <a href="accounts.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-rose-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-base">📊</div>
-                    <p class="text-base font-black tracking-wide">വരവ് - ചെലവ്</p>
+                    <p class="text-base font-black tracking-wide lang" id="income_expense">വരവ് - ചെലവ്</p>
                 </div>
                 <span class="text-rose-400 font-bold text-lg">→</span>
             </a>
@@ -364,7 +366,7 @@
             <a href="estimator.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-base">📐</div>
-                    <p class="text-base font-black tracking-wide">മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്</p>
+                    <p class="text-base font-black tracking-wide lang" id="estimator">മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്</p>
                 </div>
                 <span class="text-amber-400 font-bold text-lg">→</span>
             </a>
