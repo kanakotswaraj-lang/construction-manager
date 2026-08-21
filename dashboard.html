@@ -286,35 +286,30 @@
             </div>
         </div>
 
-        <!-- മേസ്തിരി പ്രോ ലോഗോയും ഹെഡറും & Lang Button -->
-        <div class="flex flex-col items-center gap-3 pt-1">
-            <div id="appHeader" class="w-full"></div>
+        <!-- സ്വാഗതം ബോക്സും ഒരൊറ്റ Lang ബട്ടണും (എല്ലാ 7 ഭാഷകളും ഉൾപ്പെടുത്തിയത്) -->
+        <div class="w-full flex items-center gap-2 pt-1">
+            <span id="loggedInMeshtri" class="flex-1 py-4 px-4 rounded-2xl text-base font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl text-center">
+                സ്വാഗതം, swaraj
+            </span>
             
-            <div class="w-full flex items-center gap-2">
-                <span id="loggedInMeshtri" class="flex-1 py-4 px-4 rounded-2xl text-base font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl text-center">
-                    സ്വാഗതം, swaraj
-                </span>
+            <!-- ഭാഷ മാറ്റാനുള്ള Lang ബട്ടൺ -->
+            <div class="relative">
+                <button onclick="toggleLangMenu()" class="h-full px-4 py-4 rounded-2xl bg-amber-500/10 border border-amber-400/40 text-amber-300 font-bold flex items-center gap-2 shadow-xl hover:bg-amber-500/20 transition duration-300">
+                    <span>🌐 Lang</span>
+                </button>
                 
-                <!-- ഭാഷ മാറ്റാനുള്ള ഒറ്റ Lang ബട്ടൺ -->
-                <div class="relative">
-                    <button onclick="toggleLangMenu()" class="h-full px-4 py-4 rounded-2xl bg-amber-500/10 border border-amber-400/40 text-amber-300 font-bold flex items-center gap-2 shadow-xl hover:bg-amber-500/20 transition duration-300">
-                        <span>🌐 Lang</span>
-                    </button>
-                    
-                    <!-- ഡ്രോപ്പ്ഡൗൺ മെനു (എല്ലാ 7 ഭാഷകളും ഉൾപ്പെടുത്തിയിരിക്കുന്നു) -->
-                    <div id="langDropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl">
-                        <div onclick="switchLanguage('ml'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">മലയാളം</div>
-                        <div onclick="switchLanguage('en'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">English</div>
-                        <div onclick="switchLanguage('ta'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">தமிழ்</div>
-                        <div onclick="switchLanguage('hi'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">हिन्दी</div>
-                        <div onclick="switchLanguage('kn'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">ಕನ್ನಡ</div>
-                        <div onclick="switchLanguage('as'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">অসমীয়া</div>
-                        <div onclick="switchLanguage('bn'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">বাংলা</div>
-                    </div>
+                <!-- ഡ്രോപ്പ്ഡൗൺ മെനു (മലയാളം, ഇംഗ്ലീഷ്, തമിഴ്, ഹിന്ദി, കന്നഡ, അസമീസ്, ബംഗാളി) -->
+                <div id="langDropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl">
+                    <div onclick="switchLanguage('ml'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">മലയാളം</div>
+                    <div onclick="switchLanguage('en'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">English</div>
+                    <div onclick="switchLanguage('ta'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">தமிழ்</div>
+                    <div onclick="switchLanguage('hi'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">हिन्दी</div>
+                    <div onclick="switchLanguage('kn'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">ಕನ್ನಡ</div>
+                    <div onclick="switchLanguage('as'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">অসমীয়া</div>
+                    <div onclick="switchLanguage('bn'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">বাংলা</div>
                 </div>
             </div>
         </div>
-
 
         <!-- ലാഭ-നഷ്ട സംഗ്രഹ ബോക്സുകൾ -->
         <div class="grid grid-cols-3 gap-2.5 pt-1">
