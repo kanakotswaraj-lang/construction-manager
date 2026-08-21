@@ -31,13 +31,22 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
             </div>
         </div>
 
-        <!-- സ്വാഗതം ബോക്സ് മാത്രം (ഹോം ബട്ടൺ ഒഴിവാക്കി) -->
-        ${showWelcome ? `
-        <div class="w-full">
-            <div class="w-full py-3 px-4 rounded-2xl text-center text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
+        <!-- സ്വാഗതം ബോക്സും വലിയ ഹോം ബട്ടണും ഉൾപ്പെടുന്ന ഭാഗം -->
+        <div class="flex items-center gap-2 w-full">
+            ${showWelcome ? `
+            <div class="flex-1 py-3 px-4 rounded-2xl text-center text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
                 <span id="loggedInMeshtri">സ്വാഗതം, ${userName}</span>
-            </div>
-        </div>` : ''}
+            </div>` : ''}
+
+            <!-- മനോഹരമായ വലിയ ഹോം ബട്ടൺ -->
+            <a href="dashboard.html" class="px-5 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-2xl font-black text-xs shadow-xl shadow-amber-950/40 transition flex items-center gap-2 border border-white/30 flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                ഹോം
+            </a>
+        </div>
     </div>`;
 
     const container = document.getElementById(containerId);
