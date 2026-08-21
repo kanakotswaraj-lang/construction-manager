@@ -16,13 +16,15 @@ export function setupHeader(containerId) {
                 ☰ <span class="text-xs font-black">Lang</span>
             </button>
 
-            <!-- ഭാഷകളുടെ ഡ്രോപ്പ്ഡൗൺ ലിസ്റ്റ് -->
+            <!-- ഭാഷകളുടെ ഡ്രോപ്പ്ഡൗൺ ലിസ്റ്റ് (എല്ലാ 7 ഭാഷകളും ഉൾപ്പെടുത്തിയത്) -->
             <div id="langDropdown" class="hidden absolute right-0 mt-2 w-40 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl z-[9999] overflow-hidden py-1">
                 <button onclick="switchLanguage('ml'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">മലയാളം</button>
                 <button onclick="switchLanguage('en'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">English</button>
                 <button onclick="switchLanguage('ta'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">தமிழ்</button>
                 <button onclick="switchLanguage('hi'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">हिन्दी</button>
                 <button onclick="switchLanguage('kn'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">ಕನ್ನಡ</button>
+                <button onclick="switchLanguage('as'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">অসমীয়া</button>
+                <button onclick="switchLanguage('bn'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">বাংলা</button>
             </div>
         </div>
     </div>`;
