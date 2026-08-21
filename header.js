@@ -1,4 +1,5 @@
 // header.js
+
 export function setupHeader(containerId, showWelcome = false, userName = "") {
     const headerHTML = `
     <div class="flex flex-col gap-2 w-full">
@@ -14,19 +15,19 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
 
             <!-- 3 വരകൾ ഉള്ള ലാംഗ്വേജ് മെനു ബട്ടൺ -->
             <div class="relative">
-                <button onclick="toggleLangMenu()" class="p-2.5 bg-slate-900/80 hover:bg-slate-900 border border-amber-300/50 text-amber-300 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-1.5">
+                <button onclick="toggleLangMenu()" class="p-2.5 bg-slate-900/80 hover:bg-slate-900 border border-amber-300/50 text-amber-300 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-1.5 cursor-pointer">
                     ☰ <span class="text-xs font-black">Lang</span>
                 </button>
 
                 <!-- ഭാഷകളുടെ ഡ്രോപ്പ്ഡൗൺ ലിസ്റ്റ് -->
                 <div id="langDropdown" class="hidden absolute right-0 mt-2 w-40 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl z-[9999] overflow-hidden py-1">
-                    <button onclick="switchLanguage('ml'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">മലയാളം</button>
-                    <button onclick="switchLanguage('en'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">English</button>
-                    <button onclick="switchLanguage('ta'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">தமிழ்</button>
-                    <button onclick="switchLanguage('hi'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">हिन्दी</button>
-                    <button onclick="switchLanguage('kn'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">ಕನ್ನಡ</button>
-                    <button onclick="switchLanguage('as'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">অসমীয়া</button>
-                    <button onclick="switchLanguage('bn'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">বাংলা</button>
+                    <button onclick="switchLanguage('ml'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">മലയാളം</button>
+                    <button onclick="switchLanguage('en'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">English</button>
+                    <button onclick="switchLanguage('ta'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">தமிழ்</button>
+                    <button onclick="switchLanguage('hi'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">हिन्दी</button>
+                    <button onclick="switchLanguage('kn'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">ಕನ್ನಡ</button>
+                    <button onclick="switchLanguage('as'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">অসমীয়া</button>
+                    <button onclick="switchLanguage('bn'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">বাংলা</button>
                 </div>
             </div>
         </div>
@@ -45,3 +46,19 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
         container.innerHTML = headerHTML;
     }
 }
+
+// ഗ്ലോബൽ ആയി ഫങ്ഷനുകൾ വർക്ക് ചെയ്യാൻ window-ലേക്ക് സെറ്റ് ചെയ്യുന്നു
+window.toggleLangMenu = function() {
+    const dropdown = document.getElementById('langDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+    }
+};
+
+window.switchLanguage = function(langCode) {
+    // നിങ്ങളുടെ ഭാഷ മാറ്റാനുള്ള കോഡ് ഇവിടെ പ്രവർത്തിക്കും (ഉദാഹരണത്തിന് ലോക്കൽ സ്റ്റോറേജ് സേവ് ചെയ്യാൻ)
+    localStorage.setItem('selectedLanguage', langCode);
+    console.log("Language changed to: ", langCode);
+    // ആവശ്യമെങ്കിൽ പേജ് റീലോഡ് ചെയ്യാം അല്ലെങ്കിൽ ലാംഗ്വേജ് അപ്ഡേറ്റ് ചെയ്യാം
+    location.reload(); 
+};
