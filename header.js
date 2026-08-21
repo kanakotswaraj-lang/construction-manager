@@ -18,7 +18,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
                     ☰ <span class="text-xs font-black">Lang</span>
                 </button>
 
-                <!-- ഭാഷകളുടെ ഡ്രോപ്പ്ഡൗൺ ലിസ്റ്റ് (എല്ലാ 7 ഭാഷകളും) -->
+                <!-- ഭാഷകളുടെ ഡ്രോപ്പ്ഡൗൺ ലിസ്റ്റ് -->
                 <div id="langDropdown" class="hidden absolute right-0 mt-2 w-40 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl z-[9999] overflow-hidden py-1">
                     <button onclick="switchLanguage('ml'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">മലയാളം</button>
                     <button onclick="switchLanguage('en'); toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">English</button>
@@ -31,17 +31,13 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
             </div>
         </div>
 
-        
-
-            <!-- മനോഹരമായ വലിയ ഹോം ബട്ടൺ -->
-            <a href="dashboard.html" class="px-5 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-2xl font-black text-xs shadow-xl shadow-amber-950/40 transition flex items-center gap-2 border border-white/30 flex-shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                ഹോം
-            </a>
-        </div>
+        <!-- സ്വാഗതം ബോക്സ് മാത്രം -->
+        ${showWelcome ? `
+        <div class="w-full">
+            <div class="w-full py-3 px-4 rounded-2xl text-center text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
+                <span id="loggedInMeshtri">സ്വാഗതം, ${userName}</span>
+            </div>
+        </div>` : ''}
     </div>`;
 
     const container = document.getElementById(containerId);
@@ -49,21 +45,3 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
         container.innerHTML = headerHTML;
     }
 }
-
-    
-        // പുതിയ ഘടന സെറ്റ് ചെയ്യുന്നു (പേരും തൊട്ടടുത്ത് ഹോം ബട്ടണും)
-        wrapper.innerHTML = `
-            <h1 class="text-base font-black text-white">${titleText}</h1>
-            <a href="dashboard.html" id="autoHomeBtn" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-500/20 transition flex items-center gap-1.5 border border-white/20">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                ഹോം
-            </a>
-        `;
-        
-        // പഴയ ടൈറ്റിൽ ഇരിക്കുന്ന ഭാഗത്ത് ഈ പുതിയ ബോക്സ് മാറ്റിസ്ഥാപിക്കുന്നു
-        mainTitle.parentNode.replaceChild(wrapper, mainTitle);
-    }
-});
