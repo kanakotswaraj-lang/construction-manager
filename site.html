@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>സൈറ്റ് മാനേജ്മെന്റ് - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-   <script src="language.js"></script> 
+    <script src="language.js"></script> 
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
     <script type="module">
@@ -31,9 +31,10 @@
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof setupHeader === 'function') {
                 setupHeader('appHeader', true, currentMeshtri);
-                
             }
-            document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+            const nameSpan = document.getElementById('loggedInMeshtri');
+            if(nameSpan) nameSpan.innerText = `സ്വാഗതം, ${currentMeshtri}`;
+            
             document.getElementById('entryDate').valueAsDate = new Date();
             fetchData();
         });
@@ -379,24 +380,16 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ലോഡ് ആകുന്ന കാൺടെയ്നർ -->
-        <div id="appHeader" class="w-full flex justify-center"></div>
+        <!-- ഹെഡർ ലോഡ് ആകുന്ന കണ്ടെയ്നർ -->
+        <div id="appHeader" class="w-full"></div>
 
-<!-- സ്വാഗതം ബോക്സും ഹോം ബട്ടണും ഒരേ വരിയിൽ കൃത്യമായ അകലത്തിൽ -->
-<div class="w-full flex items-stretch gap-2.5 pt-2">
-    <!-- സ്വാഗതം ബോക്സ് -->
-    <div class="flex-1 py-4 px-4 rounded-2xl text-base font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl flex items-center justify-center">
-        <span id="loggedInMeshtri">സ്വാഗതം, swaraj</span>
-    </div>
-    
-<!-- സൈറ്റിന്റെ പേരും തൊട്ടടുത്ത് ഹോം ബട്ടണും -->
-<div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
-    <h1 class="text-lg font-black text-white">സൈറ്റിന്റെ വിവരങ്ങൾ</h1>
-    <a href="dashboard.html" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
-        <span>🏠</span> ഹോം
-    </a>
-</div>
-
+        <!-- സൈറ്റിന്റെ പേരും തൊട്ടടുത്ത് ഹോം ബട്ടണും -->
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <h1 class="text-lg font-black text-white">സൈറ്റിന്റെ വിവരങ്ങൾ</h1>
+            <a href="dashboard.html" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
+                <span>🏠</span> ഹോം
+            </a>
+        </div>
 
         <!-- തിരയുന്ന ഭാഗം -->
         <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
