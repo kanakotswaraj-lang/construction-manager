@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>സൈറ്റ് മാനേജ്മെന്റ് - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
+   <script src="language.js"></script> 
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
     <script type="module">
@@ -380,22 +381,28 @@
         <!-- ഹെഡർ ലോഡ് ആകുന്ന കാൺടെയ്നർ -->
         <div id="appHeader" class="w-full flex justify-center"></div>
 
-        <!-- സ്വാഗതം പേര് കാണിക്കുന്ന ഭാഗം -->
-        <div class="text-center w-full">
-            <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
-                സ്വാഗതം, ലോഡിങ്...
-            </span>
+        <!-- ലോഗോയും സ്വാഗതം ബോക്സും -->
+<div class="w-full flex items-center gap-2 pt-2">
+    <!-- ലോഗോ ഭാഗം -->
+    <div class="flex-1 glass-card p-3 rounded-2xl flex items-center gap-3 border border-amber-500/30">
+        <img src="icon.png" class="w-10 h-10 rounded-xl">
+        <div>
+            <h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>
+            <p class="text-[10px] text-slate-400 font-bold tracking-wider">SMART SITE MANAGER</p>
         </div>
+    </div>
+    
+    <!-- ഡാഷ്‌ബോർഡ് ബട്ടൺ -->
+    <a href="dashboard.html" class="h-16 px-4 rounded-2xl bg-amber-500/10 border border-amber-400/40 text-amber-300 font-bold flex items-center shadow-xl hover:bg-amber-500/20 transition duration-300">
+        🏠
+    </a>
+</div>
 
-        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
-        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-            <div>
-                <h1 class="text-lg font-black text-white">സൈറ്റ് കണക്ക് എൻട്രി</h1>
-            </div>
-            <a href="dashboard.html" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
-                <span>←</span> ഡാഷ്‌ബോർഡ്
-            </a>
-        </div>
+<!-- സ്വാഗതം ബോക്സ് -->
+<div class="w-full py-4 px-4 rounded-2xl text-base font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl text-center">
+    <span id="loggedInMeshtri">സ്വാഗതം, ലോഡിംഗ്...</span>
+</div>
+
 
         <!-- തിരയുന്ന ഭാഗം -->
         <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
