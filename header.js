@@ -31,12 +31,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
             </div>
         </div>
 
-        <!-- സ്വാഗതം ബോക്സും വലിയ ഹോം ബട്ടണും ഉൾപ്പെടുന്ന ഭാഗം -->
-        <div class="flex items-center gap-2 w-full">
-            ${showWelcome ? `
-            <div class="flex-1 py-3 px-4 rounded-2xl text-center text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
-                <span id="loggedInMeshtri">സ്വാഗതം, ${userName}</span>
-            </div>` : ''}
+        
 
             <!-- മനോഹരമായ വലിയ ഹോം ബട്ടൺ -->
             <a href="dashboard.html" class="px-5 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-2xl font-black text-xs shadow-xl shadow-amber-950/40 transition flex items-center gap-2 border border-white/30 flex-shrink-0">
@@ -54,19 +49,8 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
         container.innerHTML = headerHTML;
     }
 }
-// പേജ് ലോഡ് ആകുമ്പോൾ 'സൈറ്റിന്റെ വിവരങ്ങൾ' അല്ലെങ്കിൽ പേജിന്റെ മെയിൻ ഹെഡിങ് കണ്ടുപിടിച്ച് ഹോം ബട്ടൺ തനിയെ ചേർക്കുന്ന കോഡ്
-document.addEventListener("DOMContentLoaded", () => {
-    // പേജിലെ പ്രധാന ടൈറ്റിൽ H1 ടാഗ് കണ്ടുപിടിക്കുന്നു
-    const mainTitle = document.querySelector('h1.text-lg, h1'); 
+
     
-    if (mainTitle && !document.getElementById('autoHomeBtn')) {
-        // ഹെഡിങ്ങും ഹോം ബട്ടണും വെക്കാൻ ഒരു ഫ്ലെക്സ് ബോക്സ് ഉണ്ടാക്കുന്നു
-        const wrapper = document.createElement('div');
-        wrapper.className = "bg-slate-900/90 border-2 border-amber-500/40 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4";
-        
-        // നിലവിലുള്ള ടൈറ്റിലിന്റെ പേര് എടുക്കുന്നു
-        const titleText = mainTitle.innerText;
-        
         // പുതിയ ഘടന സെറ്റ് ചെയ്യുന്നു (പേരും തൊട്ടടുത്ത് ഹോം ബട്ടണും)
         wrapper.innerHTML = `
             <h1 class="text-base font-black text-white">${titleText}</h1>
