@@ -31,15 +31,12 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
             </div>
         </div>
 
-        <!-- സ്വാഗതം ബോക്സും ഹോം ബട്ടണും (ആവശ്യമുള്ള പേജുകളിൽ മാത്രം വരുത്താൻ) -->
+        <!-- സ്വാഗതം ബോക്സ് മാത്രം (ഹോം ബട്ടൺ ഒഴിവാക്കി) -->
         ${showWelcome ? `
-        <div class="flex items-stretch gap-2.5">
-            <div class="flex-1 py-4 px-4 rounded-2xl text-base font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl flex items-center justify-center">
+        <div class="w-full">
+            <div class="w-full py-3 px-4 rounded-2xl text-center text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
                 <span id="loggedInMeshtri">സ്വാഗതം, ${userName}</span>
             </div>
-            <a href="dashboard.html" class="w-16 py-4 rounded-2xl bg-amber-500/10 border border-amber-400/40 text-amber-300 font-bold flex items-center justify-center shadow-xl hover:bg-amber-500/20 transition duration-300 text-xl">
-                🏠
-            </a>
         </div>` : ''}
     </div>`;
 
