@@ -17,8 +17,8 @@
 </head>
 <body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
 
-    <!-- Toast Notification Container -->
-    <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
+    <!-- Toast Notification Container (Fixed to center) -->
+    <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 
     <div class="max-w-md mx-auto space-y-4">
         
@@ -53,51 +53,51 @@
         <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
             <div>
                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
-                <select id="filterSite" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500/40 text-sm font-bold focus:outline-none">
+                <select id="filterSite" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
                     <option value="">എല്ലാ സൈറ്റുകളും</option>
                 </select>
             </div>
             <div>
                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി വെച്ച് തിരയാൻ</label>
-                <input type="date" id="filterDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500/40 text-sm font-bold focus:outline-none">
+                <input type="date" id="filterDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
             </div>
             <div>
                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പേര് വെച്ച് തിരയാൻ</label>
-                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500/40 text-sm font-bold placeholder-slate-500 focus:outline-none">
+                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none">
             </div>
         </div>
 
-        <!-- പുതിയ കണക്ക് ഫോം (മെറ്റീരിയൽസ് പേജ് പോലെ നീല ബോർഡറും മൈക്കും) -->
+        <!-- പുതിയ കണക്ക് ഫോം -->
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
             <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2">പുതിയ കണക്ക് ചേർക്കുക</h2>
             
-            <input type="date" id="transDate" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500/40 text-sm font-bold focus:outline-none">
+            <input type="date" id="transDate" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
             
-            <!-- പേര് ഫീൽഡും മൈക്കും -->
+            <!-- ആളുകളുടെ പേര് ഫീൽഡും നീല മൈക്കും (കൂടുതൽ വ്യക്തതയ്ക്കായി പ്രത്യേക ഹൈലൈറ്റ്) -->
             <div class="relative">
-                <input type="text" id="ownerName" placeholder="പേര് / വിവരം" class="w-full p-4 pr-12 bg-slate-800/80 rounded-2xl border border-blue-500/40 text-sm font-bold placeholder-slate-500 focus:outline-none">
-                <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700/50 rounded-xl transition">
+                <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="w-full p-4 pr-12 bg-blue-950/40 rounded-2xl border-2 border-blue-500 text-sm font-black placeholder-blue-300/50 focus:outline-none shadow-inner">
+                <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-blue-400 hover:bg-blue-500/20 rounded-xl transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                 </button>
             </div>
 
-            <!-- സൈറ്റ് ഫീൽഡും മൈക്കും -->
+            <!-- സൈറ്റ് ഫീൽഡും നീല മൈക്കും -->
             <div class="relative">
-                <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-4 pr-12 bg-slate-800/80 rounded-2xl border border-blue-500/40 text-sm font-bold placeholder-slate-500 focus:outline-none">
-                <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700/50 rounded-xl transition">
+                <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-4 pr-12 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none">
+                <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-blue-400 hover:bg-blue-500/20 rounded-xl transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                 </button>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <select id="type" class="p-4 bg-slate-800/80 rounded-2xl border border-blue-500/40 text-sm font-bold focus:outline-none">
+                <select id="type" class="p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
                     <option value="income">വരവ്</option>
                     <option value="wage">കൂലി</option>
                     <option value="material">മെറ്റീരിയൽസ്</option>
                     <option value="rent">വാടക</option>
                     <option value="other">മറ്റ് ചെലവ്</option>
                 </select>
-                <select id="paymentMethod" class="p-4 bg-slate-800/80 rounded-2xl border border-blue-500/40 text-sm font-bold focus:outline-none">
+                <select id="paymentMethod" class="p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
                     <option value="cash">ക്യാഷ്</option>
                     <option value="gpay">GPay</option>
                     <option value="UPI">യുപിഐ</option>
@@ -105,7 +105,7 @@
                 </select>
             </div>
             
-            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500/40 text-sm font-bold focus:outline-none">
+            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
             
             <button id="saveBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition">സേവ് ചെയ്യുക</button>
             <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
@@ -138,10 +138,10 @@
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            toast.className = `toast-animate pointer-events-auto px-5 py-3 rounded-2xl text-white font-bold text-sm shadow-2xl border backdrop-blur-md flex items-center gap-2 ${
+            toast.className = `toast-animate pointer-events-auto px-6 py-4 rounded-2xl text-white font-bold text-base shadow-2xl border backdrop-blur-md flex items-center gap-3 ${
                 isSuccess 
-                    ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-300' 
-                    : 'bg-gradient-to-r from-red-950 to-rose-950 border-red-500/50 text-white'
+                    ? 'bg-blue-950/95 border-blue-500 text-blue-200 shadow-blue-500/20' 
+                    : 'bg-gradient-to-r from-red-950 to-rose-950 border-red-500 text-white'
             }`;
             toast.innerText = message;
             container.appendChild(toast);
