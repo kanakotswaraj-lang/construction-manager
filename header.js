@@ -54,3 +54,32 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
         container.innerHTML = headerHTML;
     }
 }
+// പേജ് ലോഡ് ആകുമ്പോൾ 'സൈറ്റിന്റെ വിവരങ്ങൾ' അല്ലെങ്കിൽ പേജിന്റെ മെയിൻ ഹെഡിങ് കണ്ടുപിടിച്ച് ഹോം ബട്ടൺ തനിയെ ചേർക്കുന്ന കോഡ്
+document.addEventListener("DOMContentLoaded", () => {
+    // പേജിലെ പ്രധാന ടൈറ്റിൽ H1 ടാഗ് കണ്ടുപിടിക്കുന്നു
+    const mainTitle = document.querySelector('h1.text-lg, h1'); 
+    
+    if (mainTitle && !document.getElementById('autoHomeBtn')) {
+        // ഹെഡിങ്ങും ഹോം ബട്ടണും വെക്കാൻ ഒരു ഫ്ലെക്സ് ബോക്സ് ഉണ്ടാക്കുന്നു
+        const wrapper = document.createElement('div');
+        wrapper.className = "bg-slate-900/90 border-2 border-amber-500/40 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4";
+        
+        // നിലവിലുള്ള ടൈറ്റിലിന്റെ പേര് എടുക്കുന്നു
+        const titleText = mainTitle.innerText;
+        
+        // പുതിയ ഘടന സെറ്റ് ചെയ്യുന്നു (പേരും തൊട്ടടുത്ത് ഹോം ബട്ടണും)
+        wrapper.innerHTML = `
+            <h1 class="text-base font-black text-white">${titleText}</h1>
+            <a href="dashboard.html" id="autoHomeBtn" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-500/20 transition flex items-center gap-1.5 border border-white/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                ഹോം
+            </a>
+        `;
+        
+        // പഴയ ടൈറ്റിൽ ഇരിക്കുന്ന ഭാഗത്ത് ഈ പുതിയ ബോക്സ് മാറ്റിസ്ഥാപിക്കുന്നു
+        mainTitle.parentNode.replaceChild(wrapper, mainTitle);
+    }
+});
