@@ -30,7 +30,8 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof setupHeader === 'function') {
-                setupHeader('appHeader');
+                setupHeader('appHeader', true, currentMeshtri);
+                
             }
             document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
             document.getElementById('entryDate').valueAsDate = new Date();
@@ -388,9 +389,11 @@
         <span id="loggedInMeshtri">സ്വാഗതം, swaraj</span>
     </div>
     
-    <!-- ഹോം ബട്ടൺ -->
-    <a href="dashboard.html" class="w-16 h-auto py-4 rounded-2xl bg-amber-500/10 border border-amber-400/40 text-amber-300 font-bold flex items-center justify-center shadow-xl hover:bg-amber-500/20 transition duration-300 text-xl">
-        🏠
+<!-- സൈറ്റിന്റെ പേരും തൊട്ടടുത്ത് ഹോം ബട്ടണും -->
+<div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
+    <h1 class="text-lg font-black text-white">സൈറ്റിന്റെ വിവരങ്ങൾ</h1>
+    <a href="dashboard.html" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1">
+        <span>🏠</span> ഹോം
     </a>
 </div>
 
