@@ -249,6 +249,28 @@
         
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        
+// ഭാഷ മാറ്റാനുള്ള ഫങ്ഷൻ
+window.applyLanguage = function(lang) {
+    document.querySelectorAll('[data-key]').forEach(element => {
+        const key = element.getAttribute('data-key');
+        if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+            element.innerText = words[key][lang];
+        }
+    });
+
+    document.querySelectorAll('[data-key-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-key-placeholder');
+        if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+            element.placeholder = words[key][lang];
+        }
+    });
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('selectedLang') || localStorage.getItem('selectedLanguage') || 'ml';
+    window.applyLanguage(savedLang);
+});
 
         window.showToast = (message, isSuccess = true) => {
             const toast = document.getElementById('customToast');
