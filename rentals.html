@@ -180,32 +180,40 @@
     </div>
 
     <script>
-        // ഭാഷ മാറ്റുന്നതിനുള്ള ഫങ്ഷൻ
-        function switchLanguage(lang) {
+        // language.js-ലെ ഡിക്ഷണറി ഉപയോഗിച്ച് ഭാഷ മാറ്റുന്ന ഗ്ലോബൽ ഫങ്ഷൻ
+        window.switchLanguage = function(lang) {
             localStorage.setItem('selectedLang', lang);
 
+            // എല്ലാ .lang ക്ലാസ് ഉള്ള ടെക്സ്റ്റുകളും മാറ്റുക
             document.querySelectorAll('.lang').forEach(element => {
                 let key = element.getAttribute('data-key');
-                if (words[key] && words[key][lang]) {
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
                     element.innerText = words[key][lang];
                 }
             });
 
+            // ഇൻപുട്ട് placeholder-കൾ മാറ്റുക
             document.querySelectorAll('.lang-placeholder').forEach(element => {
                 let key = element.getAttribute('data-key-placeholder');
-                if (words[key] && words[key][lang]) {
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
                     element.placeholder = words[key][lang];
                 }
             });
 
+            // ലിസ്റ്റ് വീണ്ടും ലോഡ് ചെയ്യുക (അകത്തെ ഹെഡിംഗുകൾ മാറാൻ)
             if (typeof loadData === 'function') {
                 loadData();
             }
-        }
+        };
 
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ നിലവിലെ ഭാഷ സെറ്റ് ചെയ്യുക
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            switchLanguage(savedLang);
+            setTimeout(() => {
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage(savedLang);
+                }
+            }, 150);
         });
     </script>
 
