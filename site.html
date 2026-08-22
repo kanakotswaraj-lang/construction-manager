@@ -133,18 +133,18 @@
                 select.value = currentValue;
             });
         }
+window.addExpenseRow = function() {
+    const container = document.getElementById('expenseListContainer');
+    const expId = Date.now();
+    container.insertAdjacentHTML('beforeend', `
+        <div class="flex gap-2 items-center" id="exp-${expId}">
+            <input type="text" placeholder="വിവരം (ഉദാ: വാഹനം, മെറ്റീരിയൽ)" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            <input type="number" placeholder="തുക" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()">
+            <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3 py-3 rounded-xl font-bold text-xs">X</button>
+        </div>
+    `);
+}
 
-        window.addExpenseRow = function() {
-            const container = document.getElementById('expenseListContainer');
-            const expId = Date.now();
-            container.insertAdjacentHTML('beforeend', `
-                <div class="flex gap-2 items-center" id="exp-${expId}">
-                    <input type="text" placeholder="വിവരം (ഉദാ: വാഹനം, മെറ്റീരിയൽ)" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" required>
-                    <input type="number" placeholder="തുക" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()" required>
-                    <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3 py-3 rounded-xl font-bold text-xs">X</button>
-                </div>
-            `);
-        }
 
         window.addWorkerRow = function() {
             const container = document.getElementById('workerListContainer');
