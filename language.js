@@ -175,35 +175,30 @@ function toggleLangMenu() {
 function switchLanguage(lang) {
     localStorage.setItem('selectedLang', lang); // യൂസർ തിരഞ്ഞെടുത്ത ഭാഷ സേവ് ചെയ്യുന്നു
 
-    // ക്ലാസ് 'lang' ഉള്ള എല്ലാ ടെക്സ്റ്റുകളും മാറ്റുന്നു
+    // 1. ക്ലാസ് 'lang' ഉള്ള എല്ലാ ടെക്സ്റ്റുകളും മാറ്റുന്നു
     document.querySelectorAll('.lang').forEach(element => {
-        let key = element.getAttribute('data-key'); // id-ക്ക് പകരം data-key എെടുക്കുന്നു
+        let key = element.getAttribute('data-key'); 
         if (words[key] && words[key][lang]) {
             element.innerText = words[key][lang];
         }
     });
 
-    // സെർച്ച് ബോക്സിന്റെ placeholder മാറാൻ
+    // 2. സാധാരണ സെർച്ച് ബോക്സിന്റെ placeholder മാറാൻ
     const searchInput = document.getElementById('searchInput');
     if (searchInput && words['search_placeholder'] && words['search_placeholder'][lang]) {
         searchInput.placeholder = words['search_placeholder'][lang];
     }
-}
 
-// ഭാഷ മാറ്റുന്നതിനുള്ള പ്രധാന ഫങ്ഷൻ
-function switchLanguage(lang) {
-    localStorage.setItem('selectedLang', lang); // യൂസർ തിരഞ്ഞെടുത്ത ഭാഷ സേവ് ചെയ്യുന്നു
+    // 3. മറ്റ് ഇൻപുട്ട് ബോക്സുകളുടെ placeholder മാറാൻ (lang-placeholder ഉള്ളവ)
+    document.querySelectorAll('.lang-placeholder').forEach(element => {
+        let key = element.getAttribute('data-key-placeholder');
+        if (words[key] && words[key][lang]) {
+            element.placeholder = words[key][lang];
+        }
+    });
 
-
-    // സെർച്ച് ബോക്സിന്റെ placeholder മാറാൻ
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput && words['search_placeholder'] && words['search_placeholder'][lang]) {
-        searchInput.placeholder = words['search_placeholder'][lang];
+    // 4. ഡാറ്റ വീണ്ടും ലോഡ് ചെയ്യാൻ (പഴയ കണക്കുകൾ കാണാൻ)
+    if (typeof loadData === 'function') {
+        loadData();
     }
 }
-
-// പേജ് ലോഡ് ചെയ്യുമ്പോഴും മറ്റ് പേജുകളിലേക്ക് പോകുമ്പോഴും സേവ് ചെയ്ത ഭാഷ ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യാൻ
-document.addEventListener("DOMContentLoaded", () => {
-    const savedLang = localStorage.getItem('selectedLang') || 'ml'; // ഡിഫോൾട്ട് മലയാളം
-    switchLanguage(savedLang);
-});
