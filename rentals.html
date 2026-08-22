@@ -13,12 +13,21 @@
         border: 2px solid rgba(51, 65, 85, 1);
         transition: all 0.3s ease;
         background-color: #1e293b !important;
+        color: white !important;
     }
 
     input:focus, select:focus {
         border-color: #22d3ee !important; 
         outline: none;
         box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2); 
+    }
+
+    /* ഓട്ടോഫിൽ ബാക്ക്ഗ്രൗണ്ട് പ്രശ്നം ഒഴിവാക്കാൻ */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
+        -webkit-text-fill-color: white !important;
     }
 
     .mic-btn {
@@ -47,7 +56,10 @@
 
         <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
             <h1 class="text-lg font-black text-white">വാടക ഉപകരണങ്ങൾ</h1>
-            <a href="dashboard.html" class="px-3 py-1.5 bg-slate-800 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold">← ഡാഷ്‌ബോർഡ്</a>
+            <div class="flex gap-2">
+                <a href="index.html" class="px-3 py-1.5 bg-amber-500 text-slate-950 rounded-xl text-xs font-black shadow-md">🏠 ഹോം</a>
+                <a href="dashboard.html" class="px-3 py-1.5 bg-slate-800 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold">← ഡാഷ്‌ബോർഡ്</a>
+            </div>
         </div>
 
         <!-- സ്റ്റാറ്റിസ്റ്റിക്സ് & ഫിൽട്ടർ -->
@@ -74,13 +86,13 @@
                 <div id="reminderList"></div>
             </div>
 
-            <!-- കടകളുടെ ലിസ്റ്റ് കാണിക്കുന്ന സെക്ഷൻ -->
+            <!-- കടകളുടെ ലിസ്റ്റ് & എഡിറ്റിംഗ് ഡയറക്ടറി -->
             <div class="bg-slate-800/50 border border-slate-700 p-3 rounded-2xl space-y-2">
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleShopList()">
-                    <p class="text-xs font-black text-amber-400">🏬 കടകളുടെ ലിസ്റ്റ് & കോൺടാക്റ്റുകൾ</p>
+                    <p class="text-xs font-black text-amber-400">🏬 കടകളുടെ ലിസ്റ്റ് & എഡിറ്റ്‌ ചെയ്യാം</p>
                     <span id="shopToggleIcon" class="text-xs text-slate-400 font-bold">▼ കാണുക</span>
                 </div>
-                <div id="shopDirectoryContainer" class="hidden space-y-1.5 pt-2 border-t border-slate-700 max-h-40 overflow-y-auto">
+                <div id="shopDirectoryContainer" class="hidden space-y-2 pt-2 border-t border-slate-700 max-h-48 overflow-y-auto">
                     <!-- ജാവാസ്ക്രിപ്റ്റ് വഴി കടകൾ ഇവിടെ വരും -->
                 </div>
             </div>
@@ -103,7 +115,7 @@
             </div>
 
             <div class="relative">
-                <input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+                <input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ (ഉദാ: റൂം 1 / ഫസ്റ്റ് ഫ്ലോർ)" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
                 <button type="button" onclick="startVoiceInputFor('bedroomName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
             </div>
 
@@ -112,17 +124,25 @@
                 <button type="button" onclick="startVoiceInputFor('siteName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
             </div>
 
+            <!-- കടയുടെ പേര് (ഡ്രോപ്പ്ഡൗൺ/ഡാറ്റാലിസ്റ്റ്) -->
             <div class="relative">
-                <input type="text" id="shopName" placeholder="കടയുടെ പേര്" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+                <input type="text" id="shopName" list="shopSuggestions" placeholder="കടയുടെ പേര് തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+                <datalist id="shopSuggestions"></datalist>
                 <button type="button" onclick="startVoiceInputFor('shopName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
             </div>
 
+            <!-- വാങ്ങിയ ആളിന്റെ പേര് (ഡ്രോപ്പ്ഡൗൺ/ഡാറ്റാലിസ്റ്റ്) -->
             <div class="relative">
-                <input type="text" id="clientName" placeholder="വാങ്ങിയ ആളിന്റെ പേര്" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+                <input type="text" id="clientName" list="clientSuggestions" placeholder="വാങ്ങിയ ആളിന്റെ പേര് തിരഞ്ഞെടുക്കുക" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+                <datalist id="clientSuggestions"></datalist>
                 <button type="button" onclick="startVoiceInputFor('clientName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
             </div>
 
-            <input type="text" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            <!-- ഫോൺ നമ്പർ & കോൺടാക്റ്റ് പിക്കർ ബട്ടൺ -->
+            <div class="relative flex gap-2">
+                <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+                <button type="button" id="pickContactBtn" onclick="pickContact()" class="bg-cyan-700 hover:bg-cyan-600 text-white px-3.5 rounded-2xl text-xs font-black whitespace-nowrap shadow-md">📇 കോൺടാക്റ്റ്</button>
+            </div>
             
             <div class="grid grid-cols-2 gap-2">
                 <div>
@@ -140,7 +160,7 @@
             <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
             <input type="number" id="paidRent" placeholder="ഇതുവരെ നൽകിയ മുൻകൂർ തുക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
             
-            <button id="saveRentBtn" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
+            <button id="saveRentBtn" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs shadow-lg">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
         <div id="rentList" class="space-y-3"></div>
@@ -211,6 +231,32 @@
             setTimeout(() => {
                 toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
             }, 2500);
+        };
+
+        // ഫോൺ കോൺടാക്റ്റ് എടുക്കാനുള്ള ഫംഗ്ഷൻ
+        window.pickContact = async () => {
+            if ('contacts' in navigator && 'select' in navigator.contacts) {
+                try {
+                    const props = ['name', 'tel'];
+                    const opts = { multiple: false };
+                    const contacts = await navigator.contacts.select(props, opts);
+                    if (contacts && contacts.length > 0) {
+                        const contact = contacts[0];
+                        if (contact.tel && contact.tel.length > 0) {
+                            document.getElementById('shopPhone').value = contact.tel[0];
+                            if (contact.name && contact.name.length > 0 && !document.getElementById('shopName').value) {
+                                document.getElementById('shopName').value = contact.name[0];
+                            }
+                            window.showToast("📇 കോൺടാക്റ്റ് എടുത്തു!");
+                        }
+                    }
+                } catch (ex) {
+                    console.log(ex);
+                    window.showToast("കോൺടാക്റ്റ് എടുക്കാൻ കഴിഞ്ഞില്ല", false);
+                }
+            } else {
+                alert("നിങ്ങളുടെ ബ്രൗസർ കോൺടാക്റ്റ് പിക്കർ പിന്തുണയ്ക്കുന്നില്ല.");
+            }
         };
 
         window.startVoiceInputFor = (fieldId) => {
@@ -290,6 +336,41 @@
             }
         }
         document.querySelectorAll('input').forEach(input => input.addEventListener('input', calculateTotal));
+
+        // കടയുടെ പേര് എഡിറ്റ് ചെയ്യാൻ (എല്ലാ രേഖകളിലും ആ കടയുടെ പേര് മാറ്റാൻ)
+        window.editShopNameGlobally = async (oldShopName) => {
+            const newName = await window.openCustomPrompt("കടയുടെ പുതിയ പേര് നൽകുക:", oldShopName);
+            if (!newName || newName === oldShopName) return;
+            
+            if (cachedSnapshot) {
+                let batchUpdates = [];
+                cachedSnapshot.forEach((d) => {
+                    const r = d.data();
+                    if (r.shop === oldShopName && r.meshtriOwner === currentMeshtri) {
+                        batchUpdates.push(updateDoc(doc(db, "rentals", d.id), { shop: newName }));
+                    }
+                });
+                await Promise.all(batchUpdates);
+                window.showToast("✏️ കടയുടെ പേര് വിജയകരമായി മാറ്റി!");
+            }
+        };
+
+        // കട പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യാൻ
+        window.deleteShopGlobally = async (shopName) => {
+            if (await window.openCustomConfirm(`"${shopName}" എന്ന കടയും അതിലെ കണക്കുകളും ഡിലീറ്റ് ചെയ്യണോ?`)) {
+                if (cachedSnapshot) {
+                    let batchDeletes = [];
+                    cachedSnapshot.forEach((d) => {
+                        const r = d.data();
+                        if (r.shop === shopName && r.meshtriOwner === currentMeshtri) {
+                            batchDeletes.push(deleteDoc(doc(db, "rentals", d.id)));
+                        }
+                    });
+                    await Promise.all(batchDeletes);
+                    window.showToast("🗑️ കടയും ഡാറ്റയും നീക്കം ചെയ്തു!", false);
+                }
+            }
+        };
 
         window.editItemDetails = async (id, currentItem, currentQty, currentShop, currentClient, currentSite, currentBedroom) => {
             const newName = await window.openCustomPrompt("ഉപകരണത്തിന്റെ പുതിയ പേര്:", currentItem);
@@ -392,14 +473,17 @@
             let grandTotalRent = 0, grandTotalPaid = 0;
             let reminders = [];
             let shopsMap = new Map();
+            let clientsSet = new Set();
             const today = new Date();
 
             cachedSnapshot.forEach((d) => {
                 const r = d.data();
                 if (r.meshtriOwner === currentMeshtri) {
-                    // കടകളുടെ ഡയറക്ടറി തയ്യാറാക്കാൻ
                     if (r.shop) {
                         shopsMap.set(r.shop, r.phone || 'നമ്പർ ഇല്ല');
+                    }
+                    if (r.client) {
+                        clientsSet.add(r.client);
                     }
 
                     const isRet = r.isReturned === true;
@@ -467,17 +551,38 @@
                 }
             });
 
-            // കടകളുടെ ലിസ്റ്റ് വ്യൂ അപ്ഡേറ്റ് ചെയ്യാൻ
+            // കടകളുടെ ലിസ്റ്റ് വ്യൂ & എഡിറ്റ്/ഡിലീറ്റ് ഓപ്ഷനുകൾ അപ്ഡേറ്റ് ചെയ്യാൻ
             const shopContainer = document.getElementById('shopDirectoryContainer');
+            const shopSuggestions = document.getElementById('shopSuggestions');
+            shopSuggestions.innerHTML = '';
+            
             if (shopsMap.size > 0) {
                 let shopHtml = '';
                 shopsMap.forEach((phone, shopName) => {
-                    shopHtml += `<div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-xl text-xs"><span class="font-bold text-white">${shopName}</span><a href="tel:${phone}" class="text-cyan-400 font-bold">📞 ${phone}</a></div>`;
+                    shopSuggestions.innerHTML += `<option value="${shopName}">`;
+                    shopHtml += `
+                        <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl text-xs">
+                            <div>
+                                <span class="font-bold text-white block">${shopName}</span>
+                                <a href="tel:${phone}" class="text-cyan-400 font-bold text-[11px]">📞 ${phone}</a>
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="editShopNameGlobally('${shopName}')" class="bg-cyan-900/60 text-cyan-200 px-2 py-1 rounded-lg text-[10px] font-black">മാറ്റുക</button>
+                                <button onclick="deleteShopGlobally('${shopName}')" class="bg-red-900/60 text-red-200 px-2 py-1 rounded-lg text-[10px] font-black">ഡിലീറ്റ്</button>
+                            </div>
+                        </div>`;
                 });
                 shopContainer.innerHTML = shopHtml;
             } else {
                 shopContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1">കടകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>`;
             }
+
+            // വാങ്ങിയ ആളുടെ പേരുകൾ ഡ്രോപ്പ്ഡൗണിലേക്ക് നൽകാൻ
+            const clientSuggestions = document.getElementById('clientSuggestions');
+            clientSuggestions.innerHTML = '';
+            clientsSet.forEach(clientName => {
+                clientSuggestions.innerHTML += `<option value="${clientName}">`;
+            });
 
             const totalBal = grandTotalRent - grandTotalPaid;
             document.getElementById('statTotalRent').innerText = `₹${grandTotalRent}`;
