@@ -47,11 +47,8 @@
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
     <div class="max-w-md mx-auto space-y-4">
         
-        <div id="appHeader" class="w-full flex justify-center"></div>
-
-        <div class="text-center w-full">
-            <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black text-cyan-300 bg-cyan-500/10 border border-cyan-400/40">സ്വാഗതം...</span>
-        </div>
+        <!-- ഹെഡർ ഇവിടെ ശരിയായി ലോഡ് ആകുന്നു -->
+        <div id="appHeader" class="w-full"></div>
 
         <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
             <h1 class="text-lg font-black text-white">വാടക ഉപകരണങ്ങൾ</h1>
@@ -185,10 +182,12 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         
+        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+
         document.addEventListener("DOMContentLoaded", () => {
             try {
                 if (typeof setupHeader === 'function') {
-                    setupHeader('appHeader');
+                    setupHeader('appHeader', true, currentMeshtri);
                 } else {
                     document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
                 }
@@ -210,8 +209,6 @@
         
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
-        document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
 
         window.showToast = (message, isSuccess = true) => {
             const toast = document.getElementById('customToast');
@@ -380,7 +377,6 @@
             }
         };
 
-        // തിരികെ നൽകിയ എണ്ണം അപ്ഡേറ്റ് ചെയ്യാനുള്ള ഫംഗ്ഷൻ
         window.updateReturnedQty = async (id, currentQty, currentReturned) => {
             const input = await window.openCustomPrompt(`എത്ര എണ്ണമാണ് തിരികെ നൽകിയത്? (ആകെ: ${currentQty})`, currentReturned);
             if (input !== null) {
@@ -429,7 +425,7 @@
         };
 
         window.shareWhatsApp = (item, bedroom, qty, returnedQty, site, shop, client, total, paid, bal, totalDays) => {
-            const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} ${bedroom ? `(ബെഡ്റൂം: ${bedroom})` : ''} \nആകെ എണ്ണം: ${qty} ${returnedQty > `| തിരികെ നൽകിയത്: ${returnedQty}` : ''}\nസൈറ്റ്: ${site || 'പറഞ്ഞിട്ടില്ല'}\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nവാടക നൽകേണ്ടത്: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
+            const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} ${bedroom ? `(ബെഡ്റൂം: ${bedroom})` : ''} \nആകെ എണ്ണം: ${qty} ${returnedQty > 0 ? `| തിരികെ നൽകിയത്: ${returnedQty}` : ''}\nസൈറ്റ്: ${site || 'പറഞ്ഞിട്ടില്ല'}\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nവാടക നൽകേണ്ടത്: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
@@ -492,7 +488,7 @@
                     const isRet = r.isReturned === true;
                     const totalQty = parseFloat(r.qty) || 1;
                     const returnedQty = parseFloat(r.returnedQty) || 0;
-                    const effectiveQty = Math.max(totalQty - returnedQty, 0); // ബാക്കി ഉള്ളതിന് മാത്രം വാടക
+                    const effectiveQty = Math.max(totalQty - returnedQty, 0);
 
                     const startDate = new Date(r.start);
                     const endDate = new Date(r.end);
