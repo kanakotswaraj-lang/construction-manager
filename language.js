@@ -171,18 +171,29 @@ function toggleLangMenu() {
         menu.classList.toggle('hidden');
     }
 }
-
 // ഭാഷ മാറ്റുന്നതിനുള്ള പ്രധാന ഫങ്ഷൻ
 function switchLanguage(lang) {
     localStorage.setItem('selectedLang', lang); // യൂസർ തിരഞ്ഞെടുത്ത ഭാഷ സേവ് ചെയ്യുന്നു
 
     // ക്ലാസ് 'lang' ഉള്ള എല്ലാ ടെക്സ്റ്റുകളും മാറ്റുന്നു
     document.querySelectorAll('.lang').forEach(element => {
-        let key = element.id;
+        let key = element.getAttribute('data-key'); // id-ക്ക് പകരം data-key എെടുക്കുന്നു
         if (words[key] && words[key][lang]) {
             element.innerText = words[key][lang];
         }
     });
+
+    // സെർച്ച് ബോക്സിന്റെ placeholder മാറാൻ
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput && words['search_placeholder'] && words['search_placeholder'][lang]) {
+        searchInput.placeholder = words['search_placeholder'][lang];
+    }
+}
+
+// ഭാഷ മാറ്റുന്നതിനുള്ള പ്രധാന ഫങ്ഷൻ
+function switchLanguage(lang) {
+    localStorage.setItem('selectedLang', lang); // യൂസർ തിരഞ്ഞെടുത്ത ഭാഷ സേവ് ചെയ്യുന്നു
+
 
     // സെർച്ച് ബോക്സിന്റെ placeholder മാറാൻ
     const searchInput = document.getElementById('searchInput');
