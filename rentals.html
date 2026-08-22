@@ -163,7 +163,7 @@
             <h3 id="promptTitle" class="font-black text-amber-400 text-sm">ടൈറ്റിൽ</h3>
             <input type="text" id="promptInput" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white">
             <div class="flex gap-2">
-                <button id="promptCancelBtn" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black">ക്ൻസൽ</button>
+                <button id="promptCancelBtn" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black">ക്യാൻസൽ</button>
                 <button id="promptOkBtn" class="flex-1 bg-amber-500 text-slate-950 py-3 rounded-2xl text-xs font-black">ശരി</button>
             </div>
         </div>
@@ -180,9 +180,10 @@
     </div>
 
     <script>
-        // language.js-ലെ ഡിക്ഷണറി ഉപയോഗിച്ച് ഭാഷ മാറ്റുന്ന ഗ്ലോബൽ ഫങ്ഷൻ
+        // language.js-ലെ ഡിക്ഷണറി ഉപയോഗിച്ച് ഭാഷ മാറ്റുന്ന ഫങ്ഷനുകൾ
         window.switchLanguage = function(lang) {
             localStorage.setItem('selectedLang', lang);
+            localStorage.setItem('selectedLanguage', lang);
 
             // എല്ലാ .lang ക്ലാസ് ഉള്ള ടെക്സ്റ്റുകളും മാറ്റുക
             document.querySelectorAll('.lang').forEach(element => {
@@ -200,20 +201,20 @@
                 }
             });
 
-            // ലിസ്റ്റ് വീണ്ടും ലോഡ് ചെയ്യുക (അകത്തെ ഹെഡിംഗുകൾ മാറാൻ)
+            // ലിസ്റ്റ് വീണ്ടും ലോഡ് ചെയ്യുക
             if (typeof loadData === 'function') {
                 loadData();
             }
         };
 
+        window.applyLanguage = window.switchLanguage;
+
         // പേജ് ലോഡ് ചെയ്യുമ്പോൾ നിലവിലെ ഭാഷ സെറ്റ് ചെയ്യുക
         document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            const savedLang = localStorage.getItem('selectedLang') || localStorage.getItem('selectedLanguage') || 'ml';
             setTimeout(() => {
-                if (typeof window.switchLanguage === 'function') {
-                    window.switchLanguage(savedLang);
-                }
-            }, 150);
+                window.switchLanguage(savedLang);
+            }, 100);
         });
     </script>
 
@@ -249,28 +250,6 @@
         
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        
-// ഭാഷ മാറ്റാനുള്ള ഫങ്ഷൻ
-window.applyLanguage = function(lang) {
-    document.querySelectorAll('[data-key]').forEach(element => {
-        const key = element.getAttribute('data-key');
-        if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-            element.innerText = words[key][lang];
-        }
-    });
-
-    document.querySelectorAll('[data-key-placeholder]').forEach(element => {
-        const key = element.getAttribute('data-key-placeholder');
-        if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-            element.placeholder = words[key][lang];
-        }
-    });
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    const savedLang = localStorage.getItem('selectedLang') || localStorage.getItem('selectedLanguage') || 'ml';
-    window.applyLanguage(savedLang);
-});
 
         window.showToast = (message, isSuccess = true) => {
             const toast = document.getElementById('customToast');
