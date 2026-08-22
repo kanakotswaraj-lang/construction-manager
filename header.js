@@ -47,7 +47,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
     }
 }
 
-// പേജ് റീലോഡ് ചെയ്യാതെ ലാംഗ്വേജ് സേവ് ചെയ്യുന്ന കോഡ് (മിന്നുന്നത് ഒഴിവാക്കാൻ)
+// ലാംഗ്വേജ് മെനു തുറക്കാൻ/അടക്കാൻ
 window.toggleLangMenu = function() {
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) {
@@ -55,8 +55,13 @@ window.toggleLangMenu = function() {
     }
 };
 
+// എല്ലാ പേജുകളിലും ഭാഷ മാറ്റി പേജ് റിഫ്രഷ് ചെയ്യാൻ
 window.switchLanguage = function(langCode) {
+    // ഭാഷയുടെ രണ്ട് കീ കളും ഒരേപോലെ സേവ് ചെയ്യുന്നു (മറ്റ് പേജുകളിലെ കൺഫ്യൂഷൻ ഒഴിവാക്കാൻ)
+    localStorage.setItem('selectedLang', langCode);
     localStorage.setItem('selectedLanguage', langCode);
     console.log("Language changed to: ", langCode);
-    // ഇവിടെ location.reload() ഒഴിവാക്കിയിരിക്കുന്നു, അതിനാൽ പേജ് മിന്നുകയോ റീലോഡ് ആവുകയോ ഇല്ല.
+
+    // പേജ് ഓട്ടോമാറ്റിക്കായി റീലോഡ് ചെയ്താൽ എല്ലാ പേജിലും പുതിയ ഭാഷ കൃത്യമായി ലോഡ് ആയിക്കോളും
+    location.reload();
 };
