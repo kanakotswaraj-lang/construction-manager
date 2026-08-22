@@ -43,7 +43,6 @@
     }
 </style>
     <title class="lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</title>
-
 </head>
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
     <div class="max-w-md mx-auto space-y-4">
@@ -179,6 +178,36 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // ഭാഷ മാറ്റുന്നതിനുള്ള ഫങ്ഷൻ
+        function switchLanguage(lang) {
+            localStorage.setItem('selectedLang', lang);
+
+            document.querySelectorAll('.lang').forEach(element => {
+                let key = element.getAttribute('data-key');
+                if (words[key] && words[key][lang]) {
+                    element.innerText = words[key][lang];
+                }
+            });
+
+            document.querySelectorAll('.lang-placeholder').forEach(element => {
+                let key = element.getAttribute('data-key-placeholder');
+                if (words[key] && words[key][lang]) {
+                    element.placeholder = words[key][lang];
+                }
+            });
+
+            if (typeof loadData === 'function') {
+                loadData();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            switchLanguage(savedLang);
+        });
+    </script>
 
     <script type="module">
         import { setupHeader } from './header.js';
@@ -470,11 +499,16 @@
         document.getElementById('searchInput').addEventListener('input', () => loadData());
 
         let cachedSnapshot = null;
-        function loadData() {
+        window.loadData = function() {
             if (!cachedSnapshot) return;
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const list = document.getElementById('rentList');
-            list.innerHTML = `<h2 class="font-black text-white mb-2 text-sm">${currentFilter === 'active' ? 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ' : 'തിരികെ നൽകിയ ഉപകരണങ്ങൾ'}</h2>`;
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            
+            let activeTitle = currentLang === 'en' ? 'Active Equipments' : 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ';
+            let returnedTitle = currentLang === 'en' ? 'Returned Equipments' : 'തിരികെ നൽകിയ ഉപകരണങ്ങൾ';
+            
+            list.innerHTML = `<h2 class="font-black text-white mb-2 text-sm">${currentFilter === 'active' ? activeTitle : returnedTitle}</h2>`;
             
             let grandTotalRent = 0, grandTotalPaid = 0;
             let reminders = [];
@@ -609,7 +643,7 @@
             } else {
                 reminderBox.classList.add('hidden');
             }
-        }
+        };
 
         onSnapshot(collection(db, "rentals"), (snapshot) => {
             cachedSnapshot = snapshot;
