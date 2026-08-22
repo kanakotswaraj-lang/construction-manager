@@ -54,14 +54,17 @@ window.toggleLangMenu = function() {
         dropdown.classList.toggle('hidden');
     }
 };
-
-// എല്ലാ പേജുകളിലും ഭാഷ മാറ്റി പേജ് റിഫ്രഷ് ചെയ്യാൻ
 window.switchLanguage = function(langCode) {
-    // ഭാഷയുടെ രണ്ട് കീ കളും ഒരേപോലെ സേവ് ചെയ്യുന്നു (മറ്റ് പേജുകളിലെ കൺഫ്യൂഷൻ ഒഴിവാക്കാൻ)
     localStorage.setItem('selectedLang', langCode);
     localStorage.setItem('selectedLanguage', langCode);
     console.log("Language changed to: ", langCode);
 
-    // പേജ് ഓട്ടോമാറ്റിക്കായി റീലോഡ് ചെയ്താൽ എല്ലാ പേജിലും പുതിയ ഭാഷ കൃത്യമായി ലോഡ് ആയിക്കോളും
-    location.reload();
+    // പേജ് റീലോഡ് ചെയ്യുന്നതിന് പകരം, 
+    // പേജിലെ ലാംഗ്വേജ് അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ വിളിക്കുക
+    if (typeof window.applyLanguage === 'function') {
+        window.applyLanguage(langCode);
+    } else {
+        // ഒരുപക്ഷേ പുതിയ പേജിലേക്ക് പോകുമ്പോൾ അത് ഓട്ടോമാറ്റിക് ആയി മാറാൻ ഇത് സഹായിക്കും
+        location.reload(); 
+    }
 };
