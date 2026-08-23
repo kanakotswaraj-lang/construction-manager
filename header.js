@@ -21,13 +21,13 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
 
                 <!-- ഭാഷകളുടെ ഡ്രോപ്പ്ഡൗൺ ലിസ്റ്റ് -->
                 <div id="langDropdown" class="hidden absolute right-0 mt-2 w-40 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl z-[9999] overflow-hidden py-1">
-                    <button onclick="window.switchLanguage('ml'); window.toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">മലയാളം</button>
-                    <button onclick="window.switchLanguage('en'); window.toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">English</button>
-                    <button onclick="window.switchLanguage('ta'); window.toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">தமிழ்</button>
-                    <button onclick="window.switchLanguage('hi'); window.toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">हिन्दी</button>
-                    <button onclick="window.switchLanguage('kn'); window.toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">ಕನ್ನಡ</button>
-                    <button onclick="window.switchLanguage('as'); window.toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">অসমীয়া</button>
-                    <button onclick="window.switchLanguage('bn'); window.toggleLangMenu();" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">বাংলা</button>
+                    <button onclick="window.changeLanguage('ml')" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">മലയാളം</button>
+                    <button onclick="window.changeLanguage('en')" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">English</button>
+                    <button onclick="window.changeLanguage('ta')" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">தமிழ்</button>
+                    <button onclick="window.changeLanguage('hi')" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">हिन्दी</button>
+                    <button onclick="window.changeLanguage('kn')" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">ಕನ್ನಡ</button>
+                    <button onclick="window.changeLanguage('as')" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">অসমীয়া</button>
+                    <button onclick="window.changeLanguage('bn')" class="w-full text-left px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition cursor-pointer">বাংলা</button>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
     }
 }
 
-// ലാംഗ്വേജ് മെനു തുറക്കാൻ/അടക്കാൻ global ആക്കി മാറ്റുന്നു
+// ലാംഗ്വേജ് മെനു ടോഗിൾ ചെയ്യാൻ
 window.toggleLangMenu = function() {
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) {
@@ -55,18 +55,18 @@ window.toggleLangMenu = function() {
     }
 };
 
-// ഭാഷ മാറ്റാനുള്ള global ഫങ്ഷൻ
-window.switchLanguage = function(langCode) {
+// ഭാഷ സുരക്ഷിതമായി മാറ്റാൻ (Conflict ഒഴിവാക്കാൻ changeLanguage എന്ന് പേര് നൽകി)
+window.changeLanguage = function(langCode) {
     localStorage.setItem('selectedLang', langCode);
-    localStorage.setItem('selectedLanguage', langCode);
-    console.log("Language changed to: ", langCode);
+    window.toggleLangMenu();
 
-    // പേജിൽ switchLanguage അല്ലെങ്കിൽ applyLanguage ഫങ്ഷൻ ഉണ്ടെങ്കിൽ അത് പ്രവർത്തിപ്പിക്കും
-    if (typeof window.applyLanguage === 'function') {
-        window.applyLanguage(langCode);
-    } else if (typeof window.switchLanguagePage === 'function') {
-        window.switchLanguagePage(langCode);
-    } else {
-        location.reload(); 
+    // rental.html അല്ലെങ്കിൽ മറ്റ് പേജുകളിലെ switchLanguage വിളിക്കുന്നു
+    if (typeof window.switchLanguage === 'function') {
+        window.switchLanguage(langCode);
+    }
+    
+    // ഡാറ്റാ ലിസ്റ്റ് പുതിയ ഭാഷയിലേക്ക് അപ്ഡേറ്റ് ചെയ്യാൻ
+    if (typeof window.loadData === 'function') {
+        window.loadData();
     }
 };
