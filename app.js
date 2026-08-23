@@ -69,7 +69,21 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         applyLanguageTranslations();
     }
+Document.addEventListener("DOMContentLoaded", () => {
+    // 1. ഹെഡർ & യൂസർ സെറ്റപ്പ്
+    if (typeof setupHeader === 'function') setupHeader('appHeader');
+    
+    const loggedInElem = document.getElementById('loggedInMeshtri');
+    if (loggedInElem) loggedInElem.innerText = "സ്വാഗതം, " + currentMeshtri;
 
+    // 2. ലാംഗ്വേജ് അപ്ലൈ ചെയ്യുക
+    applyLanguageTranslations();
+
+    // 3. ഫയർബേസിൽ നിന്ന് കണക്കുകൾ ലോഡ് ചെയ്യുക
+    loadRentalData();   // വാടക പേജിലെ കണക്കുകൾക്ക്
+    loadAccountsData(); // വരവ്/ചെലവ് പേജിലെ കണക്കുകൾക്ക്
+});
+ഈ കോഡ് എവിടെയാണ് ചേർക്കേണ്ടത്
     // 4. ഓട്ടോമാറ്റിക് മൈക്ക് ബട്ടൺ ഇൻസെർഷൻ (SVG ഐക്കൺ സഹിതം)
     document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
         if (!input.id) return; 
@@ -148,3 +162,59 @@ window.showToast = (message, isSuccess = true) => {
         toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
     }, 2500);
 };
+// 1. വാടക ഉപകരണങ്ങളുടെ കണക്ക് ഫെച്ച് ചെയ്യാൻ
+async function loadRentalData() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "rentals")); 
+        let totalRent = 0;
+        let balanceAmount = 0;
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.user === currentMeshtri || !data.user) {
+                totalRent += Number(data.totalRent || 0);
+                balanceAmount += Number(data.balance || 0);
+            }
+        });
+
+        const totalRentElem = document.getElementById('totalRentDisplay');
+        const balanceElem = document.getElementById('balanceDisplay');
+
+        if (totalRentElem) totalRentElem.innerText = "₹" + totalRent;
+        if (balanceElem) balanceElem.innerText = "₹" + balanceAmount;
+
+    } catch (error) {
+        console.error("വാടക ഡാറ്റ എടുക്കുന്നതിൽ പിശക്:", error);
+    }
+}
+
+// 2. വരവ് / ചെലവ് കണക്ക് ഫെച്ച് ചെയ്യാൻ
+async function loadAccountsData() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "transactions"));
+        let totalIncome = 0;
+        let totalExpense = 0;
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.user === currentMeshtri || !data.user) {
+                if (data.type === 'income' || data.type === 'varavu') {
+                    totalIncome += Number(data.amount || 0);
+                } else if (data.type === 'expense' || data.type === 'chelavu') {
+                    totalExpense += Number(data.amount || 0);
+                }
+            }
+        });
+
+        const incomeElem = document.getElementById('incomeDisplay');
+        const expenseElem = document.getElementById('expenseDisplay');
+        const accBalanceElem = document.getElementById('accountBalanceDisplay');
+
+        if (incomeElem) incomeElem.innerText = "₹" + totalIncome;
+        if (expenseElem) expenseElem.innerText = "₹" + totalExpense;
+        if (accBalanceElem) accBalanceElem.innerText = "₹" + (totalIncome - totalExpense);
+
+    } catch (error) {
+        console.error("വരവ്/ചെലവ് ഡാറ്റ എടുക്കുന്നതിൽ പിശക്:", error);
+    }
+}
