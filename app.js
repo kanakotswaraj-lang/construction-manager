@@ -175,16 +175,19 @@ async function loadRentalData() {
     }
 }
 
-// 2. വരവ് / ചെലവ് കണക്ക് ഫെച്ച് ചെയ്യാൻ
+// വരവ് / ചെലവ് കണക്ക് ഫെച്ച് ചെയ്യാൻ
 async function loadAccountsData() {
     try {
         const querySnapshot = await getDocs(collection(db, "accounts"));
         let totalIncome = 0;
         let totalExpense = 0;
 
+        // നിലവിലെ യൂസർ പേര് എടുക്കുന്നു
+        const user = localStorage.getItem('userName') || localStorage.getItem('loggedInUser');
+
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            if (data.meshtriOwner === currentMeshtri || data.user === currentMeshtri || !data.meshtriOwner) {
+            if (!user || data.meshtriOwner === user || data.user === user) {
                 if (data.type === 'income' || data.type === 'varavu') {
                     totalIncome += Number(data.amount || 0);
                 } else if (data.type === 'expense' || data.type === 'chelavu' || data.type === 'wage' || data.type === 'material' || data.type === 'rent' || data.type === 'other') {
@@ -205,5 +208,4 @@ async function loadAccountsData() {
         console.error("വരവ്/ചെലവ് ഡാറ്റ എടുക്കുന്നതിൽ പിശക്:", error);
     }
 }
-
 
