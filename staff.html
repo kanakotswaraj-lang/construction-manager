@@ -185,26 +185,26 @@
             loggedElement.innerText = "സ്വാഗതം, " + currentMeshtri;
         }
 
-        window.showAlert = function(message, type = 'success') {
-            const alertBox = document.getElementById('customAlert');
-            alertBox.innerText = message;
-            alertBox.className = "toast-animate fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] p-5 rounded-2xl border font-bold text-center shadow-2xl max-w-xs w-full backdrop-blur-md ";
-            
-            if (type === 'success') {
-                alertBox.classList.add('bg-blue-950/95', 'border-blue-500', 'text-blue-200', 'shadow-blue-500/20');
-            } else {
-                alertBox.classList.add('bg-gradient-to-r', 'from-red-950', 'to-rose-950', 'border-red-500', 'text-white');
-            }
-            
-            alertBox.classList.remove('hidden');
-            setTimeout(() => {
-                alertBox.style.opacity = '0';
-                setTimeout(() => {
-                    alertBox.classList.add('hidden');
-                    alertBox.style.opacity = '1';
-                }, 300);
-            }, 3000);
-        };
+ 
+window.showAlert = function(message, type = 'success') {
+    const alertBox = document.getElementById('customAlert');
+    if (!alertBox) {
+        alert(message); // customAlert ഇല്ലെങ്കിൽ സാധാരണ ബ്രൗസർ അലർട്ട് കാണിക്കും
+        return;
+    }
+    alertBox.innerText = message;
+    alertBox.classList.remove('hidden');
+    
+    if (type === 'success') {
+        alertBox.className = "toast-animate fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-4 rounded-2xl bg-emerald-900 border-2 border-emerald-500 text-emerald-200 z-50 font-bold text-center shadow-2xl";
+    } else {
+        alertBox.className = "toast-animate fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-4 rounded-2xl bg-red-900 border-2 border-red-500 text-red-200 z-50 font-bold text-center shadow-2xl";
+    }
+
+    setTimeout(() => {
+        alertBox.classList.add('hidden');
+    }, 2500);
+};
 
         const getTodayDate = () => {
             const d = new Date();
