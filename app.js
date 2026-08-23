@@ -17,56 +17,40 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
-// ബഹുഭാഷാ ഡാറ്റ (Translations)
-const translations = {
-    'ml': {
-        welcome: "സ്വാഗതം",
-        itemName: "ഉപകരണത്തിന്റെ പേര്",
-        itemQty: "എത്ര എണ്ണം?",
-        siteName: "സൈറ്റ് പേര്",
-        shopName: "കടയുടെ പേര്",
-        clientName: "നൽകിയ ആൾ",
-        saveBtn: "വാടകയ്ക്ക് എടുത്തു ചേർക്കുക"
-    },
-    'en': {
-        welcome: "Welcome",
-        itemName: "Item Name",
-        itemQty: "Quantity?",
-        siteName: "Site Name",
-        shopName: "Shop Name",
-        clientName: "Given By",
-        saveBtn: "Add Rental Item"
-    },
-    'hi': {
-        welcome: "स्वागत है",
-        itemName: "उपकरण का नाम",
-        itemQty: "मात्रा?",
-        siteName: "साइट का नाम",
-        shopName: "दुकान का नाम",
-        clientName: "किसने दिया",
-        saveBtn: "किराए पर जोड़ें"
+// ഭാഷ മാറ്റാനുള്ള ആഗോള ഫങ്ഷൻ
+window.changeAppLanguage = (langCode) => {
+    localStorage.setItem('selectedLang', langCode);
+    if (window.switchLanguage) {
+        window.switchLanguage(langCode);
+    } else {
+        applyLanguageTranslations();
     }
 };
 
-// ഭാഷ മാറ്റാനുള്ള ഫങ്ഷൻ
-window.changeAppLanguage = (langCode) => {
-    localStorage.setItem('appLang', langCode);
-    applyLanguageTranslations();
-};
-
-// പേജിലെ ടെക്സ്റ്റുകളും പ്ലേസ്‌ഹോൾഡറുകളും മാറ്റുന്ന ഫങ്ഷൻ
+// പേജിലെ ടെക്സ്റ്റുകളും പ്ലേസ്‌ഹോൾഡറുകളും മാറ്റുന്ന ഫങ്ഷൻ (language.js ഉള്ള വാക്കുകൾ ഉപയോഗിക്കുന്നു)
 function applyLanguageTranslations() {
-    const currentLang = localStorage.getItem('appLang') || 'ml';
-    document.querySelectorAll('[data-lang]').forEach(el => {
-        const key = el.getAttribute('data-lang');
-        if (translations[currentLang] && translations[currentLang][key]) {
-            if (el.tagName === 'INPUT') {
-                el.placeholder = translations[currentLang][key];
-            } else {
-                el.innerText = translations[currentLang][key];
+    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+    
+    // global words object ഉപയോഗിക്കുന്നു
+    if (window.words) {
+        document.querySelectorAll('[data-lang], .lang').forEach(el => {
+            const key = el.getAttribute('data-lang') || el.getAttribute('data-key');
+            if (window.words[key] && window.words[key][currentLang]) {
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    el.placeholder = window.words[key][currentLang];
+                } else {
+                    el.innerText = window.words[key][currentLang];
+                }
             }
-        }
-    });
+        });
+
+        document.querySelectorAll('.lang-placeholder, [data-key-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-key-placeholder');
+            if (window.words[key] && window.words[key][currentLang]) {
+                el.placeholder = window.words[key][currentLang];
+            }
+        });
+    }
 }
 
 // പേജ് ലോഡ് ആകുമ്പോൾ പ്രവർത്തിക്കുന്നവ
@@ -76,10 +60,15 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // 2. ലോഗിൻ പേര് കാണിക്കാൻ
     const loggedInElem = document.getElementById('loggedInMeshtri');
-    if (loggedInElem) loggedInElem.innerText = "സ്വാഗതം, " + currentMeshtri;
+    const welcomeWord = (window.words && window.words.welcome) ? (window.words.welcome[localStorage.getItem('selectedLang') || 'ml'] || "സ്വാഗതം") : "സ്വാഗതം";
+    if (loggedInElem) loggedInElem.innerText = `${welcomeWord}, ${currentMeshtri}`;
 
     // 3. ഭാഷകൾ അപ്ലൈ ചെയ്യുക
-    applyLanguageTranslations();
+    if (window.switchLanguage) {
+        window.switchLanguage(localStorage.getItem('selectedLang') || 'ml');
+    } else {
+        applyLanguageTranslations();
+    }
 
     // 4. ഓട്ടോമാറ്റിക് മൈക്ക് ബട്ടൺ ഇൻസെർഷൻ (SVG ഐക്കൺ സഹിതം)
     document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
@@ -91,9 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
             input.parentNode.insertBefore(wrapper, input);
             wrapper.appendChild(input);
             
-                        const micBtn = document.createElement('button');
+            const micBtn = document.createElement('button');
             micBtn.type = 'button';
-            // ഇവിടെ സൈസ് w-7 h-7 ആക്കി വലുതാക്കിയിട്ടുണ്ട്
+            micBtn.onclick = () => window.startVoiceInputFor(input.id);
+            
             micBtn.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-cyan-400 hover:text-cyan-300 transition-colors drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
@@ -107,7 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
             input.style.paddingRight = '45px';
             
             wrapper.appendChild(micBtn);
-
         }
     });
 });
@@ -118,15 +107,20 @@ window.startVoiceInputFor = (fieldId) => {
     if (!SpeechRecognition) return alert("ബ്രൗസർ വോയ്സ് സപ്പോർട്ട് ചെയ്യുന്നില്ല!");
     
     const recognition = new SpeechRecognition();
-    const currentLang = localStorage.getItem('appLang') || 'ml';
+    const currentLang = localStorage.getItem('selectedLang') || 'ml';
     
-    if (currentLang === 'en') {
-        recognition.lang = 'en-US';
-    } else if (currentLang === 'hi') {
-        recognition.lang = 'hi-IN';
-    } else {
-        recognition.lang = 'ml-IN'; 
-    }
+    // വോയ്സ് ഇൻപുട്ടിനായുള്ള ഭാഷ ക്രമീകരണം
+    const langMap = {
+        'en': 'en-US',
+        'hi': 'hi-IN',
+        'ta': 'ta-IN',
+        'kn': 'kn-IN',
+        'bn': 'bn-IN',
+        'as': 'as-IN',
+        'ml': 'ml-IN'
+    };
+
+    recognition.lang = langMap[currentLang] || 'ml-IN';
 
     showToast("🎙️ സംസാരിക്കൂ...");
 
