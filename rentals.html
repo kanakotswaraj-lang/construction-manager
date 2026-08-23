@@ -7,39 +7,58 @@
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <script src="language.js"></script>
     <style>
-        body { font-family: 'Manjari', sans-serif; }
-        input, select {
-            border: 2px solid rgba(51, 65, 85, 1);
-            transition: all 0.3s ease;
-            background-color: #1e293b !important;
-            color: white !important;
-        }
-        input:focus, select:focus {
-            border-color: #22d3ee !important; 
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2); 
-        }
-        .mic-btn {
-            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-            color: #94a3b8; background: transparent;
-            width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: none;
-            display: flex; align-items: center; justify-content: center; z-index: 20;
-        }
-    </style>
+    body { font-family: 'Manjari', sans-serif; }
+    
+    input, select {
+        border: 2px solid rgba(51, 65, 85, 1);
+        transition: all 0.3s ease;
+        background-color: #1e293b !important;
+        color: white !important;
+    }
+
+    input:focus, select:focus {
+        border-color: #22d3ee !important; 
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2); 
+    }
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
+        -webkit-text-fill-color: white !important;
+    }
+
+    .mic-btn {
+        position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+        color: #94a3b8; background: transparent;
+        width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: none;
+        display: flex; align-items: center; justify-content: center;
+        z-index: 20;
+        transition: all 0.2s ease;
+    }
+    .mic-btn:hover {
+        background: rgba(34, 211, 238, 0.1);
+        color: #22d3ee;
+    }
+</style>
     <title class="lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</title>
 </head>
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
     <div class="max-w-md mx-auto space-y-4">
         
+        <!-- ഹെഡർ -->
         <div id="appHeader" class="w-full"></div>
 
         <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
             <h1 class="text-lg font-black text-white lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</h1>
+
             <div class="flex gap-2">
                 <a href="index.html" class="px-3 py-1.5 bg-amber-500 text-slate-950 rounded-xl text-xs font-black shadow-md lang" data-key="home_btn">🏠 ഹോം</a>
             </div>
         </div>
 
+        <!-- സ്റ്റാറ്റിസ്റ്റിക്സ് & ഫിൽട്ടർ -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
             <div class="grid grid-cols-2 gap-3 text-center">
                 <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
@@ -58,14 +77,14 @@
             </div>
 
             <div id="reminderBox" class="hidden bg-red-500/10 border border-red-500/40 p-3 rounded-2xl text-red-300 text-xs space-y-1">
-                <p class="font-black lang" data-key="overdue_equipments">🚨 കാലാവധി കഴിഞ്ഞ ഉപകരണങ്ങൾ:</p>
+                <p class="font-black lang" data-key="expired_items_title">🚨 കാലാവധി കഴിഞ്ഞ ഉപകരണങ്ങൾ:</p>
                 <div id="reminderList"></div>
             </div>
 
             <div class="bg-slate-800/50 border border-slate-700 p-3 rounded-2xl space-y-2">
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleShopList()">
                     <p class="text-xs font-black text-amber-400 lang" data-key="shops_list_edit">🏬 കടകളുടെ ലിസ്റ്റ് & എഡിറ്റ്‌ ചെയ്യാം</p>
-                    <span id="shopToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view_btn">▼ കാണുക</span>
+                    <span id="shopToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view_text">▼ കാണുക</span>
                 </div>
                 <div id="shopDirectoryContainer" class="hidden space-y-2 pt-2 border-t border-slate-700 max-h-48 overflow-y-auto"></div>
             </div>
@@ -78,6 +97,7 @@
             </div>
         </div>
 
+        <!-- ഫോം ഭാഗം -->
         <div class="bg-slate-900/90 p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4">
             <h2 class="font-black text-amber-400 text-sm lang" data-key="add_new_equipment">പുതിയ ഉപകരണം ചേർക്കുക</h2>
             
@@ -110,16 +130,16 @@
 
             <div class="relative flex gap-2">
                 <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="phone_placeholder">
-                <button type="button" id="pickContactBtn" onclick="pickContact()" class="bg-cyan-700 hover:bg-cyan-600 text-white px-3.5 rounded-2xl text-xs font-black whitespace-nowrap shadow-md lang" data-key="contact_btn">📇 കോൺടാക്റ്റ്</button>
+                <button type="button" id="pickContactBtn" onclick="pickContact()" class="bg-cyan-700 hover:bg-cyan-600 text-white px-3.5 rounded-2xl text-xs font-black whitespace-nowrap shadow-md lang" data-key="contact">📇 കോൺടാക്റ്റ്</button>
             </div>
             
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="start_date_label">ആരംഭ തീയതി</label>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="start_date">ആരംഭ തീയതി</label>
                     <input type="date" id="startDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
                 </div>
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="end_date_label">അവസാന തീയതി</label>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="end_date">അവസാന തീയതി</label>
                     <input type="date" id="endDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
                 </div>
             </div>
@@ -129,12 +149,13 @@
             <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="total_rent_placeholder">
             <input type="number" id="paidRent" placeholder="ഇതുവരെ നൽകിയ മുൻകൂർ തുക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="paid_rent_placeholder">
             
-            <button id="saveRentBtn" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs shadow-lg lang" data-key="add_rent_btn">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
+            <button id="saveRentBtn" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs shadow-lg lang" data-key="add_to_rent">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
         <div id="rentList" class="space-y-3"></div>
     </div>
 
+    <!-- Modals -->
     <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
 
     <div id="customPromptModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -159,37 +180,41 @@
     </div>
 
     <script>
-        // ലാംഗ്വേജ് ഗ്ലോബൽ ഫങ്ഷൻ
+        // language.js ഡിക്ഷണറി അനുസരിച്ച് ഭാഷ മാറ്റുന്ന ഗ്ലോബൽ ഫങ്ഷൻ
         window.switchLanguage = function(lang) {
+            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
             localStorage.setItem('selectedLang', lang);
-            localStorage.setItem('selectedLanguage', lang);
 
-            if (typeof words !== 'undefined') {
-                document.querySelectorAll('.lang').forEach(element => {
-                    let key = element.getAttribute('data-key');
-                    if (words[key] && words[key][lang]) {
-                        element.innerText = words[key][lang];
-                    }
-                });
+            // എല്ലാ .lang ക്ലാസ് ഉള്ള ടെക്സ്റ്റുകളും മാറ്റുക
+            document.querySelectorAll('.lang').forEach(element => {
+                let key = element.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    element.innerText = words[key][lang];
+                }
+            });
 
-                document.querySelectorAll('.lang-placeholder').forEach(element => {
-                    let key = element.getAttribute('data-key-placeholder');
-                    if (words[key] && words[key][lang]) {
-                        element.placeholder = words[key][lang];
-                    }
-                });
-            }
+            // ഇൻപുട്ട് placeholder-കൾ മാറ്റുക
+            document.querySelectorAll('.lang-placeholder').forEach(element => {
+                let key = element.getAttribute('data-key-placeholder');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    element.placeholder = words[key][lang];
+                }
+            });
 
-            if (typeof window.loadData === 'function') {
-                window.loadData();
+            // ലിസ്റ്റിലെ വിവരങ്ങൾ പുനഃക്രമീകരിക്കാൻ
+            if (typeof window.refreshRentList === 'function') {
+                window.refreshRentList();
             }
         };
 
-        window.applyLanguage = window.switchLanguage;
-
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷ അപ്ലൈ ചെയ്യുക
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            setTimeout(() => { window.switchLanguage(savedLang); }, 200);
+            setTimeout(() => {
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage(savedLang);
+                }
+            }, 100);
         });
     </script>
 
@@ -198,14 +223,17 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         
-        // ലോഗിൻ ചെയ്ത യൂസർനെയിം എടുക്കുന്നു (ഇത് മാറിയതുകൊണ്ടാണ് പഴയ ഡാറ്റ കാണാതിരുന്നത്)
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
         document.addEventListener("DOMContentLoaded", () => {
             try {
-                setupHeader('appHeader', true, currentMeshtri);
+                if (typeof setupHeader === 'function') {
+                    setupHeader('appHeader', true, currentMeshtri);
+                } else {
+                    document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
+                }
             } catch (e) {
-                console.log(e);
+                document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
             }
         });
 
@@ -235,32 +263,53 @@
         window.pickContact = async () => {
             if ('contacts' in navigator && 'select' in navigator.contacts) {
                 try {
-                    const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false });
-                    if (contacts && contacts[0]) {
-                        if (contacts[0].tel && contacts[0].tel[0]) document.getElementById('shopPhone').value = contacts[0].tel[0];
-                        if (contacts[0].name && contacts[0].name[0] && !document.getElementById('shopName').value) document.getElementById('shopName').value = contacts[0].name[0];
-                        window.showToast("📇 കോൺടാക്റ്റ് എടുത്തു!");
+                    const props = ['name', 'tel'];
+                    const opts = { multiple: false };
+                    const contacts = await navigator.contacts.select(props, opts);
+                    if (contacts && contacts.length > 0) {
+                        const contact = contacts[0];
+                        if (contact.tel && contact.tel.length > 0) {
+                            document.getElementById('shopPhone').value = contact.tel[0];
+                            if (contact.name && contact.name.length > 0 && !document.getElementById('shopName').value) {
+                                document.getElementById('shopName').value = contact.name[0];
+                            }
+                            window.showToast("📇 കോൺടാക്റ്റ് എടുത്തു!");
+                        }
                     }
-                } catch (ex) { console.log(ex); }
-            } else { alert("നിങ്ങളുടെ ബ്രൗസർ കോൺടാക്റ്റ് പിക്കർ പിന്തുണയ്ക്കുന്നില്ല."); }
+                } catch (ex) {
+                    console.log(ex);
+                    window.showToast("കോൺടാക്റ്റ് എടുക്കാൻ കഴിഞ്ഞില്ല", false);
+                }
+            } else {
+                alert("നിങ്ങളുടെ ബ്രൗസർ കോൺടാക്റ്റ് പിക്കർ പിന്തുണയ്ക്കുന്നില്ല.");
+            }
         };
 
         window.startVoiceInputFor = (fieldId) => {
             const target = document.getElementById(fieldId);
+            if (!target) return;
+
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return alert("വോയിസ് ഇൻപുട്ട് പിന്തുണയ്ക്കുന്നില്ല.");
+            if (!SpeechRecognition) {
+                alert("നിങ്ങളുടെ ബ്രൗസർ വോയിസ് ഇൻപുട്ട് പിന്തുണയ്ക്കുന്നില്ല.");
+                return;
+            }
 
             const recognition = new SpeechRecognition();
-            recognition.lang = 'ml-IN';
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            recognition.lang = currentLang === 'ml' ? 'ml-IN' : 'en-US';
+            
             target.style.borderColor = "#fbbf24"; 
             window.showToast("🎙️ സംസാരിക്കൂ...");
-            try { recognition.start(); } catch (err) {}
+
+            try { recognition.start(); } catch (err) { console.log(err); }
 
             recognition.onresult = (e) => {
                 target.value = e.results[0][0].transcript;
                 target.dispatchEvent(new Event('input'));
                 window.showToast("✓ കേട്ടെടുത്തു!");
             };
+            recognition.onerror = () => { window.showToast("ശബ്ദം വ്യക്തമല്ല, വീണ്ടും ശ്രമിക്കുക", false); };
             recognition.onend = () => { target.style.borderColor = ""; };
         };
 
@@ -288,14 +337,19 @@
             currentFilter = filter;
             document.getElementById('filter_active').className = `lang flex-1 py-3 rounded-2xl text-[11px] font-black transition-all ${filter === 'active' ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400 border border-slate-700'}`;
             document.getElementById('filter_returned').className = `lang flex-1 py-3 rounded-2xl text-[11px] font-black transition-all ${filter === 'returned' ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400 border border-slate-700'}`;
-            window.loadData();
+            loadData();
         };
 
         window.toggleShopList = () => {
             const container = document.getElementById('shopDirectoryContainer');
             const icon = document.getElementById('shopToggleIcon');
-            container.classList.toggle('hidden');
-            icon.innerText = container.classList.contains('hidden') ? "▼ കാണുക" : "▲ മറയ്ക്കുക";
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                icon.innerText = "▲";
+            } else {
+                container.classList.add('hidden');
+                icon.innerText = "▼";
+            }
         };
 
         function calculateTotal() {
@@ -314,53 +368,71 @@
         window.editShopNameGlobally = async (oldShopName) => {
             const newName = await window.openCustomPrompt("കടയുടെ പുതിയ പേര് നൽകുക:", oldShopName);
             if (!newName || newName === oldShopName) return;
+            
             if (cachedSnapshot) {
-                let updates = [];
+                let batchUpdates = [];
                 cachedSnapshot.forEach((d) => {
-                    if (d.data().shop === oldShopName) updates.push(updateDoc(doc(db, "rentals", d.id), { shop: newName }));
+                    const r = d.data();
+                    if (r.shop === oldShopName && r.meshtriOwner === currentMeshtri) {
+                        batchUpdates.push(updateDoc(doc(db, "rentals", d.id), { shop: newName }));
+                    }
                 });
-                await Promise.all(updates);
-                window.showToast("✏️ കടയുടെ പേര് മാറ്റി!");
+                await Promise.all(batchUpdates);
+                window.showToast("✏️ കടയുടെ പേര് വിജയകരമായി മാറ്റി!");
             }
         };
 
         window.deleteShopGlobally = async (shopName) => {
-            if (await window.openCustomConfirm(`"${shopName}" കടയും ഡാറ്റയും നീക്കം ചെയ്യണോ?`)) {
+            if (await window.openCustomConfirm(`"${shopName}" എന്ന കടയും അതിലെ കണക്കുകളും ഡിലീറ്റ് ചെയ്യണോ?`)) {
                 if (cachedSnapshot) {
-                    let deletes = [];
+                    let batchDeletes = [];
                     cachedSnapshot.forEach((d) => {
-                        if (d.data().shop === shopName) deletes.push(deleteDoc(doc(db, "rentals", d.id)));
+                        const r = d.data();
+                        if (r.shop === shopName && r.meshtriOwner === currentMeshtri) {
+                            batchDeletes.push(deleteDoc(doc(db, "rentals", d.id)));
+                        }
                     });
-                    await Promise.all(deletes);
-                    window.showToast("🗑️ നീക്കം ചെയ്തു!", false);
+                    await Promise.all(batchDeletes);
+                    window.showToast("🗑️ കടയും ഡാറ്റയും നീക്കം ചെയ്തു!", false);
                 }
             }
         };
 
         window.editItemDetails = async (id, currentItem, currentQty, currentShop, currentClient, currentSite, currentBedroom) => {
             const newName = await window.openCustomPrompt("ഉപകരണത്തിന്റെ പുതിയ പേര്:", currentItem);
-            if (!newName) return;
+            if (newName === null) return;
             const newBedroom = await window.openCustomPrompt("ബെഡ്റൂം പേര്/നമ്പർ:", currentBedroom || '');
+            if (newBedroom === null) return;
             const newQty = await window.openCustomPrompt("പുതിയ എണ്ണം:", currentQty);
+            if (newQty === null) return;
             const newSite = await window.openCustomPrompt("സൈറ്റിന്റെ പേര്:", currentSite);
+            if (newSite === null) return;
             const newShop = await window.openCustomPrompt("കടയുടെ പേര്:", currentShop);
+            if (newShop === null) return;
             const newClient = await window.openCustomPrompt("നൽകിയ ആളിന്റെ പേര്:", currentClient);
+            if (newClient === null) return;
 
-            await updateDoc(doc(db, "rentals", id), { 
-                item: newName, bedroom: newBedroom || '', qty: newQty || currentQty, site: newSite || '', shop: newShop || currentShop, client: newClient || '' 
-            });
-            window.showToast("✏️ അപ്ഡേറ്റ് ചെയ്തു!");
+            if(newName && newShop) {
+                await updateDoc(doc(db, "rentals", id), { 
+                    item: newName, bedroom: newBedroom, qty: newQty, site: newSite || '', shop: newShop, client: newClient || '' 
+                });
+                window.showToast("✏️ വിവരങ്ങൾ വിജയകരമായി മാറ്റം വരുത്തി!");
+            }
         };
 
         window.updateReturnedQty = async (id, currentQty, currentReturned) => {
             const input = await window.openCustomPrompt(`എത്ര എണ്ണമാണ് തിരികെ നൽകിയത്? (ആകെ: ${currentQty})`, currentReturned);
             if (input !== null) {
                 let retQty = parseFloat(input) || 0;
+                if (retQty > currentQty) {
+                    window.showToast("ആകെ എണ്ണത്തേക്കാൾ കൂടുതൽ കൊടുക്കാൻ പറ്റില്ല!", false);
+                    return;
+                }
                 await updateDoc(doc(db, "rentals", id), { 
                     returnedQty: retQty,
                     isReturned: retQty >= currentQty 
                 });
-                window.showToast("📦 അപ്ഡേറ്റ് ചെയ്തു!");
+                window.showToast("📦 തിരികെ കൊടുത്ത എണ്ണം അപ്ഡേറ്റ് ചെയ്തു!");
             }
         };
 
@@ -368,14 +440,14 @@
             const extraPaid = await window.openCustomPrompt("ഇപ്പോൾ നൽകിയ തുക എത്രയാണ്?", "തുക (₹)");
             if(extraPaid) {
                 await updateDoc(doc(db, "rentals", id), { paid: parseFloat(currentPaid) + parseFloat(extraPaid) });
-                window.showToast("✨ പെയ്മെന്റ് അപ്ഡേറ്റ് ചെയ്തു!");
+                window.showToast("✨ പെയ്മെന്റ് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു! 👍");
             }
         };
 
         window.settleFull = async (id, total) => {
-            if(await window.openCustomConfirm("കണക്ക് മുഴുവൻ ക്ലിയർ ചെയ്യണോ?")) {
+            if(await window.openCustomConfirm("ബാക്കി തുക മുഴുവൻ അടച്ചു തീർത്ത് അക്കൗണ്ട് ക്ലിയർ ചെയ്യണോ?")) {
                 await updateDoc(doc(db, "rentals", id), { paid: total });
-                window.showToast("🎉 സെറ്റിൽ ചെയ്തു!");
+                window.showToast("🎉 അക്കൗണ്ട് സെറ്റിൽ ചെയ്തു!");
             }
         };
 
@@ -385,18 +457,31 @@
                 isReturned: newStatus,
                 returnedQty: newStatus ? currentQty : 0 
             });
-            window.showToast("🔄 സ്റ്റാറ്റസ് മാറ്റി!");
+            window.showToast(newStatus ? "📦 മുഴുവൻ ഉപകരണവും തിരികെ നൽകി!" : "🔄 സ്റ്റാറ്റസ് മാറ്റി!");
         };
 
         window.deleteRent = async (id) => {
             if(await window.openCustomConfirm("ഈ ഡാറ്റ ഡിലീറ്റ് ചെയ്യണോ?")) {
                 await deleteDoc(doc(db, "rentals", id));
-                window.showToast("🗑️ ഡാറ്റ നീക്കം ചെയ്തു!", false);
+                window.showToast("🗑️ ഡാറ്റ വിജയകരമായി നീക്കം ചെയ്തു!", false);
             }
         };
 
         window.shareWhatsApp = (item, bedroom, qty, returnedQty, site, shop, client, total, paid, bal, totalDays) => {
-            const msg = `*വാടക ഉപകരണ കണക്ക് (മേസ്തിരി പ്രോ)*\n\nഉപകരണം: ${item} ${bedroom ? `(ബെഡ്റൂം: ${bedroom})` : ''} \nആകെ എണ്ണം: ${qty} ${returnedQty > 0 ? `| തിരികെ നൽകിയത്: ${returnedQty}` : ''}\nസൈറ്റ്: ${site || 'പറഞ്ഞിട്ടില്ല'}\nകട: ${shop}\nആർക്ക് നൽകി: ${client || 'നൽകിയിട്ടില്ല'}\nആകെ ദിവസങ്ങൾ: ${totalDays}\nവാടക നൽകേണ്ടത്: ₹${total}\nനൽകിയത്: ₹${paid}\nബാലൻസ് തുക: ₹${bal}\n\nദയവായി കണക്ക് തീർക്കുക.`;
+            const lang = localStorage.getItem('selectedLang') || 'ml';
+            const isEn = lang === 'en';
+            
+            const msg = `*${isEn ? 'Rental Equipment Details' : 'വാടക ഉപകരണ കണക്ക്'}*\n\n` +
+                `${isEn ? 'Item' : 'ഉപകരണം'}: ${item} ${bedroom ? `(${isEn ? 'Bedroom' : 'ബെഡ്റൂം'}: ${bedroom})` : ''}\n` +
+                `${isEn ? 'Total Qty' : 'ആകെ എണ്ണം'}: ${qty} ${returnedQty > 0 ? `| ${isEn ? 'Returned' : 'തിരികെ നൽകിയത്'}: ${returnedQty}` : ''}\n` +
+                `${isEn ? 'Site' : 'സൈറ്റ്'}: ${site || '-'}\n` +
+                `${isEn ? 'Shop' : 'കട'}: ${shop}\n` +
+                `${isEn ? 'For Whom' : 'ആർക്ക്'}: ${client || '-'}\n` +
+                `${isEn ? 'Total Days' : 'ആകെ ദിവസങ്ങൾ'}: ${totalDays}\n` +
+                `${isEn ? 'Total Rent' : 'ആകെ വാടക'}: ₹${total}\n` +
+                `${isEn ? 'Paid' : 'നൽകിയത്'}: ₹${paid}\n` +
+                `${isEn ? 'Balance' : 'ബാലൻസ് തുക'}: ₹${bal}`;
+                
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
@@ -421,7 +506,7 @@
                 paid: parseFloat(document.getElementById('paidRent').value) || 0,
                 isReturned: false
             });
-            window.showToast("🚀 ചേർത്തു!");
+            window.showToast("🚀 വിജയകരമായി ചേർത്തു!");
             
             document.getElementById('itemName').value = '';
             document.getElementById('bedroomName').value = '';
@@ -435,19 +520,28 @@
             document.getElementById('paidRent').value = '';
         });
 
-        document.getElementById('searchInput').addEventListener('input', () => window.loadData());
+        document.getElementById('searchInput').addEventListener('input', () => loadData());
 
         let cachedSnapshot = null;
+        
+        window.refreshRentList = function() {
+            if (cachedSnapshot) {
+                loadData();
+            }
+        };
+
         window.loadData = function() {
             if (!cachedSnapshot) return;
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const list = document.getElementById('rentList');
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             
-            let activeTitle = currentLang === 'en' ? 'Active Equipments' : 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ';
-            let returnedTitle = currentLang === 'en' ? 'Returned Equipments' : 'തിരികെ നൽകിയ ഉപകരണങ്ങൾ';
+            // ഭാഷാ സംബന്ധിയായ വാക്കുകൾ ഡിക്ഷണറിയിൽ നിന്ന് എടുക്കുന്നു
+            const getTxt = (key, defaultTxt) => (typeof words !== 'undefined' && words[key] && words[key][currentLang]) ? words[key][currentLang] : defaultTxt;
+
+            let headerTitle = currentFilter === 'active' ? getTxt('ongoing_equipments', 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ') : getTxt('returned', 'തിരികെ നൽകിയവ');
             
-            list.innerHTML = `<h2 class="font-black text-white mb-2 text-sm">${currentFilter === 'active' ? activeTitle : returnedTitle}</h2>`;
+            list.innerHTML = `<h2 class="font-black text-white mb-2 text-sm">${headerTitle}</h2>`;
             
             let grandTotalRent = 0, grandTotalPaid = 0;
             let reminders = [];
@@ -457,9 +551,7 @@
 
             cachedSnapshot.forEach((d) => {
                 const r = d.data();
-                
-                // യൂസർ നെയിം മാച്ച് ചെയ്യുന്നതും ഇല്ലാത്തതുമായ ഡാറ്റ കാണിക്കാൻ (ഡാറ്റ മിസ് ആവാതിരിക്കാൻ)
-                if (r.meshtriOwner === currentMeshtri || !r.meshtriOwner) {
+                if (r.meshtriOwner === currentMeshtri) {
                     if (r.shop) { shopsMap.set(r.shop, r.phone || 'നമ്പർ ഇല്ല'); }
                     if (r.client) { clientsSet.add(r.client); }
 
@@ -472,15 +564,14 @@
                     const endDate = new Date(r.end);
                     const unitPerDay = (parseFloat(r.unitRent) || 0) * effectiveQty;
                     let totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-                    if(isNaN(totalDays) || totalDays < 1) totalDays = 1;
 
                     let calculatedTotal = effectiveQty * (parseFloat(r.unitRent) || 0) * totalDays;
 
-                    if (!isRet && today > endDate && r.end) {
+                    if (!isRet && today > endDate) {
                         const extraDays = Math.ceil((today - endDate) / (1000 * 60 * 60 * 24));
                         totalDays += extraDays;
                         calculatedTotal = (effectiveQty * (parseFloat(r.unitRent) || 0) * (totalDays - extraDays)) + (extraDays * unitPerDay);
-                        reminders.push(`${r.item} (${r.shop}) - കാലാവധി കഴിഞ്ഞിരിക്കുന്നു!`);
+                        reminders.push(`${r.item} (${r.shop}) - ${getTxt('expired_status', 'കാലാവധി കഴിഞ്ഞിരിക്കുന്നു!')}`);
                     }
 
                     if (!isRet) {
@@ -488,7 +579,7 @@
                         grandTotalPaid += (parseFloat(r.paid) || 0);
                     }
 
-                    const matchesSearch = (r.item && r.item.toLowerCase().includes(searchTerm)) || (r.shop && r.shop.toLowerCase().includes(searchTerm)) || (r.site && r.site.toLowerCase().includes(searchTerm));
+                    const matchesSearch = r.item.toLowerCase().includes(searchTerm) || r.shop.toLowerCase().includes(searchTerm) || (r.site && r.site.toLowerCase().includes(searchTerm)) || (r.bedroom && r.bedroom.toLowerCase().includes(searchTerm));
                     
                     if (matchesSearch && ((currentFilter === 'active' && !isRet) || (currentFilter === 'returned' && isRet))) {
                         const bal = calculatedTotal - (parseFloat(r.paid) || 0);
@@ -499,34 +590,36 @@
                             <div class="flex justify-between items-start mb-1">
                                 <div>
                                     <p class="font-black text-white text-base">${r.item}</p>
-                                    <p class="text-xs text-slate-400">ആകെ: <strong class="text-white">${totalQty}</strong> | തിരികെ നൽകിയത്: <strong class="text-amber-300">${returnedQty}</strong></p>
+                                    <p class="text-xs text-slate-400">${getTxt('total', 'ആകെ')}: <strong class="text-white">${totalQty}</strong> | ${getTxt('returned', 'തിരികെ നൽകിയത്')}: <strong class="text-amber-300">${returnedQty}</strong></p>
                                 </div>
                                 <div class="flex gap-1 flex-wrap justify-end">
-                                    <button onclick="updateReturnedQty('${d.id}', ${totalQty}, ${returnedQty})" class="bg-amber-900/60 text-amber-200 border border-amber-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">റിട്ടേൺ എണ്ണം</button>
-                                    <button onclick="editItemDetails('${d.id}', '${r.item}', '${totalQty}', '${r.shop}', '${r.client || ''}', '${r.site || ''}', '${r.bedroom || ''}')" class="bg-cyan-900/50 text-cyan-300 border border-cyan-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">എഡിറ്റ്</button>
+                                    <button onclick="updateReturnedQty('${d.id}', ${totalQty}, ${returnedQty})" class="bg-amber-900/60 text-amber-200 border border-amber-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">${getTxt('return_count', 'റിട്ടേൺ എണ്ണം')}</button>
+                                    <button onclick="editItemDetails('${d.id}', '${r.item}', '${totalQty}', '${r.shop}', '${r.client || ''}', '${r.site || ''}', '${r.bedroom || ''}')" class="bg-cyan-900/50 text-cyan-300 border border-cyan-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">${getTxt('edit', 'എഡിറ്റ്')}</button>
                                     <button onclick="toggleReturn('${d.id}', ${isRet}, ${totalQty})" class="text-[10px] font-black px-2.5 py-1 rounded-lg border ${isRet ? 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50' : 'bg-slate-800 text-slate-300 border-slate-700'}">
-                                        ${isRet ? '✓ മുഴുവൻ നൽകി' : 'മുഴുവൻ റിട്ടേൺ'}
+                                        ${isRet ? '✓ ' + getTxt('returned', 'തിരികെ നൽകി') : getTxt('full_return', 'മുഴുവൻ റിട്ടേൺ')}
                                     </button>
                                 </div>
                             </div>
-                            ${r.bedroom ? `<p class="text-xs text-amber-300 font-bold mb-1">🚪 ബെഡ്റൂം: ${r.bedroom}</p>` : ''}
-                            ${r.site ? `<p class="text-xs text-cyan-400 font-bold mb-1">🏗️ സൈറ്റ്: ${r.site}</p>` : ''}
-                            <p class="text-xs text-slate-300 font-bold mb-1">കട: <span class="text-amber-400">${r.shop}</span> ${r.client ? `| ആർക്ക്: <span class="text-cyan-300">${r.client}</span>` : ''} | 📞 ${r.phone}</p>
-                            <p class="text-[11px] text-slate-400 mb-2">തീയതി: ${r.start || 'N/A'} മുതൽ ${r.end || 'N/A'} വരെ | <strong class="text-amber-300">${totalDays} ദിവസങ്ങൾ</strong></p>
+                            ${r.bedroom ? `<p class="text-xs text-amber-300 font-bold mb-1">🚪 ${getTxt('bedroom', 'ബെഡ്റൂം')}: ${r.bedroom}</p>` : ''}
+                            ${r.site ? `<p class="text-xs text-cyan-400 font-bold mb-1">🏗️ ${getTxt('site', 'സൈറ്റ്')}: ${r.site}</p>` : ''}
+                            <p class="text-xs text-slate-300 font-bold mb-1">${getTxt('shop', 'കട')}: <span class="text-amber-400">${r.shop}</span> ${r.client ? `| ${getTxt('for_whom', 'ആർക്ക്')}: <span class="text-cyan-300">${r.client}</span>` : ''} | 📞 ${r.phone}</p>
+                            <p class="text-[11px] text-slate-400 mb-2">${getTxt('date', 'തീയതി')}: ${r.start} ${getTxt('from', 'മുതൽ')} ${r.end} ${getTxt('to', 'വരെ')} | <strong class="text-amber-300">${totalDays} ${getTxt('days', 'ദിവസങ്ങൾ')}</strong></p>
                             
                             <div class="border-t border-slate-800 pt-2 flex flex-col gap-2">
                                 <div class="flex justify-between items-center text-xs font-black text-slate-200">
-                                    <span>വാടകയ്ക്ക് ബാക്കി: ${effectiveQty} എണ്ണം | ആകെ: ₹${calculatedTotal}</span>
-                                    <span class="${bal > 0 ? 'text-red-400' : 'text-emerald-400'}">ബാലൻസ്: ₹${bal}</span>
+                                    <span>${getTxt('rent_remaining', 'വാടകയ്ക്ക് ബാക്കി')}: ${effectiveQty} | ${getTxt('total', 'ആകെ')}: ₹${calculatedTotal}</span>
+                                    <span class="${bal > 0 ? 'text-red-400' : 'text-emerald-400'}">${getTxt('balance', 'ബാലൻസ്')}: ₹${bal}</span>
                                 </div>
                                 
                                 <div class="flex items-center justify-between pt-2 gap-1">
-                                    <button onclick="shareWhatsApp('${r.item}', '${r.bedroom || ''}', ${totalQty}, ${returnedQty}, '${r.site || ''}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 shadow-md">💬 വാട്സാപ്പ്</button>
+                                    <button onclick="shareWhatsApp('${r.item}', '${r.bedroom || ''}', ${totalQty}, ${returnedQty}, '${r.site || ''}', '${r.shop}', '${r.client || ''}', ${calculatedTotal}, ${r.paid}, ${bal}, ${totalDays})" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black flex items-center gap-1 shadow-md">
+                                        💬 ${getTxt('whatsapp', 'വാട്സാപ്പ്')}
+                                    </button>
                                     
                                     <div class="flex items-center gap-1">
-                                        ${bal > 0 ? `<button onclick="settleFull('${d.id}', ${calculatedTotal})" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black">സെറ്റിൽ</button>` : ''}
-                                        <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1.5 rounded-xl text-[10px] font-black">പെയ്മെന്റ്</button>
-                                        <button onclick="deleteRent('${d.id}')" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black shadow-md">ഡിലീറ്റ്</button>
+                                        ${bal > 0 ? `<button onclick="settleFull('${d.id}', ${calculatedTotal})" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black">${getTxt('settle', 'സെറ്റിൽ')}</button>` : ''}
+                                        <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1.5 rounded-xl text-[10px] font-black">${getTxt('payment', 'പെയ്മെന്റ്')}</button>
+                                        <button onclick="deleteRent('${d.id}')" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black shadow-md">${getTxt('delete', 'ഡിലീറ്റ്')}</button>
                                     </div>
                                 </div>
                             </div>
@@ -551,8 +644,8 @@
                                 <a href="tel:${phone}" class="text-cyan-400 font-bold text-[11px]">📞 ${phone}</a>
                             </div>
                             <div class="flex gap-1">
-                                <button onclick="editShopNameGlobally('${shopName}')" class="bg-cyan-900/60 text-cyan-200 px-2 py-1 rounded-lg text-[10px] font-black">മാറ്റുക</button>
-                                <button onclick="deleteShopGlobally('${shopName}')" class="bg-red-900/60 text-red-200 px-2 py-1 rounded-lg text-[10px] font-black">ഡിലീറ്റ്</button>
+                                <button onclick="editShopNameGlobally('${shopName}')" class="bg-cyan-900/60 text-cyan-200 px-2 py-1 rounded-lg text-[10px] font-black">${getTxt('edit', 'മാറ്റുക')}</button>
+                                <button onclick="deleteShopGlobally('${shopName}')" class="bg-red-900/60 text-red-200 px-2 py-1 rounded-lg text-[10px] font-black">${getTxt('delete', 'ഡിലീറ്റ്')}</button>
                             </div>
                         </div>`;
                 });
@@ -587,7 +680,7 @@
 
         onSnapshot(collection(db, "rentals"), (snapshot) => {
             cachedSnapshot = snapshot;
-            window.loadData();
+            loadData();
         });
     </script>
 </body>
