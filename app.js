@@ -178,30 +178,32 @@ async function loadRentalData() {
 // 2. വരവ് / ചെലവ് കണക്ക് ഫെച്ച് ചെയ്യാൻ
 async function loadAccountsData() {
     try {
-        const querySnapshot = await getDocs(collection(db, "transactions"));
+        const querySnapshot = await getDocs(collection(db, "accounts"));
         let totalIncome = 0;
         let totalExpense = 0;
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            if (data.user === currentMeshtri || !data.user) {
+            if (data.meshtriOwner === currentMeshtri || data.user === currentMeshtri || !data.meshtriOwner) {
                 if (data.type === 'income' || data.type === 'varavu') {
                     totalIncome += Number(data.amount || 0);
-                } else if (data.type === 'expense' || data.type === 'chelavu') {
+                } else if (data.type === 'expense' || data.type === 'chelavu' || data.type === 'wage' || data.type === 'material' || data.type === 'rent' || data.type === 'other') {
                     totalExpense += Number(data.amount || 0);
                 }
             }
         });
 
-        const incomeElem = document.getElementById('incomeDisplay');
-        const expenseElem = document.getElementById('expenseDisplay');
-        const accBalanceElem = document.getElementById('accountBalanceDisplay');
+        const incomeElem = document.getElementById('totalIncome') || document.getElementById('incomeDisplay');
+        const expenseElem = document.getElementById('totalExpense') || document.getElementById('expenseDisplay');
+        const netBalanceElem = document.getElementById('netBalance') || document.getElementById('accountBalanceDisplay') || document.getElementById('balanceDisplay');
 
         if (incomeElem) incomeElem.innerText = "₹" + totalIncome;
         if (expenseElem) expenseElem.innerText = "₹" + totalExpense;
-        if (accBalanceElem) accBalanceElem.innerText = "₹" + (totalIncome - totalExpense);
+        if (netBalanceElem) netBalanceElem.innerText = "₹" + (totalIncome - totalExpense);
 
     } catch (error) {
         console.error("വരവ്/ചെലവ് ഡാറ്റ എടുക്കുന്നതിൽ പിശക്:", error);
     }
 }
+
+
