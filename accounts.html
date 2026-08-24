@@ -23,8 +23,20 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ -->
-        <div id="appHeader" class="w-full flex justify-center"></div>
+        <!-- ഹെഡർ ലോഗോയും ബ്രാൻഡ് നെയിമും -->
+        <div id="appHeader" class="w-full flex justify-center py-2">
+            <div class="flex items-center gap-3 bg-slate-900/80 px-5 py-2 rounded-2xl border border-amber-500/30 shadow-lg backdrop-blur-md">
+                <div class="w-9 h-9 bg-gradient-to-tr from-amber-600 to-amber-400 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30 border border-amber-300/40">
+                    <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0v-5a2 2 0 012-2h2a2 2 0 012 2v5m-6 0h6"></path>
+                    </svg>
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="text-amber-400 font-black text-lg tracking-wide leading-none">മേസ്തിരി പ്രോ</h2>
+                    <span class="text-[9px] text-slate-400 font-bold tracking-widest uppercase mt-0.5">ഡിജിറ്റൽ കണക്ക് മാനേജർ</span>
+                </div>
+            </div>
+        </div>
 
         <!-- വരവ് - ചെലവ് ടോപ്പ് ബാർ -->
         <div class="bg-slate-900/90 border-2 border-rose-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
@@ -71,7 +83,7 @@
             </div>
         </div>
 
-        <!-- പുതിയ കണക്ക് ഫോം -->
+        <!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
             <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2">പുതിയ കണക്ക് ചേർക്കുക</h2>
             
@@ -118,16 +130,8 @@
     </div>
 
     <script type="module">
-        import { setupHeader } from './header.js';
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        document.addEventListener("DOMContentLoaded", () => {
-            try {
-                if (typeof setupHeader === 'function') { setupHeader('appHeader'); }
-                else { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
-            } catch (e) { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
-        });
 
         <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -150,6 +154,9 @@
         
         let editId = null;
         let allTransactions = [];
+
+        // ഫോമിൽ ഇന്നത്തെ തീയതി ഓട്ടോമാറ്റിക് സെറ്റ് ചെയ്യാൻ
+        document.getElementById('transDate').value = new Date().toISOString().split('T')[0];
 
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
@@ -190,9 +197,6 @@
             };
             recognition.start();
         };
-
-        const todayStr = new Date().toISOString().split('T')[0];
-        document.getElementById('transDate').value = todayStr;
 
         document.getElementById('saveBtn').onclick = async () => {
             const data = { 
@@ -248,7 +252,7 @@
             document.getElementById('ownerName').value = '';
             document.getElementById('siteName').value = '';
             document.getElementById('amount').value = '';
-            document.getElementById('transDate').value = todayStr;
+            document.getElementById('transDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('formTitle').innerText = "പുതിയ കണക്ക് ചേർക്കുക";
             document.getElementById('saveBtn').innerText = "സേവ് ചെയ്യുക";
             document.getElementById('cancelEditBtn').classList.add('hidden');
@@ -265,10 +269,13 @@
             }
         };
 
+        // ഫയർബേസിൽ നിന്ന് എല്ലാ ഡാറ്റയും സുരക്ഷിതമായി റീഡ് ചെയ്യാൻ
         onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
-            allTransactions = []; const siteSet = new Set();
+            allTransactions = []; 
+            const siteSet = new Set();
             snapshot.forEach(docSnap => {
                 const d = docSnap.data();
+                // ലോഗിൻ ചെയ്ത ആളുടെ ഡാറ്റ അല്ലെങ്കിൽ മേസ്തിരി പേര് ഇല്ലാത്ത പഴയ ഡാറ്റകളും കാണിക്കും
                 if (!d.meshtriOwner || d.meshtriOwner === currentMeshtri || d.user === currentMeshtri) {
                     allTransactions.push({ id: docSnap.id, ...d });
                     if (d.site) siteSet.add(d.site);
