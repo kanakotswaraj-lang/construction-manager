@@ -271,46 +271,49 @@
             siteSelect.value = currentSelectedSite;
             renderList();
         });
+window.renderList = () => {
+    const sSite = document.getElementById('filterSite').value.toLowerCase();
+    const sDate = document.getElementById('filterDate').value;
+    const sWorker = document.getElementById('filterWorker').value.toLowerCase();
+    const list = document.getElementById('transactionList');
+    list.innerHTML = '';
+    let inc = 0, exp = 0;
 
-        window.renderList = () => {
-            const sSite = document.getElementById('filterSite').value.toLowerCase();
-            const sDate = document.getElementById('filterDate').value;
-            const sWorker = document.getElementById('filterWorker').value.toLowerCase();
-            const list = document.getElementById('transactionList');
-            list.innerHTML = '';
-            let inc = 0, exp = 0;
+    allTransactions.forEach(d => {
+        const matchesSite = !sSite || (d.site || '').toLowerCase() === sSite;
+        const matchesDate = !sDate || (d.date || '') === sDate;
+        const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
 
-            allTransactions.forEach(d => {
-                const matchesSite = !sSite || (d.site || '').toLowerCase() === sSite;
-                const matchesDate = !sDate || (d.date || '') === sDate;
-                const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
+        if (matchesSite && matchesDate && matchesWorker) {
+            // വരവ് ആണോ എന്ന് പരിശോധിക്കുന്ന ഭാഗം അപ്ഡേറ്റ് ചെയ്തു
+            const dataType = String(d.type || '').toLowerCase();
+            let isIncome = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
+            
+            if(isIncome) inc += parseFloat(d.amount) || 0; else exp += parseFloat(d.amount) || 0;
 
-                if (matchesSite && matchesDate && matchesWorker) {
-                    let isIncome = (d.type === 'income');
-                    if(isIncome) inc += parseFloat(d.amount) || 0; else exp += parseFloat(d.amount) || 0;
+            list.innerHTML += `
+                <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
+                    <div class="cursor-pointer flex-1" onclick="editTransaction('${d.id}', '${d.name}', '${d.site}', '${d.type}', '${d.payment}', ${d.amount}, '${d.date}')">
+                        <p class="font-black text-base text-white">${d.name}</p>
+                        <p class="text-xs text-slate-400 font-bold mt-0.5">${d.date} • ${d.site} • <span class="text-amber-400/80 uppercase">${d.type}</span></p>
+                    </div>
+                    <div class="text-right flex items-center gap-3">
+                        <div>
+                            <p class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-red-400'}">${isIncome ? '+' : '-'}₹${d.amount}</p>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md font-bold uppercase">${d.payment}</span>
+                        </div>
+                        <button onclick="deleteTransaction('${d.id}')" class="p-2 text-red-400 hover:bg-red-500/10 rounded-xl transition" title="ഡിലീറ്റ് ചെയ്യുക">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                </div>`;
+        }
+    });
+    document.getElementById('totalIncome').innerText = "₹" + inc;
+    document.getElementById('totalExpense').innerText = "₹" + exp;
+    document.getElementById('netBalance').innerText = "₹" + (inc - exp);
+};
 
-                    list.innerHTML += `
-                        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
-                            <div class="cursor-pointer flex-1" onclick="editTransaction('${d.id}', '${d.name}', '${d.site}', '${d.type}', '${d.payment}', ${d.amount}, '${d.date}')">
-                                <p class="font-black text-base text-white">${d.name}</p>
-                                <p class="text-xs text-slate-400 font-bold mt-0.5">${d.date} • ${d.site} • <span class="text-amber-400/80 uppercase">${d.type}</span></p>
-                            </div>
-                            <div class="text-right flex items-center gap-3">
-                                <div>
-                                    <p class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-red-400'}">${isIncome ? '+' : '-'}₹${d.amount}</p>
-                                    <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md font-bold uppercase">${d.payment}</span>
-                                </div>
-                                <button onclick="deleteTransaction('${d.id}')" class="p-2 text-red-400 hover:bg-red-500/10 rounded-xl transition" title="ഡിലീറ്റ് ചെയ്യുക">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
-                            </div>
-                        </div>`;
-                }
-            });
-            document.getElementById('totalIncome').innerText = "₹" + inc;
-            document.getElementById('totalExpense').innerText = "₹" + exp;
-            document.getElementById('netBalance').innerText = "₹" + (inc - exp);
-        };
     </script>
 </body>
 </html>
