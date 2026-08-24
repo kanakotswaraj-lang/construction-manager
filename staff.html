@@ -27,22 +27,15 @@
             <span id="loggedInMeshtri" class="block w-full py-3 rounded-2xl text-sm font-black text-cyan-300 bg-cyan-500/10 border border-cyan-400/40">സ്വാഗതം...</span>
         </div>
 
-<!-- ടോപ്പ് നാവിഗേഷൻ ബാർ -->
-<div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-    <div>
-        <h1 class="text-base font-black text-white">തൊഴിലാളികളുടെ കണക്കുകൾ</h1>
-        <p class="text-[10px] text-slate-400 font-bold uppercase">ആകെ തൊഴിലാളികളും കൂലിയും</p>
-    </div>
-    
-    <!-- വ്യക്തമായ ഹോം ഐക്കണും മനോഹരമായ ഡിസൈനും ഉള്ള ബട്ടൺ -->
+<!-- ടോപ്പ് നാവിഗേഷൻ
+    <div class="bg-slate-900/90 border-2 border-indigo-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+    <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-300 to-purple-400 tracking-wide">തൊഴിലാളികളുടെ കണക്കുകൾ</h1>
     <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         Home
     </a>
 </div>
+
 
         <div class="mb-4">
             <input type="text" id="searchInput" placeholder="🔍 തൊഴിലാളിയെ തിരയുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold text-white placeholder-slate-500 focus:outline-none">
@@ -193,26 +186,29 @@
             loggedElement.innerText = "സ്വാഗതം, " + currentMeshtri;
         }
 
- 
-window.showAlert = function(message, type = 'success') {
+ window.showAlert = function(message, type = 'success') {
     const alertBox = document.getElementById('customAlert');
     if (!alertBox) {
-        alert(message); // customAlert ഇല്ലെങ്കിൽ സാധാരണ ബ്രൗസർ അലർട്ട് കാണിക്കും
+        alert(message);
         return;
     }
     alertBox.innerText = message;
     alertBox.classList.remove('hidden');
     
+    // fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 നൽകിയാൽ കൃത്യം സെന്ററിൽ വരും
+    const baseClass = "toast-animate fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-4 rounded-2xl z-50 font-bold text-center shadow-2xl border-2 backdrop-blur-md ";
+    
     if (type === 'success') {
-        alertBox.className = "toast-animate fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-4 rounded-2xl bg-emerald-900 border-2 border-emerald-500 text-emerald-200 z-50 font-bold text-center shadow-2xl";
+        alertBox.className = baseClass + "bg-emerald-900/95 border-emerald-500 text-emerald-200 shadow-emerald-500/20";
     } else {
-        alertBox.className = "toast-animate fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-4 rounded-2xl bg-red-900 border-2 border-red-500 text-red-200 z-50 font-bold text-center shadow-2xl";
+        alertBox.className = baseClass + "bg-red-900/95 border-red-500 text-red-200 shadow-red-500/20";
     }
 
     setTimeout(() => {
         alertBox.classList.add('hidden');
     }, 2500);
 };
+
 
         const getTodayDate = () => {
             const d = new Date();
