@@ -271,7 +271,8 @@
             siteSelect.value = currentSelectedSite;
             renderList();
         });
-window.renderList = () => {
+
+        window.renderList = () => {
     const sSite = document.getElementById('filterSite').value.toLowerCase();
     const sDate = document.getElementById('filterDate').value;
     const sWorker = document.getElementById('filterWorker').value.toLowerCase();
@@ -285,11 +286,15 @@ window.renderList = () => {
         const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
 
         if (matchesSite && matchesDate && matchesWorker) {
-            // വരവ് ആണോ എന്ന് പരിശോധിക്കുന്ന ഭാഗം അപ്ഡേറ്റ് ചെയ്തു
+            // type മലയാളത്തിലോ ഇംഗ്ലീഷിലോ എങ്ങനെ വന്നാലും വരവ് തിരിച്ചറിയാൻ:
             const dataType = String(d.type || '').toLowerCase();
             let isIncome = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
-            
-            if(isIncome) inc += parseFloat(d.amount) || 0; else exp += parseFloat(d.amount) || 0;
+
+            if (isIncome) {
+                inc += parseFloat(d.amount) || 0;
+            } else {
+                exp += parseFloat(d.amount) || 0;
+            }
 
             list.innerHTML += `
                 <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
@@ -313,6 +318,7 @@ window.renderList = () => {
     document.getElementById('totalExpense').innerText = "₹" + exp;
     document.getElementById('netBalance').innerText = "₹" + (inc - exp);
 };
+
 
     </script>
 </body>
