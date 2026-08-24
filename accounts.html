@@ -4,138 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>കണക്ക് മാനേജർ പ്രോ</title>
+    <title>കണക്ക് മാനേജർ - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="language.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <style>
-        body { font-family: 'Manjari', sans-serif; }
-        @media print { .no-print { display: none !important; } }
-        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .toast-animate { animation: slideIn 0.3s ease-out forwards; }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
-    </style>
-</head>
-<body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
-
-    <!-- Toast Notification Container -->
-    <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
-
-    <div class="max-w-md mx-auto space-y-4">
-        
-        <!-- ഹെഡർ ലോഗോയും ബ്രാൻഡ് നെയിമും -->
-        <div id="appHeader" class="w-full flex justify-center py-2">
-            <div class="flex items-center gap-3 bg-slate-900/80 px-5 py-2 rounded-2xl border border-amber-500/30 shadow-lg backdrop-blur-md">
-                <div class="w-9 h-9 bg-gradient-to-tr from-amber-600 to-amber-400 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30 border border-amber-300/40">
-                    <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0v-5a2 2 0 012-2h2a2 2 0 012 2v5m-6 0h6"></path>
-                    </svg>
-                </div>
-                <div class="flex flex-col">
-                    <h2 class="text-amber-400 font-black text-lg tracking-wide leading-none">മേസ്തിരി പ്രോ</h2>
-                    <span class="text-[9px] text-slate-400 font-bold tracking-widest uppercase mt-0.5">ഡിജിറ്റൽ കണക്ക് മാനേജർ</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- വരവ് - ചെലവ് ടോപ്പ് ബാർ -->
-        <div class="bg-slate-900/90 border-2 border-rose-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
-            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-pink-300 to-red-500 tracking-wide">വരവ് - ചെലവ്</h1>
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                Home
-            </a>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-4">
-            <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
-                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black">വരവ്</p>
-                <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
-            </div>
-            <div class="bg-red-600/90 p-4 rounded-2xl shadow-md text-center border border-red-500/30 backdrop-blur-sm">
-                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black">ചെലവ് / കൂലി</p>
-                <h2 id="totalExpense" class="text-xl font-black mt-1">₹0</h2>
-            </div>
-            <div class="col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl shadow-lg text-center border border-slate-700">
-                <p class="text-[10px] opacity-75 uppercase tracking-widest font-black text-slate-300">ലാഭം / ബാക്കി തുക</p>
-                <h2 id="netBalance" class="text-2xl font-black mt-1 text-amber-400">₹0</h2>
-            </div>
-        </div>
-
-        <!-- ഫിൽട്ടർ ഭാഗം -->
-        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
-                <select id="filterSite" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none text-white">
-                    <option value="">എല്ലാ സൈറ്റുകളും</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി വെച്ച് തിരയാൻ</label>
-                <input type="date" id="filterDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none text-white">
-            </div>
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പേര് വെച്ച് തിരയാൻ</label>
-                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none text-white">
-            </div>
-        </div>
-
-        <!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
-        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
-            <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2">പുതിയ കണക്ക് ചേർക്കുക</h2>
-            
-            <input type="date" id="transDate" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none text-white">
-            
-            <div class="relative">
-                <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="w-full p-4 pr-12 bg-blue-950/40 rounded-2xl border-2 border-blue-500 text-sm font-black placeholder-blue-300/50 focus:outline-none shadow-inner text-white">
-                <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-blue-400 hover:bg-blue-500/20 rounded-xl transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                </button>
-            </div>
-
-            <div class="relative">
-                <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-4 pr-12 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none text-white">
-                <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-blue-400 hover:bg-blue-500/20 rounded-xl transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <select id="type" class="p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none text-white">
-                    <option value="income" class="bg-slate-900">വരവ്</option>
-                    <option value="wage" class="bg-slate-900">കൂലി</option>
-                    <option value="material" class="bg-slate-900">മെറ്റീരിയൽസ്</option>
-                    <option value="rent" class="bg-slate-900">വാടക</option>
-                    <option value="other" class="bg-slate-900">മറ്റ് ചെലവ്</option>
-                </select>
-                <select id="paymentMethod" class="p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none text-white">
-                    <option value="cash" class="bg-slate-900">ക്യാഷ്</option>
-                    <option value="gpay" class="bg-slate-900">GPay</option>
-                    <option value="UPI" class="bg-slate-900">യുപിഐ</option>
-                    <option value="bank" class="bg-slate-900">ബാങ്ക്</option>
-                </select>
-            </div>
-            
-            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none text-white">
-            
-            <button id="saveBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition">സേവ് ചെയ്യുക</button>
-            <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
-        </div>
-
-        <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-2xl font-black text-sm mb-6 shadow-lg shadow-blue-600/20 transition no-print">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
-        <div id="transactionList" class="space-y-3 pb-10"></div>
-    </div>
-
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { setupHeader } from './header.js';
+
+       
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -149,14 +28,18 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const db = getFirestore(app); 
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         
         let editId = null;
         let allTransactions = [];
 
-        // ഫോമിൽ ഇന്നത്തെ തീയതി ഓട്ടോമാറ്റിക് സെറ്റ് ചെയ്യാൻ
-        document.getElementById('transDate').value = new Date().toISOString().split('T')[0];
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader', true, currentMeshtri);
+            }
+            fetchLiveAccounts();
+        });
 
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
@@ -178,19 +61,18 @@
         window.startVoiceInput = function(fieldId) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                window.showToast("നിങ്ങളുടെ ബ്രൗസർ വോയിസ് ടൈപ്പിംഗ് പിന്തുണയ്ക്കുന്നില്ല!", false);
+                window.showToast("ബ്രൗസർ വോയിസ് ടൈപ്പിംഗ് പിന്തുണയ്ക്കുന്നില്ല!", false);
                 return;
             }
             const recognition = new SpeechRecognition();
             recognition.lang = 'ml-IN';
             recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
 
             window.showToast("പറയൂ, കേൾക്കുന്നുണ്ട്...", true);
             recognition.onresult = function(event) {
                 const speechResult = event.results[0][0].transcript;
                 document.getElementById(fieldId).value = speechResult;
-                window.showToast("സൂപ്പർ! ടൈപ്പ് ചെയ്തു.", true);
+                window.showToast("ടൈപ്പ് ചെയ്തു കഴിഞ്ഞു!", true);
             };
             recognition.onerror = function() {
                 window.showToast("ശബ്ദം വ്യക്തമല്ല, വീണ്ടും ശ്രമിക്കുക.", false);
@@ -198,7 +80,32 @@
             recognition.start();
         };
 
-        document.getElementById('saveBtn').onclick = async () => {
+        function fetchLiveAccounts() {
+            const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+            onSnapshot(q, (snapshot) => {
+                allTransactions = []; 
+                const siteSet = new Set();
+                snapshot.forEach(docSnap => {
+                    const d = docSnap.data();
+                    allTransactions.push({ id: docSnap.id, ...d });
+                    if (d.site) siteSet.add(d.site);
+                });
+
+                allTransactions.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+                const siteSelect = document.getElementById('filterSite');
+                const currentSelectedSite = siteSelect.value;
+                siteSelect.innerHTML = '<option value="">എല്ലാ സൈറ്റുകളും</option>';
+                siteSet.forEach(site => siteSelect.innerHTML += `<option value="${site}">${site}</option>`);
+                siteSelect.value = currentSelectedSite;
+                
+                renderList();
+            }, (error) => {
+                console.error("Firebase error:", error);
+            });
+        }
+
+        window.saveTransaction = async function() {
             const data = { 
                 meshtriOwner: currentMeshtri, 
                 name: document.getElementById('ownerName').value.trim(), 
@@ -218,7 +125,7 @@
             try {
                 if (editId) { 
                     await updateDoc(doc(db, "accounts", editId), data); 
-                    window.showToast("കണക്ക് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!", true);
+                    window.showToast("കണക്ക് അപ്ഡേറ്റ് ചെയ്തു!", true);
                     cancelEdit();
                 } else { 
                     await addDoc(collection(db, "accounts"), data); 
@@ -226,10 +133,10 @@
                     document.getElementById('ownerName').value = '';
                     document.getElementById('amount').value = '';
                 }
-                saveBtn.disabled = false;
             } catch (e) { 
-                window.showToast("തടസ്സമുണ്ടായി, വീണ്ടും ശ്രമിക്കുക.", false); 
-                saveBtn.disabled = false; 
+                window.showToast("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല.", false); 
+            } finally {
+                saveBtn.disabled = false;
             }
         };
 
@@ -244,7 +151,7 @@
             document.getElementById('formTitle').innerText = "കണക്ക് എഡിറ്റ് ചെയ്യുക";
             document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
-            window.scrollTo({ top: 400, behavior: 'smooth' });
+            window.scrollTo({ top: 300, behavior: 'smooth' });
         };
 
         window.cancelEdit = function() {
@@ -252,7 +159,6 @@
             document.getElementById('ownerName').value = '';
             document.getElementById('siteName').value = '';
             document.getElementById('amount').value = '';
-            document.getElementById('transDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('formTitle').innerText = "പുതിയ കണക്ക് ചേർക്കുക";
             document.getElementById('saveBtn').innerText = "സേവ് ചെയ്യുക";
             document.getElementById('cancelEditBtn').classList.add('hidden');
@@ -268,26 +174,6 @@
                 }
             }
         };
-
-        // ഫയർബേസിൽ നിന്ന് എല്ലാ ഡാറ്റയും സുരക്ഷിതമായി റീഡ് ചെയ്യാൻ
-        onSnapshot(query(collection(db, "accounts"), orderBy("date", "desc")), (snapshot) => {
-            allTransactions = []; 
-            const siteSet = new Set();
-            snapshot.forEach(docSnap => {
-                const d = docSnap.data();
-                // ലോഗിൻ ചെയ്ത ആളുടെ ഡാറ്റ അല്ലെങ്കിൽ മേസ്തിരി പേര് ഇല്ലാത്ത പഴയ ഡാറ്റകളും കാണിക്കും
-                if (!d.meshtriOwner || d.meshtriOwner === currentMeshtri || d.user === currentMeshtri) {
-                    allTransactions.push({ id: docSnap.id, ...d });
-                    if (d.site) siteSet.add(d.site);
-                }
-            });
-            const siteSelect = document.getElementById('filterSite');
-            const currentSelectedSite = siteSelect.value;
-            siteSelect.innerHTML = '<option value="">എല്ലാ സൈറ്റുകളും</option>';
-            siteSet.forEach(site => siteSelect.innerHTML += `<option value="${site}">${site}</option>`);
-            siteSelect.value = currentSelectedSite;
-            renderList();
-        });
 
         window.renderList = () => {
             const sSite = document.getElementById('filterSite').value.toLowerCase();
@@ -312,14 +198,14 @@
                         <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
                             <div class="cursor-pointer flex-1" onclick="editTransaction('${d.id}', '${d.name}', '${d.site}', '${d.type}', '${d.payment}', ${d.amount}, '${d.date}')">
                                 <p class="font-black text-base text-white">${d.name}</p>
-                                <p class="text-xs text-slate-400 font-bold mt-0.5">${d.date} • ${d.site} • <span class="text-amber-400/80 uppercase">${d.type}</span></p>
+                                <p class="text-xs text-slate-400 font-bold mt-0.5">${d.date || ''} • ${d.site || ''} • <span class="text-amber-400/80 uppercase">${d.type || ''}</span></p>
                             </div>
                             <div class="text-right flex items-center gap-3">
                                 <div>
-                                    <p class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-red-400'}">${isIncome ? '+' : '-'}₹${d.amount}</p>
-                                    <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md font-bold uppercase">${d.payment}</span>
+                                    <p class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-red-400'}">${isIncome ? '+' : '-'}₹${d.amount || 0}</p>
+                                    <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md font-bold uppercase">${d.payment || 'ക്യാഷ്'}</span>
                                 </div>
-                                <button onclick="deleteTransaction('${d.id}')" class="p-2 text-red-400 hover:bg-red-500/10 rounded-xl transition" title="ഡിലീറ്റ് ചെയ്യുക">
+                                <button onclick="deleteTransaction('${d.id}')" class="p-2 text-red-400 hover:bg-red-500/10 rounded-xl transition">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                 </button>
                             </div>
@@ -331,5 +217,117 @@
             document.getElementById('netBalance').innerText = "₹" + (inc - exp);
         };
     </script>
+
+    <style>
+        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
+        @media print { .no-print { display: none !important; } }
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .toast-animate { animation: slideIn 0.3s ease-out forwards; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+    </style>
+</head>
+<body class="text-white min-h-screen pb-12 p-4 font-sans">
+
+    <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
+
+    <div class="max-w-md mx-auto space-y-4">
+        
+        <!-- header.js വഴി ലോഡ് ആകുന്ന ആപ്പ് ഹെഡർ -->
+        <div id="appHeader" class="w-full"></div>
+
+        <!-- ടോപ്പ് ഇൻഫോ ബാർ -->
+        <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide">വരവ് - ചെലവ് വിവരങ്ങൾ</h1>
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg transition flex items-center gap-2 border border-white/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Home
+            </a>
+        </div>
+
+        <!-- ആകെ തുക സംഗ്രഹം -->
+        <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
+                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black">വരവ്</p>
+                <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
+            </div>
+            <div class="bg-red-600/90 p-4 rounded-2xl shadow-md text-center border border-red-500/30 backdrop-blur-sm">
+                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black">ചെലവ് / കൂലി</p>
+                <h2 id="totalExpense" class="text-xl font-black mt-1">₹0</h2>
+            </div>
+            <div class="col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl shadow-lg text-center border border-slate-700">
+                <p class="text-[10px] opacity-75 uppercase tracking-widest font-black text-slate-300">ലാഭം / ബാക്കി തുക</p>
+                <h2 id="netBalance" class="text-2xl font-black mt-1 text-amber-400">₹0</h2>
+            </div>
+        </div>
+
+        <!-- സെർച്ച് ഫിൽട്ടറുകൾ -->
+        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
+                <select id="filterSite" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+                    <option value="">എല്ലാ സൈറ്റുകളും</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി വെച്ച് തിരയാൻ</label>
+                <input type="date" id="filterDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+            </div>
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പേര് വെച്ച് തിരയാൻ</label>
+                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-500 focus:outline-none text-white">
+            </div>
+        </div>
+
+        <!-- പുതിയ എൻട്രി ഫോം -->
+        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
+            <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2">പുതിയ കണക്ക് ചേർക്കുക</h2>
+            
+            <input type="date" id="transDate" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+            
+            <div class="relative">
+                <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="w-full p-4 pr-12 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-400 focus:outline-none text-white">
+                <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </button>
+            </div>
+
+            <div class="relative">
+                <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-4 pr-12 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-400 focus:outline-none text-white">
+                <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <select id="type" class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+                    <option value="income">വരവ്</option>
+                    <option value="wage">കൂലി</option>
+                    <option value="material">മെറ്റീരിയൽസ്</option>
+                    <option value="rent">വാടക</option>
+                    <option value="other">മറ്റ് ചെലവ്</option>
+                </select>
+                <select id="paymentMethod" class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+                    <option value="cash">ക്യാഷ്</option>
+                    <option value="gpay">GPay</option>
+                    <option value="UPI">യുപിഐ</option>
+                    <option value="bank">ബാങ്ക്</option>
+                </select>
+            </div>
+            
+            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+            
+            <button id="saveBtn" onclick="saveTransaction()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg transition">സേവ് ചെയ്യുക</button>
+            <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
+        </div>
+
+        <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-2xl font-black text-sm mb-6 shadow-lg shadow-blue-600/20 transition no-print">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
+        
+        <!-- മുഴുവൻ കണക്കുകളും ലിസ്റ്റ് ചെയ്യുന്ന ബോക്സ് -->
+        <div id="transactionList" class="space-y-3 pb-10"></div>
+    </div>
+
 </body>
 </html>
