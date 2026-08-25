@@ -40,10 +40,15 @@
             
             const nameElement = document.getElementById('loggedInMeshtri');
             if(nameElement) {
-                const currentLang = localStorage.getItem('selectedLang') || 'ml';
-                const welcomeText = (words.welcome && words.welcome[currentLang]) ? words.welcome[currentLang] : "സ്വാഗതം";
-                nameElement.innerText = `${welcomeText}, ${userName}`;
-            }
+                
+const nameElement = document.getElementById('loggedInMeshtri');
+if (nameElement) {
+    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+    const welcomeText = (words.welcome && words.welcome[currentLang]) ? words.welcome[currentLang] : 'സ്വാഗതം';
+    
+    // innerText മാറ്റി innerHTML ആക്കുക, <span class="lang"> ചേർക്കുക:
+    nameElement.innerHTML = `<span class="lang" data-key="welcome">${welcomeText}</span>, ${userName}`;
+}
 
             setFallbackProfile(userName);
 
