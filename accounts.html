@@ -31,6 +31,7 @@
         
         let editId = null;
         let allTransactions = [];
+        let filteredTransactions = [];
 
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof setupHeader === 'function') {
@@ -188,6 +189,7 @@
             if (list) list.innerHTML = '';
             
             let inc = 0, exp = 0;
+            filteredTransactions = [];
 
             if (typeof allTransactions !== 'undefined' && Array.isArray(allTransactions)) {
                 allTransactions.forEach(d => {
@@ -201,6 +203,8 @@
                     const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
 
                     if (matchesSite && matchesDateRange && matchesMonth && matchesWorker) {
+                        filteredTransactions.push(d);
+
                         const dataType = String(d.type || '').toLowerCase();
                         let isIncome = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
                         const amt = Number(d.amount || 0);
@@ -236,6 +240,34 @@
             if (document.getElementById('totalIncome')) document.getElementById('totalIncome').innerText = '₹' + inc;
             if (document.getElementById('totalExpense')) document.getElementById('totalExpense').innerText = '₹' + exp;
             if (document.getElementById('netBalance')) document.getElementById('netBalance').innerText = '₹' + (inc - exp);
+        };
+
+        window.downloadExcel = function() {
+            if (!filteredTransactions || filteredTransactions.length === 0) {
+                window.showToast("ഡൗൺലോഡ് ചെയ്യാൻ കണക്കുകളൊന്നും ലഭ്യമല്ല!", false);
+                return;
+            }
+
+            let csvContent = "\uFEFF"; 
+            csvContent += "തീയതി,പേര് / വിവരം,സൈറ്റ്,ഇനം,തുക,പേയ്‌മെന്റ്\n";
+
+            filteredTransactions.forEach(row => {
+                const dataType = String(row.type || '').toLowerCase();
+                const typeText = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്') ? 'വരവ്' : 'ചെലവ്';
+                const line = `"${row.date || ''}","${row.name || ''}","${row.site || ''}","${typeText}","${row.amount || 0}","${row.payment || 'Cash'}"`;
+                csvContent += line + "\n";
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Mesthri_Accounts_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            
+            link.click();
+            document.body.removeChild(link);
+            window.showToast("Excel ഫയൽ ഡൗൺലോഡ് ആയി!", true);
         };
     </script>
 
@@ -374,7 +406,15 @@
             <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
         </div>
 
-        <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-2xl font-black text-sm mb-6 shadow-lg shadow-blue-600/20 transition no-print">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
+        <!-- PDF & Excel ഡൗൺലോഡ് ബട്ടണുകൾ -->
+        <div class="grid grid-cols-2 gap-3 mb-6 no-print">
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-blue-600/20 transition flex items-center justify-center gap-1.5">
+                📄 PDF റിപ്പോർട്ട്
+            </button>
+            <button onclick="downloadExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-1.5">
+                📊 Excel ഡൗൺലോഡ്
+            </button>
+        </div>
         
         <!-- ലിസ്റ്റ് ബോക്സ് -->
         <div id="transactionList" class="space-y-3 pb-10"></div>
