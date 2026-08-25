@@ -32,6 +32,26 @@
         let editId = null;
         let allTransactions = [];
         let filteredTransactions = [];
+        
+window.switchLanguage = function(lang) {
+    if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
+    
+    // 1. സാധാരണ ടെക്സ്റ്റുകൾ മാറ്റുന്നു
+    document.querySelectorAll('.lang').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+            el.innerText = words[key][lang];
+        }
+    });
+
+    // 2. ഇൻപുട്ട് ഫീൽഡുകളിലെ Placeholder മാറ്റുന്നു
+    document.querySelectorAll('.lang-placeholder').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+            el.placeholder = words[key][lang];
+        }
+    });
+};
 
         document.addEventListener("DOMContentLoaded", () => {
             // header.js ഉപയോഗിച്ച് ഹെഡർ ശരിയായി ലോഡ് ചെയ്യുന്നു
@@ -430,28 +450,6 @@
         <div id="transactionList" class="space-y-3 pb-10"></div>
     </div>
 
-    <!-- ഭാഷ മാറ്റാനുള്ള പ്രധാന സ്ക്രിപ്റ്റ് -->
-    <script>
-        window.switchLanguage = function(lang) {
-            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
-            
-            // വിവർത്തനങ്ങൾ അപ്ഡേറ്റ് ചെയ്യുന്നു
-            document.querySelectorAll('.lang').forEach(el => {
-                const key = el.getAttribute('data-key');
-                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                    el.innerText = words[key][lang];
-                }
-            });
-
-            // ഇൻപുട്ട് ബോക്സുകളിലെ Placeholder അപ്ഡേറ്റ് ചെയ്യുന്നു
-            document.querySelectorAll('.lang-placeholder').forEach(el => {
-                const key = el.getAttribute('data-key');
-                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                    el.placeholder = words[key][lang];
-                }
-            });
-        };
-    </script>
     
 </body>
 </html>
