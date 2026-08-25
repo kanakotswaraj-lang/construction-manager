@@ -301,13 +301,22 @@ if (savedProfile) {
                 </div>
             </div>
         </div>
-<!-- സ്വാഗതം ബോക്സും ഒരൊറ്റ Lang ബട്ടണും -->
+
+    <!-- സ്വാഗതം ബോക്സും Lang ബട്ടണും ഒരേ ലൈനിൽ -->
 <div class="w-full flex items-center justify-between gap-2 px-4 mt-4">
-    <span id="loggedInMeshtri" class="flex-1 text-sky-400 text-lg font-bold">
+    <!-- പേര് കാണിക്കുന്ന ഭാഗം -->
+    <span id="loggedInMeshtri" class="text-sky-400 text-lg font-bold">
         <span class="lang" data-key="welcome">സ്വാഗതം</span>, swaraj
     </span>
 
-    
+    <!-- ലാംഗ്വേജ് ബട്ടൺ -->
+    <div class="relative">
+        <button onclick="toggleLangMenu()" class="flex items-center gap-1 bg-gray-800 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30 font-medium text-sm hover:bg-gray-700 transition-all">
+            <span>🌐 Lang</span>
+        </button>
+    </div>
+</div>
+
 
 
             
