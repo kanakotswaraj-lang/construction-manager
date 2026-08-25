@@ -62,7 +62,37 @@ const words = {
     start_date: { ml: "ആരംഭ തീയതി", en: "Start Date", hi: "प्रारंभ तिथि", ta: "ஆரம்ப தேதி", kn: "ಪ್ರಾರಂಭ ದಿನಾಂಕ", bn: "শুরুর তারিখ", as: "আৰম্ভণিৰ তাৰিখ" },
     end_date: { ml: "അവസാന തീയതി", en: "End Date", hi: "अंतिम तिथि", ta: "முடிவு தேதி", kn: "ಕೊನೆಯ ದಿನಾಂಕ", bn: "শেষ তারিখ", as: "শেষ তাৰিখ" },
     expired_items_title: { ml: "🚨 കാലാവധി കഴിഞ്ഞ ഉപകരണങ്ങൾ:", en: "🚨 Expired Items:", hi: "🚨 समय सीमा समाप्त उपकरण:", ta: "🚨 காலம் முடிந்த உபகரணங்கள்:", kn: "🚨 ಗಡುವು ಮುಗಿದ ಉಪಕರಣಗಳು:", bn: "🚨 মেয়াদ উত্তীর্ণ সরঞ্জাম:", as: "🚨 ম্যাদ উকলি যোৱা সঁজুলি:" },
+    // ===================================================
+    // ACCOUNTS PAGE (വരവ് - ചെലവ് പേജ്)
+    // ===================================================
+    accHeader: { ml: "വരവ് - ചെലവ് വിവരങ്ങൾ", en: "Income - Expense Details", ta: "வரவு - செலவு விவரங்கள்", hi: "आय - व्यय विवरण" },
+    homeBtn: { ml: "ഹോം", en: "Home", ta: "முகப்பு", hi: "होम" },
+    expenseWage: { ml: "ചെലവ് / കൂലി", en: "Expense / Wage", ta: "செலவு / கூலி", hi: "व्यय / मजदूरी" },
+    netProfit: { ml: "ലാഭം / ബാക്കി തുക", en: "Net Profit / Balance", ta: "லாபம் / மீதித் தொகை", hi: "लाभ / शेष राशि" },
 
+    filterSiteLabel: { ml: "സൈറ്റ് തിരിച്ച് നോക്കാൻ", en: "Filter by Site", ta: "தளம் வாரியாக பார்க்க", hi: "साइट के अनुसार खोजें" },
+    filterMonthLabel: { ml: "മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)", en: "Monthly Account (Select Month)", ta: "மாதாந்திர கணக்கு (மாதத்தை தேர்ந்தெடுக்கவும்)", hi: "मासिक खाता (महीना चुनें)" },
+    startDateLabel: { ml: "തുടങ്ങുന്ന തീയതി", en: "Start Date", ta: "தொ தொடங்கும் தேதி", hi: "प्रारंभ तिथि" },
+    endDateLabel: { ml: "അവസാനിക്കുന്ന തീയതി", en: "End Date", ta: "முடிவடையும் தேதி", hi: "अंतिम तिथि" },
+    filterWorkerLabel: { ml: "പേര് വെച്ച് തിരയാൻ", en: "Search by Name", ta: "பெயர் மூலம் தேட", hi: "नाम से खोजें" },
+    searchNamePlaceholder: { ml: "പേര് ടൈപ്പ് ചെയ്യുക...", en: "Type name...", ta: "பெயர் தட்டச்சு செய்யவும்...", hi: "नाम टाइप करें..." },
+
+    addNewAcc: { ml: "പുതിയ കണക്ക് ചേർക്കുക", en: "Add New Account", "ta": "புதிய கணக்கைச் சேர்க்கவும்", hi: "नया खाता जोड़ें" },
+    selectDateLabel: { ml: "തീയതി തിരഞ്ഞെടുക്കുക", en: "Select Date", ta: "தேதியைத் தேர்ந்தெடுக்கவும்", hi: "तिथि चुनें" },
+    nameDescPlaceholder: { ml: "ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക", en: "Type Name / Description", ta: "பெயர் / விவரங்களை தட்டச்சு செய்யவும்", hi: "नाम / विवरण टाइप करें" },
+    sitePlaceholder: { ml: "സ്ഥലം / സൈറ്റ്", en: "Location / Site", ta: "இடம் / தளம்", hi: "स्थान / साइट" },
+
+    wage: { ml: "കൂലി", en: "Wage", ta: "கூலி", hi: "मजदूरी" },
+    otherExp: { ml: "മറ്റ് ചെലവ്", en: "Other Expense", ta: "இதர செலவு", hi: "अन्य व्यय" },
+    cash: { ml: "ക്യാഷ്", en: "Cash", ta: "பணம்", hi: "नकद" },
+    bank: { ml: "ബാങ്ക്", en: "Bank", ta: "வங்கி", hi: "बैंक" },
+    amountPlaceholder: { ml: "തുക (₹)", en: "Amount (₹)", ta: "தொகை (₹)", hi: "राशि (₹)" },
+    saveBtn: { ml: "സേവ് ചെയ്യുക", en: "Save", ta: "சேமிக்கவும்", hi: "सहेजें" },
+    cancelEditBtn: { ml: "എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക", en: "Cancel Edit", ta: "திருத்துவதை ரத்துசெய்", hi: "संपादन रद्द करें" },
+
+    pdfReport: { ml: "📄 PDF റിപ്പോർട്ട്", en: "📄 PDF Report", ta: "📄 PDF அறிக்கை", hi: "📄 पीडीएफ रिपोर्ट" },
+    excelDownload: { ml: "📊 Excel ഡൗൺലോഡ്", en: "📊 Excel Download", ta: "📊 எக்செல் பதிவிறக்கம்", hi: "📊 एक्सेल डाउनलोड" }
+        
     // ==========================================
     // 5. STAFF & DETAILS (staff.html / staff-details.html)
     // ==========================================
