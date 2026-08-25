@@ -180,31 +180,53 @@
                 }
             }
         };
-
-        window.renderList = () => {
-    const sSite = document.getElementById('filterSite').value.toLowerCase();
-    const sStartDate = document.getElementById('startDate') ? document.getElementById('startDate').value : '';
-    const sEndDate = document.getElementById('endDate') ? document.getElementById('endDate').value : '';
-    const sMonth = document.getElementById('filterMonth') ? document.getElementById('filterMonth').value : '';
-    const sWorker = document.getElementById('filterWorker').value.toLowerCase();
+window.renderList = () => {
+    const sSite = (document.getElementById('filterSite')?.value || '').toLowerCase().trim();
+    const sStartDate = document.getElementById('startDate')?.value || '';
+    const sEndDate = document.getElementById('endDate')?.value || '';
+    const sMonth = document.getElementById('filterMonth')?.value || '';
+    const sWorker = (document.getElementById('filterWorker')?.value || '').toLowerCase().trim();
     
     const list = document.getElementById('transactionList');
-    list.innerHTML = '';
+    if (list) list.innerHTML = '';
+    
     let inc = 0, exp = 0;
     filteredTransactions = [];
 
-    allTransactions.forEach(d => {
-        const itemDate = d.date || '';
-        const matchesSite = !sSite || (d.site || '').toLowerCase() === sSite;
-        
-        // തീയതി പരിശോധന
-        const matchesDateRange = (!sStartDate || itemDate >= sStartDate) && (!sEndDate || itemDate <= sEndDate);
-        const matchesMonth = !sMonth || itemDate.startsWith(sMonth);
-        const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
+    // ഡാറ്റ ഉണ്ടോ എന്ന് പരിശോധിക്കുന്നു
+    if (typeof allTransactions !== 'undefined' && Array.isArray(allTransactions)) {
+        allTransactions.forEach(d => {
+            const itemDate = d.date || '';
+            
+            // ഫിൽട്ടർ പരിശോധനകൾ
+            const matchesSite = !sSite || (d.site || '').toLowerCase() === sSite;
+            const matchesStartDate = !sStartDate || itemDate >= sStartDate;
+            const matchesEndDate = !sEndDate || itemDate <= sEndDate;
+            const matchesDateRange = matchesStartDate && matchesEndDate;
+            const matchesMonth = !sMonth || itemDate.startsWith(sMonth);
+            const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
 
-        if (matchesSite && matchesDateRange && matchesMonth && matchesWorker) {
-            // ബാക്കി നിങ്ങളുടെ നിലവിലുള്ള കോഡ് അതുപോലെ തുടരുക...
+            // എല്ലാ കണ്ടീഷനും ശരിയായാൽ തുക കൂട്ടുന്നു
+            if (matchesSite && matchesDateRange && matchesMonth && matchesWorker) {
+                filteredTransactions.push(d);
+                
+                const amt = Number(d.amount || 0);
+                if (d.type === 'income') {
+                    inc += amt;
+                } else {
+                    exp += amt;
+                }
+            }
+        });
+    }
 
+    // വരവ്, ചെലവ്, ബാക്കി തുക എന്നിവ സ്ക്രീനിൽ കാണിക്കുന്നു
+    if (document.getElementById('totalIncome')) document.getElementById('totalIncome').innerText = '₹' + inc;
+    if (document.getElementById('totalExpense')) document.getElementById('totalExpense').innerText = '₹' + exp;
+    if (document.getElementById('netBalance')) document.getElementById('netBalance').innerText = '₹' + (inc - exp);
+
+    // താഴെ ലിസ്റ്റിൽ കാർഡുകൾ കാണിക്കാനുള്ള നിങ്ങളുടെ പഴയ കോഡ് (ലൂപ്പ് അല്ലെങ്കിൽ render dynamic elements) ഇവിടെ തുടരുക...
+};
 
                 
                     const dataType = String(d.type || '').toLowerCase();
