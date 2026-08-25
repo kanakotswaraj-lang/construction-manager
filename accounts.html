@@ -34,6 +34,7 @@
         let filteredTransactions = [];
 
         document.addEventListener("DOMContentLoaded", () => {
+            // header.js ഉപയോഗിച്ച് ഹെഡർ ശരിയായി ലോഡ് ചെയ്യുന്നു
             if (typeof setupHeader === 'function') {
                 setupHeader('appHeader', true, currentMeshtri);
             }
@@ -42,9 +43,13 @@
             const today = new Date().toISOString().split('T')[0];
             const transDateInput = document.getElementById('transDate');
             if (transDateInput) transDateInput.value = today;
-           if (typeof switchLanguage === 'function') switchLanguage(); 
+            
+            // ലോഡാകുമ്പോൾ സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യുന്നു
+            setTimeout(() => {
+                const savedLang = localStorage.getItem('selectedLang') || 'ml';
+                if (typeof window.switchLanguage === 'function') window.switchLanguage(savedLang); 
+            }, 100);
         });            
-
 
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
@@ -301,161 +306,152 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-<!-- 1. സ്വാഗതം & ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ സെക്ഷൻ (ഏറ്റവും മുകളിൽ) -->
-<div class="w-full flex items-center justify-between px-2 pt-2 relative z-50">
-    <!-- യൂസർ നെയിം -->
-    <span id="loggedInMeshtri" class="text-lg font-bold bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
-        <span class="lang" data-key="welcome">സ്വാഗതം</span>, swaraj
-    </span>
+        <!-- 1. header.js വഴി ലോഡ് ആകുന്ന ഹെഡർ കണ്ടെയ്നർ -->
+        <div id="appHeader" class="w-full"></div>
 
-    <!-- ലാംഗ്വേജ് ബട്ടണും ഡ്രോപ്പ്ഡൗണും -->
-    <div class="relative">
-        <button onclick="toggleLangMenu()" class="flex items-center gap-1.5 bg-gray-800/80 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30 text-sm font-semibold shadow-md active:scale-95 transition-all">
-            <span>🌐 Lang</span>
-        </button>
+        <!-- 2. ഗ്രാഡിയന്റ് ഹെഡർ ബോക്സ് (വരവ് - ചെലവ് വിവരങ്ങൾ & Home) -->
+        <div class="glass-card rounded-3xl p-4 shadow-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/10 flex items-center justify-between my-4 backdrop-blur-xl">
+            <h1 class="text-lg font-black bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent tracking-wide flex items-center gap-2">
+                <span>📊</span>
+                <span class="lang" data-key="accHeader">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
+            </h1>
 
-        <!-- ഡ്രോപ്പ്ഡൗൺ മെനു -->
-        <div id="langDropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl">
-            <div onclick="switchLanguage('ml'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">മലയാളം</div>
-            <div onclick="switchLanguage('en'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">English</div>
-            <div onclick="switchLanguage('ta'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">தமிழ்</div>
-            <div onclick="switchLanguage('hi'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">हिन्दी</div>
-            <div onclick="switchLanguage('kn'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">ಕನ್ನಡ</div>
-            <div onclick="switchLanguage('as'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">অসমীয়া</div>
-            <div onclick="switchLanguage('bn'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">বাংলা</div>
+            <a href="dashboard.html" class="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 rounded-2xl font-black text-xs shadow-lg hover:scale-105 active:scale-95 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="lang" data-key="homeBtn">Home</span>
+            </a>
         </div>
-    </div>
-</div>
 
-<!-- 2. ഗ്രാഡിയന്റ് ഹെഡർ ബോക്സ് (വരവ് - ചെലവ് വിവരങ്ങൾ & Home) -->
-<div class="glass-card rounded-3xl p-4 shadow-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/10 flex items-center justify-between my-4 backdrop-blur-xl">
-    <h1 class="text-lg font-black bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent tracking-wide flex items-center gap-2">
-        <span>📊</span>
-        <span class="lang" data-key="accHeader">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
-    </h1>
-
-    <a href="dashboard.html" class="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 rounded-2xl font-black text-xs shadow-lg hover:scale-105 active:scale-95 transition-all">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        <span class="lang" data-key="homeBtn">Home</span>
-    </a>
-</div>
-
-<!-- ആകെ തുക സംഗ്രഹം -->
-<div class="grid grid-cols-2 gap-3 mb-4">
-    <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
-        <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="income">വരവ്</p>
-        <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
-    </div>
-    <div class="bg-red-600/90 p-4 rounded-2xl shadow-md text-center border border-red-500/30 backdrop-blur-sm">
-        <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="expenseWage">ചെലവ് / കൂലി</p>
-        <h2 id="totalExpense" class="text-xl font-black mt-1">₹0</h2>
-    </div>
-    <div class="col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl shadow-lg text-center border border-slate-700">
-        <p class="text-[10px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="netProfit">ലാഭം / ബാക്കി തുക</p>
-        <h2 id="netBalance" class="text-2xl font-black mt-1 text-amber-400">₹0</h2>
-    </div>
-</div>
-
-<!-- സെർച്ച് ഫിൽട്ടറുകൾ -->
-<div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
-    <div>
-        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterSiteLabel">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
-        <select id="filterSite" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-            <option value="" class="lang" data-key="allSites">എല്ലാ സൈറ്റുകളും</option>
-        </select>
-    </div>
-
-    <div>
-        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterMonthLabel">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
-        <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-    </div>
-
-    <div class="flex gap-3 items-end">
-        <div class="w-1/2">
-            <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate lang" data-key="startDateLabel">തുടങ്ങുന്ന തീയതി</label>
-            <input type="date" id="startDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+        <!-- ആകെ തുക സംഗ്രഹം -->
+        <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
+                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="income">വരവ്</p>
+                <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
+            </div>
+            <div class="bg-red-600/90 p-4 rounded-2xl shadow-md text-center border border-red-500/30 backdrop-blur-sm">
+                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="expenseWage">ചെലവ് / കൂലി</p>
+                <h2 id="totalExpense" class="text-xl font-black mt-1">₹0</h2>
+            </div>
+            <div class="col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl shadow-lg text-center border border-slate-700">
+                <p class="text-[10px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="netProfit">ലാഭം / ബാക്കി തുക</p>
+                <h2 id="netBalance" class="text-2xl font-black mt-1 text-amber-400">₹0</h2>
+            </div>
         </div>
-        <div class="w-1/2">
-            <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate lang" data-key="endDateLabel">അവസാനിക്കുന്ന തീയതി</label>
-            <input type="date" id="endDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+
+        <!-- സെർച്ച് ഫിൽട്ടറുകൾ -->
+        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterSiteLabel">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
+                <select id="filterSite" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                    <option value="" class="lang" data-key="allSites">എല്ലാ സൈറ്റുകളും</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterMonthLabel">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
+                <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+            </div>
+
+            <div class="flex gap-3 items-end">
+                <div class="w-1/2">
+                    <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate lang" data-key="startDateLabel">തുടങ്ങുന്ന തീയതി</label>
+                    <input type="date" id="startDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                </div>
+                <div class="w-1/2">
+                    <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate lang" data-key="endDateLabel">അവസാനിക്കുന്ന തീയതി</label>
+                    <input type="date" id="endDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterWorkerLabel">പേര് വെച്ച് തിരയാൻ</label>
+                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="lang-placeholder w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="searchNamePlaceholder">
+            </div>
         </div>
-    </div>
 
-    <div>
-        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterWorkerLabel">പേര് വെച്ച് തിരയാൻ</label>
-        <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="lang-placeholder w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="searchNamePlaceholder">
-    </div>
-</div>
+        <!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
+        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
+            <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2 lang" data-key="addNewAcc">പുതിയ കണക്ക് ചേർക്കുക</h2>
+            
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="selectDateLabel">തീയതി തിരഞ്ഞെടുക്കുക</label>
+                <input type="date" id="transDate" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+            </div>
 
-<!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
-<div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
-    <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2 lang" data-key="addNewAcc">പുതിയ കണക്ക് ചേർക്കുക</h2>
-    
-    <div>
-        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="selectDateLabel">തീയതി തിരഞ്ഞെടുക്കുക</label>
-        <input type="date" id="transDate" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-    </div>
+            <div class="relative">
+                <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="nameDescPlaceholder">
+                <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </button>
+            </div>
 
-    <div class="relative">
-        <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="nameDescPlaceholder">
-        <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-        </button>
-    </div>
+            <div class="relative">
+                <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="sitePlaceholder">
+                <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </button>
+            </div>
 
-    <div class="relative">
-        <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="sitePlaceholder">
-        <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-        </button>
-    </div>
+            <div class="grid grid-cols-2 gap-3">
+                <select id="type" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                    <option value="income" class="lang" data-key="income">വരവ്</option>
+                    <option value="wage" class="lang" data-key="wage">കൂലി</option>
+                    <option value="material" class="lang" data-key="materials">മെറ്റീരിയൽസ്</option>
+                    <option value="rent" class="lang" data-key="rent">വാടക</option>
+                    <option value="other" class="lang" data-key="otherExp">മറ്റ് ചെലവ്</option>
+                </select>
+                <select id="paymentMethod" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                    <option value="cash" class="lang" data-key="cash">ക്യാഷ്</option>
+                    <option value="gpay">GPay</option>
+                    <option value="UPI">യുപിഐ</option>
+                    <option value="bank" class="lang" data-key="bank">ബാങ്ക്</option>
+                </select>
+            </div>
+            
+            <input type="number" id="amount" placeholder="തുക (₹)" class="lang-placeholder w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner" data-key="amountPlaceholder">
+            
+            <button id="saveBtn" onclick="saveTransaction()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg transition lang" data-key="saveBtn">സേവ് ചെയ്യുക</button>
+            <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden lang" data-key="cancelEditBtn">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
+        </div>
 
-    <div class="grid grid-cols-2 gap-3">
-        <select id="type" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-            <option value="income" class="lang" data-key="income">വരവ്</option>
-            <option value="wage" class="lang" data-key="wage">കൂലി</option>
-            <option value="material" class="lang" data-key="materials">മെറ്റീരിയൽസ്</option>
-            <option value="rent" class="lang" data-key="rent">വാടക</option>
-            <option value="other" class="lang" data-key="otherExp">മറ്റ് ചെലവ്</option>
-        </select>
-        <select id="paymentMethod" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-            <option value="cash" class="lang" data-key="cash">ക്യാഷ്</option>
-            <option value="gpay">GPay</option>
-            <option value="UPI">യുപിഐ</option>
-            <option value="bank" class="lang" data-key="bank">ബാങ്ക്</option>
-        </select>
-    </div>
-    
-    <input type="number" id="amount" placeholder="തുക (₹)" class="lang-placeholder w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner" data-key="amountPlaceholder">
-    
-    <button id="saveBtn" onclick="saveTransaction()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg transition lang" data-key="saveBtn">സേവ് ചെയ്യുക</button>
-    <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden lang" data-key="cancelEditBtn">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
-</div>
+        <!-- PDF & Excel ഡൗൺലോഡ് ബട്ടണുകൾ -->
+        <div class="grid grid-cols-2 gap-3 mb-6 no-print">
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-blue-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="pdfReport">
+                📄 PDF റിപ്പോർട്ട്
+            </button>
+            <button onclick="downloadExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="excelDownload">
+                📊 Excel ഡൗൺലോഡ്
+            </button>
+        </div>
 
-<!-- PDF & Excel ഡൗൺലോഡ് ബട്ടണുകൾ -->
-<div class="grid grid-cols-2 gap-3 mb-6 no-print">
-    <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-blue-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="pdfReport">
-        📄 PDF റിപ്പോർട്ട്
-    </button>
-    <button onclick="downloadExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="excelDownload">
-        📊 Excel ഡൗൺലോഡ്
-    </button>
-</div>
-
-        
         <!-- ലിസ്റ്റ് ബോക്സ് -->
         <div id="transactionList" class="space-y-3 pb-10"></div>
     </div>
-<script>
-    function toggleLangMenu() {
-        const langDropdown = document.getElementById('langDropdown');
-        if (langDropdown) {
-            langDropdown.classList.toggle('hidden');
-        }
-    }
-</script>
+
+    <!-- ഭാഷ മാറ്റാനുള്ള പ്രധാന സ്ക്രിപ്റ്റ് -->
+    <script>
+        window.switchLanguage = function(lang) {
+            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
+            
+            // വിവർത്തനങ്ങൾ അപ്ഡേറ്റ് ചെയ്യുന്നു
+            document.querySelectorAll('.lang').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.innerText = words[key][lang];
+                }
+            });
+
+            // ഇൻപുട്ട് ബോക്സുകളിലെ Placeholder അപ്ഡേറ്റ് ചെയ്യുന്നു
+            document.querySelectorAll('.lang-placeholder').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.placeholder = words[key][lang];
+                }
+            });
+        };
+    </script>
     
 </body>
 </html>
