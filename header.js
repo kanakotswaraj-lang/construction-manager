@@ -1,5 +1,3 @@
-// header.js
-
 export function setupHeader(containerId, showWelcome = false, userName = "") {
     const headerHTML = `
     <div class="flex flex-col gap-2 w-full">
@@ -15,7 +13,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
 
             <!-- 3 വരകൾ ഉള്ള ലാംഗ്വേജ് മെനു ബട്ടൺ -->
             <div class="relative">
-                <button onclick="window.toggleLangMenu()" class="p-2.5 bg-slate-900/80 hover:bg-slate-900 border border-amber-300/50 text-amber-300 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-1.5 cursor-pointer">
+                <button onclick="window.toggleLangMenu(event)" class="p-2.5 bg-slate-900/80 hover:bg-slate-900 border border-amber-300/50 text-amber-300 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-1.5 cursor-pointer">
                     ☰ <span class="text-xs font-black">Lang</span>
                 </button>
 
@@ -36,7 +34,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
         ${showWelcome ? `
         <div class="w-full">
             <div class="w-full py-3 px-4 rounded-2xl text-center text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
-                <span id="loggedInMeshtri">സ്വാഗതം, ${userName}</span>
+                <span id="loggedInMeshtri"><span class="lang" data-key="welcome">സ്വാഗതം</span>, ${userName}</span>
             </div>
         </div>` : ''}
     </div>`;
@@ -48,25 +46,36 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
 }
 
 // ലാംഗ്വേജ് മെനു ടോഗിൾ ചെയ്യാൻ
-window.toggleLangMenu = function() {
+window.toggleLangMenu = function(event) {
+    if (event) event.stopPropagation();
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) {
         dropdown.classList.toggle('hidden');
     }
 };
 
-// ഭാഷ സുരക്ഷിതമായി മാറ്റാൻ (Conflict ഒഴിവാക്കാൻ changeLanguage എന്ന് പേര് നൽകി)
+// ഭാഷ മാറ്റാൻ
 window.changeLanguage = function(langCode) {
     localStorage.setItem('selectedLang', langCode);
-    window.toggleLangMenu();
+    
+    // മെനു ക്ലോസ് ചെയ്യുന്നു
+    const dropdown = document.getElementById('langDropdown');
+    if (dropdown) dropdown.classList.add('hidden');
 
-    // rental.html അല്ലെങ്കിൽ മറ്റ് പേജുകളിലെ switchLanguage വിളിക്കുന്നു
+    // accounts.html ലെയോ മറ്റ് പേജുകളിലെയോ switchLanguage വിളിക്കുന്നു
     if (typeof window.switchLanguage === 'function') {
         window.switchLanguage(langCode);
     }
     
-    // ഡാറ്റാ ലിസ്റ്റ് പുതിയ ഭാഷയിലേക്ക് അപ്ഡേറ്റ് ചെയ്യാൻ
     if (typeof window.loadData === 'function') {
         window.loadData();
     }
 };
+
+// പുറത്ത് ക്ലിക്ക് ചെയ്താൽ ഡ്രോപ്പ്ഡൗൺ ക്ലോസ് ചെയ്യുമെന്നത് ഉറപ്പാക്കുന്നു
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('langDropdown');
+    if (dropdown && !dropdown.classList.contains('hidden')) {
+        dropdown.classList.add('hidden');
+    }
+});
