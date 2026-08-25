@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ഹാജർ റിപ്പോർട്ട് - മേസ്തിരി പ്രോ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { setupHeader } from './header.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const currentMeshtri = localStorage.getItem('userName') || localStorage.getItem('meshtriName') || "മേസ്തിരി";
+
+        let allLogs = [];
+        let allWorkers = new Map(); // Name -> Phone
+        let allSites = new Set();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader', true, currentMeshtri);
+            }
+            loadAttendanceData();
+        });
+
+        async function loadAttendanceData() {
+            const list = document.getElementById('reportList');
+            list.innerHTML = '<p class="text-center text-xs text-slate-400 font-bold py-8">ഡാറ്റ പരിശോധിക്കുന്നു...</p>';
+
+            try {
+                // ഫയർബേസിൽ നിന്ന് സ്റ്റാഫുകളുടെ ഫോൺ നമ്പർ വിവരങ്ങൾ എടുക്കുന്നു
+                const staffQuery = query(collection(db, "staffs"), where("meshtriOwner", "==", currentMeshtri));
+                const staffSnapshot = await getDocs(staffQuery);
+                staffSnapshot.forEach(docSnap => {
+                    const s = docSnap.data();
+                    if (s.name) {
+                        const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
+                        allWorkers.set(s.name.trim(), cleanPhone);
+                    }
+                });
+
+                // കൂലി കണക്കുകൾ എടുക്കുന്നു (Reset ചെയ്തതും ചെയ്യാത്തതുമായ എല്ലാ പഴയ കണക്കുകളും വരും)
+                const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri), where("type", "==", "wage"));
+                const querySnapshot = await getDocs(q);
+
+                allLogs = [];
+                allSites.clear();
+
+                querySnapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    let workerName = data.name ? data.name.split('(')[0].trim() : "തൊഴിലാളി";
+                    let siteName = data.site || "പ്രധാന സൈറ്റ്";
+
+                    if (!allWorkers.has(workerName)) {
+                        allWorkers.set(workerName, '');
+                    }
+                    allSites.add(siteName);
+
+                    allLogs.push({
+                        id: docSnap.id,
+                        workerName: workerName,
+                        site: siteName,
+                        amount: parseFloat(data.amount) || 0,
+                        date: data.date || "",
+                        days: data.days || 1
+                    });
+                });
+
+                allLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                populateDropdowns();
+                renderReport();
+
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<p class="text-center text-xs text-rose-400 font-bold py-4">ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.</p>';
+            }
+        }
+
+        function populateDropdowns() {
+            const workerSelect = document.getElementById('filterWorker');
+            const siteSelect = document.getElementById('filterSite');
+
+            workerSelect.innerHTML = '<option value="">എല്ലാ തൊഴിലാളികളും</option>';
+            siteSelect.innerHTML = '<option value="">എല്ലാ സൈറ്റുകളും</option>';
+
+            allWorkers.forEach((phone, worker) => {
+                workerSelect.innerHTML += `<option value="${worker}">${worker}</option>`;
+            });
+
+            allSites.forEach(site => {
+                siteSelect.innerHTML += `<option value="${site}">${site}</option>`;
+            });
+        }
+
+        window.renderReport = function() {
+            const selectedWorker = document.getElementById('filterWorker').value;
+            const selectedSite = document.getElementById('filterSite').value;
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+
+            const filtered = allLogs.filter(log => {
+                const matchWorker = !selectedWorker || log.workerName === selectedWorker;
+                const matchSite = !selectedSite || log.site === selectedSite;
+                const matchSearch = !searchVal || log.workerName.toLowerCase().includes(searchVal) || log.site.toLowerCase().includes(searchVal);
+                return matchWorker && matchSite && matchSearch;
+            });
+
+            let totalDays = 0;
+            let totalWage = 0;
+
+            filtered.forEach(item => {
+                totalDays += parseFloat(item.days) || 1;
+                totalWage += item.amount;
+            });
+
+            document.getElementById('statTotalDays').innerText = totalDays;
+            document.getElementById('statTotalWage').innerText = "₹" + totalWage;
+
+            // WhatsApp Button update logic
+            const waContainer = document.getElementById('waBtnContainer');
+            if (selectedWorker) {
+                const phone = allWorkers.get(selectedWorker) || '';
+                const msg = `നമസ്കാരം ${selectedWorker},%0Aഹാജർ വിവരങ്ങൾ:%0A- ആകെ പണി ദിവസം: ${totalDays}%0A- ആകെ കൂലി: ₹${totalWage}`;
+                
+                waContainer.innerHTML = `
+                    <a href="https://wa.me/${phone}?text=${msg}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white p-3 text-center rounded-xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
+                        💬 ${selectedWorker}-ന് WhatsApp മെസ്സേജ് അയക്കുക
+                    </a>
+                `;
+                waContainer.classList.remove('hidden');
+            } else {
+                waContainer.classList.add('hidden');
+            }
+
+            const list = document.getElementById('reportList');
+            list.innerHTML = '';
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<p class="text-center text-slate-400 font-bold text-xs py-8">വിവരങ്ങൾ ഒന്നും ലഭ്യമല്ല</p>';
+                return;
+            }
+
+            filtered.forEach(item => {
+                list.innerHTML += `
+                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
+                        <div class="space-y-1">
+                            <h4 class="font-black text-sm text-white">${item.workerName}</h4>
+                            <p class="text-xs text-slate-400 font-bold">📅 ${item.date} | 📍 <span class="text-cyan-300">${item.site}</span></p>
+                        </div>
+                        <div class="text-right">
+                            <span class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-lg text-xs font-black">പണി: ${item.days} ദിവസം</span>
+                            <p class="font-black text-sm text-emerald-400 mt-1 shadow-sm">₹${item.amount}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        };
+    </script>
+
+    <style>
+        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
+    </style>
+</head>
+
+<body class="text-white min-h-screen pb-12 p-4 font-sans">
+
+    <div class="max-w-md mx-auto space-y-4">
+        
+        <!-- ഹെഡർ -->
+        <div id="appHeader" class="w-full"></div>
+
+        <!-- ടോപ്പ് ബാർ -->
+        <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide">ഹാജർ & പണി റിപ്പോർട്ട്</h1>
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-xl text-xs font-black shadow-lg transition flex items-center gap-1.5">
+                Home
+            </a>
+        </div>
+
+        <!-- സമറി കാർഡുകൾ -->
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-slate-900/90 border border-cyan-500/40 p-4 rounded-2xl text-center shadow-lg">
+                <p class="text-[10px] font-bold text-slate-400 uppercase">ആകെ പണി ദിവസങ്ങൾ</p>
+                <p id="statTotalDays" class="text-xl font-black text-cyan-300 mt-1">0</p>
+            </div>
+            <div class="bg-slate-900/90 border border-emerald-500/40 p-4 rounded-2xl text-center shadow-lg">
+                <p class="text-[10px] font-bold text-slate-400 uppercase">ആകെ നൽകിയ കൂലി</p>
+                <p id="statTotalWage" class="text-xl font-black text-emerald-400 mt-1">₹0</p>
+            </div>
+        </div>
+
+        <!-- ഫിൽട്ടർ ഭാഗം -->
+        <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl space-y-3 shadow-xl">
+            <input type="text" id="searchInput" oninput="renderReport()" placeholder="🔍 പേരോ സൈറ്റോ തിരയുക..." class="w-full p-3 bg-slate-800 rounded-xl border border-slate-700 text-xs font-bold text-white focus:outline-none">
+            
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="text-[9px] text-slate-400 font-bold block mb-1 uppercase">തൊഴിലാളി</label>
+                    <select id="filterWorker" onchange="renderReport()" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-amber-400 focus:outline-none">
+                        <option value="">എല്ലാ തൊഴിലാളികളും</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[9px] text-slate-400 font-bold block mb-1 uppercase">സൈറ്റ്</label>
+                    <select id="filterSite" onchange="renderReport()" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-amber-400 focus:outline-none">
+                        <option value="">എല്ലാ സൈറ്റുകളും</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- WhatsApp മെസ്സേജ് ബട്ടൺ (തൊഴിലാളിയെ സെലക്ട് ചെയ്യുമ്പോൾ മാത്രം കാണിക്കും) -->
+            <div id="waBtnContainer" class="hidden pt-1"></div>
+        </div>
+
+        <!-- ഡാറ്റ ലിസ്റ്റ് -->
+        <div class="space-y-2.5">
+            <h3 class="text-xs font-black text-slate-400 uppercase px-1">ഹാജർ വിവരങ്ങൾ</h3>
+            <div id="reportList" class="space-y-3"></div>
+        </div>
+        
+    </div>
+
+</body>
+</html>
