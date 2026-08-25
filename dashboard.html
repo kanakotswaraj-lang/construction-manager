@@ -39,23 +39,23 @@
             }
             
             const nameElement = document.getElementById('loggedInMeshtri');
-            if(nameElement) {
-
-const nameElement = document.getElementById('loggedInMeshtri');
 if (nameElement) {
     const currentLang = localStorage.getItem('selectedLang') || 'ml';
     const welcomeText = (typeof words !== 'undefined' && words.welcome && words.welcome[currentLang]) 
                         ? words.welcome[currentLang] 
                         : 'സ്വാഗതം';
     
-    // നീല നിറവും ഭാഷ മാറ്റവും നിലനിർത്താൻ innerHTML ഉപയോഗിക്കുക:
     nameElement.innerHTML = `<span class="lang" data-key="welcome">${welcomeText}</span>, ${userName}`;
 }
 
-// പ്രൊഫൈൽ ഫോട്ടോ കൃത്യമായി ലോഡ് ചെയ്യാൻ ഈ ഫംഗ്ഷൻ താഴെ ഉണ്ടെന്ന് ഉറപ്പാക്കുക
-setFallbackProfile(userName);
-
-            setFallbackProfile(userName);
+// പ്രൊഫൈൽ ഫോട്ടോയും കവർ ഫോട്ടോയും ലോഡ് ചെയ്യാൻ:
+const savedProfile = localStorage.getItem('profilePhoto');
+if (savedProfile) {
+    const profileImg = document.getElementById('profileImage');
+    if (profileImg) profileImg.src = savedProfile;
+} else {
+    setFallbackProfile(userName);
+}
 
             try {
                 const userDocRef = doc(db, "users", userName);
@@ -301,15 +301,20 @@ setFallbackProfile(userName);
                 </div>
             </div>
         </div>
-
-        <!-- സ്വാഗതം ബോക്സും ഒരൊറ്റ Lang ബട്ടണും -->
-        
-
-<div class="w-full flex items-center gap-2">
+<!-- സ്വാഗതം ബോക്സും ഒരൊറ്റ Lang ബട്ടണും -->
+<div class="w-full flex items-center justify-between gap-2 px-4 mt-4">
     <span id="loggedInMeshtri" class="flex-1 text-sky-400 text-lg font-bold">
         <span class="lang" data-key="welcome">സ്വാഗതം</span>, swaraj
     </span>
+
+    <!-- ഭാഷ മാറ്റാനുള്ള Lang ബട്ടൺ -->
+    <div class="relative">
+        <button onclick="toggleLangMenu()" class="flex items-center gap-1 bg-gray-800 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30">
+            <span>🌐 Lang</span>
+        </button>
+    </div>
 </div>
+
 
             <!-- ഭാഷ മാറ്റാനുള്ള Lang ബട്ടൺ -->
             <div class="relative">
