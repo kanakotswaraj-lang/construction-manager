@@ -302,21 +302,21 @@ if (savedProfile) {
             </div>
         </div>
 
-    <!-- സ്വാഗതം ബോക്സും Lang ബട്ടണും ഒരേ ലൈനിൽ -->
-<div class="w-full flex items-center justify-between gap-2 px-4 mt-4">
-    <!-- പേര് കാണിക്കുന്ന ഭാഗം -->
-    <span id="loggedInMeshtri" class="text-sky-400 text-lg font-bold">
-        <span class="lang" data-key="welcome">സ്വാഗതം</span>, swaraj
-    </span>
+    
+<!-- സ്വാഗതം & ലാംഗ്വേജ് സെക്ഷൻ -->
+<div class="w-full flex items-center justify-between gap-2 px-4 mt-5 mb-3">
+    <div class="flex items-center gap-2">
+        <span id="loggedInMeshtri" class="text-xl font-extrabold bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent drop-shadow-sm">
+            <span class="lang" data-key="welcome">സ്വാഗതം</span>, swaraj
+        </span>
+    </div>
 
-    <!-- ലാംഗ്വേജ് ബട്ടൺ -->
     <div class="relative">
-        <button onclick="toggleLangMenu()" class="flex items-center gap-1 bg-gray-800 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30 font-medium text-sm hover:bg-gray-700 transition-all">
+        <button onclick="toggleLangMenu()" class="flex items-center gap-1.5 bg-slate-800/80 hover:bg-slate-700 text-amber-400 px-3.5 py-1.5 rounded-full border border-amber-500/30 backdrop-blur-md shadow-md text-xs font-semibold tracking-wide transition-all active:scale-95">
             <span>🌐 Lang</span>
         </button>
     </div>
 </div>
-
 
 
             
@@ -334,21 +334,35 @@ if (savedProfile) {
             </div>
         </div>
 
-        <!-- ലാഭ-നഷ്ട സംഗ്രഹ ബോക്സുകൾ -->
-        <div class="grid grid-cols-3 gap-2.5 pt-1">
-            <div class="glass-card border-emerald-500/30 p-3.5 rounded-2xl text-center shadow-lg">
-                <span class="text-[11px] font-black text-emerald-400 block tracking-wider uppercase lang" data-key="income">വരുമാനം</span>
-                <p id="dashTotalIncome" class="text-sm font-black text-white mt-1">₹ 0</p>
-            </div>
-            <div class="glass-card border-rose-500/30 p-3.5 rounded-2xl text-center shadow-lg">
-                <span class="text-[11px] font-black text-rose-400 block tracking-wider uppercase lang" data-key="expense">ചെലവ്</span>
-                <p id="dashTotalExpense" class="text-sm font-black text-white mt-1">₹ 0</p>
-            </div>
-            <div class="glass-card border-blue-500/30 p-3.5 rounded-2xl text-center shadow-lg">
-                <span id="dashProfitLabel" class="text-[11px] font-black text-blue-400 block tracking-wider uppercase lang" data-key="profit">ശുദ്ധ ലാഭം</span>
-                <p id="dashNetProfit" class="text-sm font-black text-white mt-1">₹ 0</p>
-            </div>
-        </div>
+     <!-- വരുമാനം, ചെലവ്, ലാഭം/നഷ്ടം കാർഡുകൾ -->
+<div class="grid grid-cols-3 gap-2 px-4 mb-5">
+    <!-- വരുമാനം -->
+    <div class="bg-gradient-to-b from-emerald-950/40 to-slate-900/80 border border-emerald-500/20 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-lg backdrop-blur-sm">
+        <span class="text-[11px] font-medium text-emerald-400 tracking-wider mb-1 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="lang" data-key="income">വരുമാനം</span>
+        </span>
+        <span class="text-sm font-black text-emerald-300">₹ <span id="statIncome">0</span></span>
+    </div>
+
+    <!-- ചെലവ് -->
+    <div class="bg-gradient-to-b from-rose-950/40 to-slate-900/80 border border-rose-500/20 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-lg backdrop-blur-sm">
+        <span class="text-[11px] font-medium text-rose-400 tracking-wider mb-1 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+            <span class="lang" data-key="expense">ചെലവ്</span>
+        </span>
+        <span class="text-sm font-black text-rose-300">₹ <span id="statExpense">46,800</span></span>
+    </div>
+
+    <!-- ലാഭം / നഷ്ടം -->
+    <div class="bg-gradient-to-b from-amber-950/40 to-slate-900/80 border border-amber-500/20 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-lg backdrop-blur-sm">
+        <span class="text-[11px] font-medium text-amber-400 tracking-wider mb-1 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span class="lang" data-key="netProfit">നഷ്ടം</span>
+        </span>
+        <span class="text-sm font-black text-amber-300">₹ <span id="statNet">46,800</span></span>
+    </div>
+</div>
 
         <!-- പ്രധാന മെനു നാവിഗേഷൻ ലിങ്കുകൾ -->
         <div class="space-y-2.5 pt-1">
