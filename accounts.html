@@ -184,6 +184,8 @@
         window.renderList = () => {
             const sSite = document.getElementById('filterSite').value.toLowerCase();
             const sDate = document.getElementById('filterDate').value;
+            const sMonth = document.getElementById('filterMonth').value;
+
             const sWorker = document.getElementById('filterWorker').value.toLowerCase();
             const list = document.getElementById('transactionList');
             list.innerHTML = '';
@@ -192,9 +194,12 @@
             allTransactions.forEach(d => {
                 const matchesSite = !sSite || (d.site || '').toLowerCase() === sSite;
                 const matchesDate = !sDate || (d.date || '') === sDate;
-                const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
+                const matchesMonth = !sMonth || (d.date || '').startsWith(sMonth);
 
-                if (matchesSite && matchesDate && matchesWorker) {
+                const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
+if (matchesSite && matchesDate && matchesMonth && matchesWorker) {
+
+                
                     const dataType = String(d.type || '').toLowerCase();
                     let isIncome = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
 
@@ -295,8 +300,14 @@ input:focus, select:focus {
                 </select>
             </div>
             <div>
-                <div>
-    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി തിരഞ്ഞെടുക്കുക (ഫിൽട്ടർ)</label>
+            <div>
+    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
+    <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+</div>
+
+               <div>
+                
+   <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി തിരഞ്ഞെടുക്കുക (ഫിൽട്ടർ)</label>
     <input type="date" id="filterDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
 </div>
 <div>
