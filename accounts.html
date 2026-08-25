@@ -301,15 +301,42 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ആപ്പ് ഹെഡർ -->
-        <div id="appHeader" class="w-full"></div>
-<!-- ടോപ്പ് ഇൻഫോ ബാർ -->
-<div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-    <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide lang" data-key="accHeader">വരവ് - ചെലവ് വിവരങ്ങൾ</h1>
-    <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg transition flex items-center gap-2 border border-white/30">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+<!-- 1. സ്വാഗതം & ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ സെക്ഷൻ (ഏറ്റവും മുകളിൽ) -->
+<div class="w-full flex items-center justify-between px-2 pt-2 relative z-50">
+    <!-- യൂസർ നെയിം -->
+    <span id="loggedInMeshtri" class="text-lg font-bold bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+        <span class="lang" data-key="welcome">സ്വാഗതം</span>, swaraj
+    </span>
+
+    <!-- ലാംഗ്വേജ് ബട്ടണും ഡ്രോപ്പ്ഡൗണും -->
+    <div class="relative">
+        <button onclick="toggleLangMenu()" class="flex items-center gap-1.5 bg-gray-800/80 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30 text-sm font-semibold shadow-md active:scale-95 transition-all">
+            <span>🌐 Lang</span>
+        </button>
+
+        <!-- ഡ്രോപ്പ്ഡൗൺ മെനു -->
+        <div id="langDropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl">
+            <div onclick="switchLanguage('ml'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">മലയാളം</div>
+            <div onclick="switchLanguage('en'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">English</div>
+            <div onclick="switchLanguage('ta'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">தமிழ்</div>
+            <div onclick="switchLanguage('hi'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">हिन्दी</div>
+            <div onclick="switchLanguage('kn'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">ಕನ್ನಡ</div>
+            <div onclick="switchLanguage('as'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">অসমীয়া</div>
+            <div onclick="switchLanguage('bn'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">বাংলা</div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. ഗ്രാഡിയന്റ് ഹെഡർ ബോക്സ് (വരവ് - ചെലവ് വിവരങ്ങൾ & Home) -->
+<div class="glass-card rounded-3xl p-4 shadow-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/10 flex items-center justify-between my-4 backdrop-blur-xl">
+    <h1 class="text-lg font-black bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent tracking-wide flex items-center gap-2">
+        <span>📊</span>
+        <span class="lang" data-key="accHeader">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
+    </h1>
+
+    <a href="dashboard.html" class="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 rounded-2xl font-black text-xs shadow-lg hover:scale-105 active:scale-95 transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
         </svg>
         <span class="lang" data-key="homeBtn">Home</span>
     </a>
@@ -421,6 +448,14 @@
         <!-- ലിസ്റ്റ് ബോക്സ് -->
         <div id="transactionList" class="space-y-3 pb-10"></div>
     </div>
-
+<script>
+    function toggleLangMenu() {
+        const langDropdown = document.getElementById('langDropdown');
+        if (langDropdown) {
+            langDropdown.classList.toggle('hidden');
+        }
+    }
+</script>
+    
 </body>
 </html>
