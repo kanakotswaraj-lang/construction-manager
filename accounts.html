@@ -14,8 +14,6 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         import { setupHeader } from './header.js';
 
-       
-
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -34,18 +32,16 @@
         let editId = null;
         let allTransactions = [];
 
-      document.addEventListener("DOMContentLoaded", () => {
-    if (typeof setupHeader === 'function') {
-        setupHeader('appHeader', true, currentMeshtri);
-    }
-    fetchLiveAccounts();
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader', true, currentMeshtri);
+            }
+            fetchLiveAccounts();
 
-    // ഇന്നത്തെ തീയതി ബോക്സിൽ കൊണ്ടുവരാൻ
-    const today = new Date().toISOString().split('T')[0];
-    const transDateInput = document.getElementById('transDate');
-    if (transDateInput) transDateInput.value = today;
-});
-
+            const today = new Date().toISOString().split('T')[0];
+            const transDateInput = document.getElementById('transDate');
+            if (transDateInput) transDateInput.value = today;
+        });
 
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
@@ -180,81 +176,66 @@
                 }
             }
         };
-window.renderList = () => {
-    const sSite = (document.getElementById('filterSite')?.value || '').toLowerCase().trim();
-    const sStartDate = document.getElementById('startDate')?.value || '';
-    const sEndDate = document.getElementById('endDate')?.value || '';
-    const sMonth = document.getElementById('filterMonth')?.value || '';
-    const sWorker = (document.getElementById('filterWorker')?.value || '').toLowerCase().trim();
-    
-    const list = document.getElementById('transactionList');
-    if (list) list.innerHTML = '';
-    
-    let inc = 0, exp = 0;
-    filteredTransactions = [];
 
-    // ഡാറ്റ ഉണ്ടോ എന്ന് പരിശോധിക്കുന്നു
-    if (typeof allTransactions !== 'undefined' && Array.isArray(allTransactions)) {
-        allTransactions.forEach(d => {
-            const itemDate = d.date || '';
+        window.renderList = () => {
+            const sSite = (document.getElementById('filterSite')?.value || '').toLowerCase().trim();
+            const sStartDate = document.getElementById('startDate')?.value || '';
+            const sEndDate = document.getElementById('endDate')?.value || '';
+            const sMonth = document.getElementById('filterMonth')?.value || '';
+            const sWorker = (document.getElementById('filterWorker')?.value || '').toLowerCase().trim();
             
-            // ഫിൽട്ടർ പരിശോധനകൾ
-            const matchesSite = !sSite || (d.site || '').toLowerCase() === sSite;
-            const matchesStartDate = !sStartDate || itemDate >= sStartDate;
-            const matchesEndDate = !sEndDate || itemDate <= sEndDate;
-            const matchesDateRange = matchesStartDate && matchesEndDate;
-            const matchesMonth = !sMonth || itemDate.startsWith(sMonth);
-            const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
+            const list = document.getElementById('transactionList');
+            if (list) list.innerHTML = '';
+            
+            let inc = 0, exp = 0;
 
-            // എല്ലാ കണ്ടീഷനും ശരിയായാൽ തുക കൂട്ടുന്നു
-            if (matchesSite && matchesDateRange && matchesMonth && matchesWorker) {
-                filteredTransactions.push(d);
-                
-                const amt = Number(d.amount || 0);
-                if (d.type === 'income') {
-                    inc += amt;
-                } else {
-                    exp += amt;
-                }
+            if (typeof allTransactions !== 'undefined' && Array.isArray(allTransactions)) {
+                allTransactions.forEach(d => {
+                    const itemDate = d.date || '';
+                    
+                    const matchesSite = !sSite || (d.site || '').toLowerCase() === sSite;
+                    const matchesStartDate = !sStartDate || itemDate >= sStartDate;
+                    const matchesEndDate = !sEndDate || itemDate <= sEndDate;
+                    const matchesDateRange = matchesStartDate && matchesEndDate;
+                    const matchesMonth = !sMonth || itemDate.startsWith(sMonth);
+                    const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
+
+                    if (matchesSite && matchesDateRange && matchesMonth && matchesWorker) {
+                        const dataType = String(d.type || '').toLowerCase();
+                        let isIncome = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
+                        const amt = Number(d.amount || 0);
+
+                        if (isIncome) {
+                            inc += amt;
+                        } else {
+                            exp += amt;
+                        }
+
+                        if (list) {
+                            list.innerHTML += `
+                                <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
+                                    <div class="cursor-pointer flex-1" onclick="editTransaction('${d.id}', '${d.name}', '${d.site}', '${d.type}', '${d.payment}', ${d.amount}, '${d.date}')">
+                                        <p class="font-black text-base text-white">${d.name}</p>
+                                        <p class="text-xs text-slate-400 font-bold mt-0.5">${d.date || ''} • ${d.site || ''} • <span class="text-amber-400/80 uppercase">${d.type || ''}</span></p>
+                                    </div>
+                                    <div class="text-right flex items-center gap-3">
+                                        <div>
+                                            <p class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-red-400'}">${isIncome ? '+' : '-'}₹${d.amount || 0}</p>
+                                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md font-bold uppercase">${d.payment || 'ക്യാഷ്'}</span>
+                                        </div>
+                                        <button onclick="deleteTransaction('${d.id}')" class="p-2 text-red-400 hover:bg-red-500/10 rounded-xl transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
+                                    </div>
+                                </div>`;
+                        }
+                    }
+                });
             }
-        });
-    }
 
-    // വരവ്, ചെലവ്, ബാക്കി തുക എന്നിവ സ്ക്രീനിൽ കാണിക്കുന്നു
-    if (document.getElementById('totalIncome')) document.getElementById('totalIncome').innerText = '₹' + inc;
-    if (document.getElementById('totalExpense')) document.getElementById('totalExpense').innerText = '₹' + exp;
-    if (document.getElementById('netBalance')) document.getElementById('netBalance').innerText = '₹' + (inc - exp);
-
-    // താഴെ ലിസ്റ്റിൽ കാർഡുകൾ കാണിക്കാനുള്ള നിങ്ങളുടെ പഴയ കോഡ് (ലൂപ്പ് അല്ലെങ്കിൽ render dynamic elements) ഇവിടെ തുടരുക...
-};
-
-                
-                    const dataType = String(d.type || '').toLowerCase();
-                    let isIncome = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
-
-                    if(isIncome) inc += parseFloat(d.amount) || 0; else exp += parseFloat(d.amount) || 0;
-
-                    list.innerHTML += `
-                        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
-                            <div class="cursor-pointer flex-1" onclick="editTransaction('${d.id}', '${d.name}', '${d.site}', '${d.type}', '${d.payment}', ${d.amount}, '${d.date}')">
-                                <p class="font-black text-base text-white">${d.name}</p>
-                                <p class="text-xs text-slate-400 font-bold mt-0.5">${d.date || ''} • ${d.site || ''} • <span class="text-amber-400/80 uppercase">${d.type || ''}</span></p>
-                            </div>
-                            <div class="text-right flex items-center gap-3">
-                                <div>
-                                    <p class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-red-400'}">${isIncome ? '+' : '-'}₹${d.amount || 0}</p>
-                                    <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md font-bold uppercase">${d.payment || 'ക്യാഷ്'}</span>
-                                </div>
-                                <button onclick="deleteTransaction('${d.id}')" class="p-2 text-red-400 hover:bg-red-500/10 rounded-xl transition">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
-                            </div>
-                        </div>`;
-                }
-            });
-            document.getElementById('totalIncome').innerText = "₹" + inc;
-            document.getElementById('totalExpense').innerText = "₹" + exp;
-            document.getElementById('netBalance').innerText = "₹" + (inc - exp);
+            if (document.getElementById('totalIncome')) document.getElementById('totalIncome').innerText = '₹' + inc;
+            if (document.getElementById('totalExpense')) document.getElementById('totalExpense').innerText = '₹' + exp;
+            if (document.getElementById('netBalance')) document.getElementById('netBalance').innerText = '₹' + (inc - exp);
         };
     </script>
 
@@ -264,25 +245,20 @@ window.renderList = () => {
         @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .toast-animate { animation: slideIn 0.3s ease-out forwards; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
-        /* ഓട്ടോഫിൽ ചെയ്യുമ്പോൾ വരുന്ന വെള്ള ബാക്ക്ഗ്രൗണ്ട് മാറ്റാൻ */
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
-    -webkit-text-fill-color: #ffffff !important;
-    transition: background-color 5000s ease-in-out 0s;
-}
-
-/* ഇൻപുട്ട് ബോക്സ് ക്ലിക്ക് ചെയ്യുമ്പോൾ വരുന്നത് */
-input:focus, select:focus {
-    outline: none !important;
-    border-color: #f59e0b !important; /* ഗോൾഡൻ ആക്സന്റ് ബോർഡർ */
-    background-color: #1e293b !important;
-    color: #ffffff !important;
-}
-
-
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+        input:focus, select:focus {
+            outline: none !important;
+            border-color: #f59e0b !important;
+            background-color: #1e293b !important;
+            color: #ffffff !important;
+        }
     </style>
 </head>
 <body class="text-white min-h-screen pb-12 p-4 font-sans">
@@ -291,7 +267,7 @@ input:focus, select:focus {
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- header.js വഴി ലോഡ് ആകുന്ന ആപ്പ് ഹെഡർ -->
+        <!-- ആപ്പ് ഹെഡർ -->
         <div id="appHeader" class="w-full"></div>
 
         <!-- ടോപ്പ് ഇൻഫോ ബാർ -->
@@ -321,118 +297,70 @@ input:focus, select:focus {
                 <h2 id="netBalance" class="text-2xl font-black mt-1 text-amber-400">₹0</h2>
             </div>
         </div>
-<!-- സെർച്ച് ഫിൽട്ടറുകൾ -->
-<div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
-    <div>
-        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
-        <select id="filterSite" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-            <option value="">എല്ലാ സൈറ്റുകളും</option>
-        </select>
-    </div>
 
-    <div>
-        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
-        <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-    </div>
+        <!-- സെർച്ച് ഫിൽട്ടറുകൾ -->
+        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
+                <select id="filterSite" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                    <option value="">എല്ലാ സൈറ്റുകളും</option>
+                </select>
+            </div>
 
-    <!-- ഒരേ റോയിൽ വരുന്ന രണ്ട് തീയതി ഫിൽട്ടറുകൾ -->
-    <div class="flex gap-3 items-end">
-        <div class="w-1/2">
-            <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate">തുടങ്ങുന്ന തീയതി</label>
-            <input type="date" id="startDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
+                <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+            </div>
+
+            <div class="flex gap-3 items-end">
+                <div class="w-1/2">
+                    <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate">തുടങ്ങുന്ന തീയതി</label>
+                    <input type="date" id="startDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                </div>
+                <div class="w-1/2">
+                    <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate">അവസാനിക്കുന്ന തീയതി</label>
+                    <input type="date" id="endDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">പേര് വെച്ച് തിരയാൻ</label>
+                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner">
+            </div>
         </div>
-        <div class="w-1/2">
-            <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate">അവസാനിക്കുന്ന തീയതി</label>
-            <input type="date" id="endDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-        </div>
-    </div>
 
-    <div>
-        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">പേര് വെച്ച് തിരയാൻ</label>
-        <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner">
-    </div>
-</div>
-
-<!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
-<div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
-    <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2">പുതിയ കണക്ക് ചേർക്കുക</h2>
-    
-    <div>
-        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">തീയതി തിരഞ്ഞെടുക്കുക</label>
-        <input type="date" id="transDate" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-    </div>
-
-    <div class="relative">
-        <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner">
-        <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-        </button>
-    </div>
-
-    <div class="relative">
-        <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner">
-        <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-        </button>
-    </div>
-
-    <div class="grid grid-cols-2 gap-3">
-        <select id="type" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-            <option value="income">വരവ്</option>
-            <option value="wage">കൂലി</option>
-            <option value="material">മെറ്റീരിയൽസ്</option>
-            <option value="rent">വാടക</option>
-            <option value="other">മറ്റ് ചെലവ്</option>
-        </select>
-        <select id="paymentMethod" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-            <option value="cash">ക്യാഷ്</option>
-            <option value="gpay">GPay</option>
-            <option value="UPI">യുപിഐ</option>
-            <option value="bank">ബാങ്ക്</option>
-        </select>
-    </div>
-    
-    <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-    
-    <button id="saveBtn" onclick="saveTransaction()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg transition">സേവ് ചെയ്യുക</button>
-    <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
-</div>
-
-
-
-
-        <!-- പുതിയ എൻട്രി ഫോം -->
-        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
+        <!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
+        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
             <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2">പുതിയ കണക്ക് ചേർക്കുക</h2>
             
             <div>
-    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി തിരഞ്ഞെടുക്കുക</label>
-    <input type="date" id="transDate" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
-</div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">തീയതി തിരഞ്ഞെടുക്കുക</label>
+                <input type="date" id="transDate" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+            </div>
 
             <div class="relative">
-                <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="w-full p-4 pr-12 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-400 focus:outline-none text-white">
+                <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner">
                 <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                 </button>
             </div>
 
             <div class="relative">
-                <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-4 pr-12 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-400 focus:outline-none text-white">
+                <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner">
                 <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                 </button>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <select id="type" class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+                <select id="type" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
                     <option value="income">വരവ്</option>
                     <option value="wage">കൂലി</option>
                     <option value="material">മെറ്റീരിയൽസ്</option>
                     <option value="rent">വാടക</option>
                     <option value="other">മറ്റ് ചെലവ്</option>
                 </select>
-                <select id="paymentMethod" class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+                <select id="paymentMethod" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
                     <option value="cash">ക്യാഷ്</option>
                     <option value="gpay">GPay</option>
                     <option value="UPI">യുപിഐ</option>
@@ -440,7 +368,7 @@ input:focus, select:focus {
                 </select>
             </div>
             
-            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+            <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
             
             <button id="saveBtn" onclick="saveTransaction()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg transition">സേവ് ചെയ്യുക</button>
             <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
@@ -448,7 +376,7 @@ input:focus, select:focus {
 
         <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-2xl font-black text-sm mb-6 shadow-lg shadow-blue-600/20 transition no-print">PDF റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക</button>
         
-        <!-- മുഴുവൻ കണക്കുകളും ലിസ്റ്റ് ചെയ്യുന്ന ബോക്സ് -->
+        <!-- ലിസ്റ്റ് ബോക്സ് -->
         <div id="transactionList" class="space-y-3 pb-10"></div>
     </div>
 
