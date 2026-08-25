@@ -40,7 +40,9 @@
             
             const nameElement = document.getElementById('loggedInMeshtri');
             if(nameElement) {
-                nameElement.innerText = "സ്വാഗതം, " + userName;
+                const currentLang = localStorage.getItem('selectedLang') || 'ml';
+                const welcomeText = (words.welcome && words.welcome[currentLang]) ? words.welcome[currentLang] : "സ്വാഗതം";
+                nameElement.innerText = `${welcomeText}, ${userName}`;
             }
 
             setFallbackProfile(userName);
@@ -203,16 +205,20 @@
                 let netEl = document.getElementById('dashNetProfit');
                 let labelEl = document.getElementById('dashProfitLabel');
 
+                const currentLang = localStorage.getItem('selectedLang') || 'ml';
+
                 if (net >= 0) {
-                    labelEl.innerText = "ശുദ്ധ ലാഭം";
+                    const profitText = (words.profit && words.profit[currentLang]) ? words.profit[currentLang] : "ശുദ്ധ ലാഭം";
+                    labelEl.innerText = profitText;
                     labelEl.className = "text-[11px] font-black text-emerald-400 block tracking-wider uppercase lang";
-                    labelEl.id = "profit";
+                    labelEl.setAttribute('data-key', 'profit');
                     netEl.innerText = `₹ ${net.toLocaleString('en-IN')}`;
                     netEl.style.color = "#34d399";
                 } else {
-                    labelEl.innerText = "നഷ്ടം";
+                    const lossText = (words.loss_label && words.loss_label[currentLang]) ? words.loss_label[currentLang] : "നഷ്ടം";
+                    labelEl.innerText = lossText;
                     labelEl.className = "text-[11px] font-black text-rose-400 block tracking-wider uppercase lang";
-                    labelEl.id = "loss_label";
+                    labelEl.setAttribute('data-key', 'loss_label');
                     netEl.innerText = `₹ ${Math.abs(net).toLocaleString('en-IN')}`;
                     netEl.style.color = "#fb7185";
                 }
@@ -286,7 +292,7 @@
             </div>
         </div>
 
-        <!-- സ്വാഗതം ബോക്സും ഒരൊറ്റ Lang ബട്ടണും (എല്ലാ 7 ഭാഷകളും ഉൾപ്പെടുത്തിയത്) -->
+        <!-- സ്വാഗതം ബോക്സും ഒരൊറ്റ Lang ബട്ടണും -->
         <div class="w-full flex items-center gap-2 pt-1">
             <span id="loggedInMeshtri" class="flex-1 py-4 px-4 rounded-2xl text-base font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl text-center">
                 സ്വാഗതം, swaraj
@@ -298,7 +304,7 @@
                     <span>🌐 Lang</span>
                 </button>
                 
-                <!-- ഡ്രോപ്പ്ഡൗൺ മെനു (മലയാളം, ഇംഗ്ലീഷ്, തമിഴ്, ഹിന്ദി, കന്നഡ, അസമീസ്, ബംഗാളി) -->
+                <!-- ഡ്രോപ്പ്ഡൗൺ മെനു -->
                 <div id="langDropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl">
                     <div onclick="switchLanguage('ml'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">മലയാളം</div>
                     <div onclick="switchLanguage('en'); toggleLangMenu()" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">English</div>
@@ -314,15 +320,15 @@
         <!-- ലാഭ-നഷ്ട സംഗ്രഹ ബോക്സുകൾ -->
         <div class="grid grid-cols-3 gap-2.5 pt-1">
             <div class="glass-card border-emerald-500/30 p-3.5 rounded-2xl text-center shadow-lg">
-                <span class="text-[11px] font-black text-emerald-400 block tracking-wider uppercase lang" id="income">വരുമാനം</span>
+                <span class="text-[11px] font-black text-emerald-400 block tracking-wider uppercase lang" data-key="income">വരുമാനം</span>
                 <p id="dashTotalIncome" class="text-sm font-black text-white mt-1">₹ 0</p>
             </div>
             <div class="glass-card border-rose-500/30 p-3.5 rounded-2xl text-center shadow-lg">
-                <span class="text-[11px] font-black text-rose-400 block tracking-wider uppercase lang" id="expense">ചെലവ്</span>
+                <span class="text-[11px] font-black text-rose-400 block tracking-wider uppercase lang" data-key="expense">ചെലവ്</span>
                 <p id="dashTotalExpense" class="text-sm font-black text-white mt-1">₹ 0</p>
             </div>
             <div class="glass-card border-blue-500/30 p-3.5 rounded-2xl text-center shadow-lg">
-                <span id="dashProfitLabel" class="text-[11px] font-black text-blue-400 block tracking-wider uppercase lang" id="profit">ലാഭം</span>
+                <span id="dashProfitLabel" class="text-[11px] font-black text-blue-400 block tracking-wider uppercase lang" data-key="profit">ശുദ്ധ ലാഭം</span>
                 <p id="dashNetProfit" class="text-sm font-black text-white mt-1">₹ 0</p>
             </div>
         </div>
@@ -332,7 +338,7 @@
             <a href="site.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-base">🏗️</div>
-                    <p class="text-base font-black tracking-wide lang" id="site_details">സൈറ്റ് വിവരങ്ങൾ</p>
+                    <p class="text-base font-black tracking-wide lang" data-key="site_details">സൈറ്റ് വിവരങ്ങൾ</p>
                 </div>
                 <span class="text-amber-400 font-bold text-lg">→</span>
             </a>
@@ -340,7 +346,7 @@
             <a href="history.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-yellow-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-base">📋</div>
-                    <p class="text-base font-black tracking-wide lang" id="history_edit">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</p>
+                    <p class="text-base font-black tracking-wide lang" data-key="history_edit">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</p>
                 </div>
                 <span class="text-yellow-400 font-bold text-lg">→</span>
             </a>
@@ -348,16 +354,15 @@
             <a href="staff.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-indigo-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-base">👥</div>
-                    <p class="text-base font-black tracking-wide lang" id="staff_salary">ജീവനക്കാരുടെ ശമ്പളം</p>
+                    <p class="text-base font-black tracking-wide lang" data-key="staff_salary">ജീവനക്കാരുടെ ശമ്പളം</p>
                 </div>
                 <span class="text-indigo-400 font-bold text-lg">→</span>
             </a>
             
-<!-- പുതിയ ഹാജർ & പണി റിപ്പോർട്ട് ബട്ടൺ -->
             <a href="attendance_report.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-cyan-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-base">📅</div>
-                    <p class="text-base font-black tracking-wide lang" id="attendance_report">ഹാജർ & പണി റിപ്പോർട്ട്</p>
+                    <p class="text-base font-black tracking-wide lang" data-key="attendance_report">ഹാജർ & പണി റിപ്പോർട്ട്</p>
                 </div>
                 <span class="text-cyan-400 font-bold text-lg">→</span>
             </a>
@@ -365,7 +370,7 @@
             <a href="rentals.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-emerald-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-base">🛠️</div>
-                    <p class="text-base font-black tracking-wide lang" id="rentals">വാടക ഉപകരണങ്ങൾ</p>
+                    <p class="text-base font-black tracking-wide lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</p>
                 </div>
                 <span class="text-emerald-400 font-bold text-lg">→</span>
             </a>
@@ -373,7 +378,7 @@
             <a href="materials.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-blue-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-base">🧱</div>
-                    <p class="text-base font-black tracking-wide lang" id="materials">മെറ്റീരിയൽസ്</p>
+                    <p class="text-base font-black tracking-wide lang" data-key="materials">മെറ്റീരിയൽസ്</p>
                 </div>
                 <span class="text-blue-400 font-bold text-lg">→</span>
             </a>
@@ -381,7 +386,7 @@
             <a href="accounts.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-rose-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-base">📊</div>
-                    <p class="text-base font-black tracking-wide lang" id="income_expense">വരവ് - ചെലവ്</p>
+                    <p class="text-base font-black tracking-wide lang" data-key="income_expense">വരവ് - ചെലവ്</p>
                 </div>
                 <span class="text-rose-400 font-bold text-lg">→</span>
             </a>
@@ -389,7 +394,7 @@
             <a href="estimator.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
                 <div class="flex items-center gap-3.5">
                     <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-base">📐</div>
-                    <p class="text-base font-black tracking-wide lang" id="estimator">മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്</p>
+                    <p class="text-base font-black tracking-wide lang" data-key="estimator">മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്</p>
                 </div>
                 <span class="text-amber-400 font-bold text-lg">→</span>
             </a>
@@ -397,7 +402,7 @@
 
         <!-- വാട്സാപ്പ് സപ്പോർട്ട് ബട്ടൺ -->
         <a href="https://wa.me/916238020523" target="_blank" class="mt-6 bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-4 rounded-2xl flex items-center justify-center gap-2 font-black text-sm shadow-xl hover:opacity-95 transition duration-300 border border-emerald-400/30">
-            💬 സംശയങ്ങൾക്ക് വാട്സാപ്പിൽ ബന്ധപ്പെടുക (916238020523)
+            <span class="lang" data-key="whatsapp_support">💬 സംശയങ്ങൾക്ക് വാട്സാപ്പിൽ ബന്ധപ്പെടുക</span> (916238020523)
         </a>
 
     </div>
