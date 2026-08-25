@@ -290,31 +290,37 @@ input:focus, select:focus {
                 <h2 id="netBalance" class="text-2xl font-black mt-1 text-amber-400">₹0</h2>
             </div>
         </div>
+<!-- സെർച്ച് ഫിൽട്ടറുകൾ -->
+<div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
+    <div>
+        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
+        <select id="filterSite" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+            <option value="">എല്ലാ സൈറ്റുകളും</option>
+        </select>
+    </div>
 
-        <!-- സെർച്ച് ഫിൽട്ടറുകൾ -->
-        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
-                <select id="filterSite" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
-                    <option value="">എല്ലാ സൈറ്റുകളും</option>
-                </select>
-            </div>
-            <div>
-            <div>
-    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
-    <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
-</div>
+    <div>
+        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
+        <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+    </div>
 
-               <div>
-                
-   <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി തിരഞ്ഞെടുക്കുക (ഫിൽട്ടർ)</label>
-    <input type="date" id="filterDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
-</div>
-<div>
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പേര് വെച്ച് തിരയാൻ</label>
-                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-500 focus:outline-none text-white">
-            </div>
+    <div class="grid grid-cols-2 gap-3">
+        <div>
+            <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തുടങ്ങുന്ന തീയതി</label>
+            <input type="date" id="startDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
         </div>
+        <div>
+            <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">അവസാനിക്കുന്ന തീയതി</label>
+            <input type="date" id="endDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+        </div>
+    </div>
+
+    <div>
+        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പേര് വെച്ച് തിരയാൻ</label>
+        <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-500 focus:outline-none text-white">
+    </div>
+</div>
+
 
         <!-- പുതിയ എൻട്രി ഫോം -->
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
