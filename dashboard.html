@@ -302,25 +302,21 @@ if (savedProfile) {
             </div>
         </div>
 
-<!-- സ്വാഗതം & ലാംഗ്വേജ് സെക്ഷൻ (ബട്ടൺ കൃത്യമായ പൊസിഷനിൽ വരാൻ) -->
-<div class="w-full flex items-end justify-between gap-2 px-4 mt-8 mb-6">
-    <!-- ഗ്രാഡിയന്റ് കളറോടെ വലിയ ഫോണ്ടിൽ പേര് -->
-    <div class="flex flex-col">
-        <span class="text-xs text-slate-400 font-medium mb-0.5">
-            <span class="lang" data-key="welcome">സ്വാഗതം</span>
-        </span>
-        <span id="loggedInMeshtri" class="text-xl sm:text-2xl font-black bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent drop-shadow">
-            swaraj
-        </span>
-    </div>
+
+
+<!-- സ്വാഗതം & ലാംഗ്വേജ് സെക്ഷൻ (ബോക്സിന് പൂർണ്ണമായി പുറത്ത് താഴെ വരാൻ) -->
+<div class="w-full flex items-center justify-between px-4 pt-6 pb-2">
+    <!-- ഗ്രാഡിയന്റ് കളറോടെ ഒരു വരിയിൽ പേര് -->
+    <span id="loggedInMeshtri" class="text-xl font-bold bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+        <span class="lang" data-key="welcome">സ്വാഗതം</span>, swaraj
+    </span>
 
     <!-- ലാംഗ്വേജ് ബട്ടൺ -->
-    <div class="relative">
-        <button onclick="toggleLangMenu()" class="flex items-center gap-1.5 bg-gray-800 text-yellow-400 px-3.5 py-1.5 rounded-xl border border-yellow-500/30 text-sm font-semibold shadow-md active:scale-95 transition-all">
-            <span>🌐 Lang</span>
-        </button>
-    </div>
+    <button onclick="toggleLangMenu()" class="flex items-center gap-1.5 bg-gray-800/80 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30 text-sm font-semibold shadow-md active:scale-95 transition-all">
+        <span>🌐 Lang</span>
+    </button>
 </div>
+
 
 
 
@@ -340,10 +336,11 @@ if (savedProfile) {
             </div>
         </div>
 
-<!-- വരുമാനം, ചെലവ്, ലാഭം/നഷ്ടം കാർഡുകൾ -->
-<div class="grid grid-cols-3 gap-2 px-4 mb-5">
+
+<!-- വരുമാനം, ചെലവ്, ലാഭം/നഷ്ടം കാർഡുകൾ (mt-4 ചേർത്ത് താഴേക്ക് ആക്കി) -->
+<div class="grid grid-cols-3 gap-2 px-4 mt-4 mb-5">
     <!-- വരുമാനം -->
-    <div id="incomeCard" class="bg-slate-900/90 border-2 border-emerald-500 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-emerald-500/10">
+    <div id="incomeCard" class="bg-slate-900/90 border-2 border-emerald-500 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-md">
         <span class="text-[11px] font-bold text-emerald-400 tracking-wider mb-1 flex items-center gap-1">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span class="lang" data-key="income">വരുമാനം</span>
@@ -352,7 +349,7 @@ if (savedProfile) {
     </div>
 
     <!-- ചെലവ് -->
-    <div id="expenseCard" class="bg-slate-900/90 border-2 border-rose-500 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-rose-500/10">
+    <div id="expenseCard" class="bg-slate-900/90 border-2 border-rose-500 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-md">
         <span class="text-[11px] font-bold text-rose-400 tracking-wider mb-1 flex items-center gap-1">
             <span class="w-2 h-2 rounded-full bg-rose-400"></span>
             <span class="lang" data-key="expense">ചെലവ്</span>
@@ -361,7 +358,7 @@ if (savedProfile) {
     </div>
 
     <!-- ലാഭം / നഷ്ടം -->
-    <div id="netCard" class="bg-slate-900/90 border-2 border-amber-500 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-amber-500/10">
+    <div id="netCard" class="bg-slate-900/90 border-2 border-amber-500 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-md">
         <span class="text-[11px] font-bold text-amber-400 tracking-wider mb-1 flex items-center gap-1">
             <span class="w-2 h-2 rounded-full bg-amber-400"></span>
             <span class="lang" data-key="netProfit">നഷ്ടം</span>
