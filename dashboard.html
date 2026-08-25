@@ -302,19 +302,21 @@ if (savedProfile) {
             </div>
         </div>
 
-    
-<!-- സ്വാഗതം & ലാംഗ്വേജ് സെക്ഷൻ (മുകളിലെ ബോക്സിൽ നിന്ന് താഴേക്ക് ഇറക്കി നിർത്തിയിട്ടുണ്ട്) -->
-<div class="w-full flex items-center justify-between gap-2 px-4 mt-10 mb-4">
-    <span id="loggedInMeshtri" class="text-sky-400 text-lg font-bold">
+<!-- സ്വാഗതം & ലാംഗ്വേജ് സെക്ഷൻ (വലുപ്പവും ഗ്രാഡിയന്റ് കളറും കൂട്ടി) -->
+<div class="w-full flex items-center justify-between gap-2 px-4 mt-8 mb-6">
+    <!-- ഗ്രാഡിയന്റ് കളറോടെ വലിയ ഫോണ്ടിൽ പേര് -->
+    <span id="loggedInMeshtri" class="text-xl sm:text-2xl font-black bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent drop-shadow">
         <span class="lang" data-key="welcome">സ്വാഗതം</span>, swaraj
     </span>
 
+    <!-- ലാംഗ്വേജ് ബട്ടൺ -->
     <div class="relative">
-        <button onclick="toggleLangMenu()" class="flex items-center gap-1 bg-gray-800 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30 text-sm font-medium">
+        <button onclick="toggleLangMenu()" class="flex items-center gap-1.5 bg-gray-800 text-yellow-400 px-3.5 py-1.5 rounded-xl border border-yellow-500/30 text-sm font-semibold shadow-md active:scale-95 transition-all">
             <span>🌐 Lang</span>
         </button>
     </div>
 </div>
+
 
 
             
