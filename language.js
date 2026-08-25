@@ -19,22 +19,44 @@ const words = {
     status: { ml: "സ്റ്റാറ്റസ്", en: "Status", hi: "स्थिति", ta: "நிலை", kn: "ಸ್ಥಿತಿ", bn: "স্ট্যাটাস", as: "স্থিতি" },
 
     // ==========================================
-    // 2. DASHBOARD (dashboard.html / index.html)
+    // 2. DASHBOARD & FINANCIALS (ഡാഷ്‌ബോർഡ്)
     // ==========================================
     dashboard: { ml: "ഡാഷ്‌ബോർഡ്", en: "Dashboard", hi: "डैशबोर्ड", ta: "டாஷ்போர்டு", kn: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", bn: "ড্যাশবোর্ড", as: "ড্যাশব’ৰ্ড" },
     total_sites: { ml: "ആകെ സൈറ്റുകൾ", en: "Total Sites", hi: "कुल साइटें", ta: "மொத்த தளங்கள்", kn: "ಒಟ್ಟು ಸೈಟ್‌ಗಳು", bn: "মোট সাইট", as: "মুঠ চাইট" },
     active_workers: { ml: "സജീവ തൊഴിലാളികൾ", en: "Active Workers", hi: "सक्रिय श्रमिक", ta: "செயலில் உள்ள தொழிலாளர்கள்", kn: "ಸಕ್ರಿಯ ಕಾರ್ಮಿಕರು", bn: "সক্রিয় শ্রমিক", as: "সক্ৰিয় শ্ৰমিক" },
     today_expense: { ml: "ഇന്നത്തെ ചെലവ്", en: "Today's Expense", hi: "आज का खर्च", ta: "இன்றைய செலவு", kn: "ಇಂದಿನ ವೆಚ್ಚ", bn: "আজকের খরচ", as: "আজিলৈকে খৰচ" },
+    income: { ml: "വരുമാനം", en: "Income", hi: "आय", ta: "வருமானம்", kn: "ಆದಾಯ", bn: "আয়", as: "আয়" },
+    expense: { ml: "ചെലവ്", en: "Expense", hi: "व्यय", ta: "செலவு", kn: "ವೆಚ್ಚ", bn: "ব্যয়", as: "খৰচ" },
+    profit: { ml: "ശുദ്ധ ലാഭം", en: "Net Profit", hi: "शुद्ध लाभ", ta: "நிகர லாபம்", kn: "ನಿವ್ವಳ ಲಾಭ", bn: "লেভ লাভ", as: "পবিত্ৰ লাভ" },
+    loss_label: { ml: "നഷ്ടം", en: "Loss", hi: "हानि", ta: "நஷ்டம்", kn: "ನಷ್ಟ", bn: "ক্ষতি", as: "লোকচান" },
+
+    // DASHBOARD MENU ITEMS
+    site_details: { ml: "സൈറ്റ് വിവരങ്ങൾ", en: "Site Details", hi: "साइट विवरण", ta: "தள விவரங்கள்", kn: "ಸೈಟ್ ವಿವರಗಳು", bn: "সাইট তথ্য", as: "চাইটৰ তথ্য" },
+    history_edit: { ml: "കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്", en: "History & Edit", hi: "इतिहास और संपादन", ta: "வரலாறு & திருத்து", kn: "ಇತಿಹಾಸ ಮತ್ತು ಎಡಿಟ್", bn: "ইতিহাস ও এডিট", as: "ইতিহাস আৰু সম্পাদনা" },
+    staff_salary: { ml: "ജീവനക്കാരുടെ ശമ്പളം", en: "Staff Salary", hi: "कर्मचारी वेतन", ta: "ஊழியர் சம்பளம்", kn: "ಸಿಬ್ಬಂದಿ ವೇತನ", bn: "কর্মীদের বেতন", as: "কৰ্মচাৰীৰ দৰমহা" },
+    attendance_report: { ml: "ഹാജർ & പണി റിപ്പോർട്ട്", en: "Attendance & Report", hi: "उपस्थिति रिपोर्ट", ta: "வருகை அறிக்கை", kn: "ಹಾಜರಾತಿ ವರದಿ", bn: "উপস্থিতি রিপোর্ট", as: "উপস্থিতি ৰিপ'ৰ্ট" },
+    rentals: { ml: "വാടക ഉപകരണങ്ങൾ", en: "Rental Equipments", hi: "किराये के उपकरण", ta: "வாடகை உபகரணங்கள்", kn: "ಬಾಡಿಗೆ ಉಪಕರಣಗಳು", bn: "ভাড়া সরঞ্জাম", as: "ভাৰা সঁজুলি" },
+    materials: { ml: "മെറ്റീരിയൽസ്", en: "Materials", hi: "सामग्री", ta: "பொருட்கள்", kn: "ಸಾಮಗ್ರಿಗಳು", bn: "সরঞ্জাম", as: "সামগ্ৰী" },
+    income_expense: { ml: "വരവ് - ചെലവ്", en: "Income & Expense", hi: "आय - व्यय", ta: "வரவு - செலவு", kn: "ಆದಾಯ - ವೆಚ್ಚ", bn: "আয় - ব্যয়", as: "আয় - খৰচ" },
+    estimator: { ml: "മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്", en: "Estimator", hi: "अनुमानक", ta: "மதிப்பீடு", kn: "ಅಂದಾಜುಗಾರ", bn: "এস্টিমেটর", as: "এষ্টিমেটৰ" },
 
     // ==========================================
-    // 3. RENTALS (rentals.html)
+    // 3. ATTENDANCE & REPORT PAGE (ഹാജർ & പണി റിപ്പോർട്ട്)
     // ==========================================
-    rentals: { ml: "വാടക ഉപകരണങ്ങൾ", en: "Rental Equipments", hi: "किराये के उपकरण", ta: "வாடகை உபகரணங்கள்", kn: "ಬಾಡಿಗೆ ಉಪಕರಣಗಳು", bn: "ভাড়া সরঞ্জাম", as: "ভাৰা সঁজুলি" },
+    total_work_days: { ml: "ആകെ പണി ദിവസങ്ങൾ", en: "Total Work Days", hi: "कुल कार्य दिवस", ta: "மொத்த வேலை நாட்கள்", kn: "ಒಟ್ಟು ಕೆಲಸದ ದಿನಗಳು", bn: "মোট কর্মদিবস", as: "মুঠ কামৰ দিন" },
+    total_wages_paid: { ml: "ആകെ നൽകിയ കൂലി", en: "Total Wages Paid", hi: "कुल मजदूरी", ta: "மொத்த கூலி", kn: "ಒಟ್ಟು ನೀಡಿದ ಕೂಲಿ", bn: "মোট মজুরি", as: "মুঠ মজুৰি" },
+    all_workers: { ml: "എല്ലാ തൊഴിലാളികളും", en: "All Workers", hi: "सभी श्रमिक", ta: "அனைத்து தொழிலாளர்களும்", kn: "ಎಲ್ಲಾ ಕಾರ್ಮಿಕರು", bn: "সব শ্রমিক", as: "সকলো শ্ৰমিক" },
+    all_sites: { ml: "എല്ലാ സൈറ്റുകളും", en: "All Sites", hi: "सभी साइटें", ta: "அனைத்து தளங்களும்", kn: "ಎಲ್ಲಾ ಸೈಟ್‌ಗಳು", bn: "সব সাইট", as: "সকলো চাইট" },
+    attendance_details: { ml: "ഹാജർ വിവരങ്ങൾ", en: "Attendance Details", hi: "उपस्थिति विवरण", ta: "வருகை விவரங்கள்", kn: "ಹಾಜರಾತಿ ವಿವರಗಳು", bn: "উপস্থিতির বিবরণ", as: "উপস্থিতিৰ তথ্য" },
+
+    // ==========================================
+    // 4. RENTALS (rentals.html)
+    // ==========================================
     total_rent_label: { ml: "ആകെ വാടക", en: "Total Rent", hi: "कुल किराया", ta: "மொத்த வாடகை", kn: "ಒಟ್ಟು ಬಾಡಿಗೆ", bn: "মোট ভাড়া", as: "মুঠ ভাৰা" },
     balance_amount_label: { ml: "ബാലൻസ് തുക", en: "Balance Amount", hi: "बकाया राशि", ta: "மீதி தொகை", kn: "ಬಾಕಿ ಮೊತ್ತ", bn: "বকেয়া টাকা", as: "বাকী টকা" },
     shops_list_edit: { ml: "🏬 കടകളുടെ ലിസ്റ്റ് & എഡിറ്റ്‌ ചെയ്യാം", en: "🏬 Shop List & Edit", hi: "🏬 दुकानों की सूची और संपादन", ta: "🏬 கடைகள் பட்டியல் & திருத்து", kn: "🏬 ಅಂಗಡಿಗಳ ಪಟ್ಟಿ & ಎಡಿಟ್", bn: "🏬 দোকানের তালিকা ও এডিট", as: "🏬 দোকানৰ তালিকা আৰু সম্পাদনা" },
     filter_active: { ml: "നടന്നുകൊണ്ടിരിക്കുന്നത്", en: "Active / Ongoing", hi: "सक्रिय / जारी", ta: "நடப்பிலுள்ளவை", kn: "ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ", bn: "চলমান", as: "চলতি" },
-    filter_returned: { ml: "തിരികെ നൽകിയത്", en: "Returned", hi: "वापस कर दिया", ta: "திரும்ப നൽകப்பட்டது", kn: "ಹಿಂತಿರುಗಿಸಲಾಗಿದೆ", bn: "ফেরত দেওয়া হয়েছে", as: "ঘূৰাই দিয়া হ'ল" },
+    filter_returned: { ml: "തിരികെ നൽകിയത്", en: "Returned", hi: "वापस कर दिया", ta: "திரும்ப வழங்கப்பட்டது", kn: "ಹಿಂತಿರುಗಿಸಲಾಗಿದೆ", bn: "ফেরত দেওয়া হয়েছে", as: "ঘূৰাই দিয়া হ'ল" },
     add_new_equipment: { ml: "പുതിയ ഉപകരണം ചേർക്കുക", en: "Add New Equipment", hi: "नया उपकरण जोड़ें", ta: "புதிய உபகரணம் சேர்க்க", kn: "ಹೊಸ ಉಪಕರಣ ಸೇರಿಸಿ", bn: "নতুন সরঞ্জাম যোগ করুন", as: "নতুন সঁজুলি যোগ কৰক" },
     add_to_rent: { ml: "വാടകയ്ക്ക് എടുത്തു ചേർക്കുക", en: "Add to Rent", hi: "किराए पर जोड़ें", ta: "வாடகைக்கு சேர்க்க", kn: "ಬಾಡಿಗೆಗೆ ಸೇರಿಸಿ", bn: "ভাড়ায় যোগ করুন", as: "ভাৰাত যোগ কৰক" },
     start_date: { ml: "ആരംഭ തീയതി", en: "Start Date", hi: "प्रारंभ तिथि", ta: "ஆரம்ப தேதி", kn: "ಪ್ರಾರಂಭ ದಿನಾಂಕ", bn: "শুরুর তারিখ", as: "আৰম্ভণিৰ তাৰিখ" },
@@ -42,7 +64,7 @@ const words = {
     expired_items_title: { ml: "🚨 കാലാവധി കഴിഞ്ഞ ഉപകരണങ്ങൾ:", en: "🚨 Expired Items:", hi: "🚨 समय सीमा समाप्त उपकरण:", ta: "🚨 காலம் முடிந்த உபகரணங்கள்:", kn: "🚨 ಗಡುವು ಮುಗಿದ ಉಪಕರಣಗಳು:", bn: "🚨 মেয়াদ উত্তীর্ণ সরঞ্জাম:", as: "🚨 ম্যাদ উকলি যোৱা সঁজুলি:" },
 
     // ==========================================
-    // 4. STAFF & DETAILS (staff.html / staff-details.html)
+    // 5. STAFF & DETAILS (staff.html / staff-details.html)
     // ==========================================
     staff_title: { ml: "ജീവനക്കാരുടെ വിവരങ്ങൾ", en: "Staff Details", hi: "कर्मचारियों का विवरण", ta: "ஊழியர் விவரங்கள்", kn: "ಸಿಬ್ಬಂದಿ ವಿವರಗಳು", bn: "কর্মীদের বিবরণ", as: "কৰ্মচাৰীৰ তথ্য" },
     add_staff: { ml: "പുതിയ സ്റ്റാഫിനെ ചേർക്കുക", en: "Add New Staff", hi: "नया कर्मचारी जोड़ें", ta: "புதிய ஊழியரை சேர்க்க", kn: "ಹೊಸ ಸಿಬ್ಬಂದಿ ಸೇರಿಸಿ", bn: "নতুন কর্মী যোগ করুন", as: "নতুন কৰ্মচাৰী যোগ কৰক" },
@@ -52,7 +74,7 @@ const words = {
     attendance: { ml: "ഹാജർ", en: "Attendance", hi: "उपस्थिति", ta: "வருகை", kn: "ಹಾಜರಾತಿ", bn: "উপস্থিতি", as: "উপস্থিতি" },
 
     // ==========================================
-    // 5. SITES (site.html)
+    // 6. SITES (site.html)
     // ==========================================
     site_title: { ml: "സൈറ്റുകൾ", en: "Sites", hi: "साइटें", ta: "தளங்கள்", kn: "ಸೈಟ್‌ಗಳು", bn: "সাইটসমূহ", as: "চাইটসমূহ" },
     add_site: { ml: "പുതിയ സൈറ്റ് ചേർക്കുക", en: "Add New Site", hi: "नई साइट जोड़ें", ta: "புதிய தளம் சேர்க்க", kn: "ಹೊಸ ಸೈಟ್ ಸೇರಿಸಿ", bn: "নতুন সাইট যোগ করুন", as: "নতুন চাইট যোগ কৰক" },
@@ -60,26 +82,24 @@ const words = {
     location: { ml: "സ്ഥലം", en: "Location", hi: "स्थान", ta: "இடம்", kn: "ಸ್ಥಳ", bn: "স্থান", as: "ঠাই" },
 
     // ==========================================
-    // 6. MATERIALS & WORK ENTRY (materials.html / work-entry.html)
+    // 7. MATERIALS & WORK ENTRY (materials.html / work-entry.html)
     // ==========================================
-    materials: { ml: "മെറ്റീരിയലുകൾ", en: "Materials", hi: "सामग्री", ta: "பொருட்கள்", kn: "ಸಾಮಗ್ರಿಗಳು", bn: "সরঞ্জাম", as: "সামগ্ৰী" },
     work_entry: { ml: "ജോലി വിവരങ്ങൾ", en: "Work Entry", hi: "कार्य प्रविष्टि", ta: "வேலை விவரம்", kn: "ಕೆಲಸದ ವಿವರ", bn: "কাজের তথ্য", as: "কামৰ তথ্য" },
     quantity: { ml: "അളവ് / എണ്ണം", en: "Quantity", hi: "मात्रा", ta: "அளவு", kn: "ಪ್ರಮಾಣ", bn: "পরিমাণ", as: "পৰিমাণ" },
     unit_price: { ml: "വില (₹)", en: "Unit Price (₹)", hi: "इकाई मूल्य (₹)", ta: "விலை (₹)", kn: "ಬೆಲೆ (₹)", bn: "দাম (₹)", as: "দাম (₹)" },
     add_material: { ml: "മെറ്റീരിയൽ ചേർക്കുക", en: "Add Material", hi: "सामग्री जोड़ें", ta: "பொருள் சேர்க்க", kn: "ಸಾಮಗ್ರಿ ಸೇರಿಸಿ", bn: "সরঞ্জাম যোগ করুন", as: "সামগ্ৰী যোগ কৰক" },
 
     // ==========================================
-    // 7. ESTIMATOR, HISTORY, LOGIN (estimator.html / history.html / login.html)
+    // 8. ESTIMATOR, HISTORY, LOGIN
     // ==========================================
-    estimator: { ml: "എസ്റ്റിമേറ്റർ", en: "Estimator", hi: "अनुमानक", ta: "மதிப்பீடு", kn: "ಅಂದಾಜುಗಾರ", bn: "এস্টিমেটর", as: "এষ্টিমেটৰ" },
     history: { ml: "ചരിത്രം / റെക്കോർഡുകൾ", en: "History", hi: "इतिहास", ta: "வரலாறு", kn: "ಇತಿಹಾಸ", bn: "ইতিহাস", as: "ইতিহাস" },
     login: { ml: "ലോഗിൻ", en: "Login", hi: "लॉग इन", ta: "உள்நுழை", kn: "ಲಾಗಿನ್", bn: "লগইন", as: "লগইন" },
     register: { ml: "രജിസ്റ്റർ ചെയ്യുക", en: "Register", hi: "पंजीकरण करें", ta: "பதிவு செய்", kn: "ನೋಂದಾಯಿಸಿ", bn: "নিবন্ধন করুন", as: "পঞ্জীয়ন কৰক" },
 
     // ==========================================
-    // 8. PLACEHOLDERS (ഇൻപുട്ട് ഫീൽഡുകളിൽ വരുന്നത്)
+    // 9. PLACEHOLDERS (ഇൻപുട്ട് ഫീൽഡുകളിൽ വരുന്നത്)
     // ==========================================
-    search_placeholder: { ml: "🔍 തിരയുക (ഉപകരണം, കട, സൈറ്റ്...)", en: "🔍 Search (Item, Shop, Site...)", hi: "🔍 खोजें (उपकरण, दुकान, साइट...)", ta: "🔍 தேடுக (உபகரணம், கடை, தளம்...)", kn: "🔍 ಹುಡುಕಿ (ಉಪಕರಣ, ಅಂಗಡಿ, ಸೈಟ್...)", bn: "🔍 খুঁজুন (সরঞ্জাম, দোকান, সাইট...)", as: "🔍 বিচাৰক (সঁজুলি, দোকান, চাইট...)" },
+    search_placeholder: { ml: "🔍 തിരയുക...", en: "🔍 Search...", hi: "🔍 खोजें...", ta: "🔍 தேடுக...", kn: "🔍 ಹುಡುಕಿ...", bn: "🔍 খুঁজুন...", as: "🔍 বিচাৰক..." },
     item_name_placeholder: { ml: "ഉപകരണത്തിന്റെ പേര്", en: "Equipment Name", hi: "उपकरण का नाम", ta: "உபகரணத்தின் பெயர்", kn: "ಉಪಕರಣದ ಹೆಸರು", bn: "সরঞ্জামের নাম", as: "সঁজুলিৰ নাম" },
     bedroom_placeholder: { ml: "ബെഡ്റൂം പേര്/നമ്പർ (ഉദാ: റൂം 1 / ഫസ്റ്റ് ഫ്ലോർ)", en: "Bedroom Name/No (e.g. Room 1)", hi: "बेडरूम का नाम/नंबर", ta: "படுக்கையறை பெயர்/எண்", kn: "ಬೆಡ್‌ರೂಮ್ ಹೆಸರು/ಸಂಖ್ಯೆ", bn: "বেডরুমের নাম/নম্বর", as: "শোৱা কোঠাৰ নাম/নম্বৰ" },
     site_name_placeholder: { ml: "സൈറ്റിന്റെ പേര് നൽകുക", en: "Enter Site Name", hi: "साइट का नाम दर्ज करें", ta: "தளத்தின் பெயரை உள்ளிடவும்", kn: "ಸೈಟ್ ಹೆಸರು ನಮೂದಿಸಿ", bn: "সাইটের নাম লিখুন", as: "চাইটৰ নাম দিয়ক" },
@@ -103,7 +123,8 @@ window.switchLanguage = function(langCode) {
 
     // 1. .lang ക്ലാസ് ഉള്ള എല്ലാ എലമെന്റുകളുടെയും ടെക്സ്റ്റ് മാറ്റുന്നു
     document.querySelectorAll('.lang').forEach(element => {
-        const key = element.getAttribute('data-key');
+        // ID വഴിയോ data-key വഴിയോ കീ പരിശോധിക്കുക
+        const key = element.getAttribute('data-key') || element.id;
         if (words[key] && words[key][langCode]) {
             element.innerText = words[key][langCode];
         }
@@ -111,14 +132,22 @@ window.switchLanguage = function(langCode) {
 
     // 2. .lang-placeholder ക്ലാസ് ഉള്ള ഇൻപുട്ടുകളുടെ പ്ലേസ്ഹോൾഡർ മാറ്റുന്നു
     document.querySelectorAll('.lang-placeholder').forEach(element => {
-        const key = element.getAttribute('data-key-placeholder');
+        const key = element.getAttribute('data-key-placeholder') || element.id;
         if (words[key] && words[key][langCode]) {
             element.placeholder = words[key][langCode];
         }
     });
 };
 
-// പേജ് ലോഡാകുമ്പോൾ താനേ ബാക്ക്ഗ്രൗണ്ടിൽ അപ്ഡേറ്റ് ചെയ്യാൻ
+// ഡ്രോപ്പ്ഡൗൺ മെനു ടോഗിൾ ചെയ്യാൻ
+window.toggleLangMenu = function() {
+    const dropdown = document.getElementById('langDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+    }
+};
+
+// പേജ് ലോഡാകുമ്പോൾ സ്വയം അപ്ഡേറ്റ് ചെയ്യാൻ
 document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('selectedLang') || 'ml';
     window.switchLanguage(savedLang);
