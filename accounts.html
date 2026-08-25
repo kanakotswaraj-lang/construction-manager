@@ -182,22 +182,29 @@
         };
 
         window.renderList = () => {
-            const sSite = document.getElementById('filterSite').value.toLowerCase();
-            const sDate = document.getElementById('filterDate').value;
-            const sMonth = document.getElementById('filterMonth').value;
+    const sSite = document.getElementById('filterSite').value.toLowerCase();
+    const sStartDate = document.getElementById('startDate') ? document.getElementById('startDate').value : '';
+    const sEndDate = document.getElementById('endDate') ? document.getElementById('endDate').value : '';
+    const sMonth = document.getElementById('filterMonth') ? document.getElementById('filterMonth').value : '';
+    const sWorker = document.getElementById('filterWorker').value.toLowerCase();
+    
+    const list = document.getElementById('transactionList');
+    list.innerHTML = '';
+    let inc = 0, exp = 0;
+    filteredTransactions = [];
 
-            const sWorker = document.getElementById('filterWorker').value.toLowerCase();
-            const list = document.getElementById('transactionList');
-            list.innerHTML = '';
-            let inc = 0, exp = 0;
+    allTransactions.forEach(d => {
+        const itemDate = d.date || '';
+        const matchesSite = !sSite || (d.site || '').toLowerCase() === sSite;
+        
+        // തീയതി പരിശോധന
+        const matchesDateRange = (!sStartDate || itemDate >= sStartDate) && (!sEndDate || itemDate <= sEndDate);
+        const matchesMonth = !sMonth || itemDate.startsWith(sMonth);
+        const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
 
-            allTransactions.forEach(d => {
-                const matchesSite = !sSite || (d.site || '').toLowerCase() === sSite;
-                const matchesDate = !sDate || (d.date || '') === sDate;
-                const matchesMonth = !sMonth || (d.date || '').startsWith(sMonth);
+        if (matchesSite && matchesDateRange && matchesMonth && matchesWorker) {
+            // ബാക്കി നിങ്ങളുടെ നിലവിലുള്ള കോഡ് അതുപോലെ തുടരുക...
 
-                const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
-if (matchesSite && matchesDate && matchesMonth && matchesWorker) {
 
                 
                     const dataType = String(d.type || '').toLowerCase();
@@ -245,12 +252,14 @@ input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* ഇൻപുട്ട് ബോക്സ് ക്ലിക്ക് ചെയ്യുമ്പോൾ വരുന്ന വെളുത്ത ഔട്ട്‌ലൈൻ ഒഴിവാക്കാൻ */
+/* ഇൻപുട്ട് ബോക്സ് ക്ലിക്ക് ചെയ്യുമ്പോൾ വരുന്നത് */
 input:focus, select:focus {
     outline: none !important;
+    border-color: #f59e0b !important; /* ഗോൾഡൻ ആക്സന്റ് ബോർഡർ */
     background-color: #1e293b !important;
     color: #ffffff !important;
 }
+
 
     </style>
 </head>
@@ -291,35 +300,83 @@ input:focus, select:focus {
             </div>
         </div>
 <!-- സെർച്ച് ഫിൽട്ടറുകൾ -->
-<div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
+<div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
     <div>
-        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
-        <select id="filterSite" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
+        <select id="filterSite" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
             <option value="">എല്ലാ സൈറ്റുകളും</option>
         </select>
     </div>
 
     <div>
-        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
-        <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
+        <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
     </div>
 
-    <div class="grid grid-cols-2 gap-3">
-        <div>
-            <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തുടങ്ങുന്ന തീയതി</label>
-            <input type="date" id="startDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+    <!-- ഒരേ റോയിൽ വരുന്ന രണ്ട് തീയതി ഫിൽട്ടറുകൾ -->
+    <div class="flex gap-3 items-end">
+        <div class="w-1/2">
+            <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate">തുടങ്ങുന്ന തീയതി</label>
+            <input type="date" id="startDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
         </div>
-        <div>
-            <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">അവസാനിക്കുന്ന തീയതി</label>
-            <input type="date" id="endDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+        <div class="w-1/2">
+            <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate">അവസാനിക്കുന്ന തീയതി</label>
+            <input type="date" id="endDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
         </div>
     </div>
 
     <div>
-        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പേര് വെച്ച് തിരയാൻ</label>
-        <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-500 focus:outline-none text-white">
+        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">പേര് വെച്ച് തിരയാൻ</label>
+        <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner">
     </div>
 </div>
+
+<!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
+<div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
+    <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2">പുതിയ കണക്ക് ചേർക്കുക</h2>
+    
+    <div>
+        <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide">തീയതി തിരഞ്ഞെടുക്കുക</label>
+        <input type="date" id="transDate" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+    </div>
+
+    <div class="relative">
+        <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner">
+        <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+        </button>
+    </div>
+
+    <div class="relative">
+        <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner">
+        <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+        </button>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+        <select id="type" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+            <option value="income">വരവ്</option>
+            <option value="wage">കൂലി</option>
+            <option value="material">മെറ്റീരിയൽസ്</option>
+            <option value="rent">വാടക</option>
+            <option value="other">മറ്റ് ചെലവ്</option>
+        </select>
+        <select id="paymentMethod" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+            <option value="cash">ക്യാഷ്</option>
+            <option value="gpay">GPay</option>
+            <option value="UPI">യുപിഐ</option>
+            <option value="bank">ബാങ്ക്</option>
+        </select>
+    </div>
+    
+    <input type="number" id="amount" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+    
+    <button id="saveBtn" onclick="saveTransaction()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg transition">സേവ് ചെയ്യുക</button>
+    <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
+</div>
+
+
 
 
         <!-- പുതിയ എൻട്രി ഫോം -->
