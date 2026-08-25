@@ -34,12 +34,18 @@
         let editId = null;
         let allTransactions = [];
 
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader', true, currentMeshtri);
-            }
-            fetchLiveAccounts();
-        });
+      document.addEventListener("DOMContentLoaded", () => {
+    if (typeof setupHeader === 'function') {
+        setupHeader('appHeader', true, currentMeshtri);
+    }
+    fetchLiveAccounts();
+
+    // ഇന്നത്തെ തീയതി ബോക്സിൽ കൊണ്ടുവരാൻ
+    const today = new Date().toISOString().split('T')[0];
+    const transDateInput = document.getElementById('transDate');
+    if (transDateInput) transDateInput.value = today;
+});
+
 
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
@@ -224,6 +230,23 @@
         @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .toast-animate { animation: slideIn 0.3s ease-out forwards; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+        /* ഓട്ടോഫിൽ ചെയ്യുമ്പോൾ വരുന്ന വെള്ള ബാക്ക്ഗ്രൗണ്ട് മാറ്റാൻ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ഇൻപുട്ട് ബോക്സ് ക്ലിക്ക് ചെയ്യുമ്പോൾ വരുന്ന വെളുത്ത ഔട്ട്‌ലൈൻ ഒഴിവാക്കാൻ */
+input:focus, select:focus {
+    outline: none !important;
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
     </style>
 </head>
 <body class="text-white min-h-screen pb-12 p-4 font-sans">
@@ -272,10 +295,11 @@
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി വെച്ച് തിരയാൻ</label>
-                <input type="date" id="filterDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
-            </div>
-            <div>
+                <div>
+    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി തിരഞ്ഞെടുക്കുക (ഫിൽട്ടർ)</label>
+    <input type="date" id="filterDate" onchange="renderList()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+</div>
+<div>
                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പേര് വെച്ച് തിരയാൻ</label>
                 <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-500 focus:outline-none text-white">
             </div>
@@ -285,8 +309,11 @@
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border border-slate-800 backdrop-blur-sm space-y-3.5 no-print">
             <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2">പുതിയ കണക്ക് ചേർക്കുക</h2>
             
-            <input type="date" id="transDate" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
-            
+            <div>
+    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">തീയതി തിരഞ്ഞെടുക്കുക</label>
+    <input type="date" id="transDate" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none text-white">
+</div>
+
             <div class="relative">
                 <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="w-full p-4 pr-12 bg-slate-800/80 rounded-2xl border border-slate-700 text-sm font-bold placeholder-slate-400 focus:outline-none text-white">
                 <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
