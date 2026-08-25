@@ -40,15 +40,20 @@
             
             const nameElement = document.getElementById('loggedInMeshtri');
             if(nameElement) {
-                
+
 const nameElement = document.getElementById('loggedInMeshtri');
 if (nameElement) {
     const currentLang = localStorage.getItem('selectedLang') || 'ml';
-    const welcomeText = (words.welcome && words.welcome[currentLang]) ? words.welcome[currentLang] : 'സ്വാഗതം';
+    const welcomeText = (typeof words !== 'undefined' && words.welcome && words.welcome[currentLang]) 
+                        ? words.welcome[currentLang] 
+                        : 'സ്വാഗതം';
     
-    // innerText മാറ്റി innerHTML ആക്കുക, <span class="lang"> ചേർക്കുക:
+    // നീല നിറവും ഭാഷ മാറ്റവും നിലനിർത്താൻ innerHTML ഉപയോഗിക്കുക:
     nameElement.innerHTML = `<span class="lang" data-key="welcome">${welcomeText}</span>, ${userName}`;
 }
+
+// പ്രൊഫൈൽ ഫോട്ടോ കൃത്യമായി ലോഡ് ചെയ്യാൻ ഈ ഫംഗ്ഷൻ താഴെ ഉണ്ടെന്ന് ഉറപ്പാക്കുക
+setFallbackProfile(userName);
 
             setFallbackProfile(userName);
 
