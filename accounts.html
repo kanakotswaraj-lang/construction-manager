@@ -53,23 +53,21 @@ window.switchLanguage = function(lang) {
     });
 };
 
-        document.addEventListener("DOMContentLoaded", () => {
-            // header.js ഉപയോഗിച്ച് ഹെഡർ ശരിയായി ലോഡ് ചെയ്യുന്നു
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader', true, currentMeshtri);
-            }
-            fetchLiveAccounts();
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof setupHeader === 'function') {
+        setupHeader('appHeader', true, currentMeshtri);
+    }
+    fetchLiveAccounts();
 
-            const today = new Date().toISOString().split('T')[0];
-            const transDateInput = document.getElementById('transDate');
-            if (transDateInput) transDateInput.value = today;
-            
-            // ലോഡാകുമ്പോൾ സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യുന്നു
-            setTimeout(() => {
-                const savedLang = localStorage.getItem('selectedLang') || 'ml';
-                if (typeof window.switchLanguage === 'function') window.switchLanguage(savedLang); 
-            }, 100);
-        });            
+    const today = new Date().toISOString().split('T')[0];
+    const transDateInput = document.getElementById('transDate');
+    if (transDateInput) transDateInput.value = today;
+
+    // 🟢 പേജ് തുറക്കുമ്പോൾ താനേ ഭാഷ മാറാൻ ഇത് ഇവിടെ വേണം:
+    if (typeof window.switchLanguage === 'function') {
+        window.switchLanguage();
+    }
+});
 
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
