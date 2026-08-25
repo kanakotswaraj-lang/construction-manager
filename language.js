@@ -126,23 +126,33 @@ window.switchLanguage = function(langCode) {
     }
     localStorage.setItem('selectedLang', langCode);
 
-    // 1. .lang ക്ലാസ് ഉള്ള എല്ലാ എലമെന്റുകളുടെയും ടെക്സ്റ്റ് മാറ്റുന്നു
+    // 1. .lang ക്ലാസ് ഉള്ള എല്ലാ ടെക്സ്റ്റുകളും മാറ്റുന്നു
     document.querySelectorAll('.lang').forEach(element => {
-        // ID വഴിയോ data-key വഴിയോ കീ പരിശോധിക്കുക
         const key = element.getAttribute('data-key') || element.id;
         if (words[key] && words[key][langCode]) {
             element.innerText = words[key][langCode];
         }
     });
 
-    // 2. .lang-placeholder ക്ലാസ് ഉള്ള ഇൻപുട്ടുകളുടെ പ്ലേസ്ഹോൾഡർ മാറ്റുന്നു
+    // 2. .lang-placeholder ഉള്ളവ മാറ്റുന്നു
     document.querySelectorAll('.lang-placeholder').forEach(element => {
-        const key = element.getAttribute('data-key-placeholder') || element.id;
+        const key = element.getAttribute('data-key');
         if (words[key] && words[key][langCode]) {
             element.placeholder = words[key][langCode];
         }
     });
+
+    // 3. സെലക്ട് ചെയ്ത ഭാഷയ്ക്ക് മാത്രം ഡ്രോപ്പ്ഡൗണിൽ കളർ ഹൈലൈറ്റ് നൽകാൻ
+    document.querySelectorAll('.lang-option').forEach(btn => {
+        const onclickAttr = btn.getAttribute('onclick') || '';
+        if (onclickAttr.includes(langCode)) {
+            btn.className = "lang-option w-full text-left px-4 py-2 bg-sky-600 text-white font-bold rounded-lg transition-all";
+        } else {
+            btn.className = "lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700 rounded-lg transition-all";
+        }
+    });
 };
+
 
 // ഡ്രോപ്പ്ഡൗൺ മെനു ടോഗിൾ ചെയ്യാൻ
 window.toggleLangMenu = function() {
