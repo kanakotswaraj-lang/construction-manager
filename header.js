@@ -54,7 +54,7 @@ window.toggleLangMenu = function(event) {
     }
 };
 
-// ഭാഷ മാറ്റാൻ
+// ഭാഷ മാറ്റാൻ (എല്ലാ പേജുകളിലും പ്രവർത്തിക്കാൻ പാകത്തിന് പരിഹരിച്ചത്)
 window.changeLanguage = function(langCode) {
     localStorage.setItem('selectedLang', langCode);
     
@@ -62,13 +62,23 @@ window.changeLanguage = function(langCode) {
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) dropdown.classList.add('hidden');
 
-    // accounts.html ലെയോ മറ്റ് പേജുകളിലെയോ switchLanguage വിളിക്കുന്നു
+    // 1. Dashboard-ലും Accounts-ലും ഉള്ള എല്ലാത്തരം ലാംഗ്വേജ് ഫങ്ഷനുകളും വിളിക്കുന്നു
     if (typeof window.switchLanguage === 'function') {
         window.switchLanguage(langCode);
     }
+    if (typeof window.updateLanguage === 'function') {
+        window.updateLanguage(langCode);
+    }
+    if (typeof window.applyLanguage === 'function') {
+        window.applyLanguage(langCode);
+    }
     
+    // 2. പേജിലെ ഡാറ്റ കാണിക്കുന്ന ഫങ്ഷനുകൾ വീണ്ടും അപ്ഡേറ്റ് ചെയ്യുന്നു
     if (typeof window.loadData === 'function') {
         window.loadData();
+    }
+    if (typeof window.renderList === 'function') {
+        window.renderList();
     }
 };
 
