@@ -11,21 +11,13 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
                 </div>
             </div>
 
-            <!-- ☰ Lang ബട്ടൺ -->
+            <!-- ഹെഡറിലെ Lang ബട്ടൺ -->
             <div class="relative">
                 <button onclick="window.toggleLangMenu(event)" class="p-2.5 bg-slate-900/80 hover:bg-slate-900 border border-amber-300/50 text-amber-300 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-1.5 cursor-pointer">
-                    ☰ <span class="text-xs font-black">Lang</span>
+                    🌐 <span class="text-xs font-black">Lang</span>
                 </button>
             </div>
         </div>
-
-        <!-- സ്വാഗതം ബോക്സ് -->
-        ${showWelcome ? `
-        <div class="w-full">
-            <div class="w-full py-3 px-4 rounded-2xl text-center text-sm font-black tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/40 shadow-xl">
-                <span id="loggedInMeshtri"><span class="lang" data-key="welcome">സ്വാഗതം</span>, ${userName}</span>
-            </div>
-        </div>` : ''}
     </div>`;
 
     const container = document.getElementById(containerId);
@@ -34,79 +26,19 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
     }
 }
 
-// 🟢 1. ഡ്രോപ്പ്ഡൗൺ മെനു ബോക്സ്
-function ensureDropdownExists() {
-    let dropdown = document.getElementById('langDropdown');
-    if (!dropdown) {
-        dropdown = document.createElement('div');
-        dropdown.id = 'langDropdown';
-        dropdown.className = 'hidden fixed bg-slate-900 border border-white/10 rounded-2xl shadow-2xl z-[99999] overflow-hidden py-1 w-44 backdrop-blur-xl';
-        dropdown.innerHTML = `
-            <div onclick="window.switchLanguage('ml')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">മലയാളം</div>
-            <div onclick="window.switchLanguage('en')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">English</div>
-            <div onclick="window.switchLanguage('ta')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">தமிழ்</div>
-            <div onclick="window.switchLanguage('hi')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">हिन्दी</div>
-            <div onclick="window.switchLanguage('kn')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">ಕನ್ನಡ</div>
-            <div onclick="window.switchLanguage('as')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">অসমীয়া</div>
-            <div onclick="window.switchLanguage('bn')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">বাংলা</div>
-        `;
-        document.body.appendChild(dropdown);
-    }
-    return dropdown;
-}
-
-// 🟢 2. മെനു തുറക്കൽ / അടയ്ക്കൽ (HTML-ൽ ഉപയോഗിക്കാൻ വിൻഡോയിലേക്ക് മാറ്റുന്നു)
+// 🟢 ഡ്രോപ്പ്ഡൗൺ കാട്ടാനും ഒളിപ്പിക്കാനും മാത്രം (ബാക്കി പേജിന്റെ സ്വന്തം language.js നോക്കിക്കൊള്ളും)
 window.toggleLangMenu = function(e) {
     if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
-    const dropdown = ensureDropdownExists();
-    const btn = e ? (e.currentTarget || e.target) : null;
-
-    if (dropdown.classList.contains('hidden')) {
-        if (btn && typeof btn.getBoundingClientRect === 'function') {
-            const rect = btn.getBoundingClientRect();
-            dropdown.style.top = `${rect.bottom + 6}px`;
-            dropdown.style.left = `${Math.max(10, rect.right - 176)}px`;
-        } else {
-            // പേജിലെ ലാംഗ്വേജ് ബട്ടണിന് താഴെ കൃത്യമായി വരാൻ
-            dropdown.style.top = "70px";
-            dropdown.style.right = "16px";
-        }
-        dropdown.classList.remove('hidden');
-    } else {
-        dropdown.classList.add('hidden');
-    }
-};
-
-// 🟢 3. `language.js`-ലെ ഭാഷാ മാറ്റം പ്രവർത്തിപ്പിക്കാനുള്ള മാസ്റ്റർ ഫങ്ഷൻ
-window.switchLanguage = function(langCode) {
-    // 1. ഭാഷ LocalStorage-ൽ സേവ് ചെയ്യുന്നു
-    localStorage.setItem('selectedLang', langCode);
-    localStorage.setItem('lang', langCode);
-    
-    // 2. മെനു അടയ്ക്കുന്നു
     const dropdown = document.getElementById('langDropdown');
-    if (dropdown) dropdown.classList.add('hidden');
-
-    // 3. language.js-ൽ ഉള്ള ഫങ്ഷൻ പ്രവർത്തിപ്പിച്ച് ഉടൻ ഭാഷ മാറ്റുന്നു
-    if (typeof applyLanguage === 'function') {
-        applyLanguage(langCode);
-    } else if (typeof setLanguage === 'function') {
-        setLanguage(langCode);
-    } else if (typeof changeLanguage === 'function' && changeLanguage !== window.switchLanguage) {
-        changeLanguage(langCode);
-    } else {
-        // language.js കണക്റ്റായിട്ടില്ലെങ്കിൽ മാത്രം പേജ് റീഫ്രഷ് ചെയ്യും
-        window.location.reload();
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
     }
 };
 
-window.changeLanguage = window.switchLanguage;
-
-// 🟢 4. പുറത്ത് ക്ലിക്ക് ചെയ്താൽ ഡ്രോപ്പ്ഡൗൺ ക്ലോസ് ആകാൻ
+// പുറത്തു ക്ലിക്ക് ചെയ്താൽ അടയ്ക്കാൻ
 document.addEventListener('click', (e) => {
-    const langBtn = e.target.closest('button[onclick*="Lang"], button[onclick*="lang"], div[onclick*="Lang"], button[onclick*="toggleLangMenu"]');
+    const langBtn = e.target.closest('button[onclick*="toggleLangMenu"], button[onclick*="Lang"]');
     if (langBtn) return;
-
     const dropdown = document.getElementById('langDropdown');
     if (dropdown && !dropdown.classList.contains('hidden') && !dropdown.contains(e.target)) {
         dropdown.classList.add('hidden');
