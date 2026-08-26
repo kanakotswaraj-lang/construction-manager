@@ -33,41 +33,51 @@
         let allTransactions = [];
         let filteredTransactions = [];
         
-window.switchLanguage = function(lang) {
-    if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
-    
-    // 1. സാധാരണ ടെക്സ്റ്റുകൾ മാറ്റുന്നു
-    document.querySelectorAll('.lang').forEach(el => {
-        const key = el.getAttribute('data-key');
-        if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-            el.innerText = words[key][lang];
-        }
-    });
+        window.switchLanguage = function(lang) {
+            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
+            
+            // 1. സാധാരണ ടെക്സ്റ്റുകൾ മാറ്റുന്നു
+            document.querySelectorAll('.lang').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.innerText = words[key][lang];
+                }
+            });
 
-    // 2. ഇൻപുട്ട് ഫീൽഡുകളിലെ Placeholder മാറ്റുന്നു
-    document.querySelectorAll('.lang-placeholder').forEach(el => {
-        const key = el.getAttribute('data-key');
-        if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-            el.placeholder = words[key][lang];
-        }
-    });
-};
+            // 2. ഇൻപുട്ട് ഫീൽഡുകളിലെ Placeholder മാറ്റുന്നു
+            document.querySelectorAll('.lang-placeholder').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.placeholder = words[key][lang];
+                }
+            });
+        };
 
-document.addEventListener("DOMContentLoaded", () => {
-    if (typeof setupHeader === 'function') {
-        setupHeader('appHeader', true, currentMeshtri);
-    }
-    fetchLiveAccounts();
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader', true, currentMeshtri);
+            }
+            fetchLiveAccounts();
 
-    const today = new Date().toISOString().split('T')[0];
-    const transDateInput = document.getElementById('transDate');
-    if (transDateInput) transDateInput.value = today;
+            const today = new Date().toISOString().split('T')[0];
+            const transDateInput = document.getElementById('transDate');
+            if (transDateInput) transDateInput.value = today;
 
-    // 🟢 പേജ് തുറക്കുമ്പോൾ താനേ ഭാഷ മാറാൻ ഇത് ഇവിടെ വേണം:
-    if (typeof window.switchLanguage === 'function') {
-        window.switchLanguage();
-    }
-});
+            // പേജ് തുറക്കുമ്പോൾ ഭാഷ മാറ്റുന്നു
+            setTimeout(() => {
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage();
+                }
+            }, 100);
+        });
+
+        // ഭാഷ മാറ്റുമ്പോൾ ഈ പേജിലും അപ്ഡേറ്റ് വരാൻ Event Listener
+        window.addEventListener('languageChanged', () => {
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage();
+            }
+            renderList();
+        });
 
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
@@ -123,7 +133,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const siteSelect = document.getElementById('filterSite');
                 const currentSelectedSite = siteSelect.value;
-                siteSelect.innerHTML = '<option value="">എല്ലാ സൈറ്റുകളും</option>';
+                const lang = localStorage.getItem('selectedLang') || 'ml';
+                const defaultSiteText = (typeof words !== 'undefined' && words['allSites'] && words['allSites'][lang]) ? words['allSites'][lang] : 'എല്ലാ സൈറ്റുകളും';
+                
+                siteSelect.innerHTML = `<option value="" class="lang" data-key="allSites">${defaultSiteText}</option>`;
                 siteSet.forEach(site => siteSelect.innerHTML += `<option value="${site}">${site}</option>`);
                 siteSelect.value = currentSelectedSite;
                 
@@ -176,8 +189,11 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('paymentMethod').value = payment;
             document.getElementById('amount').value = amount;
             document.getElementById('transDate').value = date;
-            document.getElementById('formTitle').innerText = "കണക്ക് എഡിറ്റ് ചെയ്യുക";
-            document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
+            
+            const lang = localStorage.getItem('selectedLang') || 'ml';
+            document.getElementById('formTitle').innerText = (typeof words !== 'undefined' && words['editAcc'] && words['editAcc'][lang]) ? words['editAcc'][lang] : "കണക്ക് എഡിറ്റ് ചെയ്യുക";
+            document.getElementById('saveBtn').innerText = (typeof words !== 'undefined' && words['updateBtn'] && words['updateBtn'][lang]) ? words['updateBtn'][lang] : "അപ്ഡേറ്റ് ചെയ്യുക";
+            
             document.getElementById('cancelEditBtn').classList.remove('hidden');
             window.scrollTo({ top: 300, behavior: 'smooth' });
         };
@@ -187,8 +203,11 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('ownerName').value = '';
             document.getElementById('siteName').value = '';
             document.getElementById('amount').value = '';
-            document.getElementById('formTitle').innerText = "പുതിയ കണക്ക് ചേർക്കുക";
-            document.getElementById('saveBtn').innerText = "സേവ് ചെയ്യുക";
+            
+            const lang = localStorage.getItem('selectedLang') || 'ml';
+            document.getElementById('formTitle').innerText = (typeof words !== 'undefined' && words['addNewAcc'] && words['addNewAcc'][lang]) ? words['addNewAcc'][lang] : "പുതിയ കണക്ക് ചേർക്കുക";
+            document.getElementById('saveBtn').innerText = (typeof words !== 'undefined' && words['saveBtn'] && words['saveBtn'][lang]) ? words['saveBtn'][lang] : "സേവ് ചെയ്യുക";
+            
             document.getElementById('cancelEditBtn').classList.add('hidden');
         };
 
@@ -327,7 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <!-- 1. header.js വഴി ലോഡ് ആകുന്ന ഹെഡർ കണ്ടെയ്നർ -->
         <div id="appHeader" class="w-full"></div>
 
-        <!-- 2. ഗ്രാഡിയന്റ് ഹെഡർ ബോക്സ് (വരവ് - ചെലവ് വിവരങ്ങൾ & Home) -->
+        <!-- 2. ഗ്രാഡിയന്റ് ഹെഡർ ബോക്സ് -->
         <div class="glass-card rounded-3xl p-4 shadow-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/10 flex items-center justify-between my-4 backdrop-blur-xl">
             <h1 class="text-lg font-black bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent tracking-wide flex items-center gap-2">
                 <span>📊</span>
@@ -448,6 +467,5 @@ document.addEventListener("DOMContentLoaded", () => {
         <div id="transactionList" class="space-y-3 pb-10"></div>
     </div>
 
-    
 </body>
 </html>
