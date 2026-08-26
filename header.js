@@ -13,7 +13,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
 
             <!-- 3 വരകൾ ഉള്ള ലാംഗ്വേജ് മെനു ബട്ടൺ -->
             <div class="relative">
-                <button onclick="window.toggleLangMenu(event)" class="p-2.5 bg-slate-900/80 hover:bg-slate-900 border border-amber-300/50 text-amber-300 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-1.5 cursor-pointer">
+                <button id="langMenuBtn" onclick="window.toggleLangMenu(event)" class="p-2.5 bg-slate-900/80 hover:bg-slate-900 border border-amber-300/50 text-amber-300 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-1.5 cursor-pointer">
                     ☰ <span class="text-xs font-black">Lang</span>
                 </button>
 
@@ -45,10 +45,11 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
     }
 }
 
-// 🟢 1. ലാംഗ്വേജ് മെനു തുറക്കാനും അടയ്ക്കാനും (ഡാഷ്‌ബോർഡിലെയും ഹെഡറിലെയും ബട്ടണുകൾക്ക് ഒരുപോലെ വർക്ക് ചെയ്യും)
-window.toggleLangMenu = function(event) {
-    if (event && typeof event.stopPropagation === 'function') {
-        event.stopPropagation();
+// 🟢 ഡാഷ്‌ബോർഡിലെ ബട്ടണായാലും ഹെഡറിലെ ബട്ടണായാലും ടോഗിൾ ചെയ്യാൻ
+window.toggleLangMenu = function(e) {
+    if (e) {
+        e.stopPropagation();
+        e.preventDefault();
     }
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) {
@@ -56,15 +57,15 @@ window.toggleLangMenu = function(event) {
     }
 };
 
-// 🟢 2. എല്ലാ പേജുകളിലേക്കും ഭാഷ മാറ്റുന്ന മാസ്റ്റർ ഫങ്ഷൻ
+// 🟢 ഭാഷ മാറ്റുന്ന മാസ്റ്റർ ഫങ്ഷൻ
 window.changeLanguage = function(langCode) {
     localStorage.setItem('selectedLang', langCode);
     
-    // മെനു ക്ലോസ് ചെയ്യുന്നു
+    // മെനു ക്ലോസ് ചെയ്യൽ
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) dropdown.classList.add('hidden');
 
-    // എല്ലാ പേജുകളിലെയും ടെക്സ്റ്റ് മാറ്റുന്നു (DOM Translation)
+    // DOM-ലെ ടെക്സ്റ്റുകൾ മാറ്റുന്നു
     document.querySelectorAll('.lang').forEach(el => {
         const key = el.getAttribute('data-key');
         if (typeof words !== 'undefined' && words[key] && words[key][langCode]) {
@@ -72,7 +73,6 @@ window.changeLanguage = function(langCode) {
         }
     });
 
-    // ഇൻപുട്ട് ഫീൽഡ് Placeholder-കൾ മാറ്റുന്നു
     document.querySelectorAll('.lang-placeholder').forEach(el => {
         const key = el.getAttribute('data-key');
         if (typeof words !== 'undefined' && words[key] && words[key][langCode]) {
@@ -80,8 +80,8 @@ window.changeLanguage = function(langCode) {
         }
     });
 
-    // പേജുകളിൽ ഉള്ള ഫങ്ഷനുകൾ വിളിക്കുന്നു (Dashboard / Accounts support)
-    if (typeof window.switchLanguage === 'function') {
+    // പേജിലുള്ള മറ്റു ഫങ്ഷനുകൾ അപ്ഡേറ്റ് ചെയ്യാൻ
+    if (typeof window.switchLanguage === 'function' && window.switchLanguage !== window.changeLanguage) {
         window.switchLanguage(langCode);
     }
     if (typeof window.loadData === 'function') {
@@ -92,13 +92,14 @@ window.changeLanguage = function(langCode) {
     }
 };
 
-// ഡാഷ്‌ബോർഡിൽ switchLanguage എന്ന് വിളിച്ചാലും ഇത് വർക്ക് ചെയ്യും:
 window.switchLanguage = window.changeLanguage;
 
-// 🟢 3. പുറത്ത് ക്ലിക്ക് ചെയ്താൽ ഡ്രോപ്പ്ഡൗൺ ക്ലോസ് ചെയ്യുന്നു
+// 🟢 പുറത്ത് ക്ലിക്ക് ചെയ്യുമ്പോൾ മെനു അടയുന്നതിന് safe ആയ വഴി
 document.addEventListener('click', (e) => {
     const dropdown = document.getElementById('langDropdown');
-    if (dropdown && !dropdown.classList.contains('hidden')) {
+    const isLangBtn = e.target.closest('button[onclick*="toggleLangMenu"]') || e.target.closest('#langMenuBtn');
+    
+    if (dropdown && !dropdown.classList.contains('hidden') && !isLangBtn && !dropdown.contains(e.target)) {
         dropdown.classList.add('hidden');
     }
 });
