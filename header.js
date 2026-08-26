@@ -11,7 +11,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
                 </div>
             </div>
 
-            <!-- ഹെഡറിലെ 3 വരയുള്ള ബട്ടൺ -->
+            <!-- ☰ Lang ബട്ടൺ -->
             <div class="relative">
                 <button onclick="window.toggleLangMenu(event)" class="p-2.5 bg-slate-900/80 hover:bg-slate-900 border border-amber-300/50 text-amber-300 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-1.5 cursor-pointer">
                     ☰ <span class="text-xs font-black">Lang</span>
@@ -34,7 +34,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
     }
 }
 
-// 🟢 1. ഡ്രോപ്പ്ഡൗൺ ബോക്സ് നിർമ്മിക്കുന്നു
+// 🟢 1. ഡ്രോപ്പ്ഡൗൺ ബോക്സ് സ്വയം ക്രിയേറ്റ് ചെയ്യുന്നു
 function ensureDropdownExists() {
     let dropdown = document.getElementById('langDropdown');
     if (!dropdown) {
@@ -42,24 +42,22 @@ function ensureDropdownExists() {
         dropdown.id = 'langDropdown';
         dropdown.className = 'hidden fixed bg-slate-900 border border-amber-500/40 rounded-2xl shadow-2xl z-[99999] overflow-hidden py-1 w-44 backdrop-blur-xl';
         dropdown.innerHTML = `
-            <div onclick="window.changeLanguage('ml')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">മലയാളം</div>
-            <div onclick="window.changeLanguage('en')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">English</div>
-            <div onclick="window.changeLanguage('ta')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">தமிழ்</div>
-            <div onclick="window.changeLanguage('hi')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">हिन्दी</div>
-            <div onclick="window.changeLanguage('kn')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">ಕನ್ನಡ</div>
-            <div onclick="window.changeLanguage('as')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">অসমীয়া</div>
-            <div onclick="window.changeLanguage('bn')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">বাংলা</div>
+            <div onclick="window.selectLang('ml')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">മലയാളം</div>
+            <div onclick="window.selectLang('en')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">English</div>
+            <div onclick="window.selectLang('ta')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">தமிழ்</div>
+            <div onclick="window.selectLang('hi')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">हिन्दी</div>
+            <div onclick="window.selectLang('kn')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">ಕನ್ನಡ</div>
+            <div onclick="window.selectLang('as')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">অসমীয়া</div>
+            <div onclick="window.selectLang('bn')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">বাংলা</div>
         `;
         document.body.appendChild(dropdown);
     }
     return dropdown;
 }
 
-// 🟢 2. മെനു ടോഗിൾ ചെയ്യൽ
+// 🟢 2. മെനു തുറക്കാനും അടയ്ക്കാനും
 window.toggleLangMenu = function(e) {
-    if (e && typeof e.stopPropagation === 'function') {
-        e.stopPropagation();
-    }
+    if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
     const dropdown = ensureDropdownExists();
     const btn = e ? (e.currentTarget || e.target) : null;
 
@@ -75,55 +73,34 @@ window.toggleLangMenu = function(e) {
     }
 };
 
-// 🟢 3. ഭാഷ മാറ്റി പേജ് പുതുക്കുന്ന മാസ്റ്റർ ഫങ്ഷൻ
-window.changeLanguage = function(langCode) {
-    // ഭാഷ LocalStorage-ൽ സേവ് ചെയ്യുന്നു
+// 🟢 3. lang.js-ലെ ഫങ്ഷനുകളിലേക്ക് ഭാഷ അയച്ചു കൊടുക്കുന്നു
+window.selectLang = function(langCode) {
     localStorage.setItem('selectedLang', langCode);
     localStorage.setItem('lang', langCode);
     
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) dropdown.classList.add('hidden');
 
-    // 1. ഫ്രണ്ട്-എൻഡ് ഫങ്ഷനുകൾ പ്രവർത്തിപ്പിക്കാൻ ശ്രമിക്കുന്നു
-    let updated = false;
-    if (typeof window.switchLanguage === 'function' && window.switchLanguage !== window.changeLanguage) {
+    // lang.js-ലെ ഫങ്ഷൻ പ്രവർത്തിപ്പിക്കുന്നു
+    if (typeof window.changeLanguage === 'function' && window.changeLanguage !== window.selectLang) {
+        window.changeLanguage(langCode);
+    } else if (typeof window.switchLanguage === 'function' && window.switchLanguage !== window.selectLang) {
         window.switchLanguage(langCode);
-        updated = true;
-    }
-    
-    // 2. DOM Elements മാറ്റി കൊടുക്കൽ
-    const langWords = window.words || (typeof words !== 'undefined' ? words : null);
-    if (langWords) {
-        document.querySelectorAll('.lang').forEach(el => {
-            const key = el.getAttribute('data-key');
-            if (langWords[key] && langWords[key][langCode]) {
-                el.innerText = langWords[key][langCode];
-                updated = true;
-            }
-        });
-    }
-
-    // 3. ഡാറ്റ മാറിയില്ലെങ്കിൽ മാത്രം പേജ് റീഫ്രഷ് ചെയ്യുന്നു (ഉറപ്പായും ഭാഷ മാറാൻ)
-    if (typeof window.loadData === 'function') window.loadData();
-    if (typeof window.renderList === 'function') window.renderList();
-
-    // പേജിലെ മാറ്റങ്ങൾ ഉടനടി പ്രതിഫലിക്കാൻ റീഫ്രഷ് ആവശ്യമാണെങ്കിൽ:
-    setTimeout(() => {
+    } else {
+        // lang.js ഫങ്ഷൻ കിട്ടിയില്ലെങ്കിൽ മാത്രം പേജ് പുതുക്കും
         window.location.reload();
-    }, 100);
+    }
 };
 
-window.switchLanguage = window.changeLanguage;
+window.changeLanguage = window.selectLang;
 
-// 🟢 4. പുറത്ത് ക്ലിക്ക് ചെയ്താൽ അടയാൻ
+// 🟢 4. പുറത്ത് ക്ലിക്ക് ചെയ്താൽ മെനു അടയാൻ
 document.addEventListener('click', (e) => {
     const langBtn = e.target.closest('button[onclick*="Lang"], button[onclick*="lang"], div[onclick*="Lang"], button[onclick*="toggleLangMenu"]');
-    
     if (langBtn) {
         window.toggleLangMenu(e);
         return;
     }
-
     const dropdown = document.getElementById('langDropdown');
     if (dropdown && !dropdown.classList.contains('hidden') && !dropdown.contains(e.target)) {
         dropdown.classList.add('hidden');
