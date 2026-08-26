@@ -132,7 +132,7 @@
 
                 allTransactions.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
-                const siteSelect = document.getElementById('filterSite');
+                                const siteSelect = document.getElementById('filterSite');
                 const currentSelectedSite = siteSelect.value;
                 const lang = localStorage.getItem('selectedLang') || 'ml';
                 const defaultSiteText = (typeof words !== 'undefined' && words['allSites'] && words['allSites'][lang]) ? words['allSites'][lang] : 'എല്ലാ സൈറ്റുകളും';
@@ -140,6 +140,7 @@
                 siteSelect.innerHTML = `<option value="" class="lang" data-key="allSites">${defaultSiteText}</option>`;
                 siteSet.forEach(site => siteSelect.innerHTML += `<option value="${site}">${site}</option>`);
                 siteSelect.value = currentSelectedSite;
+
                 
                 renderList();
             }, (error) => {
@@ -348,11 +349,11 @@
         <div id="appHeader" class="w-full"></div>
 
         <!-- 2. ഗ്രാഡിയന്റ് ഹെഡർ ബോക്സ് -->
-        <div class="glass-card rounded-3xl p-4 shadow-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/10 flex items-center justify-between my-4 backdrop-blur-xl">
-            <h1 class="text-lg font-black bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent tracking-wide flex items-center gap-2">
-                <span>📊</span>
-                <span class="lang" data-key="accHeader">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
-            </h1>
+        
+            <h1 class="text-lg font-black">
+    <span class="lang bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
+</h1>
+
 
             <a href="dashboard.html" class="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 rounded-2xl font-black text-xs shadow-lg hover:scale-105 active:scale-95 transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
