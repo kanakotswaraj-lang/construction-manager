@@ -8,7 +8,7 @@ const words = {
     welcome: { ml: "സ്വാഗതം", en: "Welcome", hi: "स्वागत है", ta: "வரவேற்கிறோம்", kn: "ಸ್ವಾಗತ", bn: "স্বাগতম", as: "স্বাগতম" },
     home: { ml: "🏠 ഹോം", en: "🏠 Home", hi: "🏠 होम", ta: "🏠 முகப்பு", kn: "🏠 ಹೋಮ್", bn: "🏠 হোম", as: "🏠 হোম" },
     save: { ml: "സേവ് ചെയ്യുക", en: "Save", hi: "सहेजें", ta: "சேமி", kn: "ಉಳಿಸಿ", bn: "সংরক্ষণ করুন", as: "সংৰক্ষণ কৰক" },
-    edit: { ml: "എഡിറ്റ്", en: "Edit", hi: "संपादित करें", ta: "திருத்து", kn: "সম্পাদಿಸಿ", bn: "এডিট", as: "সম্পাদনা" },
+    edit: { ml: "എഡിറ്റ്", en: "Edit", hi: "संपादित करें", ta: "திருத்து", kn: " ಸಂಪಾದಿಸಿ", bn: "এডিট", as: "সম্পাদনা" },
     delete: { ml: "ഡിലീറ്റ്", en: "Delete", hi: "हटाएं", ta: "நீக்கு", kn: "ಅಳಿಸಿ", bn: "মুছুন", as: "মচি পেলাওক" },
     cancel: { ml: "റദ്ദാക്കുക", en: "Cancel", hi: "रद्द करें", ta: "ரத்து செய்", kn: "ರದ್ದುಮಾಡಿ", bn: "বাতিল", as: "বাতিল" },
     view: { ml: "▼ കാണുക", en: "▼ View", hi: "▼ देखें", ta: "▼ பார்க்க", kn: "▼ ವೀಕ್ಷಿಸಿ", bn: "▼ দেখুন", as: "▼ চাওক" },
@@ -24,16 +24,16 @@ const words = {
     dashboard: { ml: "ഡാഷ്‌ബോർഡ്", en: "Dashboard", hi: "डैशबोर्ड", ta: "டாஷ்போர்டு", kn: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", bn: "ড্যাশবোর্ড", as: "ড্যাশব’ৰ্ড" },
     total_sites: { ml: "ആകെ സൈറ്റുകൾ", en: "Total Sites", hi: "कुल साइटें", ta: "மொத்த தளங்கள்", kn: "ಒಟ್ಟು ಸೈಟ್‌ಗಳು", bn: "মোট সাইট", as: "মুঠ চাইট" },
     active_workers: { ml: "സജീവ തൊഴിലാളികൾ", en: "Active Workers", hi: "सक्रिय श्रमिक", ta: "செயலில் உள்ள தொழிலாளர்கள்", kn: "ಸಕ್ರಿಯ ಕಾರ್ಮಿಕರು", bn: "সক্রিয় শ্রমিক", as: "সক্ৰিয় শ্ৰমিক" },
-    today_expense: { ml: "ഇന്നത്തെ ചെലവ്", en: "Today's Expense", hi: "आज का खर्च", ta: "இன்றைய செலவு", kn: "ಇಂದಿನ ವೆಚ್ಚ", bn: "আজকের খরচ", as: "আজিলৈকে খৰച" },
+    today_expense: { ml: "ഇന്നത്തെ ചെലവ്", en: "Today's Expense", hi: "आज का खर्च", ta: "இன்றைய செலவு", kn: "ಇಂದಿನ ವೆಚ್ಚ", bn: "আজকের খরচ", as: "আজিলৈকে খৰচ" },
     income: { ml: "വരുമാനം", en: "Income", hi: "आय", ta: "வருமானம்", kn: "ಆದಾಯ", bn: "আয়", as: "আয়" },
     expense: { ml: "ചെലവ്", en: "Expense", hi: "व्यय", ta: "செலவு", kn: "ವೆಚ್ಚ", bn: "ব্যয়", as: "ഖৰച" },
     profit: { ml: "ശുദ്ധ ലാഭം", en: "Net Profit", hi: "शुद्ध लाभ", ta: "நிகர லாபம்", kn: "ನಿವ್ವಳ ಲಾಭ", bn: "লেভ লাভ", as: "পবিত্ৰ লাভ" },
-    loss_label: { ml: "നഷ്ടം", en: "Loss", hi: "हानि", ta: "நஷ்டம்", kn: "ನಷ್ಟ", bn: "ক্ষতি", as: "লোকചান" },
+    loss_label: { ml: "നഷ്ടം", en: "Loss", hi: "हानि", ta: "நஷ்டம்", kn: "ನಷ್ಟ", bn: "ক্ষতি", as: "লোকচান" },
 
     // DASHBOARD MENU ITEMS
     site_details: { ml: "സൈറ്റ് വിവരങ്ങൾ", en: "Site Details", hi: "साइट विवरण", ta: "தள விவரங்கள்", kn: "ಸೈಟ್ ವಿವರಗಳು", bn: "সাইট তথ্য", as: "চাইটৰ তথ্য" },
     history_edit: { ml: "കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്", en: "History & Edit", hi: "इतिहास और संपादन", ta: "வரலாறு & திருத்து", kn: "ಇತಿಹಾಸ ಮತ್ತು ಎಡಿಟ್", bn: "ইতিহাস ও এডিট", as: "ইতিহাস আৰু সম্পাদনা" },
-    staff_salary: { ml: "ജീവനക്കാരുടെ ശമ്പളം", en: "Staff Salary", hi: "कर्मचारी वेतन", ta: "ஊழியர் சம்பளம்", kn: "ಸಿಬ್ಬಂದಿ ವೇತನ", bn: "কর্মীদের বেতন", as: "কৰ্মচাৰীৰ দৰമহা" },
+    staff_salary: { ml: "ജീവനക്കാരുടെ ശമ്പളം", en: "Staff Salary", hi: "कर्मचारी वेतन", ta: "ஊழியர் சம்பளம்", kn: "ಸಿಬ್ಬಂದಿ ವೇತನ", bn: "কর্মীদের বেতন", as: "কৰ্মচাৰীৰ দৰমহা" },
     attendance_report: { ml: "ഹാജർ & പണി റിപ്പോർട്ട്", en: "Attendance & Report", hi: "उपस्थिति रिपोर्ट", ta: "வருகை அறிக்கை", kn: "ಹಾಜರಾತಿ ವರದಿ", bn: "উপস্থিতি রিপোর্ট", as: "উপস্থিতি ৰিপ'ৰ্ট" },
     rentals: { ml: "വാടക ഉപകരണങ്ങൾ", en: "Rental Equipments", hi: "किराये के उपकरण", ta: "வாடகை உபகரணங்கள்", kn: "ಬಾಡಿಗೆ ಉಪಕರಣಗಳು", bn: "ভাড়া সরঞ্জাম", as: "ভাৰা সঁজুলি" },
     materials: { ml: "മെറ്റീരിയൽസ്", en: "Materials", hi: "सामग्री", ta: "பொருட்கள்", kn: "ಸಾಮಗ್ರಿಗಳು", bn: "সরঞ্জাম", as: "সামগ্ৰী" },
@@ -47,7 +47,7 @@ const words = {
     total_wages_paid: { ml: "ആകെ നൽകിയ കൂലി", en: "Total Wages Paid", hi: "कुल मजदूरी", ta: "மொத்த கூலி", kn: "ಒಟ್ಟು ನೀಡಿದ ಕೂಲಿ", bn: "মোট মজুরি", as: "মুঠ মজুৰি" },
     all_workers: { ml: "എല്ലാ തൊഴിലാളികളും", en: "All Workers", hi: "सभी श्रमिक", ta: "அனைத்து தொழிலாளர்களும்", kn: "ಎಲ್ಲಾ ಕಾರ್ಮಿಕರು", bn: "সব শ্রমিক", as: "সকলো শ্ৰমিক" },
     all_sites: { ml: "എല്ലാ സൈറ്റുകളും", en: "All Sites", hi: "सभी साइटें", ta: "அனைத்து தளங்களும்", kn: "ಎಲ್ಲಾ ಸೈಟ್‌ಗಳು", bn: "সব সাইট", as: "সকলো চাইট" },
-    attendance_details: { ml: "ഹാജർ വിവരങ്ങൾ", en: "Attendance Details", hi: "उपस्थिति विवरण", ta: "வருகை விவரங்கள்", kn: "ಹಾಜರಾತಿ ವಿವರಗಳು", bn: "উপস্থিতির বিবরণ", as: "উপস্থিতিৰ তথ্য" },
+    attendance_details: { ml: "ഹാജർ വിവരങ്ങൾ", en: "Attendance Details", hi: "उपस्थिति विवरण", ta: "வருகை விவரங்கள்", kn: "ಹಾಜರಾತಿ ವಿವರಗಳು", bn: "উপস্থিতಿಯ বিবরণ", as: "উপস্থিতিৰ তথ্য" },
 
     // ==========================================
     // 4. RENTALS (rentals.html)
@@ -65,33 +65,33 @@ const words = {
     // ===================================================
     // ACCOUNTS PAGE (വരവ് - ചെലവ് പേജ്)
     // ===================================================
-    accHeader: { ml: "വരവ് - ചെലവ് വിവരങ്ങൾ", en: "Income - Expense Details", ta: "வரவு - செலவு விவரங்கள்", hi: "आय - व्यय विवरण" },
-    homeBtn: { ml: "ഹോം", en: "Home", ta: "முகப்பு", hi: "होम" },
-    expenseWage: { ml: "ചെലവ് / കൂലി", en: "Expense / Wage", ta: "செலவு / கூலி", hi: "व्यय / मजदूरी" },
-    netProfit: { ml: "ലാഭം / ബാക്കി തുക", en: "Net Profit / Balance", ta: "லாபம் / மீதித் தொகை", hi: "लाभ / शेष राशि" },
+    accHeader: { ml: "വരവ് - ചെലവ് വിവരങ്ങൾ", en: "Income - Expense Details", ta: "வரவு - செலவு விவரங்கள்", hi: "आय - व्यय विवरण", kn: "ಆದಾಯ - ವೆಚ್ಚದ ವಿವರಗಳು", bn: "আয় - ব্যয়ের বিবরণ", as: "আয় - খৰচৰ বিৱৰণ" },
+    homeBtn: { ml: "ഹോം", en: "Home", ta: "முகப்பு", hi: "होम", kn: "ಹೋಮ್", bn: "হোম", as: "হোম" },
+    expenseWage: { ml: "ചെലവ് / കൂലി", en: "Expense / Wage", ta: "செலவு / கூலி", hi: "व्यय / मजदूरी", kn: "ವೆಚ್ಚ / ಕೂಲಿ", bn: "ব্যয় / মজুরি", as: "খৰচ / মজুৰি" },
+    netProfit: { ml: "ലാഭം / ബാക്കി തുക", en: "Net Profit / Balance", ta: "லாபம் / மீதித் தொகை", hi: "लाभ / शेष राशि", kn: "ಲಾಭ / ಬಾಕಿ ಮೊತ್ತ", bn: "লাভ / বকেয়া টাকা", as: "লাভ / বাকী টকা" },
 
-    filterSiteLabel: { ml: "സൈറ്റ് തിരിച്ച് നോക്കാൻ", en: "Filter by Site", ta: "தளம் வாரியாக பார்க்க", hi: "साइट के अनुसार खोजें" },
-    filterMonthLabel: { ml: "മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)", en: "Monthly Account (Select Month)", ta: "மாதாந்திர கணக்கு (மாதத்தை தேர்ந்தெடுக்கவும்)", hi: "मासिक खाता (महीना चुनें)" },
-    startDateLabel: { ml: "തുടങ്ങുന്ന തീയതി", en: "Start Date", ta: "தொ தொடங்கும் தேதி", hi: "प्रारंभ तिथि" },
-    endDateLabel: { ml: "അവസാനിക്കുന്ന തീയതി", en: "End Date", ta: "முடிவடையும் தேதி", hi: "अंतिम तिथि" },
-    filterWorkerLabel: { ml: "പേര് വെച്ച് തിരയാൻ", en: "Search by Name", ta: "பெயர் மூலம் தேட", hi: "नाम से खोजें" },
-    searchNamePlaceholder: { ml: "പേര് ടൈപ്പ് ചെയ്യുക...", en: "Type name...", ta: "பெயர் தட்டச்சு செய்யவும்...", hi: "नाम टाइप करें..." },
+    filterSiteLabel: { ml: "സൈറ്റ് തിരിച്ച് നോക്കാൻ", en: "Filter by Site", ta: "தளம் வாரியாக பார்க்க", hi: "साइट के अनुसार खोजें", kn: "ಸೈಟ್ ಪ್ರಕಾರ ಹುಡುಕಿ", bn: "সাইট অনুযায়ী খুঁজুন", as: "চাইট অনুসৰি বিচাৰক" },
+    filterMonthLabel: { ml: "മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)", en: "Monthly Account (Select Month)", ta: "மாதாந்திர கணக்கு (மாதத்தை தேர்ந்தெடுக்கவும்)", hi: "मासिक खाता (महीना चुनें)", kn: "ಮಾಸಿಕ ಖಾತೆ (ತಿಂಗಳು ಆಯ್ಕೆಮಾಡಿ)", bn: "মাসিক হিসাব (মাস নির্বাচন করুন)", as: "মাহেকীয়া হিচাপ (মাহ বাছনি কৰক)" },
+    startDateLabel: { ml: "തുടങ്ങുന്ന തീയതി", en: "Start Date", ta: "தொ தொடங்கும் தேதி", hi: "प्रारंभ तिथि", kn: "ಪ್ರಾರಂಭ ದಿನಾಂಕ", bn: "শুরুর তারিখ", as: "আৰম্ভণিৰ তাৰিখ" },
+    endDateLabel: { ml: "അവസാനിക്കുന്ന തീയതി", en: "End Date", ta: "முடிவடையும் தேதி", hi: "अंतिम तिथि", kn: "ಕೊನೆಯ ದಿನಾಂಕ", bn: "শেষ তারিখ", as: "শেষ তাৰিখ" },
+    filterWorkerLabel: { ml: "പേര് വെച്ച് തിരയാൻ", en: "Search by Name", ta: "பெயர் மூலம் தேட", hi: "नाम से खोजें", kn: "ಹೆಸರಿನಿಂದ ಹುಡುಕಿ", bn: "নাম দিয়ে খুঁজুন", as: "নামেৰে বিচাৰক" },
+    searchNamePlaceholder: { ml: "പേര് ടൈപ്പ് ചെയ്യുക...", en: "Type name...", ta: "பெயர் தட்டச்சு செய்யவும்...", hi: "नाम टाइप करें...", kn: "ಹೆಸರು ಟೈಪ್ ಮಾಡಿ...", bn: "নাম টাইপ করুন...", as: "নাম টাইপ কৰক..." },
 
-    addNewAcc: { ml: "പുതിയ കണക്ക് ചേർക്കുക", en: "Add New Account", "ta": "புதிய கணக்கைச் சேர்க்கவும்", hi: "नया खाता जोड़ें" },
-    selectDateLabel: { ml: "തീയതി തിരഞ്ഞെടുക്കുക", en: "Select Date", ta: "தேதியைத் தேர்ந்தெடுக்கவும்", hi: "तिथि चुनें" },
-    nameDescPlaceholder: { ml: "ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക", en: "Type Name / Description", ta: "பெயர் / விவரங்களை தட்டச்சு செய்யவும்", hi: "नाम / विवरण टाइप करें" },
-    sitePlaceholder: { ml: "സ്ഥലം / സൈറ്റ്", en: "Location / Site", ta: "இடம் / தளம்", hi: "स्थान / साइट" },
+    addNewAcc: { ml: "പുതിയ കണക്ക് ചേർക്കുക", en: "Add New Account", ta: "புதிய கணக்கைச் சேர்க்கவும்", hi: "नया खाता जोड़ें", kn: "ಹೊಸ ಖಾತೆ ಸೇರಿಸಿ", bn: "নতুন হিসাব যোগ করুন", as: "নতুন হিচাপ যোগ কৰক" },
+    selectDateLabel: { ml: "തീയതി തിരഞ്ഞെടുക്കുക", en: "Select Date", ta: "தேதியைத் தேர்ந்தெடுக்கவும்", hi: "तिथि चुनें", kn: "ದಿನಾಂಕ ಆಯ್ಕೆಮಾಡಿ", bn: "তারিখ নির্বাচন করুন", as: "তাৰিখ বাছনি কৰক" },
+    nameDescPlaceholder: { ml: "ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക", en: "Type Name / Description", ta: "பெயர் / விவரங்களை தட்டச்சு செய்யவும்", hi: "नाम / विवरण टाइप करें", kn: "ಹೆಸರು / ವಿವರಣೆ ಟೈಪ್ ಮಾಡಿ", bn: "নাম / বিবরণ টাইপ করুন", as: "নাম / বিৱৰণ টাইপ কৰক" },
+    sitePlaceholder: { ml: "സ്ഥലം / സൈറ്റ്", en: "Location / Site", ta: "இடம் / தளம்", hi: "स्थान / साइट", kn: "ಸ್ಥಳ / ಸೈಟ್", bn: "স্থান / সাইট", as: "ঠাই / চাইট" },
 
-    wage: { ml: "കൂലി", en: "Wage", ta: "கூலி", hi: "मजदूरी" },
-    otherExp: { ml: "മറ്റ് ചെലവ്", en: "Other Expense", ta: "இதர செலவு", hi: "अन्य व्यय" },
-    cash: { ml: "ക്യാഷ്", en: "Cash", ta: "பணம்", hi: "नकद" },
-    bank: { ml: "ബാങ്ക്", en: "Bank", ta: "வங்கி", hi: "बैंक" },
-    amountPlaceholder: { ml: "തുക (₹)", en: "Amount (₹)", ta: "தொகை (₹)", hi: "राशि (₹)" },
-    saveBtn: { ml: "സേവ് ചെയ്യുക", en: "Save", ta: "சேமிக்கவும்", hi: "सहेजें" },
-    cancelEditBtn: { ml: "എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക", en: "Cancel Edit", ta: "திருத்துவதை ரத்துசெய்", hi: "संपादन रद्द करें" },
+    wage: { ml: "കൂലി", en: "Wage", ta: "கூலி", hi: "मजदूरी", kn: "ಕೂಲಿ", bn: "মজুরি", as: "মজুৰি" },
+    otherExp: { ml: "മറ്റ് ചെലവ്", en: "Other Expense", ta: "இதர செலவு", hi: "अन्य व्यय", kn: "ಇತರ ವೆಚ್ಚ", bn: "অন্যান্য ব্যয়", as: "অন্যান্য খৰচ" },
+    cash: { ml: "ക്യാഷ്", en: "Cash", ta: "பணம்", hi: "नकद", kn: "ನಗದು", bn: "নগদ", as: "নগদ" },
+    bank: { ml: "ബാങ്ക്", en: "Bank", ta: "வங்கி", hi: "बैंक", kn: "ಬ್ಯಾಂಕ್", bn: "ব্যাংক", as: "বেংক" },
+    amountPlaceholder: { ml: "തുക (₹)", en: "Amount (₹)", ta: "தொகை (₹)", hi: "राशि (₹)", kn: "ಮೊತ್ತ (₹)", bn: "টাকা (₹)", as: "টকা (₹)" },
+    saveBtn: { ml: "സേവ് ചെയ്യുക", en: "Save", ta: "சேமிக்கவும்", hi: "सहेजें", kn: "ಉಳಿಸಿ", bn: "সংরক্ষণ করুন", as: "সংৰক্ষণ কৰক" },
+    cancelEditBtn: { ml: "എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക", en: "Cancel Edit", ta: "திருத்துவதை ரத்துசெய்", hi: "संपादन रद्द करें", kn: "ಎಡಿಟ್ ರದ್ದುಮಾಡಿ", bn: "এডিটিং বাতিল", as: "সম্পাদনা বাতিল কৰক" },
 
-    pdfReport: { ml: "📄 PDF റിപ്പോർട്ട്", en: "📄 PDF Report", ta: "📄 PDF அறிக்கை", hi: "📄 पीडीएफ रिपोर्ट" },
-    excelDownload: { ml: "📊 Excel ഡൗൺലോഡ്", en: "📊 Excel Download", ta: "📊 எக்செல் பதிவிறக்கம்", hi: "📊 एक्सेल डाउनलोड" }
+    pdfReport: { ml: "📄 PDF റിപ്പോർട്ട്", en: "📄 PDF Report", ta: "📄 PDF அறிக்கை", hi: "📄 पीडीएफ रिपोर्ट", kn: "📄 PDF ವರದಿ", bn: "📄 PDF রিপোর্ট", as: "📄 PDF ৰিপ'ৰ্ট" },
+    excelDownload: { ml: "📊 Excel ഡൗൺലോഡ്", en: "📊 Excel Download", ta: "📊 எக்செல் பதிவிறக்கம்", hi: "📊 एक्सेल डाउनलोड", kn: "📊 Excel ಡೌನ್‌ಲೋಡ್", bn: "📊 Excel ডাউনলোড", as: "📊 Excel ডাউনলো'ড" },
         
     // ==========================================
     // 5. STAFF & DETAILS (staff.html / staff-details.html)
@@ -144,7 +144,7 @@ const words = {
     qty_placeholder: { ml: "എത്ര എണ്ണം?", en: "Quantity?", hi: "मात्रा?", ta: "எத்தனை எண்ணிக்கை?", kn: "ಪ್ರಮಾಣ?", bn: "পরিমাণ?", as: "পৰিমাণ?" },
     unit_rent_placeholder: { ml: "ഒരെണ്ണത്തിന്റെ വാടക (₹)", en: "Rent Per Unit (₹)", hi: "प्रति इकाई किराया (₹)", ta: "ஒரு பிரிவின் வாடகை (₹)", kn: "ಪ್ರತಿ ಯೂನಿಟ್ ಬಾಡಿಗೆ (₹)", bn: "প্রতিটির ভাড়া (₹)", as: "প্ৰতিটোৰ ভাৰা (₹)" },
     total_rent_placeholder: { ml: "ആകെ വാടക (₹)", en: "Total Rent Amount (₹)", hi: "कुल किराया राशि (₹)", ta: "மொத்த வாடகைத் தொகை (₹)", kn: "ಒಟ್ಟು ಬಾಡಿಗೆ ಮೊತ್ತ (₹)", bn: "মোট ভাড়ার পরিমাণ (₹)", as: "মুঠ ভাৰা পৰিমাণ (₹)" },
-    paid_rent_placeholder: { ml: "ഇതുവരെ നൽകിയ മുൻകൂർ തുക (₹)", en: "Advance/Paid Amount (₹)", hi: "अग्रिम / भुगतान की गई राशि (₹)", ta: "முன்பணம் / செலுத்திய தொகை (₹)", kn: "ಮುಂಗಡ / ಪಾವತಿಸಿದ ಮೊತ್ತ (₹)", bn: "অগ্রিম / প্রদত্ত টাকা (₹)", as: "অগ্ৰিম / পৰিশোধ কৰാ ടকা (₹)" }
+    paid_rent_placeholder: { ml: "ഇതുവരെ നൽകിയ മുൻകൂർ തുക (₹)", en: "Advance/Paid Amount (₹)", hi: "अग्रिम / भुगतान की गई राशि (₹)", ta: "முன்பணம் / செலுத்திய தொகை (₹)", kn: "ಮುಂಗಡ / ಪಾವತಿಸಿದ ಮೊತ್ತ (₹)", bn: "অগ্রিম / প্রদত্ত টাকা (₹)", as: "অগ্ৰিম / পৰিশোধ কৰা টকা (₹)" }
 };
 
 // ==========================================
@@ -156,43 +156,54 @@ window.switchLanguage = function(langCode) {
     }
     localStorage.setItem('selectedLang', langCode);
 
-    // 1. .lang ക്ലാസ് ഉള്ള എല്ലാ ടെക്സ്റ്റുകളും മാറ്റുന്നു
-    document.querySelectorAll('.lang').forEach(element => {
+    // 1. data-key ഉള്ളതും .lang ക്ലാസ് ഉള്ളതുമായ എല്ലാ എലമെന്റുകളും മാറ്റി നൽകുന്നു
+    document.querySelectorAll('.lang, [data-key]').forEach(element => {
         const key = element.getAttribute('data-key') || element.id;
         if (words[key] && words[key][langCode]) {
-            element.innerText = words[key][langCode];
+            // ചൈൽഡ് എലമെന്റുകൾ ഇല്ലാത്തവ മാത്രം ടെക്സ്റ്റ് മാറ്റുക (ഫോർമാറ്റ് കേടുവരാതിരിക്കാൻ)
+            if (element.children.length === 0 || element.tagName === 'SPAN' || element.tagName === 'P' || element.tagName === 'BUTTON' || element.tagName === 'H1' || element.tagName === 'H2' || element.tagName === 'H3') {
+                element.innerText = words[key][langCode];
+            }
         }
     });
 
-    // 2. .lang-placeholder ഉള്ളവ മാറ്റുന്നു
-    document.querySelectorAll('.lang-placeholder').forEach(element => {
-        const key = element.getAttribute('data-key');
+    // 2. Placeholder ടെക്സ്റ്റുകൾ മാറ്റുന്നു
+    document.querySelectorAll('.lang-placeholder, [data-key-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-key-placeholder') || element.getAttribute('data-key');
         if (words[key] && words[key][langCode]) {
             element.placeholder = words[key][langCode];
         }
     });
 
-    // 3. സെലക്ട് ചെയ്ത ഭാഷയ്ക്ക് മാത്രം ഡ്രോപ്പ്ഡൗണിൽ കളർ ഹൈലൈറ്റ് നൽകാൻ
-    document.querySelectorAll('.lang-option').forEach(btn => {
+    // 3. ഹൈലൈറ്റ് കളർ സജ്ജമാക്കൽ
+    document.querySelectorAll('.lang-option, [onclick*="switchLanguage"]').forEach(btn => {
         const onclickAttr = btn.getAttribute('onclick') || '';
-        if (onclickAttr.includes(langCode)) {
-            btn.className = "lang-option w-full text-left px-4 py-2 bg-sky-600 text-white font-bold rounded-lg transition-all";
+        if (onclickAttr.includes(`'${langCode}'`) || onclickAttr.includes(`"${langCode}"`)) {
+            btn.className = "lang-option w-full text-left px-4 py-2 bg-amber-500 text-slate-950 font-black rounded-lg transition-all shadow-md";
         } else {
-            btn.className = "lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700 rounded-lg transition-all";
+            btn.className = "lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium";
         }
     });
+
+    // 4. മെനു അടയ്ക്കുന്നു
+    const dropdown = document.getElementById('langDropdown');
+    if (dropdown && !dropdown.classList.contains('hidden')) {
+        dropdown.classList.add('hidden');
+    }
 };
 
+window.changeLanguage = window.switchLanguage;
 
 // ഡ്രോപ്പ്ഡൗൺ മെനു ടോഗിൾ ചെയ്യാൻ
-window.toggleLangMenu = function() {
+window.toggleLangMenu = function(e) {
+    if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) {
         dropdown.classList.toggle('hidden');
     }
 };
 
-// പേജ് ലോഡാകുമ്പോൾ സ്വയം അപ്ഡേറ്റ് ചെയ്യാൻ
+// പേജ് ലോഡാകുമ്പോൾ തനിയെ അപ്ഡേറ്റ് ആകാൻ
 document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('selectedLang') || 'ml';
     window.switchLanguage(savedLang);
