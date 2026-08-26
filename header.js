@@ -1,7 +1,7 @@
 export function setupHeader(containerId, showWelcome = false, userName = "") {
     const headerHTML = `
     <div class="flex flex-col gap-2 w-full">
-        <!-- ഹെഡറും ലോഗോയും Lang ബട്ടണും -->
+        <!-- ഹെഡറും ലോഗോയും -->
         <div class="flex items-center justify-between bg-amber-500/30 text-amber-300 px-6 py-3 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.5)] w-full relative">
             <div class="flex items-center gap-4">
                 <img src="icon.png" alt="മേസ്തിരി പ്രോ ലോഗോ" class="rounded-full object-cover border-2 border-amber-200 shadow-lg flex-shrink-0" style="width: 54px; height: 54px;">
@@ -34,7 +34,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
     }
 }
 
-// 🟢 1. ഡ്രോപ്പ്ഡൗൺ ബോക്സ് ഓട്ടോമാറ്റിക്കായി ബോഡിയിലേക്ക് ആഡ് ചെയ്യാനുള്ള ഫങ്ഷൻ
+// 🟢 1. ഡ്രോപ്പ്ഡൗൺ ബോക്സ് നിർമ്മിക്കുന്നു
 function ensureDropdownExists() {
     let dropdown = document.getElementById('langDropdown');
     if (!dropdown) {
@@ -55,7 +55,7 @@ function ensureDropdownExists() {
     return dropdown;
 }
 
-// 🟢 2. ഏതൊരു ലാംഗ്വേജ് ബട്ടൺ അമർത്തിയാലും കൃത്യമായി അതിന്റെ താഴെ മെനു തുറക്കാൻ
+// 🟢 2. മെനു ടോഗിൾ ചെയ്യൽ
 window.toggleLangMenu = function(e) {
     if (e && typeof e.stopPropagation === 'function') {
         e.stopPropagation();
@@ -75,39 +75,47 @@ window.toggleLangMenu = function(e) {
     }
 };
 
-// 🟢 3. എല്ലാ പേജുകളിലെയും ടെക്സ്റ്റ് പരിഭാഷപ്പെടുത്തുന്ന മാസ്റ്റർ ഫങ്ഷൻ
+// 🟢 3. ഭാഷ മാറ്റി പേജ് പുതുക്കുന്ന മാസ്റ്റർ ഫങ്ഷൻ
 window.changeLanguage = function(langCode) {
+    // ഭാഷ LocalStorage-ൽ സേവ് ചെയ്യുന്നു
     localStorage.setItem('selectedLang', langCode);
+    localStorage.setItem('lang', langCode);
     
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) dropdown.classList.add('hidden');
 
-    // എല്ലാ .lang, .lang-placeholder ഘടകങ്ങളുടെയും ഭാഷ മാറ്റുന്നു
-    document.querySelectorAll('.lang').forEach(el => {
-        const key = el.getAttribute('data-key');
-        if (typeof words !== 'undefined' && words[key] && words[key][langCode]) {
-            el.innerText = words[key][langCode];
-        }
-    });
-
-    document.querySelectorAll('.lang-placeholder').forEach(el => {
-        const key = el.getAttribute('data-key');
-        if (typeof words !== 'undefined' && words[key] && words[key][langCode]) {
-            el.placeholder = words[key][langCode];
-        }
-    });
-
-    // പേജ് സ്‌പെസിഫിക് ഫങ്ഷനുകൾ അപ്‌ഡേറ്റ് ചെയ്യൽ
+    // 1. ഫ്രണ്ട്-എൻഡ് ഫങ്ഷനുകൾ പ്രവർത്തിപ്പിക്കാൻ ശ്രമിക്കുന്നു
+    let updated = false;
     if (typeof window.switchLanguage === 'function' && window.switchLanguage !== window.changeLanguage) {
         window.switchLanguage(langCode);
+        updated = true;
     }
+    
+    // 2. DOM Elements മാറ്റി കൊടുക്കൽ
+    const langWords = window.words || (typeof words !== 'undefined' ? words : null);
+    if (langWords) {
+        document.querySelectorAll('.lang').forEach(el => {
+            const key = el.getAttribute('data-key');
+            if (langWords[key] && langWords[key][langCode]) {
+                el.innerText = langWords[key][langCode];
+                updated = true;
+            }
+        });
+    }
+
+    // 3. ഡാറ്റ മാറിയില്ലെങ്കിൽ മാത്രം പേജ് റീഫ്രഷ് ചെയ്യുന്നു (ഉറപ്പായും ഭാഷ മാറാൻ)
     if (typeof window.loadData === 'function') window.loadData();
     if (typeof window.renderList === 'function') window.renderList();
+
+    // പേജിലെ മാറ്റങ്ങൾ ഉടനടി പ്രതിഫലിക്കാൻ റീഫ്രഷ് ആവശ്യമാണെങ്കിൽ:
+    setTimeout(() => {
+        window.location.reload();
+    }, 100);
 };
 
 window.switchLanguage = window.changeLanguage;
 
-// 🟢 4. ഡാഷ്‌ബോർഡിലെ 🌐 Lang ബട്ടണും ഹെഡറിലെ ☰ Lang ബട്ടണും തിരിച്ചറിഞ്ഞു പ്രവർത്തിക്കാൻ
+// 🟢 4. പുറത്ത് ക്ലിക്ക് ചെയ്താൽ അടയാൻ
 document.addEventListener('click', (e) => {
     const langBtn = e.target.closest('button[onclick*="Lang"], button[onclick*="lang"], div[onclick*="Lang"], button[onclick*="toggleLangMenu"]');
     
