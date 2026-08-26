@@ -53,7 +53,7 @@
             });
         };
 
-        document.addEventListener("DOMContentLoaded", () => {
+                document.addEventListener("DOMContentLoaded", () => {
             if (typeof setupHeader === 'function') {
                 setupHeader('appHeader', true, currentMeshtri);
             }
@@ -63,7 +63,7 @@
             const transDateInput = document.getElementById('transDate');
             if (transDateInput) transDateInput.value = today;
 
-            // പേജ് തുറക്കുമ്പോൾ ഭാഷ മാറ്റുന്നു
+            // പേജ് തുറക്കുമ്പോൾ താനേ ഭാഷ മാറാൻ
             setTimeout(() => {
                 if (typeof window.switchLanguage === 'function') {
                     window.switchLanguage();
@@ -71,13 +71,14 @@
             }, 100);
         });
 
-        // ഭാഷ മാറ്റുമ്പോൾ ഈ പേജിലും അപ്ഡേറ്റ് വരാൻ Event Listener
+        // ഭാഷ മാറ്റുമ്പോൾ ഈ പേജിലും അപ്പപ്പോൾ മാറാൻ
         window.addEventListener('languageChanged', () => {
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage();
             }
             renderList();
         });
+
 
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
