@@ -54,7 +54,7 @@ window.toggleLangMenu = function(event) {
     }
 };
 
-// ഭാഷ മാറ്റാൻ (എല്ലാ പേജുകളിലും പ്രവർത്തിക്കാൻ പാകത്തിന് പരിഹരിച്ചത്)
+// 🟢 ഭാഷ മാറ്റാൻ (ഡാഷ്‌ബോർഡിലെയും അക്കൗണ്ട്സിലെയും പഴയ/പുതിയ ഫങ്ഷനുകൾ ഒരേപോലെ വിളിക്കുന്നു)
 window.changeLanguage = function(langCode) {
     localStorage.setItem('selectedLang', langCode);
     
@@ -62,9 +62,14 @@ window.changeLanguage = function(langCode) {
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) dropdown.classList.add('hidden');
 
-    // 1. Dashboard-ലും Accounts-ലും ഉള്ള എല്ലാത്തരം ലാംഗ്വേജ് ഫങ്ഷനുകളും വിളിക്കുന്നു
+    // 1. അക്കൗണ്ട് പേജിലെ ഭാഷ മാറ്റാൻ
     if (typeof window.switchLanguage === 'function') {
         window.switchLanguage(langCode);
+    }
+    
+    // 2. ഡാഷ്‌ബോർഡിൽ ഉണ്ടാക്കിയിരുന്ന പഴയ ഫങ്ഷനുകൾ വിളിക്കാൻ (ഇതാണ് ഇന്നലെ പ്രവർത്തിച്ചിരുന്നത്)
+    if (typeof window.setLanguage === 'function') {
+        window.setLanguage(langCode);
     }
     if (typeof window.updateLanguage === 'function') {
         window.updateLanguage(langCode);
@@ -72,17 +77,14 @@ window.changeLanguage = function(langCode) {
     if (typeof window.applyLanguage === 'function') {
         window.applyLanguage(langCode);
     }
-    
-    // 2. പേജിലെ ഡാറ്റ കാണിക്കുന്ന ഫങ്ഷനുകൾ വീണ്ടും അപ്ഡേറ്റ് ചെയ്യുന്നു
+
+    // 3. പേജിലെ ഡാറ്റ അപ്ഡേറ്റ് ചെയ്യാൻ
     if (typeof window.loadData === 'function') {
         window.loadData();
     }
-    if (typeof window.renderList === 'function') {
-        window.renderList();
-    }
 };
 
-// പുറത്ത് ക്ലിക്ക് ചെയ്താൽ ഡ്രോപ്പ്ഡൗൺ ക്ലോസ് ചെയ്യുമെന്നത് ഉറപ്പാക്കുന്നു
+// പുറത്ത് ക്ലിക്ക് ചെയ്താൽ ഡ്രോപ്പ്ഡൗൺ ക്ലോസ് ചെയ്യുക
 document.addEventListener('click', (e) => {
     const dropdown = document.getElementById('langDropdown');
     if (dropdown && !dropdown.classList.contains('hidden')) {
