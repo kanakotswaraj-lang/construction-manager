@@ -45,16 +45,18 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
     }
 }
 
-// ലാംഗ്വേജ് മെനു ടോഗിൾ ചെയ്യാൻ
+// 🟢 1. ലാംഗ്വേജ് മെനു തുറക്കാനും അടയ്ക്കാനും (ഡാഷ്‌ബോർഡിലെയും ഹെഡറിലെയും ബട്ടണുകൾക്ക് ഒരുപോലെ വർക്ക് ചെയ്യും)
 window.toggleLangMenu = function(event) {
-    if (event) event.stopPropagation();
+    if (event && typeof event.stopPropagation === 'function') {
+        event.stopPropagation();
+    }
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) {
         dropdown.classList.toggle('hidden');
     }
 };
 
-// 🟢 ഭാഷ മാറ്റാൻ (ഡാഷ്‌ബോർഡിലെയും അക്കൗണ്ട്സിലെയും പഴയ/പുതിയ ഫങ്ഷനുകൾ ഒരേപോലെ വിളിക്കുന്നു)
+// 🟢 2. എല്ലാ പേജുകളിലേക്കും ഭാഷ മാറ്റുന്ന മാസ്റ്റർ ഫങ്ഷൻ
 window.changeLanguage = function(langCode) {
     localStorage.setItem('selectedLang', langCode);
     
@@ -62,29 +64,38 @@ window.changeLanguage = function(langCode) {
     const dropdown = document.getElementById('langDropdown');
     if (dropdown) dropdown.classList.add('hidden');
 
-    // 1. അക്കൗണ്ട് പേജിലെ ഭാഷ മാറ്റാൻ
+    // എല്ലാ പേജുകളിലെയും ടെക്സ്റ്റ് മാറ്റുന്നു (DOM Translation)
+    document.querySelectorAll('.lang').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (typeof words !== 'undefined' && words[key] && words[key][langCode]) {
+            el.innerText = words[key][langCode];
+        }
+    });
+
+    // ഇൻപുട്ട് ഫീൽഡ് Placeholder-കൾ മാറ്റുന്നു
+    document.querySelectorAll('.lang-placeholder').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (typeof words !== 'undefined' && words[key] && words[key][langCode]) {
+            el.placeholder = words[key][langCode];
+        }
+    });
+
+    // പേജുകളിൽ ഉള്ള ഫങ്ഷനുകൾ വിളിക്കുന്നു (Dashboard / Accounts support)
     if (typeof window.switchLanguage === 'function') {
         window.switchLanguage(langCode);
     }
-    
-    // 2. ഡാഷ്‌ബോർഡിൽ ഉണ്ടാക്കിയിരുന്ന പഴയ ഫങ്ഷനുകൾ വിളിക്കാൻ (ഇതാണ് ഇന്നലെ പ്രവർത്തിച്ചിരുന്നത്)
-    if (typeof window.setLanguage === 'function') {
-        window.setLanguage(langCode);
-    }
-    if (typeof window.updateLanguage === 'function') {
-        window.updateLanguage(langCode);
-    }
-    if (typeof window.applyLanguage === 'function') {
-        window.applyLanguage(langCode);
-    }
-
-    // 3. പേജിലെ ഡാറ്റ അപ്ഡേറ്റ് ചെയ്യാൻ
     if (typeof window.loadData === 'function') {
         window.loadData();
     }
+    if (typeof window.renderList === 'function') {
+        window.renderList();
+    }
 };
 
-// പുറത്ത് ക്ലിക്ക് ചെയ്താൽ ഡ്രോപ്പ്ഡൗൺ ക്ലോസ് ചെയ്യുക
+// ഡാഷ്‌ബോർഡിൽ switchLanguage എന്ന് വിളിച്ചാലും ഇത് വർക്ക് ചെയ്യും:
+window.switchLanguage = window.changeLanguage;
+
+// 🟢 3. പുറത്ത് ക്ലിക്ക് ചെയ്താൽ ഡ്രോപ്പ്ഡൗൺ ക്ലോസ് ചെയ്യുന്നു
 document.addEventListener('click', (e) => {
     const dropdown = document.getElementById('langDropdown');
     if (dropdown && !dropdown.classList.contains('hidden')) {
