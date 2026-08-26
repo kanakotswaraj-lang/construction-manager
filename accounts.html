@@ -348,20 +348,33 @@
         <!-- 1. header.js വഴി ലോഡ് ആകുന്ന ഹെഡർ കണ്ടെയ്നർ -->
         <div id="appHeader" class="w-full"></div>
 
-        <!-- 2. ഗ്രാഡിയന്റ് ഹെഡർ ബോക്സ് -->
-        
-            <h1 class="text-lg font-black">
-    <span class="lang bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
-</h1>
+        <!-- 2. ഗ്രേഡിയന്റ് ഹെഡർ ബോക്സ് (വരവ്-ചെലവ് തലക്കെട്ടും ഹോം ബട്ടണും ഒന്നിച്ചുള്ള ഭാഗം) -->
+<div class="glass-card rounded-3xl p-4 mb-4 space-y-3">
+    <h1 class="text-lg font-black">
+        <span class="lang bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
+    </h1>
 
+    <a href="dashboard.html" class="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold rounded-xl shadow-lg transition-transform active:scale-95">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span class="lang" data-key="homeBtn">ഹോം</span>
+    </a>
+</div>
 
-            <a href="dashboard.html" class="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 rounded-2xl font-black text-xs shadow-lg hover:scale-105 active:scale-95 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                <span class="lang" data-key="homeBtn">Home</span>
-            </a>
-        </div>
+<!-- 2. ഗ്രേഡിയന്റ് ഹെഡർ ബോക്സ് (വരവ്-ചെലവ് തലക്കെട്ടും ഹോം ബട്ടണും ഒന്നിച്ചുള്ള ഭാഗം) -->
+<div class="glass-card rounded-3xl p-4 mb-4 space-y-3">
+    <h1 class="text-lg font-black">
+        <span class="lang bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
+    </h1>
+
+    <a href="dashboard.html" class="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold rounded-xl shadow-lg transition-transform active:scale-95">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span class="lang" data-key="homeBtn">ഹോം</span>
+    </a>
+</div>
 
         <!-- ആകെ തുക സംഗ്രഹം -->
         <div class="grid grid-cols-2 gap-3 mb-4">
