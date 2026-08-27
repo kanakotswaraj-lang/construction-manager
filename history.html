@@ -31,8 +31,14 @@
         const t = translations[currentLang] || translations['ml'];
 
         document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader', true, currentMeshtri);
+            try {
+                if (typeof setupHeader === 'function') {
+                    setupHeader('appHeader', true, currentMeshtri);
+                } else {
+                    console.warn("setupHeader function not found!");
+                }
+            } catch (e) {
+                console.error("Header load error:", e);
             }
             applyLanguageTexts();
             fetchHistory();
@@ -94,7 +100,6 @@
         async function fetchHistory() {
             const container = document.getElementById('historyListContainer');
             try {
-                // ഫയർബേസിൽ നിന്നും കണക്കുകൾ എടുക്കുന്നു
                 const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
                 const querySnapshot = await getDocs(q);
                 allHistoryData = [];
@@ -108,7 +113,7 @@
                 filterAndDisplay();
             } catch (error) {
                 console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
-                container.innerHTML = `<div class="text-center text-red-400 py-8 text-xs font-bold">ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ തടസ്സം നേരിട്ടു!</div>`;
+                container.innerHTML = `<div class="text-center text-red-400 py-8 text-xs font-bold">${t.noData || "കണക്കുകൾ ഒന്നും ലഭ്യമല്ല"}</div>`;
             }
         }
 
