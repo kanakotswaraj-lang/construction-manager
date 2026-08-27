@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ml">
 
 <head>
@@ -9,6 +10,7 @@
     <script src="language.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -51,6 +53,13 @@
                     el.placeholder = words[key][lang];
                 }
             });
+
+            // 3. സൈറ്റ് ഡ്രോപ്പ്ഡൗണിന്റെ ആദ്യ ഓപ്ഷൻ (എല്ലാ സൈറ്റുകളും) ലാംഗ്വേജ് അനുസരിച്ച് മാറ്റുക
+            const siteSelect = document.getElementById('filterSite');
+            if (siteSelect && siteSelect.options.length > 0) {
+                const defaultSiteText = (typeof words !== 'undefined' && words['allSites'] && words['allSites'][lang]) ? words['allSites'][lang] : 'എല്ലാ സൈറ്റുകളും';
+                siteSelect.options[0].text = defaultSiteText;
+            }
         };
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -65,23 +74,23 @@
 
             // പേജ് തുറക്കുമ്പോൾ താനേ ഭാഷ മാറാൻ
             setTimeout(() => {
+                const savedLang = localStorage.getItem('selectedLang') || 'ml';
                 if (typeof window.switchLanguage === 'function') {
-                    window.switchLanguage();
+                    window.switchLanguage(savedLang);
                 }
-            }, 100);
+            }, 150);
         });
 
         // ഭാഷ മാറ്റുമ്പോൾ ഈ പേജിലും അപ്പപ്പോൾ മാറാൻ
-        window.addEventListener('languageChanged', () => {
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage();
-            }
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = e.detail || localStorage.getItem('selectedLang') || 'ml';
+            window.switchLanguage(newLang);
             renderList();
         });
 
-
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
+            if (!container) return;
             const toast = document.createElement('div');
             toast.className = `toast-animate pointer-events-auto px-6 py-4 rounded-2xl text-white font-bold text-base shadow-2xl border backdrop-blur-md flex items-center gap-3 ${
                 isSuccess 
@@ -127,20 +136,26 @@
                 snapshot.forEach(docSnap => {
                     const d = docSnap.data();
                     allTransactions.push({ id: docSnap.id, ...d });
-                    if (d.site) siteSet.add(d.site);
+                    if (d.site) siteSet.add(d.site.trim());
                 });
 
                 allTransactions.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
-                                const siteSelect = document.getElementById('filterSite');
-                const currentSelectedSite = siteSelect.value;
-                const lang = localStorage.getItem('selectedLang') || 'ml';
-                const defaultSiteText = (typeof words !== 'undefined' && words['allSites'] && words['allSites'][lang]) ? words['allSites'][lang] : 'എല്ലാ സൈറ്റുകളും';
-                
-                siteSelect.innerHTML = `<option value="" class="lang" data-key="allSites">${defaultSiteText}</option>`;
-                siteSet.forEach(site => siteSelect.innerHTML += `<option value="${site}">${site}</option>`);
-                siteSelect.value = currentSelectedSite;
-
+                const siteSelect = document.getElementById('filterSite');
+                if (siteSelect) {
+                    const currentSelectedSite = siteSelect.value;
+                    const lang = localStorage.getItem('selectedLang') || 'ml';
+                    const defaultSiteText = (typeof words !== 'undefined' && words['allSites'] && words['allSites'][lang]) ? words['allSites'][lang] : 'എല്ലാ സൈറ്റുകളും';
+                    
+                    siteSelect.innerHTML = `<option value="" class="lang" data-key="allSites">${defaultSiteText}</option>`;
+                    siteSet.forEach(site => {
+                        if (site) {
+                            const isSelected = site === currentSelectedSite ? 'selected' : '';
+                            siteSelect.innerHTML += `<option value="${site}" ${isSelected}>${site}</option>`;
+                        }
+                    });
+                    siteSelect.value = currentSelectedSite;
+                }
                 
                 renderList();
             }, (error) => {
@@ -225,7 +240,7 @@
         };
 
         window.renderList = () => {
-            const sSite = (document.getElementById('filterSite')?.value || '').toLowerCase().trim();
+            const sSite = (document.getElementById('filterSite')?.value || '').trim();
             const sStartDate = document.getElementById('startDate')?.value || '';
             const sEndDate = document.getElementById('endDate')?.value || '';
             const sMonth = document.getElementById('filterMonth')?.value || '';
@@ -240,8 +255,9 @@
             if (typeof allTransactions !== 'undefined' && Array.isArray(allTransactions)) {
                 allTransactions.forEach(d => {
                     const itemDate = d.date || '';
+                    const itemSite = (d.site || '').trim();
                     
-                    const matchesSite = !sSite || (d.site || '').toLowerCase() === sSite;
+                    const matchesSite = !sSite || itemSite === sSite;
                     const matchesStartDate = !sStartDate || itemDate >= sStartDate;
                     const matchesEndDate = !sEndDate || itemDate <= sEndDate;
                     const matchesDateRange = matchesStartDate && matchesEndDate;
@@ -317,27 +333,7 @@
         };
     </script>
 
-    <style>
-        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
-        @media print { .no-print { display: none !important; } }
-        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .toast-animate { animation: slideIn 0.3s ease-out forwards; }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover, 
-        input:-webkit-autofill:focus, 
-        input:-webkit-autofill:active {
-            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
-            -webkit-text-fill-color: #ffffff !important;
-            transition: background-color 5000s ease-in-out 0s;
-        }
-        input:focus, select:focus {
-            outline: none !important;
-            border-color: #f59e0b !important;
-            background-color: #1e293b !important;
-            color: #ffffff !important;
-        }
-    </style>
+
 </head>
     <body class="text-white min-h-screen pb-12 p-4 font-sans">
 
