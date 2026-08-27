@@ -17,13 +17,13 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
             <div class="relative flex items-center gap-2 bg-amber-500/20 px-3 py-1.5 rounded-2xl border border-amber-400/60 shadow-inner">
                 <span class="text-base animate-pulse">🌐</span>
                 <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 px-3 py-1.5 rounded-xl text-xs font-extrabold shadow-md shadow-amber-950/50 transition cursor-pointer outline-none border border-white">
-                    <option value="ml" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
-                    <option value="en" ${currentLang === 'en' ? 'selected' : ''}>English</option>
-                    <option value="hi" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
-                    <option value="ta" ${currentLang === 'ta' ? 'selected' : ''}>தமிழ்</option>
-                    <option value="kn" ${currentLang === 'kn' ? 'selected' : ''}>ಕನ್ನಡ</option>
-                    <option value="bn" ${currentLang === 'bn' ? 'selected' : ''}>বাংলা</option>
-                    <option value="as" ${currentLang === 'as' ? 'selected' : ''}>অসমীয়া</option>
+                    <option value="ml" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
+                    <option value="en" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'en' ? 'selected' : ''}>English</option>
+                    <option value="hi" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
+                    <option value="ta" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'ta' ? 'selected' : ''}>தமிழ்</option>
+                    <option value="kn" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'kn' ? 'selected' : ''}>ಕನ್ನಡ</option>
+                    <option value="bn" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'bn' ? 'selected' : ''}>বাংলা</option>
+                    <option value="as" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'as' ? 'selected' : ''}>অসমীয়া</option>
                 </select>
             </div>
 
