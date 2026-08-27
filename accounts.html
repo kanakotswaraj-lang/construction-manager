@@ -61,24 +61,24 @@
                 siteSelect.options[0].text = defaultSiteText;
             }
         };
-
-                document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", () => {
             if (typeof setupHeader === 'function') {
                 setupHeader('appHeader', true, currentMeshtri);
             }
             fetchLiveAccounts();
-
-            const today = new Date().toISOString().split('T')[0];
-            const transDateInput = document.getElementById('transDate');
-            if (transDateInput) transDateInput.value = today;
-
-
-
-        // 1. പേജ് ലോഡ് ചെയ്യുമ്പോൾ സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യാൻ
-        document.addEventListener("DOMContentLoaded", () => {
+            
+            // സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യാൻ
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
+            }
+        });
+
+        // ഭാഷ മാറ്റുമ്പോൾ തത്സമയം മാറാൻ
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
             }
             if (typeof renderList === 'function') {
                 renderList();
