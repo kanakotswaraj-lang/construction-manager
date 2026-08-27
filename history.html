@@ -27,13 +27,200 @@
         const db = getFirestore(app);
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
+        // ഭാഷ അനുസരിച്ചുള്ള വാക്കുകൾ (Localization)
+        const pageTexts = {
+            ml: {
+                title: "കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്",
+                homeBtn: "Home",
+                income: "ആകെ വരവ് (Income)",
+                expense: "ആകെ ചെലവ്/കൂലി",
+                searchPlaceholder: "🔍 സൈറ്റിന്റെ പേരിലോ വിവരത്തിലോ തിരയുക...",
+                tabAll: "എല്ലാം",
+                tabIncome: "വരവ്",
+                tabWage: "കൂലി",
+                tabExpense: "ചെലവ്",
+                loading: "കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...",
+                noData: "കണക്കുകൾ ഒന്നും ലഭ്യമല്ല",
+                nameLabel: "പേര്:",
+                editBtn: "എഡിറ്റ്",
+                deleteBtn: "ഡിലീറ്റ്",
+                modalTitle: "കണക്ക് തിരുത്തുക (Edit)",
+                fieldDesc: "വിവരം / പേര്:",
+                fieldSite: "സൈറ്റ് പേര്:",
+                fieldAmount: "തുക (₹):",
+                fieldDate: "തീയതി:",
+                cancelBtn: "വേണ്ട",
+                updateBtn: "അപ്ഡേറ്റ് ചെയ്യുക"
+            },
+            en: {
+                title: "Account History & Edit",
+                homeBtn: "Home",
+                income: "Total Income",
+                expense: "Total Expense/Wage",
+                searchPlaceholder: "🔍 Search by site or description...",
+                tabAll: "All",
+                tabIncome: "Income",
+                tabWage: "Wage",
+                tabExpense: "Expense",
+                loading: "Loading accounts...",
+                noData: "No accounts available",
+                nameLabel: "Name:",
+                editBtn: "Edit",
+                deleteBtn: "Delete",
+                modalTitle: "Edit Account",
+                fieldDesc: "Description / Name:",
+                fieldSite: "Site Name:",
+                fieldAmount: "Amount (₹):",
+                fieldDate: "Date:",
+                cancelBtn: "Cancel",
+                updateBtn: "Update"
+            },
+            hi: {
+                title: "खाता इतिहास और संपादित करें",
+                homeBtn: "होम",
+                income: "कुल आय",
+                expense: "कुल खर्च/वेतन",
+                searchPlaceholder: "🔍 साइट या विवरण द्वारा खोजें...",
+                tabAll: "सभी",
+                tabIncome: "आय",
+                tabWage: "वेतन",
+                tabExpense: "खर्च",
+                loading: "खाते लोड हो रहे हैं...",
+                noData: "कोई खाता उपलब्ध नहीं है",
+                nameLabel: "नाम:",
+                editBtn: "संपादित करें",
+                deleteBtn: "हटाएं",
+                modalTitle: "खाता संपादित करें",
+                fieldDesc: "विवरण / नाम:",
+                fieldSite: "साइट का नाम:",
+                fieldAmount: "राशि (₹):",
+                fieldDate: "दिनांक:",
+                cancelBtn: "रद्द करें",
+                updateBtn: "अपडेट करें"
+            },
+            ta: {
+                title: "கணக்கு வரலாறு & திருத்து",
+                homeBtn: "முகப்பு",
+                income: "மொத்த வருமானம்",
+                expense: "மொத்த செலவு/கூலி",
+                searchPlaceholder: "🔍 தளம் அல்லது விவரம் மூலம் தேடுக...",
+                tabAll: "அனைத்தும்",
+                tabIncome: "வரவு",
+                tabWage: "கூலி",
+                tabExpense: "செலவு",
+                loading: "கணக்குகள் ஏற்றப்படுகின்றன...",
+                noData: "கணக்குகள் எதுவும் இல்லை",
+                nameLabel: "பெயர்:",
+                editBtn: "திருத்து",
+                deleteBtn: "நீக்கு",
+                modalTitle: "கணக்கைத் திருத்து",
+                fieldDesc: "விவரம் / பெயர்:",
+                fieldSite: "தளப் பெயர்:",
+                fieldAmount: "தொகை (₹):",
+                fieldDate: "தேதி:",
+                cancelBtn: "வேண்ட암",
+                updateBtn: "புதுப்பிக்கவும்"
+            },
+            kn: {
+                title: "ಖಾತೆ ಇತಿಹಾಸ ಮತ್ತು ಸಂಪಾದನೆ",
+                homeBtn: "ಹೋಮ್",
+                income: "ಒಟ್ಟು ಆದಾಯ",
+                expense: "ಒಟ್ಟು ವೆಚ್ಚ/ಕೂಲಿ",
+                searchPlaceholder: "🔍 ಸೈಟ್ ಅಥವಾ ವಿವರದಿಂದ ಹುಡುಕಿ...",
+                tabAll: "ಎಲ್ಲಾ",
+                tabIncome: "ಆದಾಯ",
+                tabWage: "ಕೂಲಿ",
+                tabExpense: "ವೆಚ್ಚ",
+                loading: "ಖಾತೆಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+                noData: "ಯಾವುದೇ ಖಾತೆಗಳು ಲಭ್ಯವಿಲ್ಲ",
+                nameLabel: "ಹೆಸರು:",
+                editBtn: "ಸಂಪಾದಿಸಿ",
+                deleteBtn: "ಅಳಿಸಿ",
+                modalTitle: "ಖಾತೆ ಸಂಪಾದಿಸಿ",
+                fieldDesc: "ವಿವರ / ಹೆಸರು:",
+                fieldSite: "ಸೈಟ್ ಹೆಸರು:",
+                fieldAmount: "ಮೊತ್ತ (₹):",
+                fieldDate: "ದಿನಾಂಕ:",
+                cancelBtn: "ರದ್ದು",
+                updateBtn: "ಅಪ್‌ಡೇಟ್ ಮಾಡಿ"
+            },
+            bn: {
+                title: "অ্যাকাউন্ট ইতিহাস এবং সম্পাদনা",
+                homeBtn: "হোম",
+                income: "মোট আয়",
+                expense: "মোট খরচ/মজুরি",
+                searchPlaceholder: "🔍 সাইট বা বিবরণ দিয়ে অনুসন্ধান করুন...",
+                tabAll: "সব",
+                tabIncome: "আয়",
+                tabWage: "মজুরি",
+                tabExpense: "খরচ",
+                loading: "অ্যাকাউন্ট লোড হচ্ছে...",
+                no অ্যাকাউন্ট: "কোনো অ্যাকাউন্ট উপলব্ধ নেই",
+                nameLabel: "নাম:",
+                editBtn: "সম্পাদনা",
+                deleteBtn: "মুছে ফেলুন",
+                modalTitle: "অ্যাকাউন্ট সম্পাদনা করুন",
+                fieldDesc: "বিবরণ / নাম:",
+                fieldSite: "সাইটের নাম:",
+                fieldAmount: "পরিমাণ (₹):",
+                fieldDate: "তারিখ:",
+                cancelBtn: "বাতিল",
+                updateBtn: "আপডেট করুন"
+            },
+            as: {
+                title: "একাউণ্ট ইতিহাস আৰু সম্পাদনা",
+                homeBtn: "ঘৰ",
+                income: "মুঠ আয়",
+                expense: "মুঠ খৰচ/মজুৰি",
+                searchPlaceholder: "🔍 চাইট বা বিৱৰণ দ্বাৰা সন্ধান কৰক...",
+                tabAll: "সকলো",
+                tabIncome: "আয়",
+                tabWage: "মজুৰি",
+                tabExpense: "খৰচ",
+                loading: "একাউণ্টসমূহ ল’ড হৈ আছে...",
+                noData: "কোনো একাউণ্ট উপলব্ধ নাই",
+                nameLabel: "নাম:",
+                editBtn: "সম্পাদনা",
+                deleteBtn: "মচি পেলাওক",
+                modalTitle: "একাউণ্ট সম্পাদনা কৰক",
+                fieldDesc: "বিৱৰণ / নাম:",
+                fieldSite: "চাইটৰ নাম:",
+                fieldAmount: "পৰিমাণ (₹):",
+                fieldDate: "তাৰিখ:",
+                cancelBtn: "বাতিল",
+                updateBtn: "আপডেট কৰক"
+            }
+        };
+
+        const currentLang = localStorage.getItem('selectedLang') || 'ml';
+        const t = pageTexts[currentLang] || pageTexts['ml'];
+
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof setupHeader === 'function') {
                 setupHeader('appHeader');
             }
-            document.getElementById('loggedInMeshtri').innerText = "സ്വാഗതം, " + currentMeshtri;
+            applyLanguageTexts();
             fetchHistory();
         });
+
+        function applyLanguageTexts() {
+            document.getElementById('pageTitleText').innerText = t.title;
+            document.getElementById('homeBtnText').innerText = t.homeBtn;
+            document.getElementById('incomeLabelText').innerText = t.income;
+            document.getElementById('expenseLabelText').innerText = t.expense;
+            document.getElementById('searchHistory').placeholder = t.searchPlaceholder;
+            document.getElementById('tab-all').innerText = t.tabAll;
+            document.getElementById('tab-income').innerText = t.tabIncome;
+            document.getElementById('tab-wage').innerText = t.tabWage;
+            document.getElementById('tab-expense').innerText = t.tabExpense;
+            document.getElementById('modalTitleText').innerText = t.modalTitle;
+            document.getElementById('labelDescText').innerText = t.fieldDesc;
+            document.getElementById('labelSiteText').innerText = t.fieldSite;
+            document.getElementById('labelAmountText').innerText = t.fieldAmount;
+            document.getElementById('labelDateText').innerText = t.fieldDate;
+            document.getElementById('cancelBtnText').innerText = t.cancelBtn;
+            document.getElementById('updateBtnText').innerText = t.updateBtn;
+        }
 
         let allHistoryData = [];
         let currentFilter = 'all';
@@ -52,7 +239,7 @@
                 filterAndDisplay();
             } catch (error) {
                 console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
-                document.getElementById('historyListContainer').innerHTML = `<div class="text-center text-red-400 text-xs">ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല!</div>`;
+                document.getElementById('historyListContainer').innerHTML = `<div class="text-center text-red-400 text-xs">${t.loading}</div>`;
             }
         }
 
@@ -103,7 +290,7 @@
         function displayHistory(dataList) {
             const container = document.getElementById('historyListContainer');
             if (dataList.length === 0) {
-                container.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs font-bold">കണക്കുകൾ ഒന്നും ലഭ്യമല്ല</div>`;
+                container.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs font-bold">${t.noData}</div>`;
                 return;
             }
 
@@ -122,12 +309,12 @@
                             <span class="text-xs font-bold text-slate-400">${item.date || ''}</span>
                         </div>
                         <div class="flex justify-between items-center border-t border-slate-800/80 pt-2 text-xs">
-                            <span class="font-bold text-slate-300">പേര്: <strong class="text-white">${item.name || '-'}</strong></span>
+                            <span class="font-bold text-slate-300">${t.nameLabel} <strong class="text-white">${item.name || '-'}</strong></span>
                             <span class="font-black text-base text-amber-400">₹ ${item.amount || 0}</span>
                         </div>
                         <div class="flex gap-2 pt-1">
-                            <button type="button" onclick="openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold transition">എഡിറ്റ്</button>
-                            <button type="button" onclick="deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition">ഡിലീറ്റ്</button>
+                            <button type="button" onclick="openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold transition">${t.editBtn}</button>
+                            <button type="button" onclick="deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition">${t.deleteBtn}</button>
                         </div>
                     </div>
                 `;
@@ -190,43 +377,33 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ലോഡ് ആകുന്ന കാൺടെയ്നർ -->
         <div id="appHeader" class="w-full flex justify-center"></div>
 
-        
-<!-- കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ് പേരും തൊട്ടടുത്ത് ഹോം ബട്ടണും -->
-        
-<!-- പേരിന്റെ ബോക്സും വ്യക്തമായ ഹോം ബട്ടണും -->
-<div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-    <!-- കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്-->
-    <h1 class="text-base font-black text-white">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</h1>
-    
-    <!-- വ്യക്തമായ ഹോം ഐക്കണും മനോഹരമായ ഡിസൈനും ഉള്ള ബട്ടൺ -->
-    <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        Home
-    </a>
-</div>
-        <!-- ടോട്ടൽ സമ്മറി കാർഡ് (Summary Cards) -->
+        <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <h1 id="pageTitleText" class="text-base font-black text-white">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</h1>
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span id="homeBtnText">Home</span>
+            </a>
+        </div>
+
         <div class="grid grid-cols-2 gap-3">
             <div class="bg-slate-900/90 border border-cyan-500/30 p-3.5 rounded-2xl shadow-xl flex flex-col justify-between">
-                <span class="text-[11px] font-bold text-cyan-400">ആകെ വരവ് (Income)</span>
+                <span id="incomeLabelText" class="text-[11px] font-bold text-cyan-400">ആകെ വരവ് (Income)</span>
                 <span id="totalIncomeText" class="text-base font-black text-white mt-1">₹ 0</span>
             </div>
             <div class="bg-slate-900/90 border border-red-500/30 p-3.5 rounded-2xl shadow-xl flex flex-col justify-between">
-                <span class="text-[11px] font-bold text-red-400">ആകെ ചെലവ്/കൂലി</span>
+                <span id="expenseLabelText" class="text-[11px] font-bold text-red-400">ആകെ ചെലവ്/കൂലി</span>
                 <span id="totalExpenseText" class="text-base font-black text-white mt-1">₹ 0</span>
             </div>
         </div>
 
-        <!-- തിരയുന്ന ഭാഗവും ഫിൽട്ടർ ടാബുകളും -->
         <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-3">
             <input type="text" id="searchHistory" placeholder="🔍 സൈറ്റിന്റെ പേരിലോ വിവരത്തിലോ തിരയുക..." oninput="filterAndDisplay()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
             
-            <!-- ഫിൽട്ടർ ടാബുകൾ -->
             <div class="grid grid-cols-4 gap-1.5 pt-1">
                 <button type="button" id="tab-all" onclick="setCategoryFilter('all')" class="filter-tab bg-amber-500 text-slate-950 border border-amber-400 py-2 rounded-xl text-[11px] font-black transition">എല്ലാം</button>
                 <button type="button" id="tab-income" onclick="setCategoryFilter('income')" class="filter-tab bg-slate-800 text-white border border-slate-700 py-2 rounded-xl text-[11px] font-bold transition">വരവ്</button>
@@ -235,42 +412,40 @@
             </div>
         </div>
 
-        <!-- കണക്കുകൾ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
         <div id="historyListContainer" class="space-y-3">
             <div class="text-center text-slate-400 py-8 text-sm">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</div>
         </div>
 
     </div>
 
-    <!-- എഡിറ്റ് ചെയ്യുന്നതിനുള്ള മോഡൽ -->
     <div id="editModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl">
-            <h3 class="text-base font-black text-amber-400">കണക്ക് തിരുത്തുക (Edit)</h3>
+            <h3 id="modalTitleText" class="text-base font-black text-amber-400">കണക്ക് തിരുത്തുക (Edit)</h3>
             <input type="hidden" id="editDocId">
             
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">വിവരം / പേര്:</label>
+                <label id="labelDescText" class="block text-xs font-black text-slate-400 mb-1">വിവരം / പേര്:</label>
                 <input type="text" id="editName" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
             </div>
 
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">സൈറ്റ് പേര്:</label>
+                <label id="labelSiteText" class="block text-xs font-black text-slate-400 mb-1">സൈറ്റ് പേര്:</label>
                 <input type="text" id="editSite" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
             </div>
 
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">തുക (₹):</label>
+                <label id="labelAmountText" class="block text-xs font-black text-slate-400 mb-1">തുക (₹):</label>
                 <input type="number" id="editAmount" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
             </div>
 
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">തീയതി:</label>
+                <label id="labelDateText" class="block text-xs font-black text-slate-400 mb-1">തീയതി:</label>
                 <input type="date" id="editDate" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
             </div>
 
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeEditModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl font-black text-xs transition">വേണ്ട</button>
-                <button type="button" onclick="updateAccountData()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-3 rounded-xl font-black text-xs transition">അപ്ഡേറ്റ് ചെയ്യുക</button>
+                <button type="button" onclick="closeEditModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl font-black text-xs transition"><span id="cancelBtnText">വേണ്ട</span></button>
+                <button type="button" onclick="updateAccountData()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-3 rounded-xl font-black text-xs transition"><span id="updateBtnText">അപ്ഡേറ്റ് ചെയ്യുക</span></button>
             </div>
         </div>
     </div>
