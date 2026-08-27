@@ -2,6 +2,20 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
     const currentLang = localStorage.getItem('selectedLang') || 'ml';
     const name = userName || localStorage.getItem('userName') || 'swaraj';
 
+    // ഓരോ ഭാഷയ്ക്കുമുള്ള പേരുകൾ (Titles & Subtitles)
+    const translations = {
+        ml: { title: "മേസ്തിരി പ്രോ", subtitle: "Smart Site Manager", welcome: "സ്വാഗതം" },
+        en: { title: "Mestiri Pro", subtitle: "Smart Site Manager", welcome: "Welcome" },
+        hi: { title: "मेस्त्री प्रो", subtitle: "स्मार्ट साइट मैनेजर", welcome: "स्वागत है" },
+        ta: { title: "மேஸ்திரி ப்ரோ", subtitle: "ஸ்மார்ட் தள மேலாளர்", welcome: "வரவேற்கிறோம்" },
+        kn: { title: "ಮೇಸ್ತ್ರಿ ಪ್ರೋ", subtitle: "ಸ್ಮಾರ್ಟ್ ಸೈಟ್ ಮ್ಯಾನೇಜರ್", welcome: "ಸ್ವಾಗತ" },
+        bn: { title: "মেস্ত্রি প্রো", subtitle: "স্মার্ট সাইট ম্যানেজার", welcome: "স্বাগত" },
+        as: { title: "মিস্ত্ৰী প্ৰ' ", subtitle: "স্মাৰ্ট চাইট মেনেজাৰ", welcome: "স্বাগতম" }
+    };
+
+    // നിലവിലുള്ള ഭാഷ തിരഞ്ഞെടുക്കുന്നു (ഇല്ലെങ്കിൽ മലയാളം എടുക്കും)
+    const t = translations[currentLang] || translations['ml'];
+
     const headerHTML = `
     <div class="flex flex-col gap-2 w-full mb-3">
         <div class="flex items-center justify-between bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-6 py-3.5 rounded-full border-2 border-amber-400 shadow-[0_0_30px_rgba(251,191,36,0.5)] w-full relative">
@@ -9,8 +23,8 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
             <div class="flex items-center gap-3.5">
                 <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-md flex-shrink-0" style="width: 48px; height: 48px;">
                 <div class="text-left">
-                    <span class="text-xl font-black text-amber-300 tracking-wide block leading-tight">മേസ്തിരി പ്രോ</span>
-                    <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase">Smart Site Manager</span>
+                    <span class="text-xl font-black text-amber-300 tracking-wide block leading-tight">${t.title}</span>
+                    <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase">${t.subtitle}</span>
                 </div>
             </div>
 
@@ -30,7 +44,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
         </div>
 
         <div class="flex items-center justify-center bg-gradient-to-r from-blue-900 via-sky-800 to-blue-900 text-cyan-200 px-6 py-3 rounded-full border-2 border-cyan-400 shadow-[0_0_25px_rgba(56,189,248,0.4)] w-full text-center font-bold text-base">
-            സ്വാഗതം, ${name}
+            ${t.welcome}, ${name}
         </div>
     </div>`;
 
