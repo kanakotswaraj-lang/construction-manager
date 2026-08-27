@@ -339,7 +339,7 @@
         }
     </style>
 </head>
-<body class="text-white min-h-screen pb-12 p-4 font-sans">
+    <body class="text-white min-h-screen pb-12 p-4 font-sans">
 
     <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 
@@ -348,30 +348,28 @@
         <!-- 1. header.js വഴി ലോഡ് ആകുന്ന ഹെഡർ കണ്ടെയ്നർ -->
         <div id="appHeader" class="w-full"></div>
 
+        <!-- 2. സ്വാഗതം യൂസർ ബോക്സ് -->
+        <div class="rounded-2xl p-3 text-center border-2 border-cyan-500 bg-cyan-950/40 shadow-md">
+            <span class="text-cyan-400 font-extrabold text-base lang" data-key="welcomeUser">സ്വാഗതം, swaraj</span>
+        </div>
 
-<!-- 1. സ്വാഗതം യൂസർ ബോക്സ് (നീല ബോർഡറും നീല പശ്ചാത്തലവും ബോൾഡ് അക്ഷരവും) -->
-<div class="rounded-2xl p-3 mb-3 text-center border-2 border-cyan-500 bg-cyan-950/40 shadow-md">
-    <span class="text-cyan-400 font-extrabold text-base lang" data-key="welcomeUser">സ്വാഗതം, swaraj</span>
-</div>
-
-<!-- 2. ഗ്രേഡിയന്റ് ഹെഡർ ബോക്സ് (ഗോൾഡൻ മഞ്ഞ ബോർഡറും ഹോം ഐക്കണും ഉള്ളത്) -->
-<div class="glass-card rounded-3xl p-4 mb-4 flex items-center justify-between gap-3 border-2 border-amber-400 shadow-lg">
-    <h1 class="text-base sm:text-lg font-black">
-        <span class="lang bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
-    </h1>
-
-         <!-- ഹോം ബട്ടൺ (ഐക്കണും ഒപ്പം 'Home' എന്ന് ഇംഗ്ലീഷിലും ഉള്ളത്) -->
-    <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        <span>Home</span>
-    </a>
-
+        <!-- 3. വരവ് - ചെലവ് വിവരങ്ങളും Home ബട്ടണും അടങ്ങിയ ബോക്സ് -->
+        <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <h1 class="text-base font-black">
+                <span class="lang bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
+            </h1>
+            
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home</span>
+            </a>
+        </div>
 
         <!-- ആകെ തുക സംഗ്രഹം -->
-        <div class="grid grid-cols-2 gap-3 mb-4">
+        <div class="grid grid-cols-2 gap-3">
             <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
                 <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="income">വരവ്</p>
                 <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
@@ -387,7 +385,7 @@
         </div>
 
         <!-- സെർച്ച് ഫിൽട്ടറുകൾ -->
-        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
+        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
             <div>
                 <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterSiteLabel">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
                 <select id="filterSite" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
@@ -418,7 +416,7 @@
         </div>
 
         <!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
-        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl mb-6 border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
+        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
             <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2 lang" data-key="addNewAcc">പുതിയ കണക്ക് ചേർക്കുക</h2>
             
             <div>
@@ -463,7 +461,7 @@
         </div>
 
         <!-- PDF & Excel ഡൗൺലോഡ് ബട്ടണുകൾ -->
-        <div class="grid grid-cols-2 gap-3 mb-6 no-print">
+        <div class="grid grid-cols-2 gap-3 no-print">
             <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-blue-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="pdfReport">
                 📄 PDF റിപ്പോർട്ട്
             </button>
@@ -475,6 +473,6 @@
         <!-- ലിസ്റ്റ് ബോക്സ് -->
         <div id="transactionList" class="space-y-3 pb-10"></div>
     </div>
-
 </body>
+
 </html>
