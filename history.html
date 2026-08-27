@@ -10,6 +10,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, getDocs, query, where, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { setupHeader } from './header.js';
+        import { translations, currentLang } from './language.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -25,33 +27,78 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        const currentMeshtri = localStorage.getItem('userName'] || "";
+        const currentMeshtri = localStorage.getItem('userName') || "";
+        const t = translations[currentLang] || translations['ml'];
 
         document.addEventListener("DOMContentLoaded", () => {
-            // ഹെഡർ മിസ്സ്‌ ആകാതിരിക്കാൻ ഇവിടെത്തന്നെ ചെറിയൊരു ഹെഡർ സെറ്റ് ചെയ്യുന്നു
-            const headerEl = document.getElementById('appHeader');
-            if(headerEl) {
-                headerEl.innerHTML = `
-                    <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl flex justify-between items-center w-full shadow-lg">
-                        <span class="text-xs font-black text-amber-400">👤 ${currentMeshtri || 'Admin'}</span>
-                        <a href="dashboard.html" class="text-xs font-bold bg-slate-800 px-3 py-1.5 rounded-xl text-white">Dashboard</a>
-                    </div>
-                `;
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader', true, currentMeshtri);
             }
+            applyLanguageTexts();
             fetchHistory();
         });
+
+        function applyLanguageTexts() {
+            const elTitle = document.getElementById('pageTitleText');
+            if(elTitle) elTitle.innerText = t.historyEditTitle || "കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്";
+            
+            const elHome = document.getElementById('homeBtnText');
+            if(elHome) elHome.innerText = t.home || "Home";
+
+            const elIncome = document.getElementById('incomeLabelText');
+            if(elIncome) elIncome.innerText = t.totalIncome || "ആകെ വരവ് (Income)";
+
+            const elExpense = document.getElementById('expenseLabelText');
+            if(elExpense) elExpense.innerText = t.totalExpense || "ആകെ ചെലവ്/കൂലി";
+
+            const elSearch = document.getElementById('searchHistory');
+            if(elSearch) elSearch.placeholder = t.searchPlaceholder || "🔍 സൈറ്റിന്റെ പേരിലോ വിവരത്തിലോ തിരയുക...";
+
+            const elTabAll = document.getElementById('tab-all');
+            if(elTabAll) elTabAll.innerText = t.all || "എല്ലാം";
+
+            const elTabInc = document.getElementById('tab-income');
+            if(elTabInc) elTabInc.innerText = t.income || "വരവ്";
+
+            const elTabWage = document.getElementById('tab-wage');
+            if(elTabWage) elTabWage.innerText = t.wage || "കൂലി";
+
+            const elTabExp = document.getElementById('tab-expense');
+            if(elTabExp) elTabExp.innerText = t.expense || "ചെലവ്";
+
+            const elModalTitle = document.getElementById('modalTitleText');
+            if(elModalTitle) elModalTitle.innerText = t.editAccount || "കണക്ക് തിരുത്തുക (Edit)";
+
+            const elDesc = document.getElementById('labelDescText');
+            if(elDesc) elDesc.innerText = t.descName || "വിവരം / പേര്:";
+
+            const elSite = document.getElementById('labelSiteText');
+            if(elSite) elSite.innerText = t.siteName || "സൈറ്റ് പേര്:";
+
+            const elAmt = document.getElementById('labelAmountText');
+            if(elAmt) elAmt.innerText = t.amount || "തുക (₹):";
+
+            const elDate = document.getElementById('labelDateText');
+            if(elDate) elDate.innerText = t.date || "തീയതി:";
+
+            const elCancel = document.getElementById('cancelBtnText');
+            if(elCancel) elCancel.innerText = t.cancel || "വേണ്ട";
+
+            const elUpdate = document.getElementById('updateBtnText');
+            if(elUpdate) elUpdate.innerText = t.update || "അപ്ഡേറ്റ് ചെയ്യുക";
+        }
 
         let allHistoryData = [];
         let currentFilter = 'all';
 
         async function fetchHistory() {
+            const container = document.getElementById('historyListContainer');
             try {
-                const container = document.getElementById('historyListContainer');
-                container.innerHTML = `<div class="text-center text-slate-400 py-8 text-xs font-bold">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</div>`;
-
+                // ഫയർബേസിൽ നിന്നും കണക്കുകൾ എടുക്കുന്നു
                 const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
                 const querySnapshot = await getDocs(q);
                 allHistoryData = [];
+                
                 querySnapshot.forEach((document) => {
                     allHistoryData.push({ id: document.id, ...document.data() });
                 });
@@ -61,7 +108,7 @@
                 filterAndDisplay();
             } catch (error) {
                 console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
-                document.getElementById('historyListContainer').innerHTML = `<div class="text-center text-red-400 text-xs font-bold">ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ തടസ്സം നേരിട്ടു!</div>`;
+                container.innerHTML = `<div class="text-center text-red-400 py-8 text-xs font-bold">ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ തടസ്സം നേരിട്ടു!</div>`;
             }
         }
 
@@ -112,14 +159,14 @@
         function displayHistory(dataList) {
             const container = document.getElementById('historyListContainer');
             if (dataList.length === 0) {
-                container.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs font-bold">കണക്കുകൾ ഒന്നും ലഭ്യമല്ല</div>`;
+                container.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs font-bold">${t.noData || "കണക്കുകൾ ഒന്നും ലഭ്യമല്ല"}</div>`;
                 return;
             }
 
             container.innerHTML = dataList.map(item => {
                 let badgeColor = item.type === 'income' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400/50' : 
                                  item.type === 'wage' ? 'bg-amber-500/20 text-amber-300 border-amber-400/50' : 'bg-red-500/20 text-red-300 border-red-400/50';
-                let typeLabel = item.type === 'income' ? 'വരവ് (Income)' : item.type === 'wage' ? 'കൂലി (Wage)' : 'ചെലവ് (Expense)';
+                let typeLabel = item.type === 'income' ? (t.income || 'വരവ്') : item.type === 'wage' ? (t.wage || 'കൂലി') : (t.expense || 'ചെലവ്');
 
                 return `
                     <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-2 history-card">
@@ -131,12 +178,12 @@
                             <span class="text-xs font-bold text-slate-400">${item.date || ''}</span>
                         </div>
                         <div class="flex justify-between items-center border-t border-slate-800/80 pt-2 text-xs">
-                            <span class="font-bold text-slate-300">പേര്: <strong class="text-white">${item.name || '-'}</strong></span>
+                            <span class="font-bold text-slate-300">${t.nameLabel || 'പേര്:'} <strong class="text-white">${item.name || '-'}</strong></span>
                             <span class="font-black text-base text-amber-400">₹ ${item.amount || 0}</span>
                         </div>
                         <div class="flex gap-2 pt-1">
-                            <button type="button" onclick="openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold transition">എഡിറ്റ്</button>
-                            <button type="button" onclick="deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition">ഡിലീറ്റ്</button>
+                            <button type="button" onclick="openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold transition">${t.edit || 'എഡിറ്റ്'}</button>
+                            <button type="button" onclick="deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition">${t.delete || 'ഡിലീറ്റ്'}</button>
                         </div>
                     </div>
                 `;
@@ -200,24 +247,28 @@
     <div class="max-w-md mx-auto space-y-4">
         
         <!-- ഹെഡർ കണ്ടെയ്നർ -->
-        <div id="appHeader" class="w-full"></div>
+        <div id="appHeader" class="w-full flex justify-center"></div>
 
         <!-- പേരിന്റെ ബോക്സും ഹോം ബട്ടണും -->
         <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-            <h1 class="text-base font-black text-white">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</h1>
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-xl text-xs font-black shadow-lg transition flex items-center gap-2 border border-white/30">
-                <span>Home</span>
+            <h1 id="pageTitleText" class="text-base font-black text-white">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</h1>
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span id="homeBtnText">Home</span>
             </a>
         </div>
 
         <!-- ടോട്ടൽ സമ്മറി കാർഡ് -->
         <div class="grid grid-cols-2 gap-3">
             <div class="bg-slate-900/90 border border-cyan-500/30 p-3.5 rounded-2xl shadow-xl flex flex-col justify-between">
-                <span class="text-[11px] font-bold text-cyan-400">ആകെ വരവ് (Income)</span>
+                <span id="incomeLabelText" class="text-[11px] font-bold text-cyan-400">ആകെ വരവ് (Income)</span>
                 <span id="totalIncomeText" class="text-base font-black text-white mt-1">₹ 0</span>
             </div>
             <div class="bg-slate-900/90 border border-red-500/30 p-3.5 rounded-2xl shadow-xl flex flex-col justify-between">
-                <span class="text-[11px] font-bold text-red-400">ആകെ ചെലവ്/കൂലി</span>
+                <span id="expenseLabelText" class="text-[11px] font-bold text-red-400">ആകെ ചെലവ്/കൂലി</span>
                 <span id="totalExpenseText" class="text-base font-black text-white mt-1">₹ 0</span>
             </div>
         </div>
@@ -234,7 +285,7 @@
             </div>
         </div>
 
-        <!-- ലിസ്റ്റ് വരുന്ന സ്ഥലം -->
+        <!-- കണക്കുകൾ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
         <div id="historyListContainer" class="space-y-3">
             <div class="text-center text-slate-400 py-8 text-sm">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</div>
         </div>
@@ -244,32 +295,32 @@
     <!-- മോഡൽ -->
     <div id="editModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl">
-            <h3 class="text-base font-black text-amber-400">കണക്ക് തിരുത്തുക (Edit)</h3>
+            <h3 id="modalTitleText" class="text-base font-black text-amber-400">കണക്ക് തിരുത്തുക (Edit)</h3>
             <input type="hidden" id="editDocId">
             
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">വിവരം / പേര്:</label>
+                <label id="labelDescText" class="block text-xs font-black text-slate-400 mb-1">വിവരം / പേര്:</label>
                 <input type="text" id="editName" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
             </div>
 
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">സൈറ്റ് പേര്:</label>
+                <label id="labelSiteText" class="block text-xs font-black text-slate-400 mb-1">സൈറ്റ് പേര്:</label>
                 <input type="text" id="editSite" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
             </div>
 
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">തുക (₹):</label>
+                <label id="labelAmountText" class="block text-xs font-black text-slate-400 mb-1">തുക (₹):</label>
                 <input type="number" id="editAmount" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
             </div>
 
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1">തീയതി:</label>
+                <label id="labelDateText" class="block text-xs font-black text-slate-400 mb-1">തീയതി:</label>
                 <input type="date" id="editDate" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
             </div>
 
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeEditModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl font-black text-xs transition">വേണ്ട</button>
-                <button type="button" onclick="updateAccountData()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-3 rounded-xl font-black text-xs transition">അപ്ഡേറ്റ് ചെയ്യുക</button>
+                <button type="button" onclick="closeEditModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl font-black text-xs transition"><span id="cancelBtnText">വേണ്ട</span></button>
+                <button type="button" onclick="updateAccountData()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-3 rounded-xl font-black text-xs transition"><span id="updateBtnText">അപ്ഡേറ്റ് ചെയ്യുക</span></button>
             </div>
         </div>
     </div>
