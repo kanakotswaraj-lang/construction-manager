@@ -72,25 +72,41 @@
             const transDateInput = document.getElementById('transDate');
             if (transDateInput) transDateInput.value = today;
 
-            // പേജ് ലോഡ് ചെയ്യുമ്പോൾ സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യുക
+
+
+        // 1. പേജ് ലോഡ് ചെയ്യുമ്പോൾ സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യാൻ
+        document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
             }
-        });
-
-        // ഭാഷ മാറ്റുമ്പോൾ തത്സമയം മാറാൻ (storage ഇവന്റും കൂടിയを加えます)
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'selectedLang') {
-                window.switchLanguage(e.newValue || 'ml');
+            if (typeof renderList === 'function') {
                 renderList();
             }
         });
 
+        // 2. storage ഇവന്റ് വഴി ഭാഷ മാറുമ്പോൾ
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'selectedLang') {
+                const newLang = e.newValue || 'ml';
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage(newLang);
+                }
+                if (typeof renderList === 'function') {
+                    renderList();
+                }
+            }
+        });
+
+        // 3. languageChanged ഇവന്റ് വഴി ഭാഷ മാറുമ്പോൾ
         window.addEventListener('languageChanged', (e) => {
             const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
-            window.switchLanguage(newLang);
-            renderList();
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
+            }
+            if (typeof renderList === 'function') {
+                renderList();
+            }
         });
 
 
@@ -351,13 +367,14 @@
         <div id="appHeader" class="w-full"></div>
 
         <!-- 2. സ്വാഗതം യൂസർ ബോക്സ് (കൂടുതൽ തിളക്കത്തോടെ) -->
-        <div class="rounded-2xl p-3 text-center border-2 border-cyan-400 bg-cyan-950/80 shadow-lg shadow-cyan-950/50">
+        <div class="rounded-2xl p-3 text-center border-2 border-cyan-400 bg-cyan-950/80 shadow-lg">
+
             <span class="text-cyan-300 font-extrabold text-base lang drop-shadow-sm" data-key="welcomeUser">സ്വാഗതം, swaraj</span>
         </div>
 
         <!-- 3. വരവ് - ചെലവ് വിവരങ്ങളും Home ബട്ടണും അടങ്ങിയ ബോക്സ് -->
-        <div class="bg-slate-900/95 border-2 border-amber-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-amber-950/30 backdrop-blur-sm">
-            <h1 class="text-base font-black">
+        <div class="bg-slate-900/95 border-2 border-amber-500 p-4 rounded-2xl flex justify-between items-center shadow-xl">
+
                 <span class="lang bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent drop-shadow" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
             </h1>
             
