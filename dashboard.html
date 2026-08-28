@@ -191,7 +191,8 @@ if (savedProfile) {
         };
 
         function fetchDashboardData(db, currentMeshtri) {
-            onSnapshot(query(collection(db, "accounts")), (snapshot) => {
+          onSnapshot(query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri)), (snapshot) => {
+
                 let totalInc = 0;
                 let totalExp = 0;
 
