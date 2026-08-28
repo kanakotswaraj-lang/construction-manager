@@ -34,10 +34,12 @@ import { setupHeader } from './header.js';
             }
 
             let userName = localStorage.getItem('userName');
-            if (!userName) {
-                userName = 'swaraj';
-                localStorage.setItem('userName', userName);
-            }
+if (!userName) {
+    // ആരെങ്കിലും ലോഗിൻ ചെയ്യാതെ വന്നാൽ നേരെ ലോഗിൻ പേജിലേക്ക് വിടുക
+    window.location.href = "login.html";
+    return;
+}
+
             
             const nameElement = document.getElementById('loggedInMeshtri');
 if (nameElement) {
