@@ -38,7 +38,7 @@
             <div>
                 <label data-key="passwordLabel" class="block text-xs font-semibold text-amber-300/90 mb-1.5">പാസ്‌വേർഡ്</label>
                 <div class="relative">
-                    <input type="password" id="password" data-key-placeholder="passwordPlaceholder" placeholder="കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
+                    <input type="password" id="password" data-key-placeholder="passwordPlaceholder" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
                     <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2">
                         <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
                     </button>
@@ -80,7 +80,7 @@
         setupModal();
         setupHeader('appHeader');
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ മാറ്റുമ്പോഴും വർക്ക് ചെയ്യാൻ
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷ സെറ്റ് ചെയ്യാൻ
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
