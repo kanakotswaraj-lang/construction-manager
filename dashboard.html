@@ -191,51 +191,47 @@ if (savedProfile) {
             }
         };
 
-        function fetchDashboardData(db, currentMeshtri) {
-          onSnapshot(query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri)), (snapshot) => {
+function fetchDashboardData(db, currentMeshtri) {
+    onSnapshot(query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri)), (snapshot) => {
 
-                let totalInc = 0;
-                let totalExp = 0;
+        let totalInc = 0;
+        let totalExp = 0;
 
-                snapshot.forEach(docSnap => {
-                    const d = docSnap.data();
-                    if (d.meshtriOwner === currentMeshtri) {
-                        let amount = parseFloat(d.amount) || 0;
-                        if (d.type === 'income') {
-                            totalInc += amount;
-                        } else {
-                            totalExp += amount;
-                        }
-                    }
-                });
+        snapshot.forEach(docSnap => {
+            const d = docSnap.data();
+            let amount = parseFloat(d.amount) || 0;
+            if (d.type === 'income') {
+                totalInc += amount;
+            } else {
+                totalExp += amount;
+            }
+        });
 
-                let net = totalInc - totalExp;
+        // ബാക്കി കണക്കുകൾ ഡിസ്പ്ലേ ചെയ്യുന്ന നിങ്ങളുടെ കോഡ് ഇവിടെ കൊടുക്കുക...
+        let net = totalInc - totalExp;
+        document.getElementById('dashTotalIncome').innerText = '₹ ' + totalInc.toLocaleString('en-IN');
+        document.getElementById('dashTotalExpense').innerText = '₹ ' + totalExp.toLocaleString('en-IN');
+        
+        let netEl = document.getElementById('dashNetProfit');
+        let labelEl = document.getElementById('dashProfitLabel');
 
-                document.getElementById('dashTotalIncome').innerText = `₹ ${totalInc.toLocaleString('en-IN')}`;
-                document.getElementById('dashTotalExpense').innerText = `₹ ${totalExp.toLocaleString('en-IN')}`;
-                
-                let netEl = document.getElementById('dashNetProfit');
-                let labelEl = document.getElementById('dashProfitLabel');
+        const currentLang = localStorage.getItem('selectedLang') || 'ml';
 
-                const currentLang = localStorage.getItem('selectedLang') || 'ml';
-
-                if (net >= 0) {
-                    const profitText = (words.profit && words.profit[currentLang]) ? words.profit[currentLang] : "ശുദ്ധ ലാഭം";
-                    labelEl.innerText = profitText;
-                    labelEl.className = "text-[11px] font-black text-emerald-400 block tracking-wider uppercase lang";
-                    labelEl.setAttribute('data-key', 'profit');
-                    netEl.innerText = `₹ ${net.toLocaleString('en-IN')}`;
-                    netEl.style.color = "#34d399";
-                } else {
-                    const lossText = (words.loss_label && words.loss_label[currentLang]) ? words.loss_label[currentLang] : "നഷ്ടം";
-                    labelEl.innerText = lossText;
-                    labelEl.className = "text-[11px] font-black text-rose-400 block tracking-wider uppercase lang";
-                    labelEl.setAttribute('data-key', 'loss_label');
-                    netEl.innerText = `₹ ${Math.abs(net).toLocaleString('en-IN')}`;
-                    netEl.style.color = "#fb7185";
-                }
-            });
+        if (net >= 0) {
+            let profitText = (words.profit && words.profit[currentLang]) ? words.profit[currentLang] : 'profit';
+            labelEl.innerText = profitText;
+            labelEl.className = 'text-[11px] font-black text-emerald-400 block tracking-wider uppercase';
+            netEl.innerText = '₹ ' + net.toLocaleString('en-IN');
+            netEl.style.color = '#34d399';
+        } else {
+            let lossText = (words.loss_label && words.loss_label[currentLang]) ? words.loss_label[currentLang] : 'loss';
+            labelEl.innerText = lossText;
+            labelEl.className = 'text-[11px] font-black text-rose-400 block tracking-wider uppercase';
+            netEl.innerText = '₹ ' + Math.abs(net).toLocaleString('en-IN');
+            netEl.style.color = '#fb7185';
         }
+    });
+}
 
         window.logoutUser = function() {
             localStorage.removeItem('userName');
