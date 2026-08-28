@@ -16,7 +16,7 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- ലോഗോ ഹെഡർ (ഇവിടെയാണ് ഹെഡറും ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗണും വരുന്നത്) -->
+    <!-- ലോഗോ ഹെഡർ -->
     <div class="w-full max-w-sm mx-auto mb-6">
         <div id="appHeader" class="w-full"></div>
     </div>
@@ -78,7 +78,7 @@
         import { setupHeader } from './header.js';
 
         setupModal();
-        setupHeader('appHeader'); // ഹെഡർ ലോഡ് ചെയ്യാൻ ഇത് അത്യാവശ്യമാണ്!
+        setupHeader('appHeader');
 
         // പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ മാറ്റുമ്പോഴും വർക്ക് ചെയ്യാൻ
         document.addEventListener("DOMContentLoaded", () => {
