@@ -3,117 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ലോഗിൻ - മേസ്തിരി പ്രോ</title>
+    <title>മേസ്തിരി പ്രോ - ലോഗിൻ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Manjari', sans-serif; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- ടോപ്പ് ഹെഡർ -->
-    <div class="w-full max-w-sm mx-auto pt-6 text-center">
-        <div class="flex items-center gap-4 bg-amber-500/30 text-amber-300 px-6 py-3 rounded-full border-2 border-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.5)] w-full">
-            <img src="icon.png" alt="മേസ്തിരി പ്രോ ലോഗോ" class="rounded-full object-cover border-2 border-amber-200 shadow-lg flex-shrink-0" style="width: 54px; height: 54px;">
-            <div class="text-left">
-                <span class="text-xl font-black text-amber-300 tracking-wide block leading-tight">മേസ്തിരി പ്രോ</span>
-                <span class="text-[11px] font-bold text-blue-200 tracking-wider uppercase">Smart Site Manager</span>
-            </div>
-        </div>
-        <h1 class="text-3xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
-            ലോഗിൻ ചെയ്യുക
-        </h1>
-        <p class="text-sm text-blue-200 mt-1 font-bold">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
+    <!-- ലോഗോ ഹെഡർ (ഇവിടെയാണ് ഹെഡറും ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗണും വരുന്നത്) -->
+    <div class="w-full max-w-sm mx-auto mb-6">
+        <div id="appHeader" class="w-full"></div>
     </div>
 
-    <!-- ലോഗിൻ ഫോം കാർഡ് -->
-    <div class="bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 max-w-sm mx-auto w-full my-4 space-y-4 shadow-xl">
-        <div>
-            <label class="block text-base font-black text-amber-300 mb-1.5">യൂസർനെയിം (പേര്)</label>
-            <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" 
-                   class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
-        </div>
+    <!-- ലോഗിൻ കാർഡ് -->
+    <div class="w-full max-w-sm bg-slate-900/80 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
+        
+        <h2 data-key="loginTitle" class="text-xl font-bold text-white mb-1">ലോഗിൻ ചെയ്യുക</h2>
+        <p data-key="loginSubtitle" class="text-xs text-slate-400 mb-5">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
 
-        <div>
-            <label class="block text-base font-black text-amber-300 mb-1.5">പാസ്‌വേർഡ്</label>
-            <div class="relative">
-                <input type="password" id="password" placeholder="കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക" 
-                       class="w-full bg-slate-900/90 border-2 border-blue-500/50 rounded-2xl p-4 pr-12 text-white text-base font-black focus:outline-none focus:border-amber-400 placeholder:text-slate-400">
-                <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-300 hover:text-amber-400 focus:outline-none">
-                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                </button>
+        <div class="space-y-4">
+            <!-- യൂസർനെയിം -->
+            <div>
+                <label data-key="usernameLabel" class="block text-xs font-semibold text-amber-300/90 mb-1.5">യൂസർനെയിം (പേര്)</label>
+                <input type="text" id="username" data-key-placeholder="usernamePlaceholder" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
             </div>
-            <p class="text-sm text-blue-200 mt-2 font-bold leading-relaxed">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
+
+            <!-- പാസ്‌വേർഡ് -->
+            <div>
+                <label data-key="passwordLabel" class="block text-xs font-semibold text-amber-300/90 mb-1.5">പാസ്‌വേർഡ്</label>
+                <div class="relative">
+                    <input type="password" id="password" data-key-placeholder="passwordPlaceholder" placeholder="കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
+                    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2">
+                        <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
+                    </button>
+                </div>
+                <p data-key="passwordNote" class="text-[11px] text-slate-400 mt-1.5">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
+            </div>
+
+            <!-- ലോഗിൻ ബട്ടൺ -->
+            <button id="btnLogin" data-key="loginBtn" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition duration-200 text-sm">
+                ലോഗിൻ ചെയ്യാം
+            </button>
         </div>
 
-        <button id="btnLogin" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/50 transition mt-3">
-            ലോഗിൻ ചെയ്യുക
-        </button>
+        <!-- പാസ്‌വേർഡ് മറന്നുപോയോ ലിങ്ക് -->
+        <div class="mt-4 text-center">
+            <a href="forgot-password.html" data-key="forgotPassword" class="text-xs text-amber-400/90 hover:underline">പാസ്‌വേർഡ് മറന്നുപോയോ?</a>
+        </div>
+    </div>
 
-        <button id="btnForgot" class="w-full text-amber-300 font-bold text-base hover:underline block text-center pt-2">
-            പാസ്‌വേർഡ് മറന്നുപോയോ?
-        </button>
+    <!-- പുതിയ രജിസ്ട്രേഷൻ ലിങ്ക് -->
+    <div class="mt-6 text-center text-xs text-slate-400">
+        <span data-key="noAccountText">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
+        <a href="register.html" data-key="registerLinkText" class="text-amber-400 font-bold hover:underline ml-1">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
     </div>
 
     <!-- ഫൂട്ടർ -->
-    <div class="max-w-sm mx-auto w-full text-center pb-4 space-y-3">
-        <p class="text-base text-blue-100 font-bold">
-            അക്കൗണ്ട് ഇല്ലെങ്കിൽ? 
-            <a href="register.html" class="text-amber-400 font-black underline ml-1 text-lg">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
-        </p>
-        <p class="text-xs text-slate-400 font-bold pt-2">
-            മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
-        </p>
+    <div data-key="footerCredit" class="mt-8 text-center text-[11px] text-slate-500">
+        മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
     </div>
 
-    
-        <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം -->
+    <!-- ഫയർബേസ് & ലാംഗ്വേജ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         
         import { setupModal } from './modal.js';
         import { setupHeader } from './header.js';
-        
+
         setupModal();
-        setupHeader('appHeader');
+        setupHeader('appHeader'); // ഹെഡർ ലോഡ് ചെയ്യാൻ ഇത് അത്യാവശ്യമാണ്!
 
-        // 7 ഭാഷകളിലേക്കുള്ള ലോഗിൻ പേജ് വാക്കുകൾ
-        const loginTranslations = {
-            ml: { title: "ലോഗിൻ ചെയ്യുക", subtitle: "നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം", userLabel: "യൂസർനെയിം (പേര്)", userPlaceholder: "നിങ്ങളുടെ പേര് നൽകുക", passLabel: "പാസ്‌വേർഡ്", passPlaceholder: "കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക", passNote: "ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.", btnText: "ലോഗിൻ ചെയ്യുക", forgotText: "പാസ്‌വേർഡ് മറന്നുപോയോ?", noAccount: "അക്കൗണ്ട് ഇല്ലെങ്കിൽ?", registerText: "പുതിയതായി രജിസ്റ്റർ ചെയ്യുക" },
-            en: { title: "Login", subtitle: "Welcome to your account", userLabel: "Username", userPlaceholder: "Enter your name", passLabel: "Password", passPlaceholder: "Enter at least 6 characters", passNote: "Note: Password must be at least 6 characters.", btnText: "Login", forgotText: "Forgot Password?", noAccount: "Don't have an account?", registerText: "Register New" },
-            hi: { title: "लॉगिन करें", subtitle: "आपके खाते में स्वागत है", userLabel: "यूज़रनेम (नाम)", userPlaceholder: "अपना नाम दर्ज करें", passLabel: "पासवर्ड", passPlaceholder: "कम से कम 6 अक्षर दर्ज करें", passNote: "ध्यान दें: पासवर्ड कम से कम 6 अंकों या अक्षरों का होना चाहिए।", btnText: "लॉगिन करें", forgotText: "पासवर्ड भूल गए?", noAccount: "खाता नहीं है?", registerText: "नया रजिस्टर करें" },
-            ta: { title: "உள்நுழைக", subtitle: "உங்களுக்கு வரவேற்கிறோம்", userLabel: "பயனர் பெயர்", userPlaceholder: "உங்கள் பெயரை உள்ளிடவும்", passLabel: "கடவுச்சொல்", passPlaceholder: "குறைந்தது 6 எழுத்துக்கள்", passNote: "குறிப்பு: கடவுச்சொல் குறைந்தது 6 எழுத்துக்களைக் கொண்டிருக்க வேண்டும்.", btnText: "உள்நுழைக", forgotText: "கடவுச்சொல் மறந்துவிட்டதா?", noAccount: "கணக்கு இல்லையா?", registerText: "புதிதாக பதிவு செய்க" },
-            kn: { title: "ಲಾಗಿನ್ ಮಾಡಿ", subtitle: "ನಿಮ್ಮ ಖಾತೆಗೆ ಸ್ವಾಗತ", userLabel: "ಬಳಕೆದಾರ ಹೆಸರು", userPlaceholder: "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ", passLabel: "ಪಾಸ್‌ವರ್ಡ್", passPlaceholder: "ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳನ್ನು ನಮೂದಿಸಿ", passNote: "ಸೂಚನೆ: ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳನ್ನು ಹೊಂದಿರಬೇಕು.", btnText: "ಲಾಗಿನ್ ಮಾಡಿ", forgotText: "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿ따?", noAccount: "ಖಾತೆ ಇಲ್ಲವೇ?", registerText: "ಹೊಸದಾಗಿ ನೋಂದಾಯಿಸಿ" },
-            bn: { title: "লগইন করুন", subtitle: "আপনার অ্যাকাউন্টে স্বাগতম", userLabel: "ইউজারনেম", userPlaceholder: "আপনার নাম লিখুন", passLabel: "পাসওয়ার্ড", passPlaceholder: "কমপক্ষে ৬টি অক্ষর দিন", passNote: "মনে রাখবেন: পাসওয়ার্ডে কমপক্ষে ৬টি অক্ষর বা সংখ্যা থাকতে হবে।", btnText: "লগইন করুন", forgotText: "পাসওয়ার্ড ভুলে গেছেন?", noAccount: "অ্যাকাউন্ট নেই?",, registerText: "নতুন নিবন্ধন করুন" },
-            as: { title: "লগইন কৰক", subtitle: "আপোনাৰ একাউন্টলৈ স্বাগতম", userLabel: "ব্যৱহাৰকাৰীৰ নাম", userPlaceholder: "আপোনাৰ নাম লিখক", passLabel: "পাছৱৰ্ড", passPlaceholder: "কমপক্ষে ৬টা আখৰ দিয়ক", passNote: "মন কৰিব: পাছৱৰ্ডত কমপক্ষে ৬টা আখৰ বা সংখ্যা থাকিব লাগিব।", btnText: "লগইন কৰক", forgotText: "পাছৱৰ্ড পাহৰি গ'ল নেকি?", noAccount: "একাউন্ট নাইনে?", registerText: "নতুন পঞ্জীয়ন কৰক" }
-        };
+        // പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ മാറ്റുമ്പോഴും വർക്ക് ചെയ്യാൻ
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
+        });
 
-        // ഭാഷ മാറുന്നതനുസരിച്ച് പേജിലെ വാക്കുകൾ അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
-        function updateLoginPageLanguage() {
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const t = loginTranslations[currentLang] || loginTranslations['ml'];
-
-            // എച്ച്ടിഎംഎൽ എലമെന്റുകളിലേക്ക് മാറ്റങ്ങൾ കൊടുക്കുന്നു
-            document.querySelector("h1.text-3xl").innerText = t.title;
-            document.querySelector("p.text-sm.text-blue-200").innerText = t.subtitle;
-            document.querySelectorAll("label")[0].innerText = t.userLabel;
-            document.getElementById("username").placeholder = t.userPlaceholder;
-            document.querySelectorAll("label")[1].innerText = t.passLabel;
-            document.getElementById("password").placeholder = t.passPlaceholder;
-            document.querySelectorAll("p.text-sm")[1].innerText = t.passNote;
-            document.getElementById("btnLogin").innerText = t.btnText;
-            document.getElementById("btnForgot").innerText = t.forgotText;
-            document.querySelector("a[href='register.html']").innerText = t.registerText;
+        function getAlertText(key) {
+            const lang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                return words[key][lang];
+            }
+            return words[key] ? words[key]['ml'] : '';
         }
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ മാറ്റുമ്പോഴും ഇത് വർക്ക് ചെയ്യും
-        window.addEventListener('languageChanged', updateLoginPageLanguage);
-        updateLoginPageLanguage();
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
+        };
 
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const togglePassword = document.getElementById("togglePassword");
+        const eyeIcon = document.getElementById("eyeIcon");
+        const btnLogin = document.getElementById("btnLogin");
+
+        if (togglePassword && passwordInput && eyeIcon) {
+            togglePassword.addEventListener("click", () => {
+                const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+                passwordInput.setAttribute("type", type);
+                
+                if (type === "text") {
+                    eyeIcon.classList.remove("fa-eye");
+                    eyeIcon.classList.add("fa-eye-slash");
+                    togglePassword.style.color = "#fbbf24";
+                } else {
+                    eyeIcon.classList.remove("fa-eye-slash");
+                    eyeIcon.classList.add("fa-eye");
+                    togglePassword.style.color = "#94a3b8";
+                }
+            });
+        }
+
+        if (btnLogin) {
+            btnLogin.addEventListener("click", async () => {
+                const user = usernameInput.value.trim().toLowerCase();
+                const pass = passwordInput.value.trim();
+
+                if (!user || !pass) {
+                    return showModal(getAlertText('alertFillAll'), getAlertText('alertWarningTitle'), "⚠️");
+                }
+
+                try {
+                    const userRef = ref(db, 'users/' + user);
+                    const snapshot = await get(userRef);
+
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        if (userData.password === pass) {
+                            showModal("ലോഗിൻ വിജയിച്ചു!", "വിജയം", "✅");
+                            localStorage.setItem('userName', user);
+                            setTimeout(() => {
+                                window.location.href = "dashboard.html";
+                            }, 1200);
+                        } else {
+                            showModal("പാസ്‌വേർഡ് തെറ്റാണ്!", "ശ്രദ്ധിക്കുക", "⚠️");
+                        }
+                    } else {
+                        showModal("ഈ യൂസർനെയിം നിലവിലില്ല!", "ശ്രദ്ധിക്കുക", "⚠️");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    showModal(getAlertText('alertError'), getAlertText('alertErrorTitle'), "⚠️");
+                }
+            });
+        }
     </script>
-
 </body>
 </html>
