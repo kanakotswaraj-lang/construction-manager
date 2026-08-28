@@ -1,6 +1,6 @@
 export function setupHeader(containerId, showWelcome = false, userName = "") {
     const currentLang = localStorage.getItem('selectedLang') || 'ml';
-    const name = userName || localStorage.getItem('userName') || 'swaraj';
+    const name = userName || localStorage.getItem('userName') || '';
 
     // ഓരോ ഭാഷയ്ക്കുമുള്ള പേരുകൾ (Titles & Subtitles)
     const translations = {
