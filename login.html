@@ -81,14 +81,7 @@
 
         setupModal();
         setupHeader('appHeader');
-
-        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷ സെറ്റ് ചെയ്യാൻ
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            updatePageLanguage(savedLang);
-        });
-
-        // പേജിലെ ടെക്സ്റ്റുകൾ മാറ്റി നൽകുന്ന ഫങ്ഷൻ
+        // പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ മാറ്റുമ്പോഴും കంటെന്റ് അപ്ഡേറ്റ് ചെയ്യാൻ
         function updatePageLanguage(lang) {
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
@@ -104,10 +97,17 @@
             });
         }
 
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യുക
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            updatePageLanguage(savedLang);
+        });
+
         // ഹെഡറിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ ഇത് വർക്ക് ചെയ്യും
         window.addEventListener('languageChanged', (e) => {
             updatePageLanguage(e.detail);
         });
+
 
         function getAlertText(key) {
             const lang = localStorage.getItem('selectedLang') || 'ml';
