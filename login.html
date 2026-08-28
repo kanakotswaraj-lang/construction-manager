@@ -73,84 +73,46 @@
     
         <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        
         import { setupModal } from './modal.js';
         import { setupHeader } from './header.js';
         
-        // ഇതെല്ലാം ഒരേ സ്ക്രിപ്റ്റ് ടാഗിനുള്ളിൽ ആയിരിക്കണം
         setupModal();
         setupHeader('appHeader');
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.firebasestorage.app",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-            measurementId: "G-XXXXXXXXXX"
+        // 7 ഭാഷകളിലേക്കുള്ള ലോഗിൻ പേജ് വാക്കുകൾ
+        const loginTranslations = {
+            ml: { title: "ലോഗിൻ ചെയ്യുക", subtitle: "നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം", userLabel: "യൂസർനെയിം (പേര്)", userPlaceholder: "നിങ്ങളുടെ പേര് നൽകുക", passLabel: "പാസ്‌വേർഡ്", passPlaceholder: "കുറഞ്ഞത് 6 അക്കങ്ങൾ നൽകുക", passNote: "ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.", btnText: "ലോഗിൻ ചെയ്യുക", forgotText: "പാസ്‌വേർഡ് മറന്നുപോയോ?", noAccount: "അക്കൗണ്ട് ഇല്ലെങ്കിൽ?", registerText: "പുതിയതായി രജിസ്റ്റർ ചെയ്യുക" },
+            en: { title: "Login", subtitle: "Welcome to your account", userLabel: "Username", userPlaceholder: "Enter your name", passLabel: "Password", passPlaceholder: "Enter at least 6 characters", passNote: "Note: Password must be at least 6 characters.", btnText: "Login", forgotText: "Forgot Password?", noAccount: "Don't have an account?", registerText: "Register New" },
+            hi: { title: "लॉगिन करें", subtitle: "आपके खाते में स्वागत है", userLabel: "यूज़रनेम (नाम)", userPlaceholder: "अपना नाम दर्ज करें", passLabel: "पासवर्ड", passPlaceholder: "कम से कम 6 अक्षर दर्ज करें", passNote: "ध्यान दें: पासवर्ड कम से कम 6 अंकों या अक्षरों का होना चाहिए।", btnText: "लॉगिन करें", forgotText: "पासवर्ड भूल गए?", noAccount: "खाता नहीं है?", registerText: "नया रजिस्टर करें" },
+            ta: { title: "உள்நுழைக", subtitle: "உங்களுக்கு வரவேற்கிறோம்", userLabel: "பயனர் பெயர்", userPlaceholder: "உங்கள் பெயரை உள்ளிடவும்", passLabel: "கடவுச்சொல்", passPlaceholder: "குறைந்தது 6 எழுத்துக்கள்", passNote: "குறிப்பு: கடவுச்சொல் குறைந்தது 6 எழுத்துக்களைக் கொண்டிருக்க வேண்டும்.", btnText: "உள்நுழைக", forgotText: "கடவுச்சொல் மறந்துவிட்டதா?", noAccount: "கணக்கு இல்லையா?", registerText: "புதிதாக பதிவு செய்க" },
+            kn: { title: "ಲಾಗಿನ್ ಮಾಡಿ", subtitle: "ನಿಮ್ಮ ಖಾತೆಗೆ ಸ್ವಾಗತ", userLabel: "ಬಳಕೆದಾರ ಹೆಸರು", userPlaceholder: "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ", passLabel: "ಪಾಸ್‌ವರ್ಡ್", passPlaceholder: "ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳನ್ನು ನಮೂದಿಸಿ", passNote: "ಸೂಚನೆ: ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳನ್ನು ಹೊಂದಿರಬೇಕು.", btnText: "ಲಾಗಿನ್ ಮಾಡಿ", forgotText: "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿ따?", noAccount: "ಖಾತೆ ಇಲ್ಲವೇ?", registerText: "ಹೊಸದಾಗಿ ನೋಂದಾಯಿಸಿ" },
+            bn: { title: "লগইন করুন", subtitle: "আপনার অ্যাকাউন্টে স্বাগতম", userLabel: "ইউজারনেম", userPlaceholder: "আপনার নাম লিখুন", passLabel: "পাসওয়ার্ড", passPlaceholder: "কমপক্ষে ৬টি অক্ষর দিন", passNote: "মনে রাখবেন: পাসওয়ার্ডে কমপক্ষে ৬টি অক্ষর বা সংখ্যা থাকতে হবে।", btnText: "লগইন করুন", forgotText: "পাসওয়ার্ড ভুলে গেছেন?", noAccount: "অ্যাকাউন্ট নেই?",, registerText: "নতুন নিবন্ধন করুন" },
+            as: { title: "লগইন কৰক", subtitle: "আপোনাৰ একাউন্টলৈ স্বাগতম", userLabel: "ব্যৱহাৰকাৰীৰ নাম", userPlaceholder: "আপোনাৰ নাম লিখক", passLabel: "পাছৱৰ্ড", passPlaceholder: "কমপক্ষে ৬টা আখৰ দিয়ক", passNote: "মন কৰিব: পাছৱৰ্ডত কমপক্ষে ৬টা আখৰ বা সংখ্যা থাকিব লাগিব।", btnText: "লগইন কৰক", forgotText: "পাছৱৰ্ড পাহৰি গ'ল নেকি?", noAccount: "একাউন্ট নাইনে?", registerText: "নতুন পঞ্জীয়ন কৰক" }
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        // ഭാഷ മാറുന്നതനുസരിച്ച് പേജിലെ വാക്കുകൾ അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
+        function updateLoginPageLanguage() {
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            const t = loginTranslations[currentLang] || loginTranslations['ml'];
 
-        const usernameInput = document.getElementById("username");
-        const passwordInput = document.getElementById("password");
-        const togglePassword = document.getElementById("togglePassword");
-        const btnLogin = document.getElementById("btnLogin");
-        const btnForgot = document.getElementById("btnForgot");
+            // എച്ച്ടിഎംഎൽ എലമെന്റുകളിലേക്ക് മാറ്റങ്ങൾ കൊടുക്കുന്നു
+            document.querySelector("h1.text-3xl").innerText = t.title;
+            document.querySelector("p.text-sm.text-blue-200").innerText = t.subtitle;
+            document.querySelectorAll("label")[0].innerText = t.userLabel;
+            document.getElementById("username").placeholder = t.userPlaceholder;
+            document.querySelectorAll("label")[1].innerText = t.passLabel;
+            document.getElementById("password").placeholder = t.passPlaceholder;
+            document.querySelectorAll("p.text-sm")[1].innerText = t.passNote;
+            document.getElementById("btnLogin").innerText = t.btnText;
+            document.getElementById("btnForgot").innerText = t.forgotText;
+            document.querySelector("a[href='register.html']").innerText = t.registerText;
+        }
 
-        togglePassword.addEventListener("click", () => {
-            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-            passwordInput.setAttribute("type", type);
-            togglePassword.style.color = (type === "text") ? "#fbbf24" : "#93c5fd";
-        });
+        // പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ മാറ്റുമ്പോഴും ഇത് വർക്ക് ചെയ്യും
+        window.addEventListener('languageChanged', updateLoginPageLanguage);
+        updateLoginPageLanguage();
 
-        btnLogin.addEventListener("click", () => {
-            const user = usernameInput.value.trim().toLowerCase();
-            const pass = passwordInput.value.trim();
-
-            if (!user || !pass) {
-                return showModal("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!", "ശ്രദ്ധിക്കുക", "⚠️");
-            }
-
-            const dbRef = ref(db);
-            get(child(dbRef, `users/${user}`)).then((snapshot) => {
-                if (!snapshot.exists()) {
-                    return showModal("ഈ യൂസർനെയിം നിലവിലില്ല! പുതിയതായി രജിസ്റ്റർ ചെയ്യുക.", "പിഴവ്", "❌");
-                }
-                const data = snapshot.val();
-                if (data.password !== pass) {
-                    return showModal("പാസ്‌വേർഡ് തെറ്റാണ്!", "പിഴവ്", "❌");
-                }
-                localStorage.setItem('userName', user);
-                window.location.href = "dashboard.html";
-            }).catch((error) => {
-                console.error(error);
-                showModal("ലോഗിൻ പരാജയപ്പെട്ടു. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.", "തടസ്സം", "⚠️");
-            });
-        });
-
-        btnForgot.addEventListener("click", () => {
-            const user = usernameInput.value.trim().toLowerCase();
-            if (!user) {
-                return showModal("ആദ്യം യൂസർനെയിം ബോക്സിൽ നിങ്ങളുടെ പേര് നൽകുക!", "ശ്രദ്ധിക്കുക", "⚠️");
-            }
-
-            const dbRef = ref(db);
-            get(child(dbRef, `users/${user}`)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    showModal("നിങ്ങളുടെ പാസ്‌വേർഡ്: " + snapshot.val().password, "പാസ്‌വേർഡ് ഓർമ്മപ്പെടുത്തൽ", "ℹ️");
-                } else {
-                    showModal("ഈ യൂസർനെയിം നിലവിലില്ല!", "പിഴവ്", "❌");
-                }
-            }).catch((error) => {
-                console.error(error);
-                showModal("ഡാറ്റ എടുക്കുന്നതിൽ തടസ്സം നേരിട്ടു.", "തടസ്സം", "⚠️");
-            });
-        });
     </script>
 
 </body>
