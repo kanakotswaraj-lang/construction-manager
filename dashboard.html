@@ -9,8 +9,9 @@
     <!-- ഫയർബേസ് പുതിയ പതിപ്പ് (v12.17.1) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-        import { setupHeader } from './header.js';
+        import { getFirestore, collection, onSnapshot, query, where, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import { setupHeader } from './header.js';
+
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
