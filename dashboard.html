@@ -151,8 +151,13 @@ if (savedProfile) {
 
         window.updateCoverPhoto = function(event) {
             const file = event.target.files[0];
-            let userName = localStorage.getItem('userName') || 'swaraj';
-            if (file) {
+            let userName = localStorage.getItem('userName');
+if (!userName) {
+    // ആരെങ്കിലും ലോഗിൻ ചെയ്യാതെ വന്നാൽ നേരെ ലോഗിൻ പേജിലേക്ക് വിടുക
+    window.location.href = "login.html";
+    return;
+}
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const img = new Image();
