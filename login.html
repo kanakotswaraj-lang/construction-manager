@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="language.js"></script>
+
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -83,9 +85,28 @@
         // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷ സെറ്റ് ചെയ്യാൻ
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(savedLang);
-            }
+            updatePageLanguage(savedLang);
+        });
+
+        // പേജിലെ ടെക്സ്റ്റുകൾ മാറ്റി നൽകുന്ന ഫങ്ഷൻ
+        function updatePageLanguage(lang) {
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.textContent = words[key][lang];
+                }
+            });
+            document.querySelectorAll('[data-key-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-key-placeholder');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.placeholder = words[key][lang];
+                }
+            });
+        }
+
+        // ഹെഡറിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ ഇത് വർക്ക് ചെയ്യും
+        window.addEventListener('languageChanged', (e) => {
+            updatePageLanguage(e.detail);
         });
 
         function getAlertText(key) {
