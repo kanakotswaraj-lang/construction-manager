@@ -82,7 +82,7 @@
         setupModal();
         setupHeader('appHeader');
 
-        // ഭാഷ അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ window-ലേക്ക് മാറ്റിയിരിക്കുന്നു (ഇത് ഹെഡറിന് ലഭിക്കും)
+        // 1. പേജിലെ ലാംഗ്വേജ് മാറ്റാൻ glogal ആയി ഫങ്ഷൻ സെറ്റ് ചെയ്യുന്നു
         window.updatePageLanguage = function(lang) {
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
@@ -98,10 +98,12 @@
             });
         }
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യുക
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷ സെറ്റ് ചെയ്യുക
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            window.updatePageLanguage(savedLang);
+            if (typeof window.updatePageLanguage === 'function') {
+                window.updatePageLanguage(savedLang);
+            }
         });
 
         // ഹെഡറിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ ഇത് വർക്ക് ചെയ്യും
@@ -109,13 +111,13 @@
             window.updatePageLanguage(e.detail);
         });
 
-
-        function getAlertText(key) {
+        // സുരക്ഷിതമായി അലർട്ട് ടെക്സ്റ്റ് എടുക്കാനുള്ള ഫങ്ഷൻ
+        function getAlertText(key, defaultText) {
             const lang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
                 return words[key][lang];
             }
-            return words[key] ? words[key]['ml'] : '';
+            return defaultText;
         }
 
         const firebaseConfig = {
@@ -161,7 +163,8 @@
                 const pass = passwordInput.value.trim();
 
                 if (!user || !pass) {
-                    return showModal(getAlertText('alertFillAll'), getAlertText('alertWarningTitle'), "⚠️");
+                    const warnText = getAlertText('alertFillAll', 'ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!');
+                    return showModal(warnText, "ശ്രദ്ധിക്കുക", "⚠️");
                 }
 
                 try {
@@ -184,10 +187,11 @@
                     }
                 } catch (error) {
                     console.error(error);
-                    showModal(getAlertText('alertError'), getAlertText('alertErrorTitle'), "⚠️");
+                    showModal("കണക്റ്റിവിറ്റി പ്രശ്നം നേരിടുന്നു. വീണ്ടും ശ്രമിക്കുക.", "തകരാറ്", "⚠️");
                 }
             });
         }
     </script>
+
 </body>
 </html>
