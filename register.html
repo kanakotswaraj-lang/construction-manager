@@ -84,17 +84,21 @@
 
         setupModal();
         setupHeader('appHeader');
-        // 1. പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ സെറ്റ് ചെയ്യാൻ
-        window.addEventListener('DOMContentLoaded', () => {
+
+        // ഭാഷ സെറ്റ് ചെയ്യാനും തത്സമയം മാറ്റാനുമുള്ള ഒറ്റ ബ്ലോക്ക് കോഡ്
+        function applySavedLanguage() {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
             }
-        });
+        }
 
-        // 2. മുകളിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ തത്സമയം മാറാൻ (languageChanged event)
+        // 1. പേജ് ലോഡ് ചെയ്യുമ്പോൾ
+        window.addEventListener('DOMContentLoaded', applySavedLanguage);
+
+        // 2. ഹെഡറിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ (languageChanged event)
         window.addEventListener('languageChanged', (e) => {
-            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
+            const newLang = (e && e.detail) ? e.detail : localStorage.getItem('selectedLang');
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(newLang);
             }
@@ -103,20 +107,19 @@
         // 3. മറ്റ് ടാബുകളിലോ സെറ്റിങ്സിലോ ഭാഷ മാറുമ്പോൾ (storage event)
         window.addEventListener('storage', (e) => {
             if (e.key === 'selectedLang') {
-                const newLang = e.newValue || 'ml';
                 if (typeof window.switchLanguage === 'function') {
-                    window.switchLanguage(newLang);
+                    window.switchLanguage(e.newValue || 'ml');
                 }
             }
         });
 
-function getAlertText(key) {
-    const lang = localStorage.getItem('selectedLang') || 'ml';
-    if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-        return words[key][lang];
-    }
-    return words[key] ? words[key]['ml'] : '';
-}
+        function getAlertText(key) {
+            const lang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                return words[key][lang];
+            }
+            return words[key] ? words[key]['ml'] : '';
+        }
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -190,5 +193,6 @@ function getAlertText(key) {
             });
         }
     </script>
+
 </body>
 </html>
