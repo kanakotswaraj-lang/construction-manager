@@ -24,36 +24,36 @@
     <!-- രജിസ്ട്രേഷൻ കാർഡ് -->
     <div class="w-full max-w-sm bg-slate-900/80 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
         
-        <h2 data-key="regTitle" class="text-xl font-bold text-white mb-1">പുതിയ രജിസ്ട്രേഷൻ</h2>
-        <p data-key="regSubtitle" class="text-xs text-slate-400 mb-5">വിവരങ്ങൾ നൽകി പുതിയ അക്കൗണ്ട് ഉണ്ടാക്കാം</p>
+        <h2 class="lang text-xl font-bold text-white mb-1" data-key="regTitle">പുതിയ രജിസ്ട്രേഷൻ</h2>
+        <p class="lang text-xs text-slate-400 mb-5" data-key="regSubtitle">വിവരങ്ങൾ നൽകി പുതിയ അക്കൗണ്ട് ഉണ്ടാക്കാം</p>
 
         <div class="space-y-4">
             <!-- പേര് -->
             <div>
-                <label data-key="mesthriNameLabel" class="block text-xs font-semibold text-amber-300/90 mb-1.5">മേസ്തിരിയുടെ പേര്</label>
-                <input type="text" id="username" data-key-placeholder="usernamePlaceholder" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
+                <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="mesthriNameLabel">മേസ്തിരിയുടെ പേര്</label>
+                <input type="text" id="username" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="usernamePlaceholder" placeholder="നിങ്ങളുടെ പേര് നൽകുക">
             </div>
 
             <!-- ഫോൺ നമ്പർ -->
             <div>
-                <label data-key="phoneLabel" class="block text-xs font-semibold text-amber-300/90 mb-1.5">ഫോൺ നമ്പർ</label>
-                <input type="tel" id="phone" data-key-placeholder="phonePlaceholder" placeholder="10 അക്ക ഫോൺ നമ്പർ" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
+                <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="phoneLabel">ഫോൺ നമ്പർ</label>
+                <input type="tel" id="phone" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="phonePlaceholder" placeholder="10 അക്ക ഫോൺ നമ്പർ">
             </div>
 
             <!-- പാസ്‌വേർഡ് -->
             <div>
-                <label data-key="passwordLabel" class="block text-xs font-semibold text-amber-300/90 mb-1.5">പാസ്‌വേർഡ് (Password)</label>
+                <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="passwordLabel">പാസ്‌വേർഡ് (Password)</label>
                 <div class="relative">
-                    <input type="password" id="password" data-key-placeholder="passwordPlaceholder" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
+                    <input type="password" id="password" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="passwordPlaceholder" placeholder="പാസ്‌വേർഡ് നൽകുക">
                     <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2">
                         <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
                     </button>
                 </div>
-                <p data-key="passwordNote" class="text-[11px] text-slate-400 mt-1.5">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
+                <p class="lang text-[11px] text-slate-400 mt-1.5" data-key="passwordNote">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
             </div>
 
             <!-- സബ്‌മിറ്റ് ബട്ടൺ -->
-            <button id="btnRegister" data-key="registerSubmitBtn" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition duration-200 text-sm">
+            <button id="btnRegister" class="lang w-full mt-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition duration-200 text-sm" data-key="registerSubmitBtn">
                 അക്കൗണ്ട് രജിസ്റ്റർ ചെയ്യാം
             </button>
         </div>
@@ -61,12 +61,12 @@
 
     <!-- ലോഗിൻ ലിങ്ക് -->
     <div class="mt-6 text-center text-xs text-slate-400">
-        <span data-key="hasAccountText">അക്കൗണ്ട് ഉണ്ടോ?</span> 
-        <a href="login.html" data-key="loginLinkText" class="text-amber-400 font-bold hover:underline ml-1">ഇവിടെ ലോഗിൻ ചെയ്യാം</a>
+        <span class="lang" data-key="hasAccountText">അക്കൗണ്ട് ഉണ്ടോ?</span> 
+        <a href="login.html" class="lang text-amber-400 font-bold hover:underline ml-1" data-key="loginLinkText">ഇവിടെ ലോഗിൻ ചെയ്യാം</a>
     </div>
 
     <!-- ഫൂട്ടർ -->
-    <div data-key="footerCredit" class="mt-8 text-center text-[11px] text-slate-500">
+    <div class="lang mt-8 text-center text-[11px] text-slate-500" data-key="footerCredit">
         മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
     </div>
 
@@ -80,19 +80,16 @@
 
         setupModal();
         setupHeader('appHeader');
-window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const savedLang = localStorage.getItem('selectedLang') || 'ml';
-        
-        // താഴെയുള്ള വാക്കുകൾ മാറാൻ നമ്മൾ എഴുതിയ ഫങ്ഷൻ ഇവിടെ കോൾ ചെയ്യുന്നു
-        if (typeof window.switchLanguage === 'function') {
-            window.switchLanguage(savedLang);
-        }
-    }, 200);
-});
 
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const savedLang = localStorage.getItem('selectedLang') || 'ml';
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage(savedLang);
+                }
+            }, 200);
+        });
 
-        // നിലവിലെ ഭാഷയ്ക്കനുസരിച്ച് അലർട്ട് മെസ്സേജുകൾ എടുക്കാനുള്ള ഫങ്ഷൻ
         function getAlertText(key) {
             const lang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
