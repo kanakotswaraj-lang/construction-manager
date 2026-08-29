@@ -713,26 +713,37 @@ window.switchLanguage = function(langCode) {
     }
     localStorage.setItem('selectedLang', langCode);
 
-    // 1. data-key ഉള്ളതും .lang ക്ലാസ് ഉള്ളതുമായ എല്ലാ എലമെന്റുകളും മാറ്റി നൽകുന്നു
-    document.querySelectorAll('.lang, [data-key]').forEach(element => {
-        const key = element.getAttribute('data-key') || element.id;
+    // 1. data-key ഉള്ള എലമെന്റുകൾ മാറ്റുന്നു
+    document.querySelectorAll('[data-key]').forEach(element => {
+        const key = element.getAttribute('data-key');
         if (words[key] && words[key][langCode]) {
-            // ചൈൽഡ് എലമെന്റുകൾ ഇല്ലാത്തവ മാത്രം ടെക്സ്റ്റ് മാറ്റുക (ഫോർമാറ്റ് കേടുവരാതിരിക്കാൻ)
-            if (element.children.length === 0 || element.tagName === 'SPAN' || element.tagName === 'P' || element.tagName === 'BUTTON' || element.tagName === 'H1' || element.tagName === 'H2' || element.tagName === 'H3') {
-                element.innerText = words[key][langCode];
-            }
+            element.innerText = words[key][langCode];
         }
     });
 
-    // 2. Placeholder ടെക്സ്റ്റുകൾ മാറ്റുന്നു
-    document.querySelectorAll('.lang-placeholder, [data-key-placeholder]').forEach(element => {
+    // 2. data-key-placeholder ഉള്ള ഇൻപുട്ടുകൾ മാറ്റുന്നു
+    document.querySelectorAll('[data-key-placeholder], [data-key]').forEach(element => {
         const key = element.getAttribute('data-key-placeholder') || element.getAttribute('data-key');
-        if (words[key] && words[key][langCode]) {
+        if (words[key] && words[key][langCode] && element.placeholder !== undefined) {
             element.placeholder = words[key][langCode];
         }
     });
 
-    // 3. ഹൈലൈറ്റ് കളർ സജ്ജമാക്കൽ
+    // 3. data-key ഇല്ലാത്ത സാധാരണ ടെക്സ്റ്റുകളും വാക്കുകളും മലയാളത്തിൽ നിന്ന് നേരിട്ട് മാറ്റാൻ
+    const allElements = document.querySelectorAll('h1, h2, h3, h4, p, span, button, a, label');
+    allElements.forEach(element => {
+        const currentText = element.innerText.trim();
+        for (let key in words) {
+            if (words[key]['ml'] && words[key]['ml'].trim() === currentText) {
+                if (words[key][langCode]) {
+                    element.innerText = words[key][langCode];
+                }
+                break;
+            }
+        }
+    });
+
+    // 4. സെലക്ട് ചെയ്ത ഭാഷയുടെ ബട്ടൺ മാത്രം ഹൈലൈറ്റ് ചെയ്യൽ
     document.querySelectorAll('.lang-option, [onclick*="switchLanguage"]').forEach(btn => {
         const onclickAttr = btn.getAttribute('onclick') || '';
         if (onclickAttr.includes(`'${langCode}'`) || onclickAttr.includes(`"${langCode}"`)) {
@@ -742,7 +753,7 @@ window.switchLanguage = function(langCode) {
         }
     });
 
-    // 4. മെനു അടയ്ക്കുന്നു
+    // ഡ്രോപ്പ്ഡൗൺ മെനു അടയ്ക്കുന്നു
     const dropdown = document.getElementById('langDropdown');
     if (dropdown && !dropdown.classList.contains('hidden')) {
         dropdown.classList.add('hidden');
@@ -751,7 +762,6 @@ window.switchLanguage = function(langCode) {
 
 window.changeLanguage = window.switchLanguage;
 
-// ഡ്രോപ്പ്ഡൗൺ മെനു ടോഗിൾ ചെയ്യാൻ
 window.toggleLangMenu = function(e) {
     if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
     const dropdown = document.getElementById('langDropdown');
@@ -760,7 +770,6 @@ window.toggleLangMenu = function(e) {
     }
 };
 
-// പേജ് ലോഡാകുമ്പോൾ തനിയെ അപ്ഡേറ്റ് ആകാൻ
 document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('selectedLang') || 'ml';
     window.switchLanguage(savedLang);
