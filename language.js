@@ -809,13 +809,14 @@ siteName: {
 // UNIVERSAL LANGUAGE SWITCHER FUNCTION
 // ==========================================
 
+// എല്ലാ പേജുകളിലും ഒരേപോലെ ഭാഷ സെറ്റ് ചെയ്യാൻ
 window.switchLanguage = function(langCode) {
     if (!langCode) {
         langCode = localStorage.getItem('selectedLang') || 'ml';
     }
     localStorage.setItem('selectedLang', langCode);
 
-    // 1. data-key ഉള്ള എല്ലാ പ്രധാന ഹെഡിംഗുകളും ബട്ടണുകളും മാറ്റുന്നു
+    // 1. data-key ഉള്ള എല്ലാ ടാഗുകളും മാറ്റുന്നു
     document.querySelectorAll('[data-key]').forEach(element => {
         const key = element.getAttribute('data-key');
         if (words[key] && words[key][langCode]) {
@@ -831,23 +832,8 @@ window.switchLanguage = function(langCode) {
         }
     });
 
-    // 3. HTML-ൽ data-key വിട്ടുപോയ ടെക്സ്റ്റുകൾ മലയാളം വെച്ച് കണ്ടുപിടിച്ച് മാറ്റുന്ന ഭാഗം
-    const allTextElements = document.querySelectorAll('h2, p, label, button, a, span');
-    allTextElements.forEach(element => {
-        const currentText = element.innerText.trim();
-        for (let key in words) {
-            // words ഒബ്ജക്റ്റിലെ മലയാളം ടെക്സ്റ്റുമായി ഒത്തുനോക്കുന്നു
-            if (words[key]['ml'] && words[key]['ml'].trim() === currentText) {
-                if (words[key][langCode]) {
-                    element.innerText = words[key][langCode];
-                }
-                break;
-            }
-        }
-    });
-
-    // 4. ഡ്രോപ്പ്ഡൗൺ മെനു ഹൈലൈറ്റും അടയ്ക്കലും
-    document.querySelectorAll('.lang-option, [onclick*="switchLanguage"]').forEach(btn => {
+    // 3. ഡ്രോപ്പ്ഡൗൺ സ്റ്റൈൽ മാറ്റങ്ങൾ
+    document.querySelectorAll('.lang-option').forEach(btn => {
         const onclickAttr = btn.getAttribute('onclick') || '';
         if (onclickAttr.includes(`'${langCode}'`) || onclickAttr.includes(`"${langCode}"`)) {
             btn.className = "lang-option w-full text-left px-4 py-2 bg-amber-500 text-slate-950 font-black rounded-lg transition-all shadow-md";
@@ -872,6 +858,7 @@ window.toggleLangMenu = function(e) {
     }
 };
 
+// പേജ് ലോഡ് ആകുമ്പോൾ തന്നെ സേവ് ചെയ്ത ഭാഷ അപ്ലൈ ചെയ്യുന്നു
 document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('selectedLang') || 'ml';
     window.switchLanguage(savedLang);
