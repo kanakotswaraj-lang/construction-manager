@@ -808,34 +808,60 @@ siteName: {
 // ==========================================
 // UNIVERSAL LANGUAGE SWITCHER FUNCTION
 // ==========================================
+// എല്ലാ ഭാഷകളിലെയും വാക്കുകൾ
+const words = {
+    appName: { ml: "മേസ്തിരി പ്രോ", ta: "மேஸ்திரி ப்ரோ", kn: "ಮೇಸ್ತ್ರಿ ಪ್ರೋ", hi: "मेस्त्री प्रो" },
+    appSubtitle: { ml: "സ്മാർട്ട് സൈറ്റ് മാനേജർ", ta: "ஸ்மார்ட் சைட் மேனேஜர்", kn: "ಸ್ಮಾರ್ಟ್ ಸೈಟ್ ಮ್ಯಾನೇಜರ್", hi: "स्मार्ट साइट मैनेजर" },
+    welcomeText: { ml: "വരവേൽക്കുന്നു,", ta: "வரவேற்கிறோம்,", kn: "ಸ್ವಾಗತ,", hi: "स्वागत है," },
+    mainTitle: { ml: "നിർമ്മാണ മാനേജർ", ta: "கட்டுப்பாட்டு மேலாளர்", kn: "ನಿರ್ಮಾಣ ಮ್ಯಾನೇಜರ್", hi: "निर्माण प्रबंधक" },
+    mainSubtitle: { ml: "പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ", ta: "வேலைகளும் கணக்குகளும் இனி விரல் நுனியில்", kn: "ಕೆಲಸಗಳು ಮತ್ತು ಲೆಕ್ಕಗಳು ಇನ್ನು ನಿಮ್ಮ ಬೆರಳ ತುದಿಯಲ್ಲಿ", hi: "काम और हिसाब अब उंगलियों पर" },
+    loginTitle: { ml: "ലോഗിൻ ചെയ്യുക", ta: "உள்நுழையவும்", kn: "ಲಾಗಿನ್ ಮಾಡಿ", hi: "लॉगिन करें" },
+    loginSubtitle: { ml: "നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം", ta: "உங்கள் கணக்கிற்கு நல்வரவு", kn: "ನಿಮ್ಮ ಖಾತೆಗೆ ಸ್ವಾಗതം", hi: "आपके खाते में स्वागत है" },
+    usernameLabel: { ml: "യൂസർനെയിം (പേര്)", ta: "பயனர்பெயர் (பெயர்)", kn: "ಬಳಕೆದಾರರ ಹೆಸರು (ಹೆಸರು)", hi: "उपयोगकर्ता नाम (नाम)" },
+    usernamePlaceholder: { ml: "നിങ്ങളുടെ പേര് നൽകുക", ta: "உங்கள் பெயரை உள்ளிடவும்", kn: "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮूदಿಸಿ", hi: "अपना नाम दर्ज करें" },
+    passwordLabel: { ml: "പാസ്‌വേർഡ്", ta: "கடவுச்சொல்", kn: "ಪಾಸ್‌ವರ್ಡ್", hi: "पासवर्ड" },
+    passwordPlaceholder: { ml: "പാസ്‌വേർഡ് നൽകുക", ta: "கடவுச்சொல்லை உள்ளிடவும்", kn: "ಪಾಸ್‌ವರ್ಡ್ ನಮूदಿಸಿ", hi: "पासवर्ड दर्ज करें" },
+    loginBtn: { ml: "ലോഗിൻ ചെയ്യാം", ta: "உள்நுழைக", kn: "ಲಾಗಿನ್ ಮಾಡಿ", hi: "लॉगिन करें" },
+    registerBtn: { ml: "പുതിയ രജിസ്ട്രേഷൻ", ta: "புதிய பதிவு", kn: "ಹೊಸ ನೋಂದಣಿ", hi: "नया पंजीकरण" }
+};
 
-// എല്ലാ പേജുകളിലും ഒരേപോലെ ഭാഷ സെറ്റ് ചെയ്യാൻ
+// ഭാഷ മാറ്റുന്ന ഫങ്ഷൻ
 window.switchLanguage = function(langCode) {
     if (!langCode) {
         langCode = localStorage.getItem('selectedLang') || 'ml';
     }
     localStorage.setItem('selectedLang', langCode);
 
-    // 1. data-key ഉള്ള എല്ലാ ടാഗുകളും മാറ്റുന്നു
-    document.querySelectorAll('[data-key]').forEach(element => {
-        const key = element.getAttribute('data-key');
-        if (words[key] && words[key][langCode]) {
-            element.innerText = words[key][langCode];
+    // പേജിലെ എല്ലാ വാക്കുകളും കണ്ട് പിടിച്ച് മാറ്റുന്നു
+    const allElements = document.querySelectorAll('h1, h2, h3, p, span, a, label, button');
+    allElements.forEach(element => {
+        const text = element.innerText.trim();
+        for (let key in words) {
+            if (words[key]['ml'] && words[key]['ml'].trim() === text) {
+                if (words[key][langCode]) {
+                    element.innerText = words[key][langCode];
+                }
+            }
         }
     });
 
-    // 2. ഇൻപുട്ടുകളുടെ placeholder മാറ്റുന്നു
-    document.querySelectorAll('[data-key-placeholder]').forEach(element => {
-        const key = element.getAttribute('data-key-placeholder');
-        if (words[key] && words[key][langCode]) {
-            element.placeholder = words[key][langCode];
+    // ഇൻപുട്ട് പ്ലെയ്‌സ്‌ഹോൾഡറുകൾ മാറ്റുന്നു
+    const allInputs = document.querySelectorAll('input');
+    allInputs.forEach(input => {
+        const placeholder = input.placeholder.trim();
+        for (let key in words) {
+            if (words[key]['ml'] && words[key]['ml'].trim() === placeholder) {
+                if (words[key][langCode]) {
+                    input.placeholder = words[key][langCode];
+                }
+            }
         }
     });
 
-    // 3. ഡ്രോപ്പ്ഡൗൺ സ്റ്റൈൽ മാറ്റങ്ങൾ
+    // ഡ്രോപ്പ്ഡൗൺ മെനു ഹൈലൈറ്റ് മാറ്റാൻ
     document.querySelectorAll('.lang-option').forEach(btn => {
         const onclickAttr = btn.getAttribute('onclick') || '';
-        if (onclickAttr.includes(`'${langCode}'`) || onclickAttr.includes(`"${langCode}"`)) {
+        if (onclickAttr.includes(langCode)) {
             btn.className = "lang-option w-full text-left px-4 py-2 bg-amber-500 text-slate-950 font-black rounded-lg transition-all shadow-md";
         } else {
             btn.className = "lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium";
@@ -858,7 +884,7 @@ window.toggleLangMenu = function(e) {
     }
 };
 
-// പേജ് ലോഡ് ആകുമ്പോൾ തന്നെ സേവ് ചെയ്ത ഭാഷ അപ്ലൈ ചെയ്യുന്നു
+// പേജ് ലോഡ് ആകുമ്പോൾ സേവ് ചെയ്ത ഭാഷ അപ്ലൈ ചെയ്യാൻ
 document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('selectedLang') || 'ml';
     window.switchLanguage(savedLang);
