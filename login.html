@@ -74,6 +74,9 @@
     <!-- ഫയർബേസ് & ലാംഗ്വേജ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         
         import { setupModal } from './modal.js';
@@ -82,53 +85,17 @@
         setupModal();
         setupHeader('appHeader');
 
-                // 1. പേജിലെ ലാംഗ്വേജ് മാറ്റുന്ന മെയിൻ ഫങ്ഷൻ
-        window.updatePageLanguage = function(lang) {
-            document.querySelectorAll('[data-key]').forEach(el => {
-                const key = el.getAttribute('data-key');
-                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                    el.textContent = words[key][lang];
-                }
-            });
-            document.querySelectorAll('[data-key-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-key-placeholder');
-                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                    el.placeholder = words[key][lang];
-                }
-            });
-        }
-
-        // 2. പേജ് ലോഡ് ആയ ഉടനെയും ഹെഡർ ലോഡ് ആയ ശേഷവും വർക്ക് ചെയ്യാൻ
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            window.updatePageLanguage(savedLang);
-
-            // ഹെഡർ ഡൈനാമിക് ആയി ലോഡ് ആകുന്നതിനാൽ ഒരല്പം സമയം കഴിഞ്ഞ് ഇവന്റ് സെറ്റ് ചെയ്യുന്നു
+        // പേജ് പൂർണ്ണമായി ലോഡ് ആയി ഹെഡറും വന്നതിനു ശേഷം ഭാഷ സെറ്റ് ചെയ്യാൻ
+        window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
-                const languageSelect = document.getElementById('languageSelect');
-                if (languageSelect) {
-                    languageSelect.value = savedLang;
-                    
-                    // ഹെഡറിലെ ഡ്രോപ്പ്ഡൗൺ മാറുമ്പോൾ നേരിട്ട് ഇവിടെ വർക്ക് ചെയ്യാൻ
-                    languageSelect.addEventListener('change', (e) => {
-                        const selectedLang = e.target.value;
-                        localStorage.setItem('selectedLang', selectedLang);
-                        window.updatePageLanguage(selectedLang);
-                    });
+                const savedLang = localStorage.getItem('selectedLang') || 'ml';
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage(savedLang);
                 }
-            }, 300);
+            }, 300); // ഹെഡർ ലോഡ് ആകാൻ ചെറിയൊരു സമയം നൽകുന്നു
         });
 
-
-        // സുരക്ഷിതമായി അലർട്ട് ടെക്സ്റ്റ് എടുക്കാനുള്ള ഫങ്ഷൻ
-        function getAlertText(key, defaultText) {
-            const lang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                return words[key][lang];
-            }
-            return defaultText;
-        }
-
+        // ഫയർബേസ് ലോഗിൻ കോഡുകൾ...
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -172,8 +139,7 @@
                 const pass = passwordInput.value.trim();
 
                 if (!user || !pass) {
-                    const warnText = getAlertText('alertFillAll', 'ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!');
-                    return showModal(warnText, "ശ്രദ്ധിക്കുക", "⚠️");
+                    return showModal("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!", "ശ്രദ്ധിക്കുക", "⚠️");
                 }
 
                 try {
