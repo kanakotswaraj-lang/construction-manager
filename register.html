@@ -80,14 +80,17 @@
 
         setupModal();
         setupHeader('appHeader');
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const savedLang = localStorage.getItem('selectedLang') || 'ml';
+        
+        // താഴെയുള്ള വാക്കുകൾ മാറാൻ നമ്മൾ എഴുതിയ ഫങ്ഷൻ ഇവിടെ കോൾ ചെയ്യുന്നു
+        if (typeof window.switchLanguage === 'function') {
+            window.switchLanguage(savedLang);
+        }
+    }, 200);
+});
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ മാറ്റുമ്പോഴും വർക്ക് ചെയ്യാൻ
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(savedLang);
-            }
-        });
 
         // നിലവിലെ ഭാഷയ്ക്കനുസരിച്ച് അലർട്ട് മെസ്സേജുകൾ എടുക്കാനുള്ള ഫങ്ഷൻ
         function getAlertText(key) {
