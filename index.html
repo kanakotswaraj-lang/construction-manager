@@ -15,6 +15,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
   
+    <!-- language.js ഫയൽ ഇവിടെ ഹെഡറിൽ നൽകുന്നു -->
+    <script src="language.js"></script>
+
     <style>
         body { font-family: 'Manjari', sans-serif; }
     </style>
@@ -26,10 +29,10 @@
     <div class="text-center pt-6 max-w-sm mx-auto w-full">
         <div id="appHeader" class="w-full"></div>
         
-        <h1 class="text-4xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400">
+        <h1 class="lang text-4xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400" data-key="mainTitle">
             നിർമ്മാണ മാനേജർ
         </h1>
-        <p class="text-base text-blue-200 mt-1 font-bold">പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ</p>
+        <p class="lang text-base text-blue-200 mt-1 font-bold" data-key="appSubtitle">പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ</p>
     </div>
 
     <!-- കാർഡുകൾ -->
@@ -37,46 +40,71 @@
         <div class="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-blue-500/30 flex items-center gap-4 shadow-xl hover:border-amber-400/50 transition">
             <div class="bg-amber-500/20 p-3.5 rounded-xl text-amber-400 text-2xl font-bold">👥</div>
             <div>
-                <h3 class="font-black text-base text-white">തൊഴിലാളികളുടെ കൂലി</h3>
-                <p class="text-sm text-slate-300 font-medium mt-0.5">ഫുൾ ഡേ, ഹാഫ് ഡേ, ഓവർടൈം കണക്കുകൾ.</p>
+                <h3 class="lang font-black text-base text-white" data-key="workersWageTitle">തൊഴിലാളികളുടെ കൂലി</h3>
+                <p class="lang text-sm text-slate-300 font-medium mt-0.5" data-key="workersWageDesc">ഫുൾ ഡേ, ഹാഫ് ഡേ, ഓവർടൈം കണക്കുകൾ.</p>
             </div>
         </div>
         <div class="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-blue-500/30 flex items-center gap-4 shadow-xl hover:border-amber-400/50 transition">
             <div class="bg-blue-500/20 p-3.5 rounded-xl text-blue-400 text-2xl font-bold">🏠</div>
             <div>
-                <h3 class="font-black text-base text-white">സൈറ്റ് ഹിസ്റ്ററി</h3>
-                <p class="text-sm text-slate-300 font-medium mt-0.5">ഓരോ തൊഴിലാളിയും ഏത് സൈറ്റിൽ.</p>
+                <h3 class="lang font-black text-base text-white" data-key="siteHistoryTitle">സൈറ്റ് ഹിസ്റ്ററി</h3>
+                <p class="lang text-sm text-slate-300 font-medium mt-0.5" data-key="siteHistoryDesc">ഓരോ തൊഴിലാളിയും ഏത് സൈറ്റിൽ.</p>
             </div>
         </div>
         <div class="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-blue-500/30 flex items-center gap-4 shadow-xl hover:border-amber-400/50 transition">
             <div class="bg-emerald-500/20 p-3.5 rounded-xl text-emerald-400 text-2xl font-bold">📱</div>
             <div>
-                <h3 class="font-black text-base text-white">വാട്സാപ്പ് ഷെയറിങ്</h3>
-                <p class="text-sm text-slate-300 font-medium mt-0.5">കണക്കുകൾ ഒറ്റക്ലിക്കിൽ അയക്കാം.</p>
+                <h3 class="lang font-black text-base text-white" data-key="whatsappShareTitle">വാട്സാപ്പ് ഷെയറിങ്</h3>
+                <p class="lang text-sm text-slate-300 font-medium mt-0.5" data-key="whatsappShareDesc">കണക്കുകൾ ഒറ്റക്ലിക്കിൽ അയക്കാം.</p>
             </div>
         </div>
     </div>
 
     <!-- ബട്ടണുകൾ -->
     <div class="max-w-sm mx-auto w-full space-y-3.5 pb-4">
-        <a href="login.html" class="block w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/40 transition">
+        <a href="login.html" class="lang block w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/40 transition" data-key="loginBtn">
             ലോഗിൻ ചെയ്യാം
         </a>
-        <a href="register.html" class="block w-full bg-slate-900/90 hover:bg-slate-800 text-blue-300 border-2 border-blue-500/50 text-center p-4 rounded-2xl font-bold text-base transition">
+        <a href="register.html" class="lang block w-full bg-slate-900/90 hover:bg-slate-800 text-blue-300 border-2 border-blue-500/50 text-center p-4 rounded-2xl font-bold text-base transition" data-key="registerBtn">
             പുതിയ രജിസ്ട്രേഷൻ
         </a>
-        <p class="text-center text-xs text-slate-400 font-bold pt-2">
+        <p class="lang text-center text-xs text-slate-400 font-bold pt-2" data-key="footerCredit">
             മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
         </p>
     </div>
 
-    <!-- ജാവാസ്ക്രിപ്റ്റ് വഴി ഹെഡറും മോഡലും ലോഡ് ചെയ്യുന്നു -->
+    <!-- ജാവാസ്ക്രിപ്റ്റ് വഴി ഹെഡറും മോഡലും ലോഡ് ചെയ്യുന്നു ഒപ്പം ഭാഷ സെറ്റ് ചെയ്യാനും -->
     <script type="module">
         import { setupHeader } from './header.js';
         import { setupModal } from './modal.js';
 
         setupHeader('appHeader');
         setupModal();
+
+        // പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ മാറ്റുമ്പോഴും വർക്ക് ചെയ്യാൻ
+        function applySavedLanguage() {
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', applySavedLanguage);
+
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : localStorage.getItem('selectedLang');
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
+            }
+        });
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'selectedLang') {
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage(e.newValue || 'ml');
+                }
+            }
+        });
     </script>
 </body>
 </html>
