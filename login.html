@@ -82,7 +82,7 @@
         setupModal();
         setupHeader('appHeader');
 
-        // 1. പേജിലെ ലാംഗ്വേജ് മാറ്റാൻ glogal ആയി ഫങ്ഷൻ സെറ്റ് ചെയ്യുന്നു
+                // 1. പേജിലെ ലാംഗ്വേജ് മാറ്റുന്ന മെയിൻ ഫങ്ഷൻ
         window.updatePageLanguage = function(lang) {
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
@@ -98,18 +98,27 @@
             });
         }
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷ സെറ്റ് ചെയ്യുക
+        // 2. പേജ് ലോഡ് ആയ ഉടനെയും ഹെഡർ ലോഡ് ആയ ശേഷവും വർക്ക് ചെയ്യാൻ
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof window.updatePageLanguage === 'function') {
-                window.updatePageLanguage(savedLang);
-            }
+            window.updatePageLanguage(savedLang);
+
+            // ഹെഡർ ഡൈനാമിക് ആയി ലോഡ് ആകുന്നതിനാൽ ഒരല്പം സമയം കഴിഞ്ഞ് ഇവന്റ് സെറ്റ് ചെയ്യുന്നു
+            setTimeout(() => {
+                const languageSelect = document.getElementById('languageSelect');
+                if (languageSelect) {
+                    languageSelect.value = savedLang;
+                    
+                    // ഹെഡറിലെ ഡ്രോപ്പ്ഡൗൺ മാറുമ്പോൾ നേരിട്ട് ഇവിടെ വർക്ക് ചെയ്യാൻ
+                    languageSelect.addEventListener('change', (e) => {
+                        const selectedLang = e.target.value;
+                        localStorage.setItem('selectedLang', selectedLang);
+                        window.updatePageLanguage(selectedLang);
+                    });
+                }
+            }, 300);
         });
 
-        // ഹെഡറിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ ഇത് വർക്ക് ചെയ്യും
-        window.addEventListener('languageChanged', (e) => {
-            window.updatePageLanguage(e.detail);
-        });
 
         // സുരക്ഷിതമായി അലർട്ട് ടെക്സ്റ്റ് എടുക്കാനുള്ള ഫങ്ഷൻ
         function getAlertText(key, defaultText) {
