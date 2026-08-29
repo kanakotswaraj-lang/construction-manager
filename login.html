@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- language.js ഫയൽ ഇവിടെ ഹെഡറിൽ നൽകുന്നു -->
+    <script src="language.js"></script>
 
     <style>
         body {
@@ -70,10 +72,8 @@
     <div data-key="footerCredit" class="mt-8 text-center text-[11px] text-slate-500">
         മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
     </div>
-<script src="language.js"></script>
-    
-        <!-- ഫയർബേസ് & ലാംഗ്വേജ് സ്ക്രിപ്റ്റുകൾ -->
-    
+
+    <!-- ഫയർബേസ് & മൊഡ്യൂൾ സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
@@ -84,17 +84,15 @@
         setupModal();
         setupHeader('appHeader');
 
-        // പേജ് പൂർണ്ണമായി ലോഡ് ആയി ഹെഡറും വന്നതിനു ശേഷം ഭാഷ സെറ്റ് ചെയ്യാൻ
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const savedLang = localStorage.getItem('selectedLang') || 'ml';
-                if (typeof window.switchLanguage === 'function') {
-                    window.switchLanguage(savedLang);
-                }
-            }, 300); // ഹെഡർ ലോഡ് ആകാൻ ചെറിയൊരു സമയം നൽകുന്നു
-        });
+        // ഹെഡറും പേജും ലോഡ് ആയ ഉടൻ ഭാഷ കറക്റ്റ് ചെയ്യാൻ
+        setTimeout(() => {
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
+        }, 200);
 
-        // ഫയർബേസ് ലോഗിൻ കോഡുകൾ...
+        // ഫയർബേസ് ലോഗിൻ കോഡുകൾ
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -166,7 +164,5 @@
             });
         }
     </script>
-
-
 </body>
 </html>
