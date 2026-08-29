@@ -649,7 +649,108 @@ siteName: {
 
     pdfReport: { ml: "📄 PDF റിപ്പോർട്ട്", en: "📄 PDF Report", ta: "📄 PDF அறிக்கை", hi: "📄 पीडीएफ रिपोर्ट", kn: "📄 PDF ವರದಿ", bn: "📄 PDF রিপোর্ট", as: "📄 PDF ৰিপ'ৰ্ট" },
     excelDownload: { ml: "📊 Excel ഡൗൺലോഡ്", en: "📊 Excel Download", ta: "📊 எக்செல் பதிவிறக்கம்", hi: "📊 एक्सेल डाउनलोड", kn: "📊 Excel ಡೌನ್‌ಲೋಡ್", bn: "📊 Excel ডাউনলোড", as: "📊 Excel ডাউনলো'ড" },
-        
+
+     const words = {
+    loginTitle: {
+        ml: "ലോഗിൻ ചെയ്യുക",
+        en: "Login",
+        hi: "लॉग इन करें",
+        ta: "உள்நுழைக",
+        kn: "ಲಾಗಿನ್ ಮಾಡಿ",
+        bn: "লগইন করুন",
+        as: "লগ ইন কৰক"
+    },
+    loginSubtitle: {
+        ml: "നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം",
+        en: "Welcome to your account",
+        hi: "आपके खाते में स्वागत है",
+        ta: "உங்கள் கணக்கிற்கு நல்வரவு",
+        kn: "ನಿಮ್ಮ ಖಾತೆಗೆ ಸ್ವಾಗತ",
+        bn: "আপনার অ্যাকাউন্টে স্বাগতম",
+        as: "আপোনাৰ একাউণ্টলৈ স্বাগতম"
+    },
+    usernameLabel: {
+        ml: "യൂസർനെയിം (പേര്)",
+        en: "Username (Name)",
+        hi: "यूजरनेम (नाम)",
+        ta: "பயனர் பெயர் (பெயர்)",
+        kn: "ಬಳಕೆದಾರರ ಹೆಸರು (ಹೆಸರು)",
+        bn: "ব্যবহারকারীর নাম (নাম)",
+        as: "ব্যৱহাৰকাৰীৰ নাম (নাম)"
+    },
+    usernamePlaceholder: {
+        ml: "നിങ്ങളുടെ പേര് നൽകുക",
+        en: "Enter your name",
+        hi: "अपना नाम दर्ज करें",
+        ta: "உங்கள் பெயரை உள்ளிடவும்",
+        kn: "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+        bn: "আপনার নাম লিখুন",
+        as: "আপোনাৰ নাম লিখক"
+    },
+    passwordLabel: {
+        ml: "പാസ്‌വേർഡ്",
+        en: "Password",
+        hi: "पासवर्ड",
+        ta: "கடவுச்சொல்",
+        kn: "ಪಾಸ್‌ವರ್ಡ್",
+        bn: "পাসওয়ার্ড",
+        as: "পাছৱৰ্ড"
+    },
+    passwordPlaceholder: {
+        ml: "പാസ്‌വേർഡ് നൽകുക",
+        en: "Enter password",
+        hi: "पासवर्ड दर्ज करें",
+        ta: "கடவுச்சொல்லை உள்ளிடவும்",
+        kn: "ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ",
+        bn: "পাসওয়ার্ড লিখুন",
+        as: "পাছৱৰ্ড লিখক"
+    },
+    passwordNote: {
+        ml: "ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.",
+        en: "Note: Password must be at least 6 characters.",
+        hi: "नोट: पासवर्ड कम से कम 6 अक्षरों या अंकों का होना चाहिए।",
+        ta: "குறிப்பு: கடவுச்சொல் குறைந்தது 6 எழுத்துக்களைக் கொண்டிருக்க வேண்டும்.",
+        kn: "ಗಮನಿಸಿ: ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳನ್ನು ಹೊಂದಿರಬೇಕು.",
+        bn: "দ্রষ্টব্য: পাসওয়ার্ড অন্তত ৬ অক্ষরের হতে হবে।",
+        as: "টোকা: পাছৱৰ্ড অন্তত ৬ টা আখৰৰ হ’ব লাগিব।"
+    },
+    loginBtn: {
+        ml: "ലോഗിൻ ചെയ്യാം",
+        en: "Login",
+        hi: "लॉग इन करें",
+        ta: "உள்நுழைக",
+        kn: "ಲಾಗಿನ್ ಮಾಡಿ",
+        bn: "লগইন করুন",
+        as: "লগ ইন কৰক"
+    },
+    forgotPassword: {
+        ml: "പാസ്‌വേർഡ് മറന്നുപോയോ?",
+        en: "Forgot Password?",
+        hi: "पासवर्ड भूल गए?",
+        ta: "கடவுச்சொல்லை மறந்துவிட்டதா?",
+        kn: "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರುವಿರಾ?",
+        bn: "পাসওয়ার্ড ভুলে গেছেন?",
+        as: "পাছৱৰ্ড পাহৰি গ’ল নেকি?"
+    },
+    noAccountText: {
+        ml: "അക്കൗണ്ട് ഇല്ലെങ്കിൽ?",
+        en: "Don't have an account?",
+        hi: "खाता नहीं है?",
+        ta: "கணக்கு இல்லையா?",
+        kn: "ಖಾತೆ ಇಲ್ಲವೇ?",
+        bn: "কোনো অ্যাকাউন্ট নেই?",
+        as: "কোনো একাউণ্ট নাই নেকি?"
+    },
+    registerLinkText: {
+        ml: "പുതിയതായി രജിസ്റ്റർ ചെയ്യുക",
+        en: "Register new",
+        hi: "नया पंजीकरण करें",
+        ta: "புதிதாக பதிவு செய்க",
+        kn: "ಹೊಸದಾಗಿ ನೋಂದಾಯಿಸಿ",
+        bn: "নতুন নিবন্ধন করুন",
+        as: "নতুন পঞ্জীয়ন কৰক"
+    },
+   
     // ==========================================
     // 5. STAFF & DETAILS (staff.html / staff-details.html)
     // ==========================================
@@ -713,7 +814,7 @@ window.switchLanguage = function(langCode) {
     }
     localStorage.setItem('selectedLang', langCode);
 
-    // 1. data-key ഉള്ള എലമെന്റുകൾ മാറ്റുന്നു
+    // 1. data-key ഉള്ള എല്ലാ എലമെന്റുകളുടെയും ടെക്സ്റ്റ് മാറ്റുന്നു
     document.querySelectorAll('[data-key]').forEach(element => {
         const key = element.getAttribute('data-key');
         if (words[key] && words[key][langCode]) {
@@ -721,29 +822,15 @@ window.switchLanguage = function(langCode) {
         }
     });
 
-    // 2. data-key-placeholder ഉള്ള ഇൻപുട്ടുകൾ മാറ്റുന്നു
-    document.querySelectorAll('[data-key-placeholder], [data-key]').forEach(element => {
-        const key = element.getAttribute('data-key-placeholder') || element.getAttribute('data-key');
-        if (words[key] && words[key][langCode] && element.placeholder !== undefined) {
+    // 2. data-key-placeholder ഉള്ള ഇൻപുട്ടുകളുടെ placeholder മാറ്റുന്നു
+    document.querySelectorAll('[data-key-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-key-placeholder');
+        if (words[key] && words[key][langCode]) {
             element.placeholder = words[key][langCode];
         }
     });
 
-    // 3. data-key ഇല്ലാത്ത സാധാരണ ടെക്സ്റ്റുകളും വാക്കുകളും മലയാളത്തിൽ നിന്ന് നേരിട്ട് മാറ്റാൻ
-    const allElements = document.querySelectorAll('h1, h2, h3, h4, p, span, button, a, label');
-    allElements.forEach(element => {
-        const currentText = element.innerText.trim();
-        for (let key in words) {
-            if (words[key]['ml'] && words[key]['ml'].trim() === currentText) {
-                if (words[key][langCode]) {
-                    element.innerText = words[key][langCode];
-                }
-                break;
-            }
-        }
-    });
-
-    // 4. സെലക്ട് ചെയ്ത ഭാഷയുടെ ബട്ടൺ മാത്രം ഹൈലൈറ്റ് ചെയ്യൽ
+    // 3. സെലക്ട് ചെയ്ത ഭാഷയുടെ ബട്ടൺ മാത്രം ഹൈലൈറ്റ് ചെയ്യൽ
     document.querySelectorAll('.lang-option, [onclick*="switchLanguage"]').forEach(btn => {
         const onclickAttr = btn.getAttribute('onclick') || '';
         if (onclickAttr.includes(`'${langCode}'`) || onclickAttr.includes(`"${langCode}"`)) {
