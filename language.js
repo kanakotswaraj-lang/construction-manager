@@ -830,20 +830,33 @@ window.switchLanguage = function(langCode) {
     if (!langCode) {
         langCode = localStorage.getItem('selectedLang') || 'ml';
     }
+    
+    // 1. തിരഞ്ഞെടുത്ത ഭാഷ മെമ്മറിയിൽ സേവ് ചെയ്യുന്നു
     localStorage.setItem('selectedLang', langCode);
 
-    // പേജിലെ എല്ലാ വാക്കുകളും കണ്ട് പിടിച്ച് മാറ്റുന്നു
-    const allElements = document.querySelectorAll('h1, h2, h3, p, span, a, label, button');
-    allElements.forEach(element => {
-        const text = element.innerText.trim();
-        for (let key in words) {
-            if (words[key]['ml'] && words[key]['ml'].trim() === text) {
-                if (words[key][langCode]) {
-                    element.innerText = words[key][langCode];
+    // 2. words ഒബ്ജക്റ്റ് ഉണ്ടോ എന്ന് ഉറപ്പുവരുത്തി ടെക്സ്റ്റുകൾ മാറ്റുന്നു
+    if (typeof words !== 'undefined') {
+        const allElements = document.querySelectorAll('h1, h2, h3, p, span, a, label, button');
+        allElements.forEach(element => {
+            const text = element.innerText.trim();
+            for (let key in words) {
+                if (words[key]['ml'] && words[key]['ml'].trim() === text) {
+                    if (words[key][langCode]) {
+                        element.innerText = words[key][langCode];
+                    }
                 }
             }
-        }
-    });
+        });
+    }
+};
+
+// പേജ് ലോഡ് ആകുമ്പോൾ സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യാൻ
+document.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem('selectedLang') || 'ml';
+    if (typeof window.switchLanguage === 'function') {
+        window.switchLanguage(savedLang);
+    }
+});
 
     // ഇൻപുട്ട് പ്ലെയ്‌സ്‌ഹോൾഡറുകൾ മാറ്റുന്നു
     const allInputs = document.querySelectorAll('input');
