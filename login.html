@@ -28,52 +28,72 @@
     <!-- ലോഗിൻ കാർഡ് -->
     <div class="w-full max-w-sm bg-slate-900/80 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
         
-        <h2 data-key="loginTitle" class="text-xl font-bold text-white mb-1">ലോഗിൻ ചെയ്യുക</h2>
-        <p data-key="loginSubtitle" class="text-xs text-slate-400 mb-5">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
+        <h2 data-key="loginTitle" class="lang text-xl font-bold text-white mb-1">ലോഗിൻ ചെയ്യുക</h2>
+        <p data-key="loginSubtitle" class="lang text-xs text-slate-400 mb-5">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
 
         <div class="space-y-4">
             <!-- യൂസർനെയിം -->
             <div>
-                <label data-key="usernameLabel" class="block text-xs font-semibold text-amber-300/90 mb-1.5">യൂസർനെയിം (പേര്)</label>
-                <input type="text" id="username" data-key-placeholder="usernamePlaceholder" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
+                <label data-key="usernameLabel" class="lang block text-xs font-semibold text-amber-300/90 mb-1.5">യൂസർനെയിം (പേര്)</label>
+                <input type="text" id="username" data-key-placeholder="usernamePlaceholder" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
             </div>
 
             <!-- പാസ്‌വേർഡ് -->
             <div>
-                <label data-key="passwordLabel" class="block text-xs font-semibold text-amber-300/90 mb-1.5">പാസ്‌വേർഡ്</label>
+                <label data-key="passwordLabel" class="lang block text-xs font-semibold text-amber-300/90 mb-1.5">പാസ്‌വേർഡ്</label>
                 <div class="relative">
-                    <input type="password" id="password" data-key-placeholder="passwordPlaceholder" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
+                    <input type="password" id="password" data-key-placeholder="passwordPlaceholder" placeholder="പാസ്‌വേർഡ് നൽകുക" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
                     <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2">
                         <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
                     </button>
                 </div>
-                <p data-key="passwordNote" class="text-[11px] text-slate-400 mt-1.5">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
+                <p data-key="passwordNote" class="lang text-[11px] text-slate-400 mt-1.5">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
             </div>
 
             <!-- ലോഗിൻ ബട്ടൺ -->
-            <button id="btnLogin" data-key="loginBtn" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition duration-200 text-sm">
+            <button id="btnLogin" data-key="loginBtn" class="lang w-full mt-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition duration-200 text-sm">
                 ലോഗിൻ ചെയ്യാം
             </button>
         </div>
 
         <!-- പാസ്‌വേർഡ് മറന്നുപോയോ ലിങ്ക് -->
         <div class="mt-4 text-center">
-            <a href="forgot-password.html" data-key="forgotPassword" class="text-xs text-amber-400/90 hover:underline">പാസ്‌വേർഡ് മറന്നുപോയോ?</a>
+            <button type="button" id="btnForgotOpen" data-key="forgotPassword" class="lang text-xs text-amber-400/90 hover:underline bg-transparent border-none cursor-pointer">പാസ്‌വേർഡ് മറന്നുപോയോ?</button>
         </div>
     </div>
 
     <!-- പുതിയ രജിസ്ട്രേഷൻ ലിങ്ക് -->
     <div class="mt-6 text-center text-xs text-slate-400">
-        <span data-key="noAccountText">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
-        <a href="register.html" data-key="registerLinkText" class="text-amber-400 font-bold hover:underline ml-1">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
+        <span data-key="noAccountText" class="lang">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
+        <a href="register.html" data-key="registerLinkText" class="lang text-amber-400 font-bold hover:underline ml-1">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
     </div>
 
     <!-- ഫൂട്ടർ -->
-    <div data-key="footerCredit" class="mt-8 text-center text-[11px] text-slate-500">
+    <div data-key="footerCredit" class="lang mt-8 text-center text-[11px] text-slate-500">
         മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
     </div>
 
-    <!-- ഫയർബേസ് & മൊഡ്യൂൾ സ്ക്രിപ്റ്റുകൾ -->
+    <!-- ഫോർഗെറ്റ് പാസ്‌വേർഡ് മോഡൽ (Popup Modal) - എല്ലാ ഭാഷകളിലേക്കും സജ്ജമാക്കിയത് -->
+    <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+            <h3 data-key="forgotModalTitle" class="lang text-lg font-bold text-white mb-2">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
+            <p data-key="forgotModalDesc" class="lang text-xs text-slate-400 mb-4">നിങ്ങളുടെ രജിസ്റ്റർ ചെയ്ത യൂസർനെയിം നൽകുക:</p>
+            
+            <input type="text" id="forgotUsername" data-key-placeholder="forgotPlaceholder" placeholder="യൂസർനെയിം നൽകുക" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
+            
+            <div id="forgotResult" class="hidden bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 mb-4 text-center">
+                <p data-key="forgotResultText" class="lang text-xs text-slate-300">നിങ്ങളുടെ പാസ്‌വേർഡ്:</p>
+                <p id="displayPassword" class="text-base font-bold text-amber-400 mt-1"></p>
+            </div>
+
+            <div class="flex gap-2">
+                <button type="button" id="btnForgotClose" data-key="closeBtn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition">അടയ്ക്കുക</button>
+                <button type="button" id="btnGetPassword" data-key="getPasswordBtn" class="lang flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition">പാസ്‌വേർഡ് കാണുക</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ഫയർബേസ് & സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
@@ -84,15 +104,22 @@
         setupModal();
         setupHeader('appHeader');
 
-        // ഹെഡറും പേജും ലോഡ് ആയ ഉടൻ ഭാഷ കറക്റ്റ് ചെയ്യാൻ
-        setTimeout(() => {
+        function applySavedLanguage() {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
             }
-        }, 200);
+        }
 
-        // ഫയർബേസ് ലോഗിൻ കോഡുകൾ
+        window.addEventListener('DOMContentLoaded', applySavedLanguage);
+
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : localStorage.getItem('selectedLang');
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
+            }
+        });
+
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -113,6 +140,14 @@
         const eyeIcon = document.getElementById("eyeIcon");
         const btnLogin = document.getElementById("btnLogin");
 
+        const btnForgotOpen = document.getElementById("btnForgotOpen");
+        const forgotModal = document.getElementById("forgotModal");
+        const btnForgotClose = document.getElementById("btnForgotClose");
+        const btnGetPassword = document.getElementById("btnGetPassword");
+        const forgotUsername = document.getElementById("forgotUsername");
+        const forgotResult = document.getElementById("forgotResult");
+        const displayPassword = document.getElementById("displayPassword");
+
         if (togglePassword && passwordInput && eyeIcon) {
             togglePassword.addEventListener("click", () => {
                 const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
@@ -130,13 +165,55 @@
             });
         }
 
+        if (btnForgotOpen && forgotModal) {
+            btnForgotOpen.addEventListener("click", () => {
+                forgotModal.classList.remove("hidden");
+                forgotModal.classList.add("flex");
+                forgotResult.classList.add("hidden");
+                forgotUsername.value = "";
+            });
+        }
+
+        if (btnForgotClose && forgotModal) {
+            btnForgotClose.addEventListener("click", () => {
+                forgotModal.classList.add("hidden");
+                forgotModal.classList.remove("flex");
+            });
+        }
+
+        if (btnGetPassword) {
+            btnGetPassword.addEventListener("click", async () => {
+                const fUser = forgotUsername.value.trim().toLowerCase();
+                if (!fUser) {
+                    return alert("ദയവായി യൂസർനെയിം നൽകുക!");
+                }
+
+                try {
+                    const userRef = ref(db, 'users/' + fUser);
+                    const snapshot = await get(userRef);
+
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        displayPassword.textContent = userData.password;
+                        forgotResult.classList.remove("hidden");
+                    } else {
+                        alert("ഈ യൂസർനെയിം ഫൗണ്ട് ചെയ്തില്ല!");
+                        forgotResult.classList.add("hidden");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("എറർ സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കുക.");
+                }
+            });
+        }
+
         if (btnLogin) {
             btnLogin.addEventListener("click", async () => {
                 const user = usernameInput.value.trim().toLowerCase();
                 const pass = passwordInput.value.trim();
 
                 if (!user || !pass) {
-                    return showModal("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!", "ശ്രദ്ധിക്കുക", "⚠️");
+                    return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
                 }
 
                 try {
@@ -146,20 +223,20 @@
                     if (snapshot.exists()) {
                         const userData = snapshot.val();
                         if (userData.password === pass) {
-                            showModal("ലോഗിൻ വിജയിച്ചു!", "വിജയം", "✅");
+                            alert("ലോഗിൻ വിജയിച്ചു!");
                             localStorage.setItem('userName', user);
                             setTimeout(() => {
                                 window.location.href = "dashboard.html";
-                            }, 1200);
+                            }, 1000);
                         } else {
-                            showModal("പാസ്‌വേർഡ് തെറ്റാണ്!", "ശ്രദ്ധിക്കുക", "⚠️");
+                            alert("പാസ്‌വേർഡ് തെറ്റാണ്!");
                         }
                     } else {
-                        showModal("ഈ യൂസർനെയിം നിലവിലില്ല!", "ശ്രദ്ധിക്കുക", "⚠️");
+                        alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
                     }
                 } catch (error) {
                     console.error(error);
-                    showModal("കണക്റ്റിവിറ്റി പ്രശ്നം നേരിടുന്നു. വീണ്ടും ശ്രമിക്കുക.", "തകരാറ്", "⚠️");
+                    alert("കണക്റ്റിവിറ്റി പ്രശ്നം നേരിടുന്നു.");
                 }
             });
         }
