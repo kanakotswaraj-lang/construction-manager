@@ -84,23 +84,39 @@
 
         setupModal();
         setupHeader('appHeader');
-
+        // 1. പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ സെറ്റ് ചെയ്യാൻ
         window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const savedLang = localStorage.getItem('selectedLang') || 'ml';
-                if (typeof window.switchLanguage === 'function') {
-                    window.switchLanguage(savedLang);
-                }
-            }, 200);
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
         });
 
-        function getAlertText(key) {
-            const lang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                return words[key][lang];
+        // 2. മുകളിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ തത്സമയം മാറാൻ (languageChanged event)
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
             }
-            return words[key] ? words[key]['ml'] : '';
-        }
+        });
+
+        // 3. മറ്റ് ടാബുകളിലോ സെറ്റിങ്സിലോ ഭാഷ മാറുമ്പോൾ (storage event)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'selectedLang') {
+                const newLang = e.newValue || 'ml';
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage(newLang);
+                }
+            }
+        });
+
+function getAlertText(key) {
+    const lang = localStorage.getItem('selectedLang') || 'ml';
+    if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+        return words[key][lang];
+    }
+    return words[key] ? words[key]['ml'] : '';
+}
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
