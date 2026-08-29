@@ -73,11 +73,11 @@
         മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
     </div>
 
-    <!-- ഫോർഗെറ്റ് പാസ്‌വേർഡ് മോഡൽ (Popup Modal) - എല്ലാ ഭാഷകളിലേക്കും സജ്ജമാക്കിയത് -->
+    <!-- ഫോർഗെറ്റ് പാസ്‌വേർഡ് മോഡൽ (Popup Modal) -->
     <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
-            <h3 data-key="forgotModalTitle" class="lang text-lg font-bold text-white mb-2">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
-            <p data-key="forgotModalDesc" class="lang text-xs text-slate-400 mb-4">നിങ്ങളുടെ രജിസ്റ്റർ ചെയ്ത യൂസർനെയിം നൽകുക:</p>
+            <h3 data-key="forgotPasswordTitle" class="lang text-lg font-bold text-white mb-2">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
+            <p data-key="forgotPasswordDesc" class="lang text-xs text-slate-400 mb-4">നിങ്ങളുടെ രജിസ്റ്റർ ചെയ്ത യൂസർനെയിം നൽകുക:</p>
             
             <input type="text" id="forgotUsername" data-key-placeholder="forgotPlaceholder" placeholder="യൂസർനെയിം നൽകുക" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
             
@@ -98,7 +98,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         
-        import { setupModal } from './modal.js';
+        import { setupModal, showModal } from './modal.js';
         import { setupHeader } from './header.js';
 
         setupModal();
@@ -184,8 +184,12 @@
         if (btnGetPassword) {
             btnGetPassword.addEventListener("click", async () => {
                 const fUser = forgotUsername.value.trim().toLowerCase();
+                const currentLang = localStorage.getItem('selectedLang') || 'ml';
+
                 if (!fUser) {
-                    return alert("ദയവായി യൂസർനെയിം നൽകുക!");
+                    const msg = currentLang === 'en' ? "Please enter username!" : currentLang === 'hi' ? "कृपया यूजरनेम दर्ज करें!" : "ദയവായി യൂസർനെയിം നൽകുക!";
+                    const title = currentLang === 'en' ? "Attention" : "ശ്രദ്ധിക്കുക";
+                    return showModal(msg, title, "⚠️");
                 }
 
                 try {
@@ -197,12 +201,13 @@
                         displayPassword.textContent = userData.password;
                         forgotResult.classList.remove("hidden");
                     } else {
-                        alert("ഈ യൂസർനെയിം ഫൗണ്ട് ചെയ്തില്ല!");
+                        const msg = currentLang === 'en' ? "Username not found!" : "ഈ യൂസർനെയിം നിലവിലില്ല!";
+                        showModal(msg, "⚠️", "⚠️");
                         forgotResult.classList.add("hidden");
                     }
                 } catch (error) {
                     console.error(error);
-                    alert("എറർ സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കുക.");
+                    showModal("Connection error. Try again.", "⚠️", "⚠️");
                 }
             });
         }
@@ -211,9 +216,11 @@
             btnLogin.addEventListener("click", async () => {
                 const user = usernameInput.value.trim().toLowerCase();
                 const pass = passwordInput.value.trim();
+                const currentLang = localStorage.getItem('selectedLang') || 'ml';
 
                 if (!user || !pass) {
-                    return alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
+                    const msg = (currentLang === 'en') ? "Please enter username and password!" : "ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!";
+                    return showModal(msg, "ശ്രദ്ധിക്കുക", "⚠️");
                 }
 
                 try {
@@ -223,20 +230,23 @@
                     if (snapshot.exists()) {
                         const userData = snapshot.val();
                         if (userData.password === pass) {
-                            alert("ലോഗിൻ വിജയിച്ചു!");
+                            const successText = (currentLang === 'en') ? "Login Successful!" : "ലോഗിൻ വിജയിച്ചു!";
+                            showModal(successText, "വിജയം", "✅");
                             localStorage.setItem('userName', user);
                             setTimeout(() => {
                                 window.location.href = "dashboard.html";
-                            }, 1000);
+                            }, 1200);
                         } else {
-                            alert("പാസ്‌വേർഡ് തെറ്റാണ്!");
+                            const wrongPassText = (currentLang === 'en') ? "Incorrect password!" : "പാസ്‌വേർഡ് തെറ്റാണ്!";
+                            showModal(wrongPassText, "ശ്രദ്ധിക്കുക", "⚠️");
                         }
                     } else {
-                        alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
+                        const noUserText = (currentLang === 'en') ? "Username does not exist!" : "ഈ യൂസർനെയിം നിലവിലില്ല!";
+                        showModal(noUserText, "ശ്രദ്ധിക്കുക", "⚠️");
                     }
                 } catch (error) {
                     console.error(error);
-                    alert("കണക്റ്റിവിറ്റി പ്രശ്നം നേരിടുന്നു.");
+                    showModal("കണക്റ്റിവിറ്റി പ്രശ്നം നേരിടുന്നു.", "തകരാറ്", "⚠️");
                 }
             });
         }
