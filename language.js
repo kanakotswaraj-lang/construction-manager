@@ -223,7 +223,7 @@ function updateDashboardDate(langCode) {
 }
 
 // ==========================================
-// WORDS DICTIONARY (FULLY CLOSED CORRECTLY)
+// WORDS DICTIONARY
 // ==========================================
 const words = {
     site_details: { ml: "സൈറ്റ് വിവരങ്ങൾ", en: "Site Details", hi: "साइट विवरण", ta: "தள விவரங்கள்", kn: "ಸೈಟ್ ವಿವರಗಳು", bn: "সাইট বিবরণ", as: "ছাইটৰ বিৱৰণ" },
@@ -234,13 +234,16 @@ const words = {
     income_expense: { ml: "വരവ് - ചെലവ്", en: "Accounts (In/Out)", hi: "आय - व्यय", ta: "வரவு - செலவு", kn: "ಆದಾಯ - ವೆಚ್ಚ", bn: "আয় - খরচ", as: "আয় - খৰচ" },
     estimator: { ml: "മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്", en: "Material & Labor Estimator", hi: "सामग्री और श्रम अनुमान", ta: "பொருள் & தொழிலாளர் மதிப்பீடு", kn: "ಸಾಮಗ್ರಿ & ಕಾರ್ಮಿಕ ಅಂದಾಜು", bn: "উপকরণ ও শ্রম প্রাক্কলন", as: "সামগ্ৰী আৰু শ্ৰমিকৰ আনুমানিক হিচাপ" },
     whatsapp_support: { ml: "💬 സംശയങ്ങൾക്ക് വാട്സാപ്പിൽ ബന്ധപ്പെടുക", en: "💬 Contact via WhatsApp for support", hi: "💬 शंकाओं के लिए व्हाट्सएप पर संपर्क करें", ta: "💬 சந்தேகங்களுக்கு வாட்ஸ்அப்பில் தொடர்பு கொள்ளவும்", kn: "💬 ಸಂದೇಹಗಳಿಗಾಗಿ ವಾಟ್ಸಾಪ್‌ನಲ್ಲಿ ಸಂಪರ್ಕಿಸಿ", bn: "💬 সন্দেহের জন্য হোয়াটসঅ্যাপে যোগাযোগ করুন", as: "💬 সন্দেহৰ বাবে হোৱাটছএপত যোগাযোগ কৰক" },
-    dashboard: { ml: "ഡാഷ്‌ബോർഡ്", en: "Dashboard", hi: "डैशबोर्ड", ta: "டாஷ்போர்டு", kn: "ಡ್ಯಾಶ್‌ಬોર્ಡ್", bn: "ড্যাশবোর্ড", as: "ডেচবৰ্ড" },
-    today_label: { ml: "ഇന്ന്", en: "Today", ta: "இன்று", hi: "आज", kn: "ಇವತ್ತು", bn: "আজ", as: "আজী" }
-}; // <-- ഇതാണ് ഏറ്റവും പ്രധാനം: words ഒബ്ജക്റ്റ് ഇവിടെ കൃത്യമായി ക്ലോസ് ചെയ്തിരിക്കുന്നു
+    dashboard: { ml: "ഡാഷ്‌ബോർഡ്", en: "Dashboard", hi: "डैशबोर्ड", ta: "டாஷ்போர்டு", kn: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", bn: "ড্যাশবোর্ড", as: "ডেচবৰ্ড" },
+    today_label: { ml: "ഇന്ന്", en: "Today", ta: "இன்று", hi: "आज", kn: "ಇವತ್ತು", bn: "আজ", as: "আজী" },
+    welcome: { ml: "സ്വാഗതം", en: "Welcome", hi: "स्वागत है", ta: "வரவேற்கிறோம்", kn: "ಸ್ವಾಗತ", bn: "স্বাগতম", as: "স্বাগত" },
+    income: { ml: "വരുമാനം", en: "Income", hi: "आय", ta: "வருமானம்", kn: "ಆದಾಯ", bn: "আয়", as: "আয়" },
+    expense: { ml: "ചെലവ്", en: "Expense", hi: "खर्च", ta: "செலவு", kn: "ಖರ್ಚು", bn: "খরচ", as: "খৰচ" },
+    loss: { ml: "നഷ്ടം", en: "Loss", hi: "घाटा", ta: "நஷ்டம்", kn: "ನಷ್ಟ", bn: "লোকসান", as: "লোকচান" }
+};
 
 // പേജ് ലോഡ് ആകുമ്പോൾ സേവ് ചെയ്ത ഭാഷ ഓട്ടോമാറ്റിക് ആഡ് ചെയ്യാൻ
 document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('selectedLang') || 'ml';
     window.switchLanguage(savedLang);
 });
-
