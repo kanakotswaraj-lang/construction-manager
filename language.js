@@ -132,17 +132,17 @@ const monthNames = {
     as: ["জানুৱাৰী", "ফেব্ৰুৱাৰী", "মাৰ্চ", "এপ্ৰিল", "মে'", "জুন", "জুলাই", "আগষ্ট", "চেপ্টেম্বৰ", "অক্টোবৰ", "নৱেম্বৰ", "ডিচেম্বৰ"]
 };
 // ==========================================
-// UNIVERSAL LANGUAGE SWITCHER FUNCTION (DATA-KEY BASED)
+// UNIVERSAL LANGUAGE SWITCHER (SAFE & SECURE)
 // ==========================================
 window.switchLanguage = function(langCode) {
     if (!langCode) {
         langCode = localStorage.getItem('selectedLang') || 'ml';
     }
     
-    // 1. തിരഞ്ഞെടുക്കുന്ന ഭാഷ മെമ്മറിയിൽ സേവ് ചെയ്യുന്നു
+    // തിരഞ്ഞെടുക്കുന്ന ഭാഷ സേവ് ചെയ്യുന്നു
     localStorage.setItem('selectedLang', langCode);
 
-    // 2. data-key ഉള്ള എലമെന്റുകൾ കൃത്യമായി മാറ്റുന്നു
+    // data-key ഉള്ള എലമെന്റുകൾ മാറ്റുന്നു
     if (typeof words !== 'undefined') {
         document.querySelectorAll('[data-key]').forEach(element => {
             const key = element.getAttribute('data-key');
@@ -151,7 +151,6 @@ window.switchLanguage = function(langCode) {
             }
         });
 
-        // 3. പ്ലെയ്‌സ്‌ഹോളർ ഉള്ള ഇൻപുട്ടുകൾ മാറ്റുന്നു
         document.querySelectorAll('[data-key-placeholder]').forEach(input => {
             const key = input.getAttribute('data-key-placeholder');
             if (words[key] && words[key][langCode]) {
@@ -160,7 +159,7 @@ window.switchLanguage = function(langCode) {
         });
     }
 
-    // 4. ഡ്രോപ്പ്ഡൗൺ ഹൈലൈറ്റ് മാറ്റാൻ
+    // ഡ്രോപ്പ്ഡൗൺ ഹൈലൈറ്റ്
     document.querySelectorAll('.lang-option').forEach(btn => {
         const onclickAttr = btn.getAttribute('onclick') || '';
         if (onclickAttr.includes(langCode)) {
@@ -175,7 +174,7 @@ window.switchLanguage = function(langCode) {
         dropdown.classList.add('hidden');
     }
 
-    // 5. തീയതി അപ്ഡേറ്റ് ചെയ്യുന്ന ഫംഗ്ഷൻ വിളിക്കുന്നു
+    // തീയതി അപ്ഡേറ്റ് ചെയ്യുന്നു
     if (typeof updateDashboardDate === 'function') {
         updateDashboardDate(langCode);
     }
@@ -191,9 +190,7 @@ window.toggleLangMenu = function(e) {
     }
 };
 
-// ==========================================
-// MONTH NAMES FOR ALL 7 LANGUAGES
-// ==========================================
+// മാസങ്ങളുടെ പേരുകൾ
 const monthNames = {
     ml: ["ജനുവരി", "ഫെബ്രുവരി", "മാർച്ച്", "ഏപ്രിൽ", "മേയ്", "ജൂൺ", "ജൂലൈ", "ഓഗസ്റ്റ്", "സെപ്റ്റംബർ", "ഒക്ടോബർ", "നവംബർ", "ഡിസംബർ"],
     en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
@@ -204,9 +201,6 @@ const monthNames = {
     as: ["জানুৱাৰী", "ফেব্ৰুৱাৰী", "মাৰ্চ", "এপ্ৰিল", "মে'", "জুন", "জুলাই", "আগষ্ট", "চেপ্টেম্বৰ", "অক্টোবৰ", "নৱেম্বৰ", "ডিচেম্বৰ"]
 };
 
-// ==========================================
-// DYNAMIC DATE UPDATER FUNCTION
-// ==========================================
 function updateDashboardDate(langCode) {
     const dateContainer = document.getElementById('currentDashboardDate');
     if (!dateContainer) return;
@@ -216,33 +210,13 @@ function updateDashboardDate(langCode) {
     const monthIndex = today.getMonth();
     const year = today.getFullYear();
 
-    const todayLabel = (words.today_label && words.today_label[langCode]) ? words.today_label[langCode] : "Today";
+    const todayLabel = (typeof words !== 'undefined' && words.today_label && words.today_label[langCode]) ? words.today_label[langCode] : "Today";
     const monthLabel = monthNames[langCode] ? monthNames[langCode][monthIndex] : monthNames['en'][monthIndex];
 
     dateContainer.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-emerald-400 mr-1.5 align-middle"></span>${todayLabel}: ${day} ${monthLabel}, ${year}`;
 }
 
-// ==========================================
-// WORDS DICTIONARY
-// ==========================================
-const words = {
-    site_details: { ml: "സൈറ്റ് വിവരങ്ങൾ", en: "Site Details", hi: "साइट विवरण", ta: "தள விவரங்கள்", kn: "ಸೈಟ್ ವಿವರಗಳು", bn: "সাইট বিবরণ", as: "ছাইটৰ বিৱৰণ" },
-    history_edit: { ml: "കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്", en: "History & Edit", hi: "हिस्ट्री और एडिट", ta: "கணக்கு வரலாறு & திருத்து", kn: "ಖಾತೆ ಇತಿಹಾಸ & ಸಂಪಾದನೆ", bn: "হিস্ট্রি ও এডিট", as: "হিস্তৰি আৰু সম্পাদনা" },
-    staff_salary: { ml: "ജീവനക്കാരുടെ ശമ്പളം", en: "Staff Salary", hi: "कर्मचारी वेतन", ta: "பணியாளர் சம்பளம்", kn: "ಸಿಬ್ಬಂದಿ ವೇತನ", bn: "কর্মী বেতন", as: "কৰ্মচাৰীৰ দৰমহা" },
-    attendance_report: { ml: "ഹാജർ & പണി റിപ്പോർട്ട്", en: "Attendance & Work Report", hi: "उपस्थिति और कार्य रिपोर्ट", ta: "வருகை & வேலை அறிக்கை", kn: "ಹಾಜರಾತಿ & ಕೆಲಸದ ವರದಿ", bn: "উপস্থিতি ও কাজের রিপোর্ট", as: "উপস্থিতি আৰু কামৰ প্ৰতিবেদন" },
-    rentals: { ml: "വാടക ഉപകരണങ്ങൾ", en: "Rentals / Equipment", hi: "किराए के उपकरण", ta: "வாடகை உபகரணங்கள்", kn: "ಬಾಡಿಗೆ ಉಪಕರಣಗಳು", bn: "ভাড়ার সরঞ্জাম", as: "ভাৰাতীয়া সঁজুলি" },
-    income_expense: { ml: "വരവ് - ചെലവ്", en: "Accounts (In/Out)", hi: "आय - व्यय", ta: "வரவு - செலவு", kn: "ಆದಾಯ - ವೆಚ್ಚ", bn: "আয় - খরচ", as: "আয় - খৰচ" },
-    estimator: { ml: "മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്", en: "Material & Labor Estimator", hi: "सामग्री और श्रम अनुमान", ta: "பொருள் & தொழிலாளர் மதிப்பீடு", kn: "ಸಾಮಗ್ರಿ & ಕಾರ್ಮಿಕ ಅಂದಾಜು", bn: "উপকরণ ও শ্রম প্রাক্কলন", as: "সামগ্ৰী আৰু শ্ৰমিকৰ আনুমানিক হিচাপ" },
-    whatsapp_support: { ml: "💬 സംശയങ്ങൾക്ക് വാട്സാപ്പിൽ ബന്ധപ്പെടുക", en: "💬 Contact via WhatsApp for support", hi: "💬 शंकाओं के लिए व्हाट्सएप पर संपर्क करें", ta: "💬 சந்தேகங்களுக்கு வாட்ஸ்அப்பில் தொடர்பு கொள்ளவும்", kn: "💬 ಸಂದೇಹಗಳಿಗಾಗಿ ವಾಟ್ಸಾಪ್‌ನಲ್ಲಿ ಸಂಪರ್ಕಿಸಿ", bn: "💬 সন্দেহের জন্য হোয়াটসঅ্যাপে যোগাযোগ করুন", as: "💬 সন্দেহৰ বাবে হোৱাটছএপত যোগাযোগ কৰক" },
-    dashboard: { ml: "ഡാഷ്‌ബോർഡ്", en: "Dashboard", hi: "डैशबोर्ड", ta: "டாஷ்போர்டு", kn: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", bn: "ড্যাশবোর্ড", as: "ডেচবৰ্ড" },
-    today_label: { ml: "ഇന്ന്", en: "Today", ta: "இன்று", hi: "आज", kn: "ಇವತ್ತು", bn: "আজ", as: "আজী" },
-    welcome: { ml: "സ്വാഗതം", en: "Welcome", hi: "स्वागत है", ta: "வரவேற்கிறோம்", kn: "ಸ್ವಾಗತ", bn: "স্বাগতম", as: "স্বাগত" },
-    income: { ml: "വരുമാനം", en: "Income", hi: "आय", ta: "வருமானம்", kn: "ಆದಾಯ", bn: "আয়", as: "আয়" },
-    expense: { ml: "ചെലവ്", en: "Expense", hi: "खर्च", ta: "செலவு", kn: "ಖರ್ಚು", bn: "খরচ", as: "খৰচ" },
-    loss: { ml: "നഷ്ടം", en: "Loss", hi: "घाटा", ta: "நஷ்டம்", kn: "ನಷ್ಟ", bn: "লোকসান", as: "লোকচান" }
-};
-
-// പേജ് ലോഡ് ആകുമ്പോൾ സേവ് ചെയ്ത ഭാഷ ഓട്ടോമാറ്റിക് ആഡ് ചെയ്യാൻ
+// പേജ് ലോഡ് ആകുമ്പോൾ ഭാഷ സെറ്റ് ചെയ്യാൻ
 document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('selectedLang') || 'ml';
     window.switchLanguage(savedLang);
