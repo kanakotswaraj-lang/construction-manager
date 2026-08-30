@@ -154,11 +154,20 @@
             forgotModal.classList.remove("flex");
         });
 
-        // ഫോൺ നമ്പർ വെച്ച് വിവരങ്ങൾ എടുക്കാൻ
+        // നിലവിലെ ഭാഷയ്ക്ക് അനുസരിച്ച് അലേർട്ട് ടെക്സ്റ്റ് എടുക്കാനുള്ള ഫംഗ്ഷൻ
+        function getAlertMessage(key) {
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof words !== 'undefined' && words[key] && words[key][currentLang]) {
+                return words[key][currentLang];
+            }
+            return key; 
+        }
+
+        // ഫോർഗെറ്റ് പാസ്‌വേർഡ് ഫോൺ നമ്പർ ചെക്ക് ചെയ്യുന്ന ഭാഗം:
         btnGetDetails.addEventListener("click", async () => {
             const phone = forgotPhone.value.trim();
             if (!phone || phone.length < 10) {
-                alert("ദയവായി ശരിയായ ഫോൺ നമ്പർ നൽകുക!");
+                alert(getAlertMessage('phoneRequired'));
                 return;
             }
 
@@ -179,7 +188,7 @@
                     });
 
                     if (!found) {
-                        alert("ഈ ഫോൺ നമ്പറിൽ അക്കൗണ്ട് കണ്ടെത്തിയില്ല!");
+                        alert(getAlertMessage('phoneNotFound'));
                         forgotResult.classList.add("hidden");
                     }
                 } else {
@@ -191,13 +200,13 @@
             }
         });
 
-        // ലോഗിൻ ബട്ടൺ ആക്ഷൻ
+        // ലോഗിൻ ബട്ടൺ ആക്ഷൻ:
         btnLogin.addEventListener("click", async () => {
             const user = usernameInput.value.trim().toLowerCase();
             const pass = passwordInput.value.trim();
 
             if (!user || !pass) {
-                alert("ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!");
+                alert(getAlertMessage('fillAllFields'));
                 return;
             }
 
@@ -207,16 +216,16 @@
 
                 if (snapshot.exists()) {
                     if (snapshot.val().password === pass) {
-                        alert("ലോഗിൻ വിജയിച്ചു!");
+                        alert(getAlertMessage('loginSuccess'));
                         localStorage.setItem('userName', user);
                         setTimeout(() => {
                             window.location.href = "dashboard.html";
                         }, 1000);
                     } else {
-                        alert("പാസ്‌വേർഡ് തെറ്റാണ്!");
+                        alert(getAlertMessage('wrongPassword'));
                     }
                 } else {
-                    alert("ഈ യൂസർനെയിം നിലവിലില്ല!");
+                    alert(getAlertMessage('userNotFound'));
                 }
             } catch (err) {
                 console.error(err);
@@ -224,5 +233,8 @@
             }
         });
     </script>
+
+
+        
 </body>
 </html>
