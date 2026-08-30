@@ -177,8 +177,10 @@ window.switchLanguage = function(langCode) {
         dropdown.classList.add('hidden');
     }
 
-    // 5. ഭാഷ മാറும்போது തീയതിയും അപ്ഡേറ്റ് ചെയ്യാൻ ഇവിടെ വിളിക്കുന്നു
-    updateDashboardDate(langCode);
+    // 5. തീയതി അപ്ഡേറ്റ് ചെയ്യുന്ന ഫംഗ്ഷൻ ഇവിടെ വിളിക്കുന്നു
+    if (typeof updateDashboardDate === 'function') {
+        updateDashboardDate(langCode);
+    }
 };
 
 window.changeLanguage = window.switchLanguage;
@@ -216,13 +218,9 @@ function updateDashboardDate(langCode) {
     const monthIndex = today.getMonth();
     const year = today.getFullYear();
 
-    // തീയതിയുടെ വാക്ക് (Today/ഇന്ന്)
     const todayLabel = (words.today_label && words.today_label[langCode]) ? words.today_label[langCode] : "Today";
-    
-    // മാസം
     const monthLabel = monthNames[langCode] ? monthNames[langCode][monthIndex] : monthNames['en'][monthIndex];
 
-    // കൃത്യമായ ഫോർമാറ്റിൽ ഡിസ്‌പ്ലേ ചെയ്യൽ
     dateContainer.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-emerald-400 mr-1.5 align-middle"></span>${todayLabel}: ${day} ${monthLabel}, ${year}`;
 }
 
@@ -238,7 +236,7 @@ const words = {
     income_expense: { ml: "വരവ് - ചെലവ്", en: "Accounts (In/Out)", hi: "आय - व्यय", ta: "வரவு - செலவு", kn: "ಆದಾಯ - ವೆಚ್ಚ", bn: "আয় - খরচ", as: "আয় - খৰচ" },
     estimator: { ml: "മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്", en: "Material & Labor Estimator", hi: "सामग्री और श्रम अनुमान", ta: "பொருள் & தொழிலாளர் மதிப்பீடு", kn: "ಸಾಮಗ್ರಿ & ಕಾರ್ಮಿಕ ಅಂದಾಜು", bn: "উপকরণ ও শ্রম প্রাক্কলন", as: "সামগ্ৰী আৰু শ্ৰমিকৰ আনুমানিক হিচাপ" },
     whatsapp_support: { ml: "💬 സംശയങ്ങൾക്ക് വാട്സാപ്പിൽ ബന്ധപ്പെടുക", en: "💬 Contact via WhatsApp for support", hi: "💬 शंकाओं के लिए व्हाट्सएप पर संपर्क करें", ta: "💬 சந்தேகங்களுக்கு வாட்ஸ்அப்பில் தொடர்பு கொள்ளவும்", kn: "💬 ಸಂದೇಹಗಳಿಗಾಗಿ ವಾಟ್ಸಾಪ್‌ನಲ್ಲಿ ಸಂಪರ್ಕಿಸಿ", bn: "💬 সন্দেহের জন্য হোয়াটসঅ্যাপে যোগাযোগ করুন", as: "💬 সন্দেহৰ বাবে হোৱাটছএপত যোগাযোগ কৰক" },
-    dashboard: { ml: "ഡാഷ്‌ബോർഡ്", en: "Dashboard", hi: "डैशबोर्ड", ta: "டாஷ்போர்டு", kn: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", bn: "ড্যাশবোর্ড", as: "ডেচবৰ্ড" },
+    dashboard: { ml: "ഡാഷ്‌ബോർഡ്", en: "Dashboard", hi: "डैशबोर्ड", ta: "டாஷ்போர்டு", kn: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", bn: "ড্যাশবোর্ড", as: "ডেচবർ্ড" },
     today_label: { ml: "ഇന്ന്", en: "Today", ta: "இன்று", hi: "आज", kn: "ಇವತ್ತು", bn: "আজ", as: "আজী" }
 };
 
@@ -247,5 +245,3 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('selectedLang') || 'ml';
     window.switchLanguage(savedLang);
 });
-
-
