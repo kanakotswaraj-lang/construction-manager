@@ -80,7 +80,8 @@
 </div>
 
     <!-- ഫയർബേസ് & സ്ക്രിപ്റ്റുകൾ -->
-    <script type="module">
+     
+            <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         import { setupHeader } from './header.js';
@@ -154,20 +155,32 @@
             forgotModal.classList.remove("flex");
         });
 
-        // നിലവിലെ ഭാഷയ്ക്ക് അനുസരിച്ച് അലേർട്ട് ടെക്സ്റ്റ് എടുക്കാനുള്ള ഫംഗ്ഷൻ
-        function getAlertMessage(key) {
+        // 🌟 കസ്റ്റം പോപ്പ്-അപ്പ് ഫംഗ്ഷനുകൾ ഇവിടെയാണ് വെക്കേണ്ടത് (ശരിയായ സ്ഥലം)
+        window.showCustomAlert = function(messageKey) {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof words !== 'undefined' && words[key] && words[key][currentLang]) {
-                return words[key][currentLang];
+            let message = messageKey;
+            
+            if (typeof words !== 'undefined' && words[messageKey] && words[messageKey][currentLang]) {
+                message = words[messageKey][currentLang];
             }
-            return key; 
+            
+            document.getElementById('popupMessage').innerText = message;
+            const popup = document.getElementById('customPopup');
+            popup.classList.remove('hidden');
+            popup.classList.add('flex');
+        }
+
+        window.closeCustomPopup = function() {
+            const popup = document.getElementById('customPopup');
+            popup.classList.add('hidden');
+            popup.classList.remove('flex');
         }
 
         // ഫോർഗെറ്റ് പാസ്‌വേർഡ് ഫോൺ നമ്പർ ചെക്ക് ചെയ്യുന്ന ഭാഗം:
         btnGetDetails.addEventListener("click", async () => {
             const phone = forgotPhone.value.trim();
             if (!phone || phone.length < 10) {
-                alert(getAlertMessage('phoneRequired'));
+                showCustomAlert('phoneRequired');
                 return;
             }
 
@@ -186,40 +199,17 @@
                             found = true;
                         }
                     });
-                    
-        // കസ്റ്റം പോപ്പ്-അപ്പ് കാണിക്കാനുള്ള ഫംഗ്ഷൻ
-        function showCustomAlert(messageKey) {
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            let message = messageKey;
-            
-            // words ഒബ്ജക്റ്റിൽ നിന്ന് അതാത് ഭാഷയിലെ ടെക്സ്റ്റ് എടുക്കുന്നു
-            if (typeof words !== 'undefined' && words[messageKey] && words[messageKey][currentLang]) {
-                message = words[messageKey][currentLang];
-            }
-            
-            document.getElementById('popupMessage').innerText = message;
-            const popup = document.getElementById('customPopup');
-            popup.classList.remove('hidden');
-            popup.classList.add('flex');
-        }
-
-        // പോപ്പ്-അപ്പ് അടയ്ക്കാനുള്ള ഫംഗ്ഷൻ
-        function closeCustomPopup() {
-            const popup = document.getElementById('customPopup');
-            popup.classList.add('hidden');
-            popup.classList.remove('flex');
-        }
 
                     if (!found) {
-                        alert(getAlertMessage('phoneNotFound'));
+                        showCustomAlert('phoneNotFound');
                         forgotResult.classList.add("hidden");
                     }
                 } else {
-                    alert("ഡാറ്റാബേസിൽ യൂസർമാരെ ലഭ്യമല്ല.");
+                    showCustomAlert('userNotFound');
                 }
             } catch (err) {
                 console.error(err);
-                alert("കണക്റ്റിവിറ്റി പ്രശ്നം നേരിടുന്നു.");
+                showCustomAlert('connectivityError');
             }
         });
 
@@ -229,7 +219,7 @@
             const pass = passwordInput.value.trim();
 
             if (!user || !pass) {
-                alert(getAlertMessage('fillAllFields'));
+                showCustomAlert('fillAllFields');
                 return;
             }
 
@@ -239,33 +229,34 @@
 
                 if (snapshot.exists()) {
                     if (snapshot.val().password === pass) {
-                        alert(getAlertMessage('loginSuccess'));
+                        showCustomAlert('loginSuccess');
                         localStorage.setItem('userName', user);
                         setTimeout(() => {
                             window.location.href = "dashboard.html";
-                        }, 1000);
+                        }, 1500);
                     } else {
-                        alert(getAlertMessage('wrongPassword'));
+                        showCustomAlert('wrongPassword');
                     }
                 } else {
-                    alert(getAlertMessage('userNotFound'));
+                    showCustomAlert('userNotFound');
                 }
             } catch (err) {
                 console.error(err);
-                alert("കണക്റ്റിവിറ്റി പ്രശ്നം നേരിടുന്നു.");
+                showCustomAlert('connectivityError');
             }
         });
     </script>
+
 <!-- Custom Popup Modal -->
 <div id="customPopup" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-slate-900 border border-amber-500/40 rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center relative">
         <p id="popupMessage" class="text-white text-base mb-6 font-medium">മെസ്സേജ് ഇവിടെ വരും</p>
-        <button onclick="closeCustomPopup()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg">
+        <button onclick="closeCustomPopup()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg cursor-pointer">
             ശരി (OK)
         </button>
     </div>
 </div>
-
+    
 
         
 </body>
