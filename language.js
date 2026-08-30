@@ -243,4 +243,4 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('selectedLang') || 'ml';
     window.switchLanguage(savedLang);
 });
-                   
+
