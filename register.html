@@ -104,6 +104,7 @@
                 window.switchLanguage(newLang);
             }
         });
+        
 
         // 3. മറ്റ് ടാബുകളിലോ സെറ്റിങ്സിലോ ഭാഷ മാറുമ്പോൾ (storage event)
         window.addEventListener('storage', (e) => {
@@ -113,6 +114,42 @@
                 }
             }
         });
+        
+        window.showCustomAlert = function(messageKey, isSuccess = false) {
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            let message = messageKey;
+            
+            // words ഒബ്ജക്റ്റിൽ നിന്ന് മെസ്സേജ് എടുക്കുന്നു
+            if (typeof words !== 'undefined' && words[messageKey] && words[messageKey][currentLang]) {
+                message = words[messageKey][currentLang];
+            }
+            
+            document.getElementById('popupMessage').innerText = message;
+            
+            // ഹെഡിങ്ങും ഐക്കണും വിജയം ആണോ വാണിങ് ആണോ എന്ന് നോക്കി മാറ്റാൻ
+            const titleEl = document.getElementById('popupTitle');
+            const iconEl = document.getElementById('popupIcon');
+            
+            if (isSuccess) {
+                if (typeof words !== 'undefined' && words['regSuccess'] && words['regSuccess][currentLang]) {
+                    titleEl.innerText = words['regSuccess'][currentLang];
+                } else {
+                    titleEl.innerText = "Success";
+                }
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-green-400"></i>';
+            } else {
+                if (typeof words !== 'undefined' && words['attentionTitle'] && words['attentionTitle'][currentLang]) {
+                    titleEl.innerText = words['attentionTitle'][currentLang];
+                } else {
+                    titleEl.innerText = "Attention";
+                }
+                iconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400"></i>';
+            }
+
+            const popup = document.getElementById('customPopup');
+            popup.classList.remove('hidden');
+            popup.classList.add('flex');
+        }
 
         function getAlertText(key) {
             const lang = localStorage.getItem('selectedLang') || 'ml';
@@ -199,6 +236,25 @@ if (pass.length < 6) {
             });
         }
     </script>
+            
+    <!-- രജിസ്ട്രേഷൻ കാർഡും മറ്റ് കോഡുകളും ഇവിടെ അവസാനിക്കുന്നു -->
+    </div>
+
+    <!-- Custom Popup Modal (ഇത് ഇവിടെ പേസ്റ്റ് ചെയ്യുക) -->
+    <div id="customPopup" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center relative">
+            <div id="popupIcon" class="text-amber-400 text-3xl mb-2">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 id="popupTitle" class="text-amber-400 font-bold text-lg mb-2">ശ്രദ്ധിക്കുക</h3>
+            <p id="popupMessage" class="text-white text-base mb-6 font-medium">മെസ്സേജ് ഇവിടെ വരും</p>
+            <button onclick="closeCustomPopup()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg cursor-pointer">
+                OK
+            </button>
+        </div>
+    </div>
+
+
 
 </body>
 </html>
