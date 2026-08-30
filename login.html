@@ -56,7 +56,7 @@
 
     <div class="mt-6 text-center text-xs text-slate-400">
         <span data-key="noAccountText" class="lang">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
-        <a href="register.html" data-key="registerLinkText" class="lang text-amber-400 font-bold hover:underline ml-1">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
+        <a href="register.html" data-key="loginLinkText" class="lang text-amber-400 font-bold hover:underline ml-1">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
     </div>
 
 <!-- ഫോർഗെറ്റ് പാസ്‌വേർഡ് / യൂസർനെയിം മോഡൽ -->
@@ -127,9 +127,10 @@
         const btnForgotOpen = document.getElementById("btnForgotOpen");
         const forgotModal = document.getElementById("forgotModal");
         const btnForgotClose = document.getElementById("btnForgotClose");
-        const btnGetPassword = document.getElementById("btnGetPassword");
-        const forgotUsername = document.getElementById("forgotUsername");
+        const btnGetDetails = document.getElementById("btnGetDetails");
+        const forgotPhone = document.getElementById("forgotPhone");
         const forgotResult = document.getElementById("forgotResult");
+        const displayUsername = document.getElementById("displayUsername");
         const displayPassword = document.getElementById("displayPassword");
 
         // പാസ്‌വേർഡ് കാണിക്കാൻ / മറയ്ക്കാൻ
@@ -145,55 +146,50 @@
             forgotModal.classList.remove("hidden");
             forgotModal.classList.add("flex");
             forgotResult.classList.add("hidden");
-            forgotUsername.value = "";
+            forgotPhone.value = "";
         });
 
         btnForgotClose.addEventListener("click", () => {
             forgotModal.classList.add("hidden");
             forgotModal.classList.remove("flex");
         });
-const btnGetDetails = document.getElementById("btnGetDetails");
-const forgotPhone = document.getElementById("forgotPhone");
-const forgotResult = document.getElementById("forgotResult");
-const displayUsername = document.getElementById("displayUsername");
-const displayPassword = document.getElementById("displayPassword");
 
-btnGetDetails.addEventListener("click", async () => {
-    const phone = forgotPhone.value.trim();
-    if (!phone || phone.length < 10) {
-        alert("ദയവായി ശരിയായ ഫോൺ നമ്പർ നൽകുക!");
-        return;
-    }
-
-    try {
-        const usersRef = ref(db, 'users');
-        const snapshot = await get(usersRef);
-
-        if (snapshot.exists()) {
-            let found = false;
-            snapshot.forChild((childSnapshot) => {
-                const userData = childSnapshot.val();
-                if (userData.phone === phone) {
-                    displayUsername.textContent = userData.username || childSnapshot.key;
-                    displayPassword.textContent = userData.password;
-                    forgotResult.classList.remove("hidden");
-                    found = true;
-                }
-            });
-
-            if (!found) {
-                alert("ഈ ഫോൺ നമ്പറിൽ അക്കൗണ്ട് കണ്ടെത്തിയില്ല!");
-                forgotResult.classList.add("hidden");
+        // ഫോൺ നമ്പർ വെച്ച് വിവരങ്ങൾ എടുക്കാൻ
+        btnGetDetails.addEventListener("click", async () => {
+            const phone = forgotPhone.value.trim();
+            if (!phone || phone.length < 10) {
+                alert("ദയവായി ശരിയായ ഫോൺ നമ്പർ നൽകുക!");
+                return;
             }
-        } else {
-            alert("ഡാറ്റാബേസിൽ യൂസർമാരെ ലഭ്യമല്ല.");
-        }
-    } catch (err) {
-        console.error(err);
-        alert("കണക്റ്റിവിറ്റി പ്രശ്നം നേരിടുന്നു.");
-    }
-});
 
+            try {
+                const usersRef = ref(db, 'users');
+                const snapshot = await get(usersRef);
+
+                if (snapshot.exists()) {
+                    let found = false;
+                    snapshot.forEach((childSnapshot) => {
+                        const userData = childSnapshot.val();
+                        if (userData.phone === phone) {
+                            displayUsername.textContent = userData.username || childSnapshot.key;
+                            displayPassword.textContent = userData.password;
+                            forgotResult.classList.remove("hidden");
+                            found = true;
+                        }
+                    });
+
+                    if (!found) {
+                        alert("ഈ ഫോൺ നമ്പറിൽ അക്കൗണ്ട് കണ്ടെത്തിയില്ല!");
+                        forgotResult.classList.add("hidden");
+                    }
+                } else {
+                    alert("ഡാറ്റാബേസിൽ യൂസർമാരെ ലഭ്യമല്ല.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("കണക്റ്റിവിറ്റി പ്രശ്നം നേരിടുന്നു.");
+            }
+        });
 
         // ലോഗിൻ ബട്ടൺ ആക്ഷൻ
         btnLogin.addEventListener("click", async () => {
