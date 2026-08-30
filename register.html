@@ -164,14 +164,19 @@
                 const user = usernameInput.value.trim().toLowerCase();
                 const phone = phoneInput.value.trim();
                 const pass = passwordInput.value.trim();
+if (!user || !phone || !pass) {
+    return showModal(getAlertText('alertFillAll'), getAlertText('alertWarningTitle'), "⚠️");
+}
 
-                if (!user || !phone || !pass) {
-                    return showModal(getAlertText('alertFillAll'), getAlertText('alertWarningTitle'), "⚠️");
-                }
+// 10 അക്കം ഉണ്ടോയെന്ന് പരിശോധിക്കാൻ
+if (phone.length !== 10) {
+    return showModal("ദയവായി 10 അക്കമുള്ള ശരിയായ ഫോൺ നമ്പർ നൽകുക!", getAlertText('alertWarningTitle'), "⚠️");
+}
 
-                if (pass.length < 6) {
-                    return showModal(getAlertText('alertPassLength'), getAlertText('alertWarningTitle'), "⚠️");
-                }
+if (pass.length < 6) {
+    return showModal(getAlertText('alertPassLength'), getAlertText('alertWarningTitle'), "⚠️");
+}
+
 
                 try {
                     await set(ref(db, 'users/' + user), {
