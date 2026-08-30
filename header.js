@@ -18,12 +18,12 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
 
     const headerHTML = `
     <div class="flex flex-col gap-2 w-full mb-3">
-        <div class="flex items-center justify-between bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-6 py-3.5 rounded-full border-2 border-amber-400 shadow-[0_0_30px_rgba(251,191,36,0.5)] w-full relative">
-            
+         <div class="flex items-center justify-between bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-4 py-3.5 rounded-full border-2 border-amber-400 shadow-[0_0_30px_rgba(251,191,36,0.5)] w-full relative">
+   
             <div class="flex items-center gap-3.5">
                 <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-md flex-shrink-0" style="width: 48px; height: 48px;">
                 <div class="text-left">
-                    <span class="text-lg font-black text-amber-300 tracking-wide block leading-tight truncate">${t.title}</span>
+                    <span class="text-lg font-black text-amber-300 tracking-wide block leading-tight">${t.title}</span>
 
                     <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase">${t.subtitle}</span>
                 </div>
