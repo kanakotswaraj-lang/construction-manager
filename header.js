@@ -23,7 +23,8 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
             <div class="flex items-center gap-3.5">
                 <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-md flex-shrink-0" style="width: 48px; height: 48px;">
                 <div class="text-left">
-                    <span class="text-2xl font-black text-amber-300 tracking-wide block leading-tight">${t.title}</span>
+                    <span class="text-lg font-black text-amber-300 tracking-wide block leading-tight truncate">${t.title}</span>
+
                     <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase">${t.subtitle}</span>
                 </div>
             </div>
