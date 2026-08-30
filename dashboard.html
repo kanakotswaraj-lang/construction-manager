@@ -84,16 +84,22 @@
             } catch (error) {
                 console.log("Error loading photos:", error);
             }
-
             const today = new Date();
-            const days = ['ഞായറാഴ്ച', 'തിങ്കളാഴ്ച', 'ചൊവ്വാഴ്ച', 'ബുധനാഴ്ച', 'വ്യാഴാഴ്ച', 'വെള്ളിയാഴ്ച', 'ശനിയാഴ്ച'];
-            const dayName = days[today.getDay()];
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const dateStr = today.toLocaleDateString('ml-IN', options);
-            
+            const dayIndex = today.getDay();
+            const monthIndex = today.getMonth();
+            const year = today.getFullYear();
+            const dayNum = today.getDate();
+
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+
+            // language.js-ൽ നിന്നും കറസ്പോണ്ടിങ് ഭാഷയിലെ ഡാറ്റ എടുക്കുന്നു
+            let dayName = (typeof words !== 'undefined' && words.days) ? words.days[currentLang][dayIndex] : days[dayIndex];
+            let monthName = (typeof words !== 'undefined' && words.months) ? words.months[currentLang][monthIndex] : '';
+            let todayText = (typeof words !== 'undefined' && words.today_label && words.today_label[currentLang]) ? words.today_label[currentLang] : 'ഇന്ന്';
+
             const dateElement = document.getElementById('currentDate');
             if(dateElement) {
-                dateElement.innerText = `ഇന്ന്: ${dayName}, ${dateStr}`;
+                dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
             }
 
             fetchDashboardData(db, userName);
