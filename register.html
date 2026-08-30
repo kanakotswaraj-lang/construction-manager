@@ -150,11 +150,12 @@
         }
 
         // പോപ്പ്-അപ്പ് ക്ലോസ് ചെയ്യാനുള്ള ഫങ്ഷൻ കൂടി ഇതിനൊപ്പം ചേർക്കുക
-        function closeCustomPopup() {
-            const popup = document.getElementById('customPopup');
-            popup.classList.remove('flex');
-            popup.classList.add('hidden');
-        }
+        
+window.closeCustomPopup = function() {
+    const popup = document.getElementById('customPopup');
+    popup.classList.remove('flex');
+    popup.classList.add('hidden');
+}
 
         function getAlertText(key) {
             const lang = localStorage.getItem('selectedLang') || 'ml';
