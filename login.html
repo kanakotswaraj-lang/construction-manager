@@ -62,10 +62,11 @@
 <!-- ഫോർഗെറ്റ് പാസ്‌വേർഡ് / യൂസർനെയിം മോഡൽ -->
 <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
-        <h3 class="text-lg font-bold text-white mb-2">യൂസർനെയിം / പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
-        <p class="text-xs text-slate-400 mb-4">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
         
-        <input type="tel" id="forgotPhone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
+        <h3 data-key="forgotTitle" class="lang text-lg font-bold text-white mb-2">യൂസർനെയിം / പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
+        <p data-key="forgotDesc" class="lang text-xs text-slate-400 mb-4">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
+        
+        <input type="tel" id="forgotPhone" data-key-placeholder="phonePlaceholder" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
         
         <div id="forgotResult" class="hidden bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 mb-4 text-center">
             <p class="text-xs text-slate-300">നിങ്ങളുടെ യൂസർനെയിം: <strong id="displayUsername" class="text-amber-400"></strong></p>
@@ -73,8 +74,8 @@
         </div>
 
         <div class="flex gap-2">
-            <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer">അടയ്ക്കുക</button>
-            <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer">വിവരങ്ങൾ കാണുക</button>
+            <button type="button" id="btnForgotClose" data-key="closeBtn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer">അടയ്ക്കുക</button>
+            <button type="button" id="btnGetDetails" data-key="showDetailsBtn" class="lang flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer">വിവരങ്ങൾ കാണുക</button>
         </div>
     </div>
 </div>
