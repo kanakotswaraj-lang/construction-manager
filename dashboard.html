@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="language.js"></script>
@@ -17,7 +18,58 @@
         }
     </style>
 
-    <!-- ഫയർബേസ് പുതിയ പതിപ്പ് (v12.17.1) -->
+    <!-- ലാംഗ്വേജ് മാറ്റുന്നതിനുള്ള കോഡ് (മറ്റ് പേജുകളിൽ ഉള്ളതുപോലെ) -->
+    <script>
+        window.switchLanguage = function(langCode) {
+            if (!langCode) {
+                langCode = localStorage.getItem('selectedLang') || 'ml';
+            }
+            
+            localStorage.setItem('selectedLang', langCode);
+
+            if (typeof words !== 'undefined') {
+                document.querySelectorAll('[data-key]').forEach(element => {
+                    const key = element.getAttribute('data-key');
+                    if (words[key] && words[key][langCode]) {
+                        element.innerText = words[key][langCode];
+                    }
+                });
+
+                document.querySelectorAll('[data-key-placeholder]').forEach(input => {
+                    const key = input.getAttribute('data-key-placeholder');
+                    if (words[key] && words[key][langCode]) {
+                        input.placeholder = words[key][langCode];
+                    }
+                });
+            }
+
+            document.querySelectorAll('.lang-option').forEach(btn => {
+                const onclickAttr = btn.getAttribute('onclick') || '';
+                if (onclickAttr.includes(langCode)) {
+                    btn.className = "lang-option w-full text-left px-4 py-2 bg-amber-500 text-slate-950 font-black rounded-lg transition-all shadow-md";
+                } else {
+                    btn.className = "lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium";
+                }
+            });
+
+            const dropdown = document.getElementById('langDropdown');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        };
+
+        window.changeLanguage = window.switchLanguage;
+
+        window.toggleLangMenu = function(e) {
+            if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+            const dropdown = document.getElementById('langDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('hidden');
+            }
+        };
+    </script>
+
+    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റും ഡാറ്റ ലോഡിംഗും -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, where, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -48,9 +100,7 @@
                 return;
             }
             
-            // ഭാഷ അനുസരിച്ച് ടെക്സ്റ്റുകൾ മാറ്റാൻ
-            updatePageTexts();
-
+            // യൂസറുടെ പേര് സെറ്റ് ചെയ്യുന്നു
             const nameElement = document.getElementById('loggedInMeshtri');
             if (nameElement) {
                 const currentLang = localStorage.getItem('selectedLang') || 'ml';
@@ -58,7 +108,6 @@
                                     ? words.welcome[currentLang] 
                                     : 'സ്വാഗതം';
                 
-                // യൂസറുടെ പേര് കൃത്യമായി ഒപ്പം വരുന്ന രീതിയിൽ
                 nameElement.innerHTML = `<span class="lang" data-key="welcome">${welcomeText}</span>, ${userName}`;
             }
 
@@ -85,6 +134,20 @@
                 console.log("Error loading photos:", error);
             }
             
+            // തീയതിയും കലണ്ടറും സെറ്റ് ചെയ്യാൻ
+            updateDateAndCalendar();
+
+            // ലാംഗ്വേജ് അപ്ഡേറ്റ് ചെയ്യാൻ
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
+
+            // കണക്കുകൾ ഫെച്ച് ചെയ്യാൻ (മറ്റുള്ളവരുടെത് വരാത്ത രീതിയിൽ)
+            fetchDashboardData(db, userName);
+        });
+
+        function updateDateAndCalendar() {
             const today = new Date();
             const dayIndex = today.getDay();
             const monthIndex = today.getMonth();
@@ -100,20 +163,6 @@
             const dateElement = document.getElementById('currentDate');
             if(dateElement) {
                 dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
-            }
-
-            fetchDashboardData(db, userName);
-        });
-
-        function updatePageTexts() {
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof words !== 'undefined') {
-                document.querySelectorAll('.lang').forEach(el => {
-                    const key = el.getAttribute('data-key');
-                    if (key && words[key] && words[key][currentLang]) {
-                        el.innerText = words[key][currentLang];
-                    }
-                });
             }
         }
 
@@ -222,7 +271,10 @@
         };
 
         function fetchDashboardData(db, currentMeshtri) {
-            onSnapshot(query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri)), (snapshot) => {
+            // ലോഗിൻ ചെയ്ത യൂസറുടെ അക്കൗണ്ടുകൾ മാത്രം ഫെച്ച് ചെയ്യാൻ (meshtriOwner വെച്ച് ഫിൽട്ടർ ചെയ്യുന്നു)
+            const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+            
+            onSnapshot(q, (snapshot) => {
                 let totalInc = 0;
                 let totalExp = 0;
 
@@ -243,16 +295,8 @@
                 if (expEl) expEl.innerText = totalExp.toLocaleString('en-IN');
                 
                 let netEl = document.getElementById('statNet');
-                let netCardLabel = document.getElementById('netCard');
-
-                const currentLang = localStorage.getItem('selectedLang') || 'ml';
-
                 if (netEl) {
-                    if (net >= 0) {
-                        netEl.innerText = net.toLocaleString('en-IN');
-                    } else {
-                        netEl.innerText = Math.abs(net).toLocaleString('en-IN');
-                    }
+                    netEl.innerText = Math.abs(net).toLocaleString('en-IN');
                 }
             });
         }
@@ -263,23 +307,7 @@
             localStorage.removeItem('coverPhoto');
             window.location.href = "login.html";
         };
-
-        // ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ ടോഗ്ല് ചെയ്യാൻ
-        window.toggleLangMenu = function() {
-            const menu = document.getElementById('langDropdown');
-            if (menu) {
-                menu.classList.toggle('hidden');
-            }
-        }
-
-        // ഭാഷ മാറ്റുമ്പോൾ
-        window.switchLanguage = function(lang) {
-            localStorage.setItem('selectedLang', lang);
-            location.reload();
-        }
     </script>
-
-    <title>മേസ്തിരി പ്രോ - ഡാഷ്‌ബോർഡ്</title>
 </head>
 <body class="text-white min-h-screen p-4 font-sans pb-16">
     <div class="max-w-md mx-auto space-y-4">
@@ -327,19 +355,19 @@
 
             <!-- ലാംഗ്വേജ് ബട്ടണും ഡ്രോപ്പ്ഡൗണും -->
             <div class="relative">
-                <button onclick="toggleLangMenu()" class="flex items-center gap-1.5 bg-gray-800/80 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30 text-sm font-semibold shadow-md active:scale-95 transition-all">
+                <button onclick="toggleLangMenu(event)" class="flex items-center gap-1.5 bg-gray-800/80 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30 text-sm font-semibold shadow-md active:scale-95 transition-all">
                     <span>🌐 Lang</span>
                 </button>
                 
                 <!-- ഡ്രോപ്പ്ഡൗൺ മെനു -->
-                <div id="langDropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl">
-                    <div onclick="switchLanguage('ml')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">മലയാളം</div>
-                    <div onclick="switchLanguage('en')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">English</div>
-                    <div onclick="switchLanguage('ta')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">தமிழ்</div>
-                    <div onclick="switchLanguage('hi')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">हिन्दी</div>
-                    <div onclick="switchLanguage('kn')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">ಕನ್ನಡ</div>
-                    <div onclick="switchLanguage('as')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">অসমীয়া</div>
-                    <div onclick="switchLanguage('bn')" class="px-4 py-2.5 text-sm text-white hover:bg-amber-500 hover:text-slate-950 cursor-pointer font-bold transition">বাংলা</div>
+                <div id="langDropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl p-1.5 space-y-1">
+                    <div onclick="switchLanguage('ml')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">മലയാളം</div>
+                    <div onclick="switchLanguage('en')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">English</div>
+                    <div onclick="switchLanguage('ta')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">தமிழ்</div>
+                    <div onclick="switchLanguage('hi')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">हिन्दी</div>
+                    <div onclick="switchLanguage('kn')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">ಕನ್ನಡ</div>
+                    <div onclick="switchLanguage('as')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">অসমীয়া</div>
+                    <div onclick="switchLanguage('bn')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">বাংলা</div>
                 </div>
             </div>
         </div>
