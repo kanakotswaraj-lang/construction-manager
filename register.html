@@ -115,33 +115,31 @@
             }
         });
         
-        window.showCustomAlert = function(messageKey, isSuccess = false) {
+                window.showCustomAlert = function(messageKey, isSuccess = false) {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             let message = messageKey;
             
-            // words ഒബ്ജക്റ്റിൽ നിന്ന് മെസ്സേജ് എടുക്കുന്നു
             if (typeof words !== 'undefined' && words[messageKey] && words[messageKey][currentLang]) {
                 message = words[messageKey][currentLang];
             }
             
             document.getElementById('popupMessage').innerText = message;
             
-            // ഹെഡിങ്ങും ഐക്കണും വിജയം ആണോ വാണിങ് ആണോ എന്ന് നോക്കി മാറ്റാൻ
             const titleEl = document.getElementById('popupTitle');
             const iconEl = document.getElementById('popupIcon');
             
             if (isSuccess) {
-                if (typeof words !== 'undefined' && words['regSuccess'] && words['regSuccess][currentLang]) {
-                    titleEl.innerText = words['regSuccess'][currentLang];
+                if (typeof words !== 'undefined' && words['alertRegSuccess'] && words['alertRegSuccess'][currentLang]) {
+                    titleEl.innerText = words['alertRegSuccess'][currentLang];
                 } else {
                     titleEl.innerText = "Success";
                 }
                 iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-green-400"></i>';
             } else {
-                if (typeof words !== 'undefined' && words['attentionTitle'] && words['attentionTitle'][currentLang]) {
-                    titleEl.innerText = words['attentionTitle'][currentLang];
+                if (typeof words !== 'undefined' && words['alertWarningTitle'] && words['alertWarningTitle'][currentLang]) {
+                    titleEl.innerText = words['alertWarningTitle'][currentLang];
                 } else {
-                    titleEl.innerText = "Attention";
+                    titleEl.innerText = "Warning";
                 }
                 iconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400"></i>';
             }
@@ -149,6 +147,13 @@
             const popup = document.getElementById('customPopup');
             popup.classList.remove('hidden');
             popup.classList.add('flex');
+        }
+
+        // പോപ്പ്-അപ്പ് ക്ലോസ് ചെയ്യാനുള്ള ഫങ്ഷൻ കൂടി ഇതിനൊപ്പം ചേർക്കുക
+        function closeCustomPopup() {
+            const popup = document.getElementById('customPopup');
+            popup.classList.remove('flex');
+            popup.classList.add('hidden');
         }
 
         function getAlertText(key) {
@@ -196,25 +201,24 @@
                 }
             });
         }
-
         if (btnRegister) {
             btnRegister.addEventListener("click", async () => {
                 const user = usernameInput.value.trim().toLowerCase();
                 const phone = phoneInput.value.trim();
                 const pass = passwordInput.value.trim();
-if (!user || !phone || !pass) {
-    return showModal(getAlertText('alertFillAll'), getAlertText('alertWarningTitle'), "⚠️");
-}
 
-// 10 അക്കം ഉണ്ടോയെന്ന് പരിശോധിക്കാൻ
-if (phone.length !== 10) {
-    return showModal("ദയവായി 10 അക്കമുള്ള ശരിയായ ഫോൺ നമ്പർ നൽകുക!", getAlertText('alertWarningTitle'), "⚠️");
-}
+                if (!user || !phone || !pass) {
+                    return showCustomAlert('alertFillAll', false);
+                }
 
-if (pass.length < 6) {
-    return showModal(getAlertText('alertPassLength'), getAlertText('alertWarningTitle'), "⚠️");
-}
+                // 10 അക്കം ഉണ്ടോയെന്ന് പരിശോധിക്കാൻ
+                if (phone.length !== 10) {
+                    return showCustomAlert('alertInvalidPhone', false);
+                }
 
+                if (pass.length < 6) {
+                    return showCustomAlert('alertPassLength', false);
+                }
 
                 try {
                     await set(ref(db, 'users/' + user), {
@@ -223,7 +227,7 @@ if (pass.length < 6) {
                         password: pass
                     });
 
-                    showModal(getAlertText('alertRegSuccess'), getAlertText('successTitle'), "✅");
+                    showCustomAlert('alertRegSuccess', true);
                     localStorage.setItem('userName', user);
                     setTimeout(() => {
                         window.location.href = "dashboard.html";
@@ -231,10 +235,11 @@ if (pass.length < 6) {
 
                 } catch (error) {
                     console.error(error);
-                    showModal(getAlertText('alertError'), getAlertText('alertErrorTitle'), "⚠️");
+                    showCustomAlert('alertError', false);
                 }
             });
         }
+
     </script>
             
     <!-- രജിസ്ട്രേഷൻ കാർഡും മറ്റ് കോഡുകളും ഇവിടെ അവസാനിക്കുന്നു -->
