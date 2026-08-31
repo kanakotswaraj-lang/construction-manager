@@ -21,9 +21,8 @@
         @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .toast-animate { animation: slideIn 0.3s ease-out forwards; }
 
-        /* മൊബൈൽ ഫോൺ ലുക്ക് നൽകുന്ന ഗോൾഡൻ യെല്ലോ ഔട്ടർ ബോർഡർ */
         .max-w-md {
-            border: 3px solid #fbbf24; /* Golden Yellow Color */
+            border: 3px solid #fbbf24;
             border-radius: 2.5rem;
             box-shadow: 0 0 25px rgba(251, 191, 36, 0.3);
             overflow: hidden;
@@ -31,7 +30,6 @@
         }
     </style>
     
-    <!-- ലാംഗ്വേജ് മാറ്റുന്നതിനുള്ള കോഡ് -->
     <script>
         window.switchLanguage = function(langCode) {
             if (!langCode) {
@@ -54,15 +52,6 @@
                     }
                 });
             }
-
-            document.querySelectorAll('.lang-option').forEach(btn => {
-                const onclickAttr = btn.getAttribute('onclick') || '';
-                if (onclickAttr.includes(langCode)) {
-                    btn.className = "lang-option w-full text-left px-4 py-2 bg-amber-500 text-slate-950 font-black rounded-lg transition-all shadow-md";
-                } else {
-                    btn.className = "lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium";
-                }
-            });
 
             const dropdown = document.getElementById('langDropdown');
             if (dropdown && !dropdown.classList.contains('hidden')) {
@@ -87,7 +76,6 @@
 </head>
 <body class="text-white min-h-screen pb-16 p-4 font-sans">
 
-    <!-- Toast Notification Container (Center) -->
     <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 
     <div class="max-w-md mx-auto space-y-4">
@@ -98,10 +86,9 @@
         <!-- സ്വാഗതം & ലാംഗ്വേജ് സെക്ഷൻ -->
         <div class="w-full flex items-center justify-between px-4 pt-1 pb-1 relative">
             <span id="loggedInMeshtri" class="text-xl font-bold bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                <span class="lang" data-key="welcome">സ്വാഗതം</span>
+                <span class="lang" data-key="welcome">സ്വാഗതം</span>, swaraj
             </span>
 
-            <!-- ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ -->
             <div class="relative">
                 <button onclick="toggleLangMenu(event)" class="flex items-center gap-1.5 bg-gray-800/80 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30 text-sm font-semibold shadow-md active:scale-95 transition-all">
                     <span>🌐 Lang</span>
@@ -125,7 +112,7 @@
                 <h1 class="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide" data-key="estimator_title">എസ്റ്റിമേറ്റർ കാൽക്കുലേറ്റർ</h1>
                 <p class="text-[10px] text-slate-400 font-bold uppercase mt-0.5" data-key="estimator_subtitle">മേസ്തിരി അനുഭവക്കണക്ക് പ്രകാരം</p>
             </div>
-            <a href="dashboard.html" class="px-3 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-xl text-xs font-black shadow-lg transition flex items-center gap-1.5" data-key="home_btn">
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-xl text-xs font-black shadow-lg transition flex items-center gap-1.5" data-key="home_btn">
                 Home
             </a>
         </div>
@@ -134,7 +121,6 @@
         <div class="mx-4 bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 backdrop-blur-sm space-y-3.5">
             <h2 class="text-base font-black text-amber-400 mb-2" data-key="work_details_heading">📐 പണിയുടെ വിവരങ്ങൾ തിരഞ്ഞെടുക്കുക</h2>
             
-            <!-- പണിയുടെ തരം -->
             <div>
                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="work_category_label">പണിയുടെ തരം (Work Category)</label>
                 <select id="workCategory" onchange="toggleCategory()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
@@ -146,35 +132,32 @@
                 </select>
             </div>
 
-            <!-- ഏരിയ അല്ലെങ്കിൽ നീളം ഫീൽഡ് -->
             <div>
                 <label id="inputLabel" class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="input_area_label">പണിയേണ്ട ഏരിയ (Square Feet)</label>
                 <input type="number" id="mainInput" data-key-placeholder="input_placeholder" placeholder="ഉദാ: 1000" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none">
             </div>
+<!-- സ്ലാബിന്റെ കനം -->
+<div id="slabThicknessBox">
+    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="thickness_label">വാർപ്പിന്റെ കനം (Thickness)</label>
+    <select id="slabThickness" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
+        <option value="4.5">4.5 <span data-key="inch">ഇഞ്ച്</span></option>
+        <option value="5" selected>5 <span data-key="inch">ഇഞ്ച്</span> - <span data-key="standard">സ്റ്റാൻഡേർഡ്</span></option>
+        <option value="5.5">5.5 <span data-key="inch">ഇഞ്ച്</span></option>
+        <option value="6">6 <span data-key="inch">ഇഞ്ച്</span></option>
+    </select>
+</div>
 
-            <!-- സ്ലാബിന്റെ കനം -->
-            <div id="slabThicknessBox">
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="thickness_label">വാർപ്പിന്റെ കനം (Thickness)</label>
-                <select id="slabThickness" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
-                    <option value="4.5">4.5 ഇഞ്ച്</option>
-                    <option value="5" selected>5 ഇഞ്ച് - സ്റ്റാൻഡേർഡ്</option>
-                    <option value="5.5">5.5 ഇഞ്ച്</option>
-                    <option value="6">6 ഇഞ്ച്</option>
-                </select>
-            </div>
+<!-- കമ്പി തമ്മിലുള്ള അകലം -->
+<div id="spacingBox">
+    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="spacing_label">കമ്പി തമ്മിലുള്ള അകലം (Spacing)</label>
+    <select id="barSpacing" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
+        <option value="6" selected data-key="spacing_opt1">6 ഇഞ്ച് (സാധാരണ വീടുകൾക്ക്)</option>
+        <option value="7">7 <span data-key="inch">ഇഞ്ച്</span></option>
+        <option value="8">8 <span data-key="inch">ഇഞ്ച്</span></option>
+    </select>
+</div>
 
-            <!-- കമ്പി തമ്മിലുള്ള അകലം -->
-            <div id="spacingBox">
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="spacing_label">കമ്പി തമ്മിലുള്ള അകലം (Spacing)</label>
-                <select id="barSpacing" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
-                    <option value="6" selected data-key="spacing_opt1">6 ഇഞ്ച് (സാധാരണ വീടുകൾക്ക്)</option>
-                    <option value="7">7 ഇഞ്ച്</option>
-                    <option value="8">8 ഇഞ്ച്</option>
-                </select>
-            </div>
-
-            <button onclick="calculateEstimation()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition" data-key="calculate_btn">കണക്കുകൂട്ടുക (Calculate)</button>
-        </div>
+<button onclick="calculateEstimation()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition" data-key="calculate_btn">കണക്കുകൂട്ടുക (Calculate)</button>
 
         <!-- ഫലം കാണിക്കുന്ന ഭാഗം -->
         <div id="resultBox" class="hidden mx-4 bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 backdrop-blur-sm space-y-4">
@@ -199,7 +182,6 @@
                 </div>
             </div>
 
-            <!-- ലേബർ / വിവരണ ബോക്സ് -->
             <div class="bg-blue-950/40 border border-blue-500/40 p-4 rounded-2xl space-y-2">
                 <p class="text-xs font-black text-cyan-300 uppercase" data-key="site_team_details">👥 സൈറ്റ് വിവരങ്ങൾ & ടീം അളവ്</p>
                 <p id="resDetails" class="text-xs font-bold text-slate-200 leading-relaxed">-</p>
