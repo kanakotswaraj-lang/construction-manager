@@ -347,8 +347,10 @@
 <div id="appHeader" class="w-full"></div>
 
         
+
 <!-- ഡാഷ്‌ബോർഡിലെ ശൈലിക്ക് അനുസരിച്ചുള്ള ചുവന്ന ബോർഡർ (Red Border) -->
-<div class="bg-slate-900 border-2 border-red-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-red-950/50" style="margin-top: 25px;">
+<div class="bg-slate-900 border-2 border-red-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-red-950/50" style="margin-top: 20px; margin-bottom: 15px;">
+
 
     <h1 class="text-base font-black">
         <span class="lang bg-gradient-to-r from-red-400 via-rose-300 to-red-500 bg-clip-text text-transparent drop-shadow-md" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
@@ -362,16 +364,18 @@
         <span class="lang" data-key="homeBtn">Home</span>
     </a>
 </div>
+<div class="grid grid-cols-2 gap-3">
+    <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
+        <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="income">വരവ്</p>
+        <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
+    </div>
+    <div class="bg-red-600/90 p-4 rounded-2xl shadow-md text-center border border-red-500/30 backdrop-blur-sm">
+        <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="expenseWage">ചെലവ് / കൂലി</p>
+        <h2 id="totalExpense" class="text-xl font-black mt-1">₹46800</h2>
+    </div>
+    <!-- ലാഭത്തിന്റെ കള്ളി... -->
+</div>
 
-        <div class="grid grid-cols-2 gap-3">
-            <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
-                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="income">വരവ്</p>
-                <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
-            </div>
-            <div class="bg-red-600/90 p-4 rounded-2xl shadow-md text-center border border-red-500/30 backdrop-blur-sm">
-                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="expenseWage">ചെലവ് / കൂലി</p>
-                <h2 id="totalExpense" class="text-xl font-black mt-1">₹0</h2>
-            </div>
             <div class="col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl shadow-lg text-center border border-slate-700">
                 <p class="text-[10px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="netProfit">ലാഭം / ബാക്കി തുക</p>
                 <h2 id="netBalance" class="text-2xl font-black mt-1 text-red-400">₹0</h2>
