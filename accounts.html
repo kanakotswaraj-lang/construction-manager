@@ -50,6 +50,27 @@
                 }
             });
 
+            // Dropdown ഓപ്ഷനുകൾ ഭാഷ മാറ്റത്തിനനുസരിച്ച് അപ്ഡേറ്റ് ചെയ്യാൻ
+            const typeSelect = document.getElementById('type');
+            if (typeSelect) {
+                const keys = ['income', 'wage', 'materials', 'rent', 'otherExp'];
+                Array.from(typeSelect.options).forEach((opt, index) => {
+                    if (keys[index] && words[keys[index]] && words[keys[index]][lang]) {
+                        opt.text = words[keys[index]][lang];
+                    }
+                });
+            }
+
+            const paySelect = document.getElementById('paymentMethod');
+            if (paySelect) {
+                const payKeys = ['cash', null, 'upi', 'bank'];
+                Array.from(paySelect.options).forEach((opt, index) => {
+                    if (payKeys[index] && words[payKeys[index]] && words[payKeys[index]][lang]) {
+                        opt.text = words[payKeys[index]][lang];
+                    }
+                });
+            }
+
             const siteSelect = document.getElementById('filterSite');
             if (siteSelect && siteSelect.options.length > 0) {
                 const defaultSiteText = (typeof words !== 'undefined' && words['allSites'] && words['allSites'][lang]) ? words['allSites'][lang] : 'എല്ലാ സൈറ്റുകളും';
@@ -345,7 +366,6 @@
 
     <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 
-    <!-- മൊബൈൽ ഫോൺ ഔട്ടർ ലൈൻ ശൈലി (Red Border Outer Frame) -->
     <div class="w-full max-w-md mx-auto space-y-4 border-4 border-red-500 rounded-[40px] p-4 bg-slate-950 shadow-2xl shadow-red-950/50 my-4">
         
         <div id="appHeader" class="w-full"></div>
@@ -433,17 +453,17 @@
 
             <div class="grid grid-cols-2 gap-3">
                 <select id="type" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-                    <option value="income" class="lang" data-key="income">വരവ്</option>
-                    <option value="wage" class="lang" data-key="wage">കൂലി</option>
-                    <option value="material" class="lang" data-key="materials">മെറ്റീരിയൽസ്</option>
-                    <option value="rent" class="lang" data-key="rent">വാടക</option>
-                    <option value="other" class="lang" data-key="otherExp">മറ്റ് ചെലവ്</option>
+                    <option value="income">വരവ്</option>
+                    <option value="wage">കൂലി</option>
+                    <option value="material">മെറ്റീരിയൽസ്</option>
+                    <option value="rent">വാടക</option>
+                    <option value="other">മറ്റ് ചെലവ്</option>
                 </select>
                 <select id="paymentMethod" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-                    <option value="cash" class="lang" data-key="cash">ക്യാഷ്</option>
+                    <option value="cash">ക്യാഷ്</option>
                     <option value="gpay">GPay</option>
-                    <option value="UPI" class="lang" data-key="upi">യുപിഐ</option>
-                    <option value="bank" class="lang" data-key="bank">ബാങ്ക്</option>
+                    <option value="UPI">യുപിഐ</option>
+                    <option value="bank">ബാങ്ക്</option>
                 </select>
             </div>
             
