@@ -341,15 +341,15 @@
     </script>
 </head>
     
-<body class="text-white min-h-screen pb-12 p-4 font-sans">
+<body class="text-white min-h-screen pb-12 p-4 font-sans flex justify-center bg-slate-950">
 
     <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 
-    <div class="max-w-md mx-auto space-y-4">
+    <!-- മൊബൈൽ ഫോൺ ഔട്ടർ ലൈൻ ശൈലി (Red Border Outer Frame) -->
+    <div class="w-full max-w-md mx-auto space-y-4 border-4 border-red-500 rounded-[40px] p-4 bg-slate-950 shadow-2xl shadow-red-950/50 my-4">
         
         <div id="appHeader" class="w-full"></div>
 
-        <!-- ഡാഷ്‌ബോർഡിലെ ശൈലിക്ക് അനുസരിച്ചുള്ള ചുവന്ന ബോർഡർ (Red Border) -->
         <div class="bg-slate-900 border-2 border-red-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-red-950/50">
             <h1 class="text-base font-black">
                 <span class="lang bg-gradient-to-r from-red-400 via-rose-300 to-red-500 bg-clip-text text-transparent drop-shadow-md" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
@@ -457,7 +457,7 @@
             <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-blue-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="pdfReport">
                 📄 PDF റിപ്പോർട്ട്
             </button>
-            <button onclick="downloadExcel()" class="g-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="excelDownload">
+            <button onclick="downloadExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="excelDownload">
                 📊 Excel ഡൗൺലോഡ്
             </button>
         </div>
