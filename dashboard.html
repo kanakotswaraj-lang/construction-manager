@@ -157,7 +157,7 @@
             fetchDashboardData(db, userName);
         });
 
-        function updateDateAndCalendar() {
+                function updateDateAndCalendar() {
             const today = new Date();
             const dayIndex = today.getDay();
             const monthIndex = today.getMonth();
@@ -170,11 +170,12 @@
             let monthName = (typeof words !== 'undefined' && words.months && words.months[currentLang]) ? words.months[currentLang][monthIndex] : '';
             let todayText = (typeof words !== 'undefined' && words.today_label && words.today_label[currentLang]) ? words.today_label[currentLang] : 'ഇന്ന്';
 
-            const dateElement = document.getElementById('currentDate');
+            const dateElement = document.getElementById('currentDashboardDate');
             if(dateElement) {
                 dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
             }
         }
+
 
         function setFallbackProfile(userName) {
             const savedPhoto = localStorage.getItem('profilePhoto');
