@@ -29,9 +29,9 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
                 </div>
             </div>
 
-            <div class="relative flex items-center gap-2 bg-amber-500/20 px-3 py-1.5 rounded-2xl border border-amber-400/60 shadow-inner">
-                <span class="text-base animate-pulse">🌐</span>
-                <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 px-3 py-1.5 rounded-xl text-xs font-extrabold shadow-md shadow-amber-950/50 transition cursor-pointer outline-none border border-white">
+            <div class="relative flex items-center gap-1.5 bg-amber-500/20 px-2 py-1.5 rounded-2xl border border-amber-400/60 shadow-inner">
+                <span class="text-sm">🌐</span>
+                <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 px-2 py-1 rounded-lg text-xs font-extrabold shadow-md shadow-amber-950/50 transition cursor-pointer outline-none border border-white w-auto truncate">
                     <option value="ml" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
                     <option value="en" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'en' ? 'selected' : ''}>English</option>
                     <option value="hi" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
