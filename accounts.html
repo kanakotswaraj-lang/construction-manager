@@ -344,46 +344,46 @@
 
     <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"></div>
     
-        <div class="max-w-md mx-auto border-2 border-rose-500 rounded-[35px] p-5 shadow-[0_0_20px_rgba(244,63,94,0.4)] my-4 overflow-hidden">
-<div id="appHeader" class="w-full"></div>
-
+    <!-- ഏറ്റവും പുറത്തുള്ള മെയിൻ ഔട്ടർ ബോർഡർ (ഇത് പേജിന്റെ ഏറ്റവും താഴെയാണ് ക്ലോസ് ചെയ്തിരിക്കുന്നത്) -->
+    <div class="max-w-md mx-auto border-2 border-rose-500 rounded-[35px] p-5 shadow-[0_0_20px_rgba(244,63,94,0.4)] my-4 overflow-hidden">
         
+        <div id="appHeader" class="w-full"></div>
 
-<!-- ഡാഷ്‌ബോർഡിലെ ശൈലിക്ക് അനുസരിച്ചുള്ള ചുവന്ന ബോർഡർ (Red Border) -->
-<div class="bg-slate-900 border-2 border-red-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-red-950/50" style="margin-top: 20px; margin-bottom: 15px;">
+        <!-- ഡാഷ്‌ബോർഡിലെ ശൈലിക്ക് അനുസരിച്ചുള്ള ചുവന്ന ബോർഡർ (Red Border) -->
+        <div class="bg-slate-900 border-2 border-red-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-red-950/50" style="margin-top: 20px; margin-bottom: 15px;">
+            <h1 class="text-base font-black">
+                <span class="lang bg-gradient-to-r from-red-400 via-rose-300 to-red-500 bg-clip-text text-transparent drop-shadow-md" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
+            </h1>
+            
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white rounded-xl text-xs font-black shadow-lg shadow-red-900/50 transition flex items-center gap-2 border border-white/40 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a22 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="lang" data-key="homeBtn">Home</span>
+            </a>
+        </div>
 
-
-    <h1 class="text-base font-black">
-        <span class="lang bg-gradient-to-r from-red-400 via-rose-300 to-red-500 bg-clip-text text-transparent drop-shadow-md" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
-    </h1>
-    
-    <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white rounded-xl text-xs font-black shadow-lg shadow-red-900/50 transition flex items-center gap-2 border border-white/40 shrink-0">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a22 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        <span class="lang" data-key="homeBtn">Home</span>
-    </a>
-</div>
-<div class="grid grid-cols-2 gap-3">
-    <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
-        <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="income">വരവ്</p>
-        <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
-    </div>
-    <div class="bg-red-600/90 p-4 rounded-2xl shadow-md text-center border border-red-500/30 backdrop-blur-sm">
-        <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="expenseWage">ചെലവ് / കൂലി</p>
-        <h2 id="totalExpense" class="text-xl font-black mt-1">₹46800</h2>
-    </div>
-    <!-- ലാഭത്തിന്റെ കള്ളി... -->
-</div>
-
-            <div class="col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl shadow-lg text-center border border-slate-700">
-                <p class="text-[10px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="netProfit">ലാഭം / ബാക്കി തുക</p>
-                <h2 id="netBalance" class="text-2xl font-black mt-1 text-red-400">₹0</h2>
+        <!-- വരവ്, ചെലവ് കാർഡുകൾ -->
+        <div class="grid grid-cols-2 gap-3 mb-3">
+            <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
+                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="income">വരവ്</p>
+                <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
+            </div>
+            <div class="bg-red-600/90 p-4 rounded-2xl shadow-md text-center border border-red-500/30 backdrop-blur-sm">
+                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="expenseWage">ചെലവ് / കൂലി</p>
+                <h2 id="totalExpense" class="text-xl font-black mt-1">₹46800</h2>
             </div>
         </div>
 
-        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
+        <!-- ലാഭത്തിന്റെ കള്ളി (ഇത് ഇപ്പോൾ കൃത്യമായ സ്ഥാനത്താണ്) -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl shadow-lg text-center border border-slate-700 mb-5">
+            <p class="text-[10px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="netProfit">ലാഭം / ബാക്കി തുക</p>
+            <h2 id="netBalance" class="text-2xl font-black mt-1 text-red-400">₹0</h2>
+        </div>
+
+        <!-- ഫിൽട്ടർ സെക്ഷൻ -->
+        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print mb-5">
             <div>
                 <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterSiteLabel">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
                 <select id="filterSite" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
@@ -413,7 +413,8 @@
             </div>
         </div>
 
-        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
+        <!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
+        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print mb-5">
             <h2 id="formTitle" class="text-base font-black text-red-400 mb-2 lang" data-key="addNewAcc">പുതിയ കണക്ക് ചേർക്കുക</h2>
             
             <div>
@@ -457,17 +458,20 @@
             <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden lang" data-key="cancelEditBtn">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 no-print">
+        <!-- റിപ്പോർട്ട് ബട്ടണുകൾ -->
+        <div class="grid grid-cols-2 gap-3 no-print mb-5">
             <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-blue-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="pdfReport">
                 📄 PDF റിപ്പോർട്ട്
             </button>
-            <button onclick="downloadExcel()" class="g-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="excelDownload">
+            <button onclick="downloadExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="excelDownload">
                 📊 Excel ഡൗൺലോഡ്
             </button>
         </div>
 
-        <div id="transactionList" class="space-y-3 pb-10"></div>
-    </div>
-            </div>
+        <!-- ട്രാൻസാക്ഷൻ ലിസ്റ്റ് -->
+        <div id="transactionList" class="space-y-3 pb-4"></div>
+
+    </div> <!-- ഔട്ടർ ബോർഡറിന്റെ കൃത്യമായ ക്ലോസിംഗ് ടാഗ് ഇവിടെയാണ് കൊടുത്തിരിക്കുന്നത് -->
+
 </body>
 </html>
