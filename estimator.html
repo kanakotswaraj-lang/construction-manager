@@ -124,16 +124,16 @@
                     <option value="6" data-key="thick_6">6 ഇഞ്ച്</option>
                 </select>
             </div>
-
             <!-- കമ്പി തമ്മിലുള്ള അകലം -->
             <div id="spacingBox">
                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="spacing_label">കമ്പി തമ്മിലുള്ള അകലം (Spacing)</label>
                 <select id="barSpacing" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
                     <option value="6" selected data-key="spacing_opt1">6 ഇഞ്ച് (സാധാരണ വീടുകൾക്ക്)</option>
-                    <option value="7">7 ഇഞ്ച്</option>
-                    <option value="8">8 ഇഞ്ച്</option>
+                    <option value="7" data-key="spacing_opt2">7 ഇഞ്ച്</option>
+                    <option value="8" data-key="spacing_opt3">8 ഇഞ്ച്</option>
                 </select>
             </div>
+
 
             <button onclick="calculateEstimation()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition" data-key="calculate_btn">കണക്കുകൂട്ടുക (Calculate)</button>
         </div>
@@ -247,7 +247,7 @@
                 return;
             }
 
-            let i1 = "", i2 = "", i3 = "", i4 = "", detailsText = "";
+            let i1 = "", i2 = "", i3 = "", i4 = "", detailsKey = "";
 
             if (category === 'slab') {
                 let totalCft = val * (thickness / 12);
@@ -276,7 +276,7 @@
                 let masonWord = words.required_masons ? words.required_masons[currentLang] : "ആവശ്യമായ മേസ്തിരിമാർ";
                 let workerWord = words.workers ? words.workers[currentLang] : "തൊഴിലാളികൾ";
 
-                detailsText = `${slabWord} ${thickWord}: ${thickness} ${words.inch ? words.inch[currentLang] : "ഇഞ്ച്"}, ${spaceWord}: ${spacing} ${words.inch ? words.inch[currentLang] : "ഇഞ്ച്"}. ${masonWord}: ${Math.ceil(val/150)}, ${workerWord}: ${Math.ceil(val/100)}.`;
+                document.getElementById('resDetails').innerText = `${slabWord} ${thickWord}: ${thickness} ${words.inch ? words.inch[currentLang] : "ഇഞ്ച്"}, ${spaceWord}: ${spacing} ${words.inch ? words.inch[currentLang] : "ഇഞ്ച്"}. ${masonWord}: ${Math.ceil(val/150)}, ${workerWord}: ${Math.ceil(val/100)}.`;
             } 
             else if (category === 'beam') {
                 let mainSteel = Math.round(val * 0.65); 
@@ -294,7 +294,7 @@
                 i3 = bindingWire + " " + kiloWord;
                 i4 = val + " R.Ft";
 
-                detailsText = `${val} റണ്ണിങ് ഫീറ്റ് ബീം പണിക്കുള്ള സ്റ്റീൽ കണക്കാണിത്.`;
+                detailsKey = 'beam_steel_calc';
             }
             else if (category === 'lintel') {
                 let mainSteel = Math.round(val * 0.35);
@@ -312,7 +312,7 @@
                 i3 = bindingWire + " " + kiloWord;
                 i4 = val + " R.Ft";
 
-                detailsText = `${val} റണ്ണിങ് ഫീറ്റ് ലിന്റൽ പണിക്കുള്ള സ്റ്റീൽ കണക്കാണിത്.`;
+                detailsKey = 'lintel_steel_calc';
             }
             else if (category === 'stone') {
                 let baseBricks = val * 1.15;
@@ -330,7 +330,7 @@
                 i3 = totalBricks + " എണ്ണം";
                 i4 = val + " Sq.Ft";
 
-                detailsText = `വെട്ടുകല്ല് കെട്ടലിനുള്ള മെറ്റീരിയൽ എസ്റ്റിമേറ്റ്.`;
+                detailsKey = 'stone_material_estimate';
             }
             else if (category === 'plaster') {
                 let cementBags = Math.round((val / 1000) * 25);
@@ -346,14 +346,21 @@
                 i3 = "ബാധകമല്ല";
                 i4 = "ബാധകമല്ല";
 
-                detailsText = `പ്ലാസ്റ്റിംഗ് ജോലികൾക്കുള്ള കണക്കാണിത്.`;
+                detailsKey = 'plastering_calc';
             }
 
             document.getElementById('resItem1').innerText = i1;
             document.getElementById('resItem2').innerText = i2;
             document.getElementById('resItem3').innerText = i3;
             document.getElementById('resItem4').innerText = i4;
-            document.getElementById('resDetails').innerText = detailsText;
+
+            if (category !== 'slab' && detailsKey) {
+                const detailsElement = document.getElementById('resDetails');
+                detailsElement.setAttribute('data-key', detailsKey);
+                if (typeof words !== 'undefined' && words[detailsKey] && words[detailsKey][currentLang]) {
+                    detailsElement.innerText = words[detailsKey][currentLang];
+                }
+            }
 
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(currentLang);
@@ -362,6 +369,7 @@
             document.getElementById('resultBox').classList.remove('hidden');
             window.showToast("msg_estimated_success", true);
         };
+
     </script>
 </body>
 </html>
