@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ml">
 
 <head>
@@ -10,7 +9,6 @@
     <script src="language.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -38,7 +36,6 @@
         window.switchLanguage = function(lang) {
             if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
             
-            // 1. സാധാരണ ടെക്സ്റ്റുകൾ മാറ്റുന്നു
             document.querySelectorAll('.lang').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
@@ -46,7 +43,6 @@
                 }
             });
 
-            // 2. ഇൻപുട്ട് ഫീൽഡുകളിലെ Placeholder മാറ്റുന്നു
             document.querySelectorAll('.lang-placeholder').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
@@ -54,27 +50,25 @@
                 }
             });
 
-            // 3. സൈറ്റ് ഡ്രോപ്പ്ഡൗണിന്റെ ആദ്യ ഓപ്ഷൻ (എല്ലാ സൈറ്റുകളും) ലാംഗ്വേജ് അനുസരിച്ച് മാറ്റുക
             const siteSelect = document.getElementById('filterSite');
             if (siteSelect && siteSelect.options.length > 0) {
                 const defaultSiteText = (typeof words !== 'undefined' && words['allSites'] && words['allSites'][lang]) ? words['allSites'][lang] : 'എല്ലാ സൈറ്റുകളും';
                 siteSelect.options[0].text = defaultSiteText;
             }
         };
+
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof setupHeader === 'function') {
                 setupHeader('appHeader', true, currentMeshtri);
             }
             fetchLiveAccounts();
             
-            // സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യാൻ
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
             }
         });
 
-        // ഭാഷ മാറ്റുമ്പോൾ തത്സമയം മാറാൻ
         window.addEventListener('languageChanged', (e) => {
             const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
             if (typeof window.switchLanguage === 'function') {
@@ -85,7 +79,6 @@
             }
         });
 
-        // 2. storage ഇവന്റ് വഴി ഭാഷ മാറുമ്പോൾ
         window.addEventListener('storage', (e) => {
             if (e.key === 'selectedLang') {
                 const newLang = e.newValue || 'ml';
@@ -97,18 +90,6 @@
                 }
             }
         });
-
-        // 3. languageChanged ഇവന്റ് വഴി ഭാഷ മാറുമ്പോൾ
-        window.addEventListener('languageChanged', (e) => {
-            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(newLang);
-            }
-            if (typeof renderList === 'function') {
-                renderList();
-            }
-        });
-
 
         window.showToast = function(message, isSuccess = true) {
             const container = document.getElementById('toastContainer');
@@ -157,8 +138,10 @@
                 const siteSet = new Set();
                 snapshot.forEach(docSnap => {
                     const d = docSnap.data();
-                    allTransactions.push({ id: docSnap.id, ...d });
-                    if (d.site) siteSet.add(d.site.trim());
+                    if (d.meshtriOwner === currentMeshtri) {
+                        allTransactions.push({ id: docSnap.id, ...d });
+                        if (d.site) siteSet.add(d.site.trim());
+                    }
                 });
 
                 allTransactions.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
@@ -276,6 +259,8 @@
 
             if (typeof allTransactions !== 'undefined' && Array.isArray(allTransactions)) {
                 allTransactions.forEach(d => {
+                    if (d.meshtriOwner !== currentMeshtri) return;
+
                     const itemDate = d.date || '';
                     const itemSite = (d.site || '').trim();
                     
@@ -354,8 +339,6 @@
             window.showToast("Excel ഫയൽ ഡൗൺലോഡ് ആയി!", true);
         };
     </script>
-
-
 </head>
     
 <body class="text-white min-h-screen pb-12 p-4 font-sans">
@@ -364,26 +347,23 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- 1. header.js വഴി ലോഡ് ആകുന്ന ഹെഡർ കണ്ടെയ്നർ -->
         <div id="appHeader" class="w-full"></div>
 
-
-        <!-- 3. വരവ് - ചെലവ് വിവരങ്ങളും Home ബട്ടണും അടങ്ങിയ ബോക്സ് -->
-        <div class="bg-slate-900 border-2 border-amber-400 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-amber-950/50">
+        <!-- ഡാഷ്‌ബോർഡിലെ ശൈലിക്ക് അനുസരിച്ചുള്ള ചുവന്ന ബോർഡർ (Red Border) -->
+        <div class="bg-slate-900 border-2 border-red-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-red-950/50">
             <h1 class="text-base font-black">
-                <span class="lang bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent drop-shadow-md" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
+                <span class="lang bg-gradient-to-r from-red-400 via-rose-300 to-red-500 bg-clip-text text-transparent drop-shadow-md" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
             </h1>
             
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/50 transition flex items-center gap-2 border border-white/40 shrink-0">
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white rounded-xl text-xs font-black shadow-lg shadow-red-900/50 transition flex items-center gap-2 border border-white/40 shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a22 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                <span>Home</span>
+                <span class="lang" data-key="homeBtn">Home</span>
             </a>
         </div>
 
-        <!-- ആകെ തുക സംഗ്രഹം -->
         <div class="grid grid-cols-2 gap-3">
             <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
                 <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="income">വരവ്</p>
@@ -395,101 +375,94 @@
             </div>
             <div class="col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl shadow-lg text-center border border-slate-700">
                 <p class="text-[10px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="netProfit">ലാഭം / ബാക്കി തുക</p>
-                <h2 id="netBalance" class="text-2xl font-black mt-1 text-amber-400">₹0</h2>
+                <h2 id="netBalance" class="text-2xl font-black mt-1 text-red-400">₹0</h2>
             </div>
         </div>
 
-        <!-- സെർച്ച് ഫിൽട്ടറുകൾ -->
         <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
             <div>
                 <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterSiteLabel">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
-                <select id="filterSite" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                <select id="filterSite" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
                     <option value="" class="lang" data-key="allSites">എല്ലാ സൈറ്റുകളും</option>
                 </select>
             </div>
 
             <div>
                 <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterMonthLabel">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
-                <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
             </div>
 
             <div class="flex gap-3 items-end">
                 <div class="w-1/2">
                     <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate lang" data-key="startDateLabel">തുടങ്ങുന്ന തീയതി</label>
-                    <input type="date" id="startDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                    <input type="date" id="startDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
                 </div>
                 <div class="w-1/2">
                     <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate lang" data-key="endDateLabel">അവസാനിക്കുന്ന തീയതി</label>
-                    <input type="date" id="endDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                    <input type="date" id="endDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
                 </div>
             </div>
 
             <div>
                 <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterWorkerLabel">പേര് വെച്ച് തിരയാൻ</label>
-                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="lang-placeholder w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="searchNamePlaceholder">
+                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="lang-placeholder w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="searchNamePlaceholder">
             </div>
         </div>
 
-        <!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
-            <h2 id="formTitle" class="text-base font-black text-amber-400 mb-2 lang" data-key="addNewAcc">പുതിയ കണക്ക് ചേർക്കുക</h2>
+            <h2 id="formTitle" class="text-base font-black text-red-400 mb-2 lang" data-key="addNewAcc">പുതിയ കണക്ക് ചേർക്കുക</h2>
             
             <div>
                 <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="selectDateLabel">തീയതി തിരഞ്ഞെടുക്കുക</label>
-                <input type="date" id="transDate" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                <input type="date" id="transDate" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
             </div>
 
             <div class="relative">
-                <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="nameDescPlaceholder">
-                <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
+                <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="nameDescPlaceholder">
+                <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-red-400 hover:bg-slate-700 rounded-xl transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                 </button>
             </div>
 
             <div class="relative">
-                <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="sitePlaceholder">
-                <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-amber-400 hover:bg-slate-700 rounded-xl transition">
+                <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="sitePlaceholder">
+                <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-red-400 hover:bg-slate-700 rounded-xl transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                 </button>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <select id="type" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
-                     <option value="income" class="lang" data-key="income">വരവ്</option>
-                    
+                <select id="type" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                    <option value="income" class="lang" data-key="income">വരവ്</option>
                     <option value="wage" class="lang" data-key="wage">കൂലി</option>
                     <option value="material" class="lang" data-key="materials">മെറ്റീരിയൽസ്</option>
                     <option value="rent" class="lang" data-key="rent">വാടക</option>
                     <option value="other" class="lang" data-key="otherExp">മറ്റ് ചെലവ്</option>
                 </select>
-                <select id="paymentMethod" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                <select id="paymentMethod" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
                     <option value="cash" class="lang" data-key="cash">ക്യാഷ്</option>
                     <option value="gpay">GPay</option>
                     <option value="UPI" class="lang" data-key="upi">യുപിഐ</option>
-
                     <option value="bank" class="lang" data-key="bank">ബാങ്ക്</option>
                 </select>
             </div>
             
-            <input type="number" id="amount" placeholder="തുക (₹)" class="lang-placeholder w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-amber-500 text-sm font-bold focus:outline-none text-white shadow-inner" data-key="amountPlaceholder">
+            <input type="number" id="amount" placeholder="തുക (₹)" class="lang-placeholder w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner" data-key="amountPlaceholder">
             
-            <button id="saveBtn" onclick="saveTransaction()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg transition lang" data-key="saveBtn">സേവ് ചെയ്യുക</button>
+            <button id="saveBtn" onclick="saveTransaction()" class="w-full bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white p-4 rounded-2xl font-black text-sm shadow-lg shadow-red-950/50 transition lang" data-key="saveBtn">സേവ് ചെയ്യുക</button>
             <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden lang" data-key="cancelEditBtn">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
         </div>
 
-        <!-- PDF & Excel ഡൗൺലോഡ് ബട്ടണുകൾ -->
         <div class="grid grid-cols-2 gap-3 no-print">
             <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-blue-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="pdfReport">
                 📄 PDF റിപ്പോർട്ട്
             </button>
-            <button onclick="downloadExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="excelDownload">
+            <button onclick="downloadExcel()" class="g-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="excelDownload">
                 📊 Excel ഡൗൺലോഡ്
             </button>
         </div>
 
-        <!-- ലിസ്റ്റ് ബോക്സ് -->
         <div id="transactionList" class="space-y-3 pb-10"></div>
     </div>
 </body>
-
 </html>
