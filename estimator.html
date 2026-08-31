@@ -80,28 +80,8 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ഭാഗം -->
-        <div id="appHeader" class="w-full flex justify-center pt-2 px-2"></div>
-
-        <!-- സ്വാഗതം & ലാംഗ്വേജ് സെക്ഷൻ -->
-        <div class="w-full flex items-center justify-between px-4 pt-1 pb-1 relative">
-            <span id="loggedInMeshtri" class="text-xl font-bold bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                <span class="lang" data-key="welcome">സ്വാഗതം</span>, swaraj
-            </span>
-
-           
-                
-                <div id="langDropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl p-1.5 space-y-1">
-                    <div onclick="switchLanguage('ml')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">മലയാളം</div>
-                    <div onclick="switchLanguage('en')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">English</div>
-                    <div onclick="switchLanguage('ta')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">தமிழ்</div>
-                    <div onclick="switchLanguage('hi')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">हिन्दी</div>
-                    <div onclick="switchLanguage('kn')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">ಕನ್ನಡ</div>
-                    <div onclick="switchLanguage('as')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">অসমীয়া</div>
-                    <div onclick="switchLanguage('bn')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">বাংলা</div>
-                </div>
-            </div>
-        </div>
+        <!-- ഹെഡർ ഭാഗം (ഇതിൽ ഹെഡറും ലാംഗ്വേജ് ബട്ടണും കൺട്രോൾ ചെയ്യപ്പെടും) -->
+        <div id="appHeader" class="w-full pt-2 px-2"></div>
 
         <!-- ടോപ്പ് ബാർ -->
         <div class="mx-4 bg-slate-900/90 border-2 border-amber-500 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
@@ -197,15 +177,6 @@
                 if (typeof setupHeader === 'function') { setupHeader('appHeader'); }
                 else { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
             } catch (e) { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
-
-            let userName = localStorage.getItem('userName');
-            if (userName) {
-                const currentLang = localStorage.getItem('selectedLang') || 'ml';
-                const welcomeText = (typeof words !== 'undefined' && words.welcome && words.welcome[currentLang]) 
-                                    ? words.welcome[currentLang] 
-                                    : 'സ്വാഗതം';
-                document.getElementById('loggedInMeshtri').innerHTML = `<span class="lang" data-key="welcome">${welcomeText}</span>, ${userName}`;
-            }
 
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
@@ -384,7 +355,6 @@
             document.getElementById('resItem4').innerText = i4;
             document.getElementById('resDetails').innerText = detailsText;
 
-            // ലാംഗ്വേജ് അപ്ഡേറ്റ് ഫംഗ്ഷൻ വീണ്ടും വിളിക്കുക വഴി പുതിയ data-key കളുടെ ടെക്സ്റ്റ് മാറുന്നു
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(currentLang);
             }
