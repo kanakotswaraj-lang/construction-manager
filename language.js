@@ -179,9 +179,181 @@ const words = {
     rentals: { ml: "വാടക ഉപകരണങ്ങൾ", en: "Rental Equipment", ta: "வாடகை உபகரணங்கள்", hi: "किराये के उपकरण", kn: "ಬಾಡಿಗೆ ಉಪಕರಣಗಳು", as: "ভাৰা সঁজুলি", bn: "ভাড়া সরঞ্জাম" },
     income_expense: { ml: "വരവ് - ചെലവ്", en: "Income & Expense", ta: "வரவு - செலவு", hi: "आय - खर्च", kn: "ಆದಾಯ - ಖರ್ಚು", as: "আয় - ব্যয়", bn: "আয় - ব্যয়" },
     estimator: { ml: "മെറ്റീരിയൽ & ലേബർ എസ്റ്റിമേറ്റ്", en: "Material & Labor Estimator", ta: "பொருள் & தொழிலாளர் மதிப்பீடு", hi: "सामग्री और श्रम अनुमान", kn: "ವಸ್ತು & ಕಾರ್ಮಿಕ ಅಂದಾಜು", as: "সামগ্ৰী & শ্ৰমিক এষ্টিমেট", bn: "উপাদান এবং শ্রম অনুমান" },
-    whatsapp_support: { ml: "💬 സംശയങ്ങൾക്ക് വാട്സാപ്പിൽ ബന്ധപ്പെടുക", en: "💬 Contact via WhatsApp for Doubts", ta: "💬 சந்தேகங்களுக்கு வாட்ஸ்அப்பில் தொடர்பு கொள்ளவும்", hi: "💬 शंकाओं के लिए व्हाट्सएप पर संपर्क करें", kn: "💬 ಸಂದೇಹಗಳಿಗಾಗಿ WhatsApp ಮೂಲಕ ಸಂಪರ್ಕಿಸಿ", as: "💬 সন্দেহৰ বাবে হোৱাটছএপত যোগাযোগ কৰক", bn: "💬 সন্দেহের জন্য হোয়াটসঅ্যাপে যোগাযোগ করুন" }
-};
+    whatsapp_support: { ml: "💬 സംശയങ്ങൾക്ക് വാട്സാപ്പിൽ ബന്ധപ്പെടുക", en: "💬 Contact via WhatsApp for Doubts", ta: "💬 சந்தேகங்களுக்கு வாட்ஸ்அப்பில் தொடர்பு கொள்ளவும்", hi: "💬 शंकाओं के लिए व्हाट्सएप पर संपर्क करें", kn: "💬 ಸಂದೇಹಗಳಿಗಾಗಿ WhatsApp ಮೂಲಕ ಸಂಪರ್ಕಿಸಿ", as: "💬 সন্দেহৰ বাবে হোৱাটছএপত যোগাযোগ কৰক", bn: "💬 সন্দেহের জন্য হোয়াটসঅ্যাপে যোগাযোগ করুন" },
+    
+   estimator_title: { 
+        ml: "എസ്റ്റിമേറ്റർ കാൽക്കുലേറ്റർ", 
+        en: "Estimator Calculator", 
+        hi: "अनुमान कैलकुलेटर", 
+        ta: "மதிப்பீட்டு கணக்கீடு", 
+        kn: "ಅಂದಾಜು ಕ್ಯಾಲ್ಕುಲೇಟರ್", 
+        as: "এষ্টিমেটৰ কেলকুলেটৰ", 
+        bn: "এস্টিমেটর ক্যালকুলেটর" 
+    },
+    estimator_subtitle: { 
+        ml: "മേസ്തിരി അനുഭവക്കണക്ക് പ്രകാരം", 
+        en: "According to Mesthri Experience", 
+        hi: "मेस्त्री अनुभव के अनुसार", 
+        ta: "மேஸ்திரி அனுபவ கணக்கின்படி", 
+        kn: "ಮೇಸ್ತ್ರಿ ಅನುಭವದ ಪ್ರಕಾರ", 
+        as: "মিস্ত্ৰীৰ অভিজ্ঞতা অনুসৰি", 
+        bn: "মিস্ত্রির অভিজ্ঞতা অনুযায়ী" 
+    },
+    home_btn: { 
+        ml: "Home", 
+        en: "Home", 
+        hi: "होम", 
+        ta: "முகப்பு", 
+        kn: "ಮುಖಪುಟ", 
+        as: "ঘৰ", 
+        bn: "হোম" 
+    },
+    work_details_heading: { 
+        ml: "📐 പണിയുടെ വിവരങ്ങൾ തിരഞ്ഞെടുക്കുക", 
+        en: "📐 Select Work Details", 
+        hi: "📐 काम का विवरण चुनें", 
+        ta: "📐 வேலை விவரங்களைத் தேர்ந்தெடுக்கவும்", 
+        kn: "📐 ಕೆಲಸದ ವಿವರಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ", 
+        as: "📐 কামৰ বিৱৰণ বাছক", 
+        bn: "📐 কাজের বিবরণ নির্বাচন করুন" 
+    },
+    work_category_label: { 
+        ml: "പണിയുടെ തരം (Work Category)", 
+        en: "Work Category", 
+        hi: "काम का प्रकार (Work Category)", 
+        ta: "வேலை வகை (Work Category)", 
+        kn: "ಕೆಲಸದ ವರ್ಗ (Work Category)", 
+        as: "কামৰ শ্ৰেণী (Work Category)", 
+        bn: "কাজের ক্যাটাগরি (Work Category)" 
+    },
+    opt_slab: { 
+        ml: "സ്ലാബ് വാർപ്പ് (RCC Slab Steel & Materials)", 
+        en: "RCC Slab Casting (Steel & Materials)", 
+        hi: "आरसीसी स्लैब ढलाई", 
+        ta: "ஸ்லாப் வார்ப்பு (RCC Slab)", 
+        kn: "ಸ್ಲ್ಯಾಬ್ ವಾರ್ಪ್ (RCC Slab)", 
+        as: "শ্লেব ঢালাই (RCC Slab)", 
+        bn: "স্ল্যাব ঢালাই (RCC Slab)" 
+    },
+    opt_beam: { 
+        ml: "ബീം വാർപ്പ് (Roof Beam Steel)", 
+        en: "Roof Beam Casting (Steel)", 
+        hi: "बीम ढलाई (Roof Beam)", 
+        ta: "பீம் வார்ப்பு (Beam Steel)", 
+        kn: "ಬೀಮ್ ವಾರ್ಪ್ (Beam Steel)", 
+        as: "বীম ঢালাই (Beam Steel)", 
+        bn: "বীম ঢালাই (Beam Steel)" 
+    },
+    opt_lintel: { 
+        ml: "ലിന്റൽ വാർപ്പ് (Lintel Steel)", 
+        en: "Lintel Casting (Lintel Steel)", 
+        hi: "लिंटेल ढलाई", 
+        ta: "லிண்டெல் வார்ப்பு", 
+        kn: "ಲಿಂಟೆಲ್ ವಾರ್ಪ್", 
+        as: "লিন্টেল ঢালাই", 
+        bn: "লেন্টেল ঢালাই" 
+    },
+    opt_stone: { 
+        ml: "വെട്ടുകല്ല് കെട്ടൽ (Laterite Stone)", 
+        en: "Laterite Stone Masonry", 
+        hi: "लैटेराइट स्टोन चिनाई", 
+        ta: "வெட்டுக்கல் கட்டுதல்", 
+        kn: "ಕಲ್ಲು ಕಟ್ಟಡ (Laterite Stone)", 
+        as: "লেটেৰাইট πέথৰ গাঁথনি", 
+        bn: "পাথর গাঁথনি (Laterite Stone)" 
+    },
+    opt_plaster: { 
+        ml: "പ്ലാസ്റ്റിംഗ് (Plastering)", 
+        en: "Plastering", 
+        hi: "प्लास्टरिंग", 
+        ta: "பிளாஸ்டரிங்", 
+        kn: "ಪ್ಲಾಸ್ಟರಿಂಗ್", 
+        as: "প্লাষ্টাৰিং", 
+        bn: "প্লাস্টারিক" 
+    },
+    input_area_label: { 
+        ml: "പണിയേണ്ട ഏരിയ (Square Feet)", 
+        en: "Area to Work (Square Feet)", 
+        hi: "कार्य क्षेत्र (Square Feet)", 
+        ta: "வேலை செய்ய வேண்டிய பகுதி (Square Feet)", 
+        kn: "ಕೆಲಸದ ವಿಸ್ತೀರ್ಣ (Square Feet)", 
+        as: "কাম কৰিবলগীয়া কালি (Square Feet)", 
+        bn: "কাজের ক্ষেত্রফল (Square Feet)" 
+    },
+    input_length_label: { 
+        ml: "ബീമിന്റെ ആകെ നീളം (Running Feet)", 
+        en: "Total Length (Running Feet)", 
+        hi: "कुल लंबाई (Running Feet)", 
+        ta: "மொத்த நீளம் (Running Feet)", 
+        kn: "ಒಟ್ಟು ಉದ್ದ (Running Feet)", 
+        as: "মুঠ দৈঘ্য (Running Feet)", 
+        bn: "মোট দৈর্ঘ্য (Running Feet)" 
+    },
+    input_placeholder: { 
+        ml: "ഉദാ: 1000", 
+        en: "Ex: 1000", 
+        hi: "उदा: 1000", 
+        ta: "எடுத்துக்காட்டு: 1000", 
+        kn: "ಉದಾ: 1000", 
+        as: "উদাহৰণ: 1000", 
+        bn: "যেমন: 1000" 
+    },
+    thickness_label: { 
+        ml: "വാർപ്പിന്റെ കനം (Thickness)", 
+        en: "Casting Thickness", 
+        hi: "ढलाई की मोटाई", 
+        ta: "வார்ப்பின் தடிமன்", 
+        kn: "ದಪ್ಪ (Thickness)", 
+        as: "ঢালাইৰ ডাঠ (Thickness)", 
+        bn: "বেধ (Thickness)" 
+    },
+    spacing_label: { 
+        ml: "കമ്പി തമ്മിലുള്ള അകലം (Spacing)", 
+        en: "Bar Spacing", 
+        hi: "बार के बीच की दूरी", 
+        ta: "கம்பி இடைவெளி", 
+        kn: "ಕಂಬಿಗಳ ನಡುವಿನ ದೂರ", 
+        as: "কৰিৰ মাজৰ দূৰত্ব", 
+        bn: "রডের মধ্যকার দূরত্ব" 
+    },
+    spacing_opt1: { 
+        ml: "6 ഇഞ്ച് (സാധാരണ വീടുകൾക്ക്)", 
+        en: "6 Inches (For Normal Houses)", 
+        hi: "6 इंच (सामान्य घरों के लिए)", 
+        ta: "6 அங்குலம் (சாதாரண வீடுகளுக்கு)", 
+        kn: "6 ಇಂಚು (ಸಾಮಾನ್ಯ ಮನೆಗಳಿಗೆ)", 
+        as: "6 ইঞ্চি (সাধাৰণ ঘৰৰ বাবে)", 
+        bn: "6 ইঞ্চি (সাধারণ বাড়ির জন্য)" 
+    },
+    calculate_btn: { 
+        ml: "കണക്കുകൂട്ടുക (Calculate)", 
+        en: "Calculate", 
+        hi: "गणना करें (Calculate)", 
+        ta: "கணக்கிடுங்கள்", 
+        kn: "ಲೆಕ್ಕಹಾಕಿ", 
+        as: "হিসাপ কৰক", 
+        bn: "গণনা করুন" 
+    },
+    result_heading: { 
+        ml: "📊 കണക്കാക്കിയ അളവുകൾ (വെവ്വേറെ)", 
+        en: "📊 Calculated Measurements", 
+        hi: "📊 गणना किए गए माप", 
+        ta: "📊 கணக்கிடப்பட்ட அளவுகள்", 
+        kn: "📊 ಅಂದಾಜು ಅಳತೆಗಳು", 
+        as: "📊 হিচাপ কৰা জোখ-মাপ", 
+        bn: "📊 পরিমাপ গণনা" 
+    },
+    site_team_details: { 
+        ml: "👥 സൈറ്റ് വിവരങ്ങൾ & ടീം അളവ്", 
+        en: "👥 Site Info & Team Details", 
+        hi: "👥 साइट जानकारी और टीम विवरण", 
+        ta: "👥 தள தகவல் & குழு விவரங்கள்", 
+        kn: "👥 ಸೈಟ್ ಮಾಹಿತಿ & ತಂಡದ ವಿವರಗಳು", 
+        as: "👥 চাইট তথ্য & দলৰ বিৱৰণ", 
+        bn: "👥 সাইট তথ্য এবং টিম বিবরণ" 
+    }
 
+}; 
 // ==========================================
 // UNIVERSAL LANGUAGE SWITCHER (SAFE & SECURE)
 // ==========================================
