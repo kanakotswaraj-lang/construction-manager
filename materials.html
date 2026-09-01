@@ -23,26 +23,14 @@
             box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2); 
         }
 
-        .mic-btn {
-            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-            color: #94a3b8; background: transparent;
-            width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: none;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 20;
-            transition: all 0.2s ease;
-        }
-        .mic-btn:hover {
-            background: rgba(34, 211, 238, 0.1);
-            color: #22d3ee;
-        }
-
         @media print {
             .no-print { display: none !important; }
         }
     </style>
 </head>
 <body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
-    <div class="max-w-md mx-auto space-y-4">
+    <!-- മൂന്നാമത്തെ പേജ് പോലെയുള്ള ഔട്ടർ ഗ്ലോയിങ് ബോർഡർ കണ്ടെയ്നർ -->
+    <div class="max-w-md mx-auto space-y-4 border-2 border-blue-500/60 p-4 rounded-3xl shadow-[0_0_25px_rgba(37,99,235,0.25)] bg-[#050B18]/95">
         
         <!-- ഹെഡർ -->
         <div id="appHeader" class="w-full flex justify-center"></div>
@@ -139,14 +127,12 @@
                 </select>
             </div>
 
-            <div class="relative">
-                <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ് / കമ്പി)" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="materialNamePlaceholder">
-                <button type="button" onclick="startVoiceInputFor('matName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
+            <div>
+                <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ് / കമ്പി)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="materialNamePlaceholder">
             </div>
 
-            <div class="relative">
-                <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: Edumba)" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="siteNamePlaceholder">
-                <button type="button" onclick="startVoiceInputFor('matSite')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
+            <div>
+                <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: Edumba)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="siteNamePlaceholder">
             </div>
             
             <div class="grid grid-cols-2 gap-2">
@@ -202,7 +188,7 @@
 
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
-        // ലാംഗ്വേജ് മാറ്റിമാറി വരുന്നതിനായി
+        // ലാംഗ്വേജ് മാറ്റിമാറി വരുന്നതിനായി കൃത്യമായി കോൺഫിഗർ ചെയ്തിരിക്കുന്നു
         window.switchLanguage = function(lang) {
             if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
             
@@ -287,21 +273,6 @@
             document.getElementById('confirmOkBtn').onclick = () => { modal.classList.add('hidden'); resolve(true); };
             document.getElementById('confirmCancelBtn').onclick = () => { modal.classList.add('hidden'); resolve(false); };
         });
-
-        window.startVoiceInputFor = (fieldId) => {
-            const target = document.getElementById(fieldId);
-            if (!target) return;
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) { alert("ബ്രൗസർ വോയിസ് ഇൻപുട്ട് പിന്തുണയ്ക്കുന്നില്ല."); return; }
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'ml-IN';
-            target.style.borderColor = "#fbbf24"; 
-            window.showToast("🎙️ സംസാരിക്കൂ...");
-            try { recognition.start(); } catch (err) { console.log(err); }
-            recognition.onresult = (e) => { target.value = e.results[0][0].transcript; target.dispatchEvent(new Event('input')); window.showToast("✓ കേട്ടെടുത്തു!"); };
-            recognition.onerror = () => { window.showToast("ശബ്ദം വ്യക്തമല്ല", false); };
-            recognition.onend = () => { target.style.borderColor = ""; };
-        };
 
         window.toggleLedgerList = () => {
             const container = document.getElementById('ledgerContainer');
@@ -580,7 +551,7 @@
 
             document.getElementById('totalMaterialCost').innerText = "₹" + totalCost;
             
-            // പുതിയതായി ഡാറ്റ ലോഡ് ചെയ്യുമ്പോഴും ലാംഗ്വേജ് അപ്ഡേറ്റ് ചെയ്യാൻ
+            // ഡാറ്റ ലോഡ് ആകുമ്പോൾ നിലവിലെ ലാംഗ്വേജ് അനുസരിച്ച് ടെക്സ്റ്റുകൾ അപ്ഡേറ്റ് ചെയ്യുന്നു
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             window.switchLanguage(currentLang);
         });
