@@ -1,34 +1,208 @@
 <!DOCTYPE html>
 <html lang="ml">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മെറ്റീരിയൽസ് & സ്റ്റോക്ക് - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="language.js?v=2.0"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
+    <title class="lang" data-key="materialsManagementTitle">മെറ്റീരിയൽസ് മാനേജ്മെന്റ്</title>
+    <style>
+        body { font-family: 'Manjari', sans-serif; }
+        
+        input, select, textarea {
+            border: 2px solid rgba(51, 65, 85, 1);
+            transition: all 0.3s ease;
+            background-color: #1e293b !important;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #22d3ee !important; 
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2); 
+        }
+
+        .mic-btn {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            color: #94a3b8; background: transparent;
+            width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: none;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 20;
+            transition: all 0.2s ease;
+        }
+        .mic-btn:hover {
+            background: rgba(34, 211, 238, 0.1);
+            color: #22d3ee;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
+    <div class="max-w-md mx-auto space-y-4">
+        
+        <!-- ഹെഡർ -->
+        <div id="appHeader" class="w-full flex justify-center"></div>
+
+        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <h1 class="text-lg font-black text-white lang" data-key="materialsStock">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</h1>
+            <a href="dashboard.html" class="px-3 py-1.5 bg-slate-800 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold flex items-center gap-1">
+                <span>←</span> <span class="lang" data-key="dashboardBtn">ഡാഷ്‌ബോർഡ്</span>
+            </a>
+        </div>
+        
+        <!-- ആകെ തുക കാണിക്കുന്ന ബോക്സ് -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-lg text-center border border-slate-700">
+            <p class="text-[11px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="totalMaterialExpense">ആകെ മെറ്റീരിയൽ ചെലവ്</p>
+            <h2 id="totalMaterialCost" class="text-3xl font-black mt-1 text-emerald-400">₹0</h2>
+        </div>
+
+        <!-- മാസച്ചെലവ് ബാർ ചാർട്ട് സെക്ഷൻ -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-2 no-print">
+            <p class="text-xs font-black text-amber-400 flex items-center gap-1">
+                📈 <span class="lang" data-key="monthlyMaterialChart">മാസത്തിലെ മെറ്റീരിയൽ ചെലവ് ചാർട്ട്</span>
+            </p>
+            <div id="monthlyChartContainer" class="space-y-2 pt-2 border-t border-slate-800">
+                <div class="p-2 text-center text-xs text-slate-400 font-bold lang" data-key="chartDataNotAvailable">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</div>
+            </div>
+        </div>
+
+        <!-- സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ ട്രാക്കർ -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleLedgerList()">
+                <p class="text-xs font-black text-amber-400 lang" data-key="supplierPaymentLedger">സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ (ബാക്കി തുക)</p>
+                <span id="ledgerToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="viewBtn">▼ കാണുക</span>
+            </div>
+            <div id="ledgerContainer" class="hidden space-y-2 pt-2 border-t border-slate-800 max-h-48 overflow-y-auto">
+                <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledgerDataNotAvailable">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</div>
+            </div>
+        </div>
+
+        <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
+                <p class="text-xs font-black text-emerald-400 lang" data-key="supplierContactBook">സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
+                <span id="supBookToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="viewBtn">▼ കാണുക</span>
+            </div>
+            <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
+                <div class="flex gap-2">
+                    <input type="text" id="newSupName" placeholder="സപ്ലയർ പേര്" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="supplierNamePlaceholder">
+                    <input type="tel" id="newSupPhone" placeholder="ഫോൺ നമ്പർ" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="phonePlaceholder">
+                    <button onclick="window.saveSupplierContact()" class="bg-emerald-600 hover:bg-emerald-500 px-4 rounded-xl text-white font-black text-xs transition shadow-sm">+</button>
+                </div>
+                <div id="contactList" class="max-h-40 overflow-y-auto space-y-2 pt-1">
+                    <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="noContacts">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- പ്രത്യേക കുറിപ്പുകൾ (Quick Notes) -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleNotesBook()">
+                <p class="text-xs font-black text-amber-400 lang" data-key="quickNotes">പ്രത്യേക കുറിപ്പുകൾ (Quick Notes)</p>
+                <span id="notesToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="viewBtn">▼ കാണുക</span>
+            </div>
+            <div id="notesContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
+                <textarea id="newNoteText" placeholder="ഇന്നത്തെ കുറിപ്പുകൾ ഇവിടെ എഴുതുക..." rows="2" class="w-full p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="notesPlaceholder"></textarea>
+                <button onclick="window.saveQuickNote()" class="w-full bg-amber-600 hover:bg-amber-500 py-2.5 rounded-xl text-slate-950 font-black text-xs transition shadow-sm lang" data-key="saveNoteBtn">കുറിപ്പ് സേവ് ചെയ്യുക</button>
+                <div id="notesList" class="max-h-36 overflow-y-auto space-y-2 pt-1">
+                    <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="noNotes">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- സപ്ലയർ ലിസ്റ്റും ഫിൽട്ടറും -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
+            <div class="relative">
+                <input type="text" id="filterSite" placeholder="🔍 സൈറ്റ് പേര് വെച്ച് തിരയുക..." oninput="filterMaterials()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="searchSitePlaceholder">
+            </div>
+        </div>
+        
+        <!-- മെറ്റീരിയൽസ് ഫോം -->
+        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4 backdrop-blur-sm no-print">
+            <h2 id="formTitle" class="text-sm font-black text-amber-400 lang" data-key="addNewMaterialForm">പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക</h2>
+            
+            <div>
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="dateLabel">തീയതി</label>
+                <input type="date" id="matDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            </div>
+            
+            <div>
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="selectActionType">പ്രവർത്തനം തിരഞ്ഞെടുക്കുക</label>
+                <select id="matActionType" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs font-bold text-white">
+                    <option value="purchase" class="lang" data-key="purchaseAction">പുതിയ മെറ്റീരിയൽ വാങ്ങിയത്</option>
+                    <option value="transfer" class="lang" data-key="transferAction">മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</option>
+                </select>
+            </div>
+
+            <div class="relative">
+                <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ് / കമ്പി)" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="materialNamePlaceholder">
+                <button type="button" onclick="startVoiceInputFor('matName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
+            </div>
+
+            <div class="relative">
+                <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: Edumba)" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="siteNamePlaceholder">
+                <button type="button" onclick="startVoiceInputFor('matSite')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2">
+                <input type="number" id="matQty" placeholder="അളവ്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="qtyPlaceholder">
+                <input type="number" id="matUsed" placeholder="ഉപയോഗിച്ചത്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="usedPlaceholder">
+            </div>
+
+            <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / കിലോ)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="unitPlaceholder">
+            <input type="number" id="matPrice" placeholder="ആകെ വില (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="totalPricePlaceholder">
+            <input type="tel" id="matPhone" placeholder="സപ്ലയർ ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="supplierPhonePlaceholder">
+            <input type="number" id="matPaid" placeholder="സപ്ലയർക്ക് കൊടുത്ത തുക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="paidAmountPlaceholder">
+
+            <div class="flex gap-2">
+                <button id="cancelEditBtn" class="hidden flex-1 bg-slate-800 text-slate-300 p-4 rounded-2xl font-black text-xs lang" data-key="cancelBtn">ക്ൻസൽ</button>
+                <button id="saveBtn" class="flex-1 bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs lang" data-key="saveInfoBtn">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
+            </div>
+        </div>
+
+        <!-- റിപ്പോർട്ട് ഡൗൺലോഡ് ബട്ടണുകൾ -->
+        <div class="grid grid-cols-2 gap-2 no-print">
+            <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs flex items-center justify-center gap-1">
+                <span>🖨️</span> <span class="lang" data-key="pdfReportBtn">PDF റിപ്പോർട്ട്</span>
+            </button>
+            <button onclick="exportToExcel()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs flex items-center justify-center gap-1">
+                <span>📊</span> <span class="lang" data-key="excelExportBtn">Excel എക്സ്‌പോർട്ട്</span>
+            </button>
+        </div>
+
+        <!-- ലിസ്റ്റ് സെക്ഷൻ -->
+        <section class="space-y-4 pb-12">
+            <h2 class="font-black text-white text-base mb-2 lang" data-key="stockStatusHeading">സ്റ്റോക്ക് നിലവാരവും വിവരങ്ങളും</h2>
+            <div id="materialList" class="space-y-4"></div>
+        </section>
+    </div>
+
+    <!-- മോഡലുകളും ടോസ്റ്റും -->
+    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
+
+    <div id="customConfirmModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl text-center">
+            <h3 id="confirmTitle" class="font-black text-white text-sm">ഉറപ്പാണോ?</h3>
+            <div class="flex gap-2">
+                <button id="confirmCancelBtn" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black lang" data-key="noBtn">ഇല്ല</button>
+                <button id="confirmOkBtn" class="flex-1 bg-red-600 text-white py-3 rounded-2xl text-xs font-black lang" data-key="yesBtn">ഉവ്വ്</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         import { setupHeader } from './header.js';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.firebasestorage.app",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-            measurementId: "G-J9Y5TW9D7T"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app); 
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
+        // ലാംഗ്വേജ് മാറ്റിമാറി വരുന്നതിനായി
         window.switchLanguage = function(lang) {
             if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
             
@@ -48,10 +222,16 @@
         };
 
         document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader', true, currentMeshtri);
+            try {
+                if (typeof setupHeader === 'function') { 
+                    setupHeader('appHeader', true, currentMeshtri); 
+                } else { 
+                    document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
+                }
+            } catch (e) { 
+                document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
             }
-            
+
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
@@ -73,67 +253,443 @@
                 }
             }
         });
-    </script>
-</head>
-<body class="text-white min-h-screen pb-12 bg-slate-950 flex flex-col items-center justify-center font-['Manjari']">
 
-    <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none"></div>
-    
-    <div class="w-[92%] max-w-md mx-auto border-2 border-blue-600 rounded-[35px] p-5 shadow-[0_0_20px_rgba(37,99,235,0.4)] my-8 box-border space-y-4 bg-slate-950">
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
+        };
 
-        <!-- ഹെഡർ -->
-        <div id="appHeader" class="w-full"></div>
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        <!-- മെറ്റീരിയൽസ് & സ്റ്റോക്ക് ഹെഡർ ബോർഡ് (ക്ലിയർ ആക്കിയ ഹോം ബട്ടൺ കള്ളി) -->
-        <div class="bg-slate-900 border-2 border-blue-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-blue-950/50">
-            <h1 class="text-base font-black">
-                <span class="lang bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-500 bg-clip-text text-transparent drop-shadow-md" data-key="materialsStock">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</span>
-            </h1>
+        document.getElementById('matDate').valueAsDate = new Date();
+        let editId = null;
+
+        window.showToast = (message, isSuccess = true) => {
+            const toast = document.getElementById('customToast');
+            toast.innerText = message;
+            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 text-center backdrop-blur-md ${isSuccess ? 'bg-gradient-to-r from-emerald-900 to-teal-900 border-2 border-emerald-400 text-emerald-200 shadow-emerald-950/50' : 'bg-gradient-to-r from-red-900 to-rose-900 border-2 border-rose-400 text-rose-200 shadow-rose-950/50'} opacity-100 scale-105`;
+            setTimeout(() => {
+                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
+            }, 2500);
+        };
+
+        window.openCustomConfirm = (title) => new Promise(resolve => {
+            const modal = document.getElementById('customConfirmModal');
+            document.getElementById('confirmTitle').innerText = title;
+            modal.classList.remove('hidden');
+            document.getElementById('confirmOkBtn').onclick = () => { modal.classList.add('hidden'); resolve(true); };
+            document.getElementById('confirmCancelBtn').onclick = () => { modal.classList.add('hidden'); resolve(false); };
+        });
+
+        window.startVoiceInputFor = (fieldId) => {
+            const target = document.getElementById(fieldId);
+            if (!target) return;
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) { alert("ബ്രൗസർ വോയിസ് ഇൻപുട്ട് പിന്തുണയ്ക്കുന്നില്ല."); return; }
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'ml-IN';
+            target.style.borderColor = "#fbbf24"; 
+            window.showToast("🎙️ സംസാരിക്കൂ...");
+            try { recognition.start(); } catch (err) { console.log(err); }
+            recognition.onresult = (e) => { target.value = e.results[0][0].transcript; target.dispatchEvent(new Event('input')); window.showToast("✓ കേട്ടെടുത്തു!"); };
+            recognition.onerror = () => { window.showToast("ശബ്ദം വ്യക്തമല്ല", false); };
+            recognition.onend = () => { target.style.borderColor = ""; };
+        };
+
+        window.toggleLedgerList = () => {
+            const container = document.getElementById('ledgerContainer');
+            const icon = document.getElementById('ledgerToggleIcon');
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+        };
+
+        window.toggleSupplierBook = () => {
+            const container = document.getElementById('supplierBookContainer');
+            const icon = document.getElementById('supBookToggleIcon');
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+        };
+
+        window.toggleNotesBook = () => {
+            const container = document.getElementById('notesContainer');
+            const icon = document.getElementById('notesToggleIcon');
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+        };
+
+        window.saveSupplierContact = async () => {
+            const name = document.getElementById('newSupName').value.trim();
+            const phone = document.getElementById('newSupPhone').value.trim();
+            if (!name || !phone) {
+                window.showToast("പേരും ഫോൺ നമ്പറും നൽകുക!", false);
+                return;
+            }
+            try {
+                await addDoc(collection(db, "suppliers"), {
+                    meshtriOwner: currentMeshtri,
+                    name: name,
+                    phone: phone
+                });
+                document.getElementById('newSupName').value = '';
+                document.getElementById('newSupPhone').value = '';
+                window.showToast("👍 കോൺടാക്റ്റ് സേവ് ചെയ്തു!");
+            } catch (err) {
+                window.showToast("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല", false);
+            }
+        };
+
+        window.deleteSupplierContact = async (id) => {
+            if (await window.openCustomConfirm("ഈ കോൺടാക്റ്റ് ഡിലീറ്റ് ചെയ്യണോ?")) {
+                await deleteDoc(doc(db, "suppliers", id));
+                window.showToast("🗑️ നീക്കം ചെയ്തു!", false);
+            }
+        };
+
+        window.saveQuickNote = async () => {
+            const text = document.getElementById('newNoteText').value.trim();
+            if (!text) {
+                window.showToast("കുറിപ്പ് എഴുതുക!", false);
+                return;
+            }
+            try {
+                await addDoc(collection(db, "notes"), {
+                    meshtriOwner: currentMeshtri,
+                    text: text,
+                    date: new Date().toLocaleDateString()
+                });
+                document.getElementById('newNoteText').value = '';
+                window.showToast("👍 കുറിപ്പ് സേവ് ചെയ്തു!");
+            } catch (err) {
+                window.showToast("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല", false);
+            }
+        };
+
+        window.deleteQuickNote = async (id) => {
+            if (await window.openCustomConfirm("ഈ കുറിപ്പ് ഡിലീറ്റ് ചെയ്യണോ?")) {
+                await deleteDoc(doc(db, "notes", id));
+                window.showToast("🗑️ നീക്കം ചെയ്തു!", false);
+            }
+        };
+
+        document.getElementById('saveBtn').onclick = async () => {
+            const name = document.getElementById('matName').value.trim();
+            const site = document.getElementById('matSite').value.trim();
             
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl text-xs font-black shadow-lg shadow-blue-900/50 transition flex items-center gap-2 border border-white/40 shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a22 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                <span class="lang" data-key="homeBtn">Home</span>
-            </a>
-        </div>
+            if (!name) { window.showToast("മെറ്റീരിയൽ പേര് നൽകുക!", false); return; }
+            if (!site) { window.showToast("സൈറ്റിന്റെ പേര് നൽകുക!", false); return; }
 
-        <!-- ആകെ മെറ്റീരിയൽ ചെലവ് കാർഡ് -->
-        <div class="bg-slate-900/90 p-5 rounded-2xl shadow-md text-center border border-slate-800 backdrop-blur-sm">
-            <p class="text-[10px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="totalMaterialExpense">ആകെ മെറ്റീരിയൽ ചെലവ്</p>
-            <h2 id="totalMaterialCost" class="text-2xl font-black mt-1 text-emerald-400">₹0</h2>
-        </div>
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.innerText = "സേവ് ആകുന്നുണ്ട്...";
+            saveBtn.disabled = true;
 
-        <!-- മാസത്തിലെ മെറ്റീരിയൽ ചെലവ് ചാർട്ട് സെക്ഷൻ -->
-        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-3">
-            <h3 class="text-sm font-black text-blue-400 flex items-center gap-2">
-                📈 <span class="lang" data-key="monthlyMaterialChart">മാസത്തിലെ മെറ്റീരിയൽ ചെലവ് ചാർട്ട്</span>
-            </h3>
-            <div class="p-4 bg-slate-800/60 rounded-2xl text-center text-xs text-slate-400 font-bold lang" data-key="chartDataNotAvailable">
-                ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല
-            </div>
-        </div>
+            const actionType = document.getElementById('matActionType').value;
 
-        <!-- സപ്ലയർ സെക്ഷനുകൾ -->
-        <div class="space-y-3">
-            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg">
-                <span class="text-xs font-black text-slate-200 lang" data-key="supplierPaymentLedger">സപ്ലയർ പെയ്മെന്റ് ലെഡ്ജർ (ബാക്കി തുക)</span>
-                <span class="text-xs font-bold text-blue-400 lang" data-key="viewBtn">കാണുക</span>
-            </div>
+            const data = {
+                meshtriOwner: currentMeshtri,
+                date: document.getElementById('matDate').value,
+                actionType: actionType,
+                name: name,
+                site: site,
+                qty: parseFloat(document.getElementById('matQty').value) || 0,
+                used: parseFloat(document.getElementById('matUsed').value) || 0,
+                unit: document.getElementById('matUnit').value.trim(),
+                price: parseFloat(document.getElementById('matPrice').value) || 0,
+                phone: document.getElementById('matPhone').value.trim(),
+                paid: parseFloat(document.getElementById('matPaid').value) || 0
+            };
 
-            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg">
-                <span class="text-xs font-black text-slate-200 lang" data-key="supplierContactBook">സപ്ലയർ കോണ്ടാക്ട് ബുക്ക്</span>
-                <span class="text-xs font-bold text-blue-400 lang" data-key="viewBtn">കാണുക</span>
-            </div>
+            try {
+                if (editId) {
+                    await updateDoc(doc(db, "materials", editId), data);
+                    editId = null;
+                    document.getElementById('formTitle').innerText = "പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക";
+                    document.getElementById('cancelEditBtn').classList.add('hidden');
+                    saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
+                    window.showToast("✏️ വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്തു!");
+                } else {
+                    await addDoc(collection(db, "materials"), data);
+                    saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
+                    window.showToast("🚀 വിജയകരമായി ചേർത്തു!");
+                }
 
-            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg">
-                <span class="text-xs font-black text-slate-200 lang" data-key="quickNotes">പ്രത്യേക കുറിപ്പുകൾ (Quick Notes)</span>
-                <span class="text-xs font-bold text-blue-400 lang" data-key="viewBtn">കാണുക</span>
-            </div>
-        </div>
+                saveBtn.disabled = false;
+                document.getElementById('matName').value = '';
+                document.getElementById('matSite').value = '';
+                document.getElementById('matQty').value = '';
+                document.getElementById('matUsed').value = '';
+                document.getElementById('matUnit').value = '';
+                document.getElementById('matPrice').value = '';
+                document.getElementById('matPhone').value = '';
+                document.getElementById('matPaid').value = '';
+            } catch (error) {
+                saveBtn.disabled = false;
+                saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
+                window.showToast("തടസ്സമുണ്ടായി, വീണ്ടും ശ്രമിക്കുക.", false);
+            }
+        };
 
-    </div>
+        document.getElementById('cancelEditBtn').onclick = () => {
+            editId = null;
+            document.getElementById('formTitle').innerText = "പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+            document.getElementById('saveBtn').innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
+            document.getElementById('matName').value = '';
+            document.getElementById('matSite').value = '';
+            document.getElementById('matQty').value = '';
+            document.getElementById('matUsed').value = '';
+            document.getElementById('matUnit').value = '';
+            document.getElementById('matPrice').value = '';
+            document.getElementById('matPhone').value = '';
+            document.getElementById('matPaid').value = '';
+        };
 
+        let currentMaterialsData = [];
+
+        onSnapshot(query(collection(db, "materials"), orderBy("date", "desc")), (snapshot) => {
+            const list = document.getElementById('materialList');
+            list.innerHTML = '';
+            let totalCost = 0;
+            let suppliersLedgerMap = new Map();
+            let monthlyMap = {};
+            currentMaterialsData = [];
+            
+            snapshot.forEach(docSnap => {
+                const d = docSnap.data();
+                
+                if (d.meshtriOwner === currentMeshtri) {
+                    currentMaterialsData.push({ id: docSnap.id, ...d });
+                    
+                    const price = parseFloat(d.price) || 0;
+                    const paid = parseFloat(d.paid) || 0;
+                    
+                    if (d.actionType !== 'transfer') {
+                        totalCost += price;
+                    }
+
+                    if (d.date) {
+                        const monthKey = d.date.substring(0, 7);
+                        monthlyMap[monthKey] = (monthlyMap[monthKey] || 0) + (d.actionType !== 'transfer' ? price : 0);
+                    }
+
+                    if (d.phone || d.name) {
+                        const supKey = d.phone ? `${d.phone}` : `${d.name} സപ്ലയർ`;
+                        if (!suppliersLedgerMap.has(supKey)) {
+                            suppliersLedgerMap.set(supKey, { name: d.name + " സപ്ലയർ", phone: d.phone || '', totalBill: 0, totalPaid: 0 });
+                        }
+                        let supData = suppliersLedgerMap.get(supKey);
+                        if (d.actionType !== 'transfer') {
+                            supData.totalBill += price;
+                        }
+                        supData.totalPaid += paid;
+                    }
+                    
+                    const totalQty = parseFloat(d.qty) || 0;
+                    const usedQty = parseFloat(d.used) || 0;
+                    const remainingQty = totalQty - usedQty;
+
+                    let stockWarning = remainingQty <= 2 ? `<div class="text-[10px] font-black text-amber-300 bg-amber-950/60 p-2 rounded-xl border border-amber-600/40 mb-2">⚠️ സ്റ്റോക്ക് കുറവാണ് / തീരാറായി!</div>` : '';
+                    let isTransfer = d.actionType === 'transfer';
+                    let actionBadge = isTransfer 
+                        ? `<div class="text-xs font-black text-cyan-300 bg-cyan-950/60 p-2 rounded-xl border border-cyan-700/50 mb-2">🔄 മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</div>` 
+                        : '';
+
+                    list.innerHTML += `
+                        <div class="bg-slate-900/90 text-white p-5 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm material-item" data-site="${(d.site || '').toLowerCase()}">
+                            <div class="flex justify-between items-start mb-1">
+                                <p class="font-black text-white text-base">${d.name}</p>
+                                <a href="tel:${d.phone}" class="bg-blue-900/50 text-blue-300 border border-blue-700/50 px-3 py-1 rounded-xl font-black text-xs no-print shadow-sm">📞 വിളിക്കുക</a>
+                            </div>
+                            <p class="text-xs text-slate-400 font-bold mb-3">
+                                ${d.date || ''} ${d.site ? '• സൈറ്റ്: ' + d.site : ''}
+                            </p>
+                            
+                            ${actionBadge}
+                            ${stockWarning}
+
+                            <div class="bg-slate-800/80 p-3 rounded-2xl mb-3 border border-slate-700">
+                                <div class="flex justify-between text-xs font-bold text-slate-400 mb-1">
+                                    <span>അളവ്: ${totalQty} ${d.unit || ''}</span>
+                                    <span>ഉപയോഗിച്ചത്: ${usedQty} ${d.unit || ''}</span>
+                                </div>
+                                <div class="text-xs font-black text-emerald-400">
+                                    ബാക്കി സ്റ്റോക്ക്: ${remainingQty} ${d.unit || ''}
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-2 mb-3">
+                                <p class="text-xs font-black text-slate-200 bg-slate-800 p-2.5 rounded-xl inline-block border border-slate-700">വില: ₹${d.price}</p>
+                                <p class="text-xs font-black text-emerald-300 bg-slate-800 p-2.5 rounded-xl inline-block border border-slate-700">കൊടുത്തത്: ₹${d.paid || 0}</p>
+                            </div>
+
+                            <div class="flex gap-2.5 no-print mt-3">
+                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.actionType || 'purchase'}', '${d.name}', '${d.site || ''}', ${totalQty}, ${usedQty}, '${d.unit || ''}', ${d.price}, '${d.phone}', ${d.paid || 0})" class="flex-1 bg-amber-500 text-slate-950 py-2.5 rounded-xl font-black text-xs hover:bg-amber-400 transition shadow-sm">എഡിറ്റ്</button>
+                                <button onclick="window.delMat('${docSnap.id}')" class="bg-red-600 text-white px-4 py-2.5 rounded-xl font-black text-xs hover:bg-red-500 transition shadow-sm">ഡിലീറ്റ്</button>
+                            </div>
+                        </div>`;
+                }
+            });
+
+            const ledgerContainer = document.getElementById('ledgerContainer');
+            if (suppliersLedgerMap.size > 0) {
+                let ledgerHtml = '';
+                suppliersLedgerMap.forEach((val) => {
+                    let balanceDue = val.totalBill - val.totalPaid;
+                    ledgerHtml += `
+                        <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 text-xs space-y-1">
+                            <div class="flex justify-between font-bold text-white">
+                                <span>${val.name}</span>
+                                <a href="tel:${val.phone}" class="text-cyan-400">📞 ${val.phone || 'നമ്പർ ഇല്ല'}</a>
+                            </div>
+                            <div class="flex justify-between text-[11px] text-slate-300">
+                                <span>ആകെ ബിൽ: ₹${val.totalBill}</span>
+                                <span>കൊടുത്തത്: ₹${val.totalPaid}</span>
+                            </div>
+                            <div class="text-[11px] font-black ${balanceDue > 0 ? 'text-red-400' : 'text-emerald-400'}">
+                                ബാക്കി നൽകാനുള്ളത്: ₹${balanceDue}
+                            </div>
+                        </div>`;
+                });
+                ledgerContainer.innerHTML = ledgerHtml;
+            } else {
+                ledgerContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledgerDataNotAvailable">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</p>`;
+            }
+
+            const chartContainer = document.getElementById('monthlyChartContainer');
+            let chartHtml = '';
+            let sortedMonths = Object.keys(monthlyMap).sort().reverse();
+            if (sortedMonths.length > 0) {
+                sortedMonths.slice(0, 3).forEach(month => {
+                    let cost = monthlyMap[month];
+                    chartHtml += `
+                        <div class="flex justify-between items-center text-xs bg-slate-800/60 p-2 rounded-xl">
+                            <span class="font-bold text-slate-300">മാസം (${month}):</span>
+                            <span class="font-black text-emerald-400">₹${cost}</span>
+                        </div>`;
+                });
+                chartContainer.innerHTML = chartHtml;
+            } else {
+                chartContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="chartDataNotAvailable">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</p>`;
+            }
+
+            document.getElementById('totalMaterialCost').innerText = "₹" + totalCost;
+            
+            // പുതിയതായി ഡാറ്റ ലോഡ് ചെയ്യുമ്പോഴും ലാംഗ്വേജ് അപ്ഡേറ്റ് ചെയ്യാൻ
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            window.switchLanguage(currentLang);
+        });
+
+        onSnapshot(query(collection(db, "suppliers")), (snapshot) => {
+            const contactList = document.getElementById('contactList');
+            contactList.innerHTML = '';
+            let hasContacts = false;
+            
+            snapshot.forEach(docSnap => {
+                const s = docSnap.data();
+                if (s.meshtriOwner === currentMeshtri) {
+                    hasContacts = true;
+                    contactList.innerHTML += `
+                        <div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
+                            <div>
+                                <p class="font-black text-white">${s.name}</p>
+                                <a href="tel:${s.phone}" class="text-cyan-400 font-bold">📞 ${s.phone}</a>
+                            </div>
+                            <button onclick="window.deleteSupplierContact('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
+                        </div>`;
+                }
+            });
+
+            if (!hasContacts) {
+                contactList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="noContacts">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
+            }
+        });
+
+        onSnapshot(query(collection(db, "notes")), (snapshot) => {
+            const notesList = document.getElementById('notesList');
+            if(!notesList) return;
+            notesList.innerHTML = '';
+            let hasNotes = false;
+            
+            snapshot.forEach(docSnap => {
+                const n = docSnap.data();
+                if (n.meshtriOwner === currentMeshtri) {
+                    hasNotes = true;
+                    notesList.innerHTML += `
+                        <div class="flex justify-between items-start bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-bold">${n.date || ''}</p>
+                                <p class="font-bold text-white mt-0.5">${n.text}</p>
+                            </div>
+                            <button onclick="window.deleteQuickNote('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
+                        </div>`;
+                }
+            });
+
+            if (!hasNotes) {
+                notesList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="noNotes">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</p>`;
+            }
+        });
+
+        window.filterMaterials = () => {
+            const searchTerm = document.getElementById('filterSite').value.toLowerCase();
+            const items = document.querySelectorAll('.material-item');
+            items.forEach(item => {
+                const siteName = item.getAttribute('data-site');
+                if (siteName.includes(searchTerm)) { item.style.display = 'block'; }
+                else { item.style.display = 'none'; }
+            });
+        };
+
+        window.exportToExcel = () => {
+            if (currentMaterialsData.length === 0) {
+                alert("ഡൗൺലോഡ് ചെയ്യാൻ ഡാറ്റകളൊന്നും ലഭ്യമല്ല!");
+                return;
+            }
+            let csvContent = "\uFEFFതീയതി,തരം,മെറ്റീരിയൽ പേര്,സൈറ്റ്,അളവ്,ഉപയോഗിച്ചത്,യൂണിറ്റ്,വില,കൊടുത്തത്,ഫോൺ\n";
+            currentMaterialsData.forEach(item => {
+                csvContent += `"${item.date}","${item.actionType || 'purchase'}","${item.name}","${item.site}",${item.qty},${item.used},"${item.unit}",${item.price},${item.paid || 0},"${item.phone || ''}"\n`;
+            });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.setAttribute('download', 'materials_ledger_report.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.showToast("📊 എക്സൽ റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്തു!");
+        };
+
+        window.editMat = (id, date, actionType, name, site, qty, used, unit, price, phone, paid) => {
+            editId = id;
+            document.getElementById('matDate').value = date;
+            document.getElementById('matActionType').value = actionType;
+            document.getElementById('matName').value = name;
+            document.getElementById('matSite').value = site;
+            document.getElementById('matQty').value = qty;
+            document.getElementById('matUsed').value = used;
+            document.getElementById('matUnit').value = unit;
+            document.getElementById('matPrice').value = price;
+            document.getElementById('matPhone').value = phone;
+            document.getElementById('matPaid').value = paid;
+            document.getElementById('formTitle').innerText = "മെറ്റീരിയൽ വിവരങ്ങൾ മാറ്റം വരുത്തുക";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.delMat = async (id) => {
+            if (await window.openCustomConfirm("ഈ വിവരങ്ങൾ ഡിലീറ്റ് ചെയ്യണോ?")) {
+                await deleteDoc(doc(db, "materials", id));
+                window.showToast("🗑️ ഡാറ്റ നീക്കം ചെയ്തു!", false);
+            }
+        };
+    </script>
 </body>
 </html>
