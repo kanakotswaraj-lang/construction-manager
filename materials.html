@@ -65,6 +65,7 @@
                 <div class="p-2 text-center text-xs text-slate-400 font-bold lang" data-key="chart_data_not_available">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</div>
             </div>
         </div>
+
         <!-- സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ ട്രാക്കർ -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleLedgerList()">
@@ -76,13 +77,13 @@
             </div>
         </div>
 
-                <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
+        <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
                 <p class="text-xs font-black text-emerald-400 lang" data-key="supplier_contact_book">സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
                 <span id="supBookToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view">കാണുക</span>
             </div>
-            <!-- ഇൻപുട്ടുകൾ ബോക്സിനുള്ളിൽ തന്നെ നിൽക്കാൻ flex-col അല്ലെങ്കിൽ responsive flex ഉപയോഗിക്കുക -->
+            <!-- ഇൻപുട്ടുകൾ ബോക്സിനുള്ളിൽ തന്നെ ഒതുങ്ങി നിൽക്കാൻ flex-col / sm:flex-row ഉപയോഗിച്ചു -->
             <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
                 <div class="flex flex-col sm:flex-row gap-2">
                     <input type="text" id="newSupName" placeholder="സപ്ലയർ പേര്" class="w-full sm:flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="supplier_name_placeholder">
@@ -94,7 +95,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- പ്രത്യേക കുറിപ്പുകൾ (Quick Notes) -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
@@ -110,8 +110,6 @@
                 </div>
             </div>
         </div>
-
-        
 
         <!-- സപ്ലയർ ലിസ്റ്റും ഫിൽട്ടറും -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
@@ -283,25 +281,50 @@
             document.getElementById('confirmCancelBtn').onclick = () => { modal.classList.add('hidden'); resolve(false); };
         });
 
+        // ഭാഷ മാറുന്നതിനനുസരിച്ച് 'കാണുക' / 'മറയ്ക്കുക' മാറുന്ന ഫങ്ഷനുകൾ
         window.toggleLedgerList = () => {
             const container = document.getElementById('ledgerContainer');
             const icon = document.getElementById('ledgerToggleIcon');
-            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "മറയ്ക്കുക"; }
-            else { container.classList.add('hidden'); icon.innerText = "കാണുക"; }
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            
+            container.classList.toggle('hidden');
+            if (container.classList.contains('hidden')) {
+                icon.setAttribute('data-key', 'view');
+                icon.innerText = (typeof words !== 'undefined' && words['view']) ? words['view'][currentLang] : (currentLang === 'en' ? 'View' : 'കാണുക');
+            } else {
+                icon.setAttribute('data-key', 'hide');
+                icon.innerText = (typeof words !== 'undefined' && words['hide']) ? words['hide'][currentLang] : (currentLang === 'en' ? 'Hide' : 'മറയ്ക്കുക');
+            }
         };
 
         window.toggleSupplierBook = () => {
             const container = document.getElementById('supplierBookContainer');
             const icon = document.getElementById('supBookToggleIcon');
-            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "മറയ്ക്കുക"; }
-            else { container.classList.add('hidden'); icon.innerText = "കാണുക"; }
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            
+            container.classList.toggle('hidden');
+            if (container.classList.contains('hidden')) {
+                icon.setAttribute('data-key', 'view');
+                icon.innerText = (typeof words !== 'undefined' && words['view']) ? words['view'][currentLang] : (currentLang === 'en' ? 'View' : 'കാണുക');
+            } else {
+                icon.setAttribute('data-key', 'hide');
+                icon.innerText = (typeof words !== 'undefined' && words['hide']) ? words['hide'][currentLang] : (currentLang === 'en' ? 'Hide' : 'മറയ്ക്കുക');
+            }
         };
 
         window.toggleNotesBook = () => {
             const container = document.getElementById('notesContainer');
             const icon = document.getElementById('notesToggleIcon');
-            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "മറയ്ക്കുക"; }
-            else { container.classList.add('hidden'); icon.innerText = "കാണുക"; }
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            
+            container.classList.toggle('hidden');
+            if (container.classList.contains('hidden')) {
+                icon.setAttribute('data-key', 'view');
+                icon.innerText = (typeof words !== 'undefined' && words['view']) ? words['view'][currentLang] : (currentLang === 'en' ? 'View' : 'കാണുക');
+            } else {
+                icon.setAttribute('data-key', 'hide');
+                icon.innerText = (typeof words !== 'undefined' && words['hide']) ? words['hide'][currentLang] : (currentLang === 'en' ? 'Hide' : 'മറയ്ക്കുക');
+            }
         };
 
         window.saveSupplierContact = async () => {
@@ -480,7 +503,6 @@
                         ? `<div class="text-xs font-black text-cyan-300 bg-cyan-950/60 p-2 rounded-xl border border-cyan-700/50 mb-2">🔄 മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</div>` 
                         : '';
 
-                    // Safe escaping for strings in inline parameters
                     const safeName = (d.name || '').replace(/'/g, "\\'");
                     const safeSite = (d.site || '').replace(/'/g, "\\'");
                     const safeUnit = (d.unit || '').replace(/'/g, "\\'");
@@ -660,7 +682,7 @@
             document.getElementById('matQty').value = qty;
             document.getElementById('matUsed').value = used;
             document.getElementById('matUnit').value = unit;
-            document.getElementById('matPrice').value = price;
+            document.getElementById('matPrice').value, price;
             document.getElementById('matPhone').value = phone;
             document.getElementById('matPaid').value = paid;
             document.getElementById('formTitle').innerText = "മെറ്റീരിയൽ വിവരങ്ങൾ മാറ്റം വരുത്തുക";
