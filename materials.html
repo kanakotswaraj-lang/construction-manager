@@ -65,7 +65,6 @@
                 <div class="p-2 text-center text-xs text-slate-400 font-bold lang" data-key="chart_data_not_available">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</div>
             </div>
         </div>
-
         <!-- സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ ട്രാക്കർ -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleLedgerList()">
@@ -77,23 +76,25 @@
             </div>
         </div>
 
-        <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
+                <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
                 <p class="text-xs font-black text-emerald-400 lang" data-key="supplier_contact_book">സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
                 <span id="supBookToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view">കാണുക</span>
             </div>
+            <!-- ഇൻപുട്ടുകൾ ബോക്സിനുള്ളിൽ തന്നെ നിൽക്കാൻ flex-col അല്ലെങ്കിൽ responsive flex ഉപയോഗിക്കുക -->
             <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
-                <div class="flex gap-2">
-                    <input type="text" id="newSupName" placeholder="സപ്ലയർ പേര്" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="supplier_name_placeholder">
-                    <input type="tel" id="newSupPhone" inputmode="numeric" pattern="[0-9]*" placeholder="ഫോൺ നമ്പർ" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="phone_number_placeholder">
-                    <button onclick="window.saveSupplierContact()" class="bg-emerald-600 hover:bg-emerald-500 px-4 rounded-xl text-white font-black text-xs transition shadow-sm">+</button>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="text" id="newSupName" placeholder="സപ്ലയർ പേര്" class="w-full sm:flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="supplier_name_placeholder">
+                    <input type="tel" id="newSupPhone" inputmode="numeric" pattern="[0-9]*" placeholder="ഫോൺ നമ്പർ" class="w-full sm:flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="phone_number_placeholder">
+                    <button onclick="window.saveSupplierContact()" class="bg-emerald-600 hover:bg-emerald-500 py-2.5 sm:py-0 px-4 rounded-xl text-white font-black text-xs transition shadow-sm">+</button>
                 </div>
                 <div id="contactList" class="max-h-40 overflow-y-auto space-y-2 pt-1">
                     <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_contacts_saved">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</div>
                 </div>
             </div>
         </div>
+
 
         <!-- പ്രത്യേക കുറിപ്പുകൾ (Quick Notes) -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
@@ -109,6 +110,8 @@
                 </div>
             </div>
         </div>
+
+        
 
         <!-- സപ്ലയർ ലിസ്റ്റും ഫിൽട്ടറും -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
