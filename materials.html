@@ -47,19 +47,19 @@
         }
     </style>
 </head>
-<body class="text-white min-h-screen pb-12 p-4 flex flex-col items-center justify-center">
+<body class="text-white min-h-screen pb-12 p-2 flex flex-col items-center justify-center">
 
-    <!-- ഡാഷ്‌ബോർഡ് മാതൃകയിലുള്ള നീല ഔട്ടർ ബോർഡും ഗ്ലോ ഇഫക്റ്റും -->
-    <div class="w-[92%] max-w-md mx-auto border-2 border-emerald-500 rounded-[35px] p-5 shadow-[0_0_25px_rgba(16,185,129,0.3)] my-6 box-border space-y-4 bg-[#050B18]">
+    <!-- ഡാഷ്‌ബോർഡ് മാതൃകയിലുള്ള നീല ഔട്ടർ ബോർഡും ഗ്ലോ ഇഫക്റ്റും (കുറച്ചുകൂടി പുറത്തേക്ക് വിപുലീകരിച്ചത്) -->
+    <div class="w-[96%] max-w-lg mx-auto border-2 border-blue-500 rounded-[35px] p-4 sm:p-6 shadow-[0_0_30px_rgba(59,130,246,0.35)] my-4 box-border space-y-4 bg-[#050B18]">
         
         <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 
         <!-- ഹെഡർ ഭാഗം -->
-        <div id="appHeader" class="w-full flex justify-center pt-2 px-2"></div>
+        <div id="appHeader" class="w-full flex justify-center pt-2 px-2 overflow-hidden"></div>
 
         <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
         <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-            <h1 class="lang text-lg font-black text-white" data-key="materialsTitle">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</h1>
+            <h1 class="lang text-base sm:text-lg font-black text-white" data-key="materialsTitle">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</h1>
             <a href="dashboard.html" class="lang px-3 py-1.5 bg-slate-800 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold" data-key="dashboardBackBtn">← ഡാഷ്‌ബോർഡ്</a>
         </div>
         
@@ -91,14 +91,14 @@
         <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
-                <p class="lang text-xs font-black text-emerald-400" data-key="supplierBookTitle">📖 സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
+                <p class="lang text-xs font-black text-blue-400" data-key="supplierBookTitle">📖 സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
                 <span id="supBookToggleIcon" class="lang text-xs text-slate-400 font-bold" data-key="viewText">▼ കാണുക</span>
             </div>
             <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
                 <div class="flex gap-2">
                     <input type="text" id="newSupName" class="lang-placeholder flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white" data-key-placeholder="supNamePlaceholder" placeholder="സപ്ലയർ പേര്">
                     <input type="tel" id="newSupPhone" class="lang-placeholder flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white" data-key-placeholder="phonePlaceholder" placeholder="ഫോൺ നമ്പർ">
-                    <button onclick="window.saveSupplierContact()" class="bg-emerald-600 hover:bg-emerald-500 px-4 rounded-xl text-white font-black text-xs transition shadow-sm">+</button>
+                    <button onclick="window.saveSupplierContact()" class="bg-blue-600 hover:bg-blue-500 px-4 rounded-xl text-white font-black text-xs transition shadow-sm">+</button>
                 </div>
                 <div id="contactList" class="max-h-40 overflow-y-auto space-y-2 pt-1">
                     <!-- കോൺടാക്റ്റുകൾ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
@@ -174,7 +174,7 @@
         <!-- റിപ്പോർട്ട് ഡൗൺലോഡ് ബട്ടണുകൾ -->
         <div class="grid grid-cols-2 gap-2 no-print">
             <button onclick="window.print()" class="lang w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs" data-key="pdfReportBtn">🖨️ PDF റിപ്പോർട്ട്</button>
-            <button onclick="exportToExcel()" class="lang w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs" data-key="excelExportBtn">📊 Excel എക്സ്‌പോർട്ട്</button>
+            <button onclick="exportToExcel()" class="lang w-full bg-blue-700 hover:bg-blue-800 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs" data-key="excelExportBtn">📊 Excel എക്സ്‌പോർട്ട്</button>
         </div>
 
         <!-- ലിസ്റ്റ് സെക്ഷൻ -->
