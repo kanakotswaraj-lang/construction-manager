@@ -477,6 +477,12 @@
                         ? `<div class="text-xs font-black text-cyan-300 bg-cyan-950/60 p-2 rounded-xl border border-cyan-700/50 mb-2">🔄 മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</div>` 
                         : '';
 
+                    // Safe escaping for strings in inline parameters
+                    const safeName = (d.name || '').replace(/'/g, "\\'");
+                    const safeSite = (d.site || '').replace(/'/g, "\\'");
+                    const safeUnit = (d.unit || '').replace(/'/g, "\\'");
+                    const safePhone = (d.phone || '').replace(/'/g, "\\'");
+
                     list.innerHTML += `
                         <div class="bg-slate-900/90 text-white p-5 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm material-item" data-site="${(d.site || '').toLowerCase()}">
                             <div class="flex justify-between items-start mb-1">
@@ -506,7 +512,7 @@
                             </div>
 
                             <div class="flex gap-2.5 no-print mt-3">
-                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.actionType || 'purchase'}', '${d.name}', '${d.site || ''}', ${totalQty}, ${usedQty}, '${d.unit || ''}', ${d.price}, '${d.phone}', ${d.paid || 0})" class="flex-1 bg-amber-500 text-slate-950 py-2.5 rounded-xl font-black text-xs hover:bg-amber-400 transition shadow-sm">എഡിറ്റ്</button>
+                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.actionType || 'purchase'}', '${safeName}', '${safeSite}', ${totalQty}, ${usedQty}, '${safeUnit}', ${d.price}, '${safePhone}', ${d.paid || 0})" class="flex-1 bg-amber-500 text-slate-950 py-2.5 rounded-xl font-black text-xs hover:bg-amber-400 transition shadow-sm">എഡിറ്റ്</button>
                                 <button onclick="window.delMat('${docSnap.id}')" class="bg-red-600 text-white px-4 py-2.5 rounded-xl font-black text-xs hover:bg-red-500 transition shadow-sm">ഡിലീറ്റ്</button>
                             </div>
                         </div>`;
@@ -593,8 +599,8 @@
             let hasNotes = false;
             
             snapshot.forEach(docSnap => {
-                const n = docSnap.data();
-                if (n.meshtriOwner === currentMeshtri) {
+                const n = docSnap.id ? docSnap.data() : null;
+                if (n && n.meshtriOwner === currentMeshtri) {
                     hasNotes = true;
                     notesList.innerHTML += `
                         <div class="flex justify-between items-start bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
