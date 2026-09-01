@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="language.js?v=2.0"></script>
+    <script src="language.js?v=3.0"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <title class="lang" data-key="materialsManagementTitle">മെറ്റീരിയൽസ് മാനേജ്മെന്റ്</title>
+    <title class="lang" data-key="materials_management_title">മെറ്റീരിയൽസ് മാനേജ്മെന്റ്</title>
     <style>
         body { font-family: 'Manjari', sans-serif; }
         
@@ -29,61 +29,61 @@
     </style>
 </head>
 <body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
-    <!-- മൂന്നാമത്തെ പേജ് പോലെയുള്ള ഔട്ടർ ഗ്ലോയിങ് ബോർഡർ കണ്ടെയ്നർ -->
+    <!-- ഔട്ടർ ഗ്ലോയിങ് ബോർഡർ കണ്ടെയ്നർ -->
     <div class="max-w-md mx-auto space-y-4 border-2 border-blue-500/60 p-4 rounded-3xl shadow-[0_0_25px_rgba(37,99,235,0.25)] bg-[#050B18]/95">
         
         <!-- ഹെഡർ -->
         <div id="appHeader" class="w-full flex justify-center"></div>
 
-        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
+        <!-- മെറ്റീരിയൽസ് & സ്റ്റോക്ക് ഹെഡിംഗും കളർഫുൾ ഹോം ബട്ടണും -->
         <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-            <h1 class="text-lg font-black text-white lang" data-key="materialsStock">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</h1>
-            <a href="dashboard.html" class="px-3 py-1.5 bg-slate-800 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold flex items-center gap-1">
-                <span>←</span> <span class="lang" data-key="dashboardBtn">ഡാഷ്‌ബോർഡ്</span>
+            <h1 class="text-sm font-black text-white lang" data-key="materials_and_stock">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</h1>
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white rounded-2xl text-xs font-black flex items-center gap-1.5 shadow-[0_0_15px_rgba(79,70,229,0.4)] border border-blue-400/35 transition-all">
+                <span>🏠</span> <span class="lang" data-key="home_btn">മുഖപ്പു്</span>
             </a>
         </div>
         
         <!-- ആകെ തുക കാണിക്കുന്ന ബോക്സ് -->
         <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-lg text-center border border-slate-700">
-            <p class="text-[11px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="totalMaterialExpense">ആകെ മെറ്റീരിയൽ ചെലവ്</p>
+            <p class="text-[11px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="total_material_expense">ആകെ മെറ്റീരിയൽ ചെലവ്</p>
             <h2 id="totalMaterialCost" class="text-3xl font-black mt-1 text-emerald-400">₹0</h2>
         </div>
 
         <!-- മാസച്ചെലവ് ബാർ ചാർട്ട് സെക്ഷൻ -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-2 no-print">
             <p class="text-xs font-black text-amber-400 flex items-center gap-1">
-                📈 <span class="lang" data-key="monthlyMaterialChart">മാസത്തിലെ മെറ്റീരിയൽ ചെലവ് ചാർട്ട്</span>
+                📈 <span class="lang" data-key="monthly_material_expense_chart">മാസത്തിലെ മെറ്റീരിയൽ ചെലവ് ചാർട്ട്</span>
             </p>
             <div id="monthlyChartContainer" class="space-y-2 pt-2 border-t border-slate-800">
-                <div class="p-2 text-center text-xs text-slate-400 font-bold lang" data-key="chartDataNotAvailable">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</div>
+                <div class="p-2 text-center text-xs text-slate-400 font-bold lang" data-key="chart_data_not_available">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</div>
             </div>
         </div>
 
         <!-- സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ ട്രാക്കർ -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleLedgerList()">
-                <p class="text-xs font-black text-amber-400 lang" data-key="supplierPaymentLedger">സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ (ബാക്കി തുക)</p>
-                <span id="ledgerToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="viewBtn">▼ കാണുക</span>
+                <p class="text-xs font-black text-amber-400 lang" data-key="supplier_payment_ledger">സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ (ബാക്കി തുക)</p>
+                <span id="ledgerToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view">കാണുക</span>
             </div>
             <div id="ledgerContainer" class="hidden space-y-2 pt-2 border-t border-slate-800 max-h-48 overflow-y-auto">
-                <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledgerDataNotAvailable">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</div>
+                <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledger_data_not_available">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</div>
             </div>
         </div>
 
         <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
-                <p class="text-xs font-black text-emerald-400 lang" data-key="supplierContactBook">സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
-                <span id="supBookToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="viewBtn">▼ കാണുക</span>
+                <p class="text-xs font-black text-emerald-400 lang" data-key="supplier_contact_book">സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
+                <span id="supBookToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view">കാണുക</span>
             </div>
             <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
                 <div class="flex gap-2">
-                    <input type="text" id="newSupName" placeholder="സപ്ലയർ പേര്" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="supplierNamePlaceholder">
-                    <input type="tel" id="newSupPhone" placeholder="ഫോൺ നമ്പർ" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="phonePlaceholder">
+                    <input type="text" id="newSupName" placeholder="സപ്ലയർ പേര്" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="supplier_name_placeholder">
+                    <input type="tel" id="newSupPhone" placeholder="ഫോൺ നമ്പർ" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="phone_number_placeholder">
                     <button onclick="window.saveSupplierContact()" class="bg-emerald-600 hover:bg-emerald-500 px-4 rounded-xl text-white font-black text-xs transition shadow-sm">+</button>
                 </div>
                 <div id="contactList" class="max-h-40 overflow-y-auto space-y-2 pt-1">
-                    <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="noContacts">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</div>
+                    <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_contacts_saved">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</div>
                 </div>
             </div>
         </div>
@@ -91,14 +91,14 @@
         <!-- പ്രത്യേക കുറിപ്പുകൾ (Quick Notes) -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleNotesBook()">
-                <p class="text-xs font-black text-amber-400 lang" data-key="quickNotes">പ്രത്യേക കുറിപ്പുകൾ (Quick Notes)</p>
-                <span id="notesToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="viewBtn">▼ കാണുക</span>
+                <p class="text-xs font-black text-amber-400 lang" data-key="quick_notes">പ്രത്യേക കുറിപ്പുകൾ (Quick Notes)</p>
+                <span id="notesToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view">കാണുക</span>
             </div>
             <div id="notesContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
-                <textarea id="newNoteText" placeholder="ഇന്നത്തെ കുറിപ്പുകൾ ഇവിടെ എഴുതുക..." rows="2" class="w-full p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="notesPlaceholder"></textarea>
-                <button onclick="window.saveQuickNote()" class="w-full bg-amber-600 hover:bg-amber-500 py-2.5 rounded-xl text-slate-950 font-black text-xs transition shadow-sm lang" data-key="saveNoteBtn">കുറിപ്പ് സേവ് ചെയ്യുക</button>
+                <textarea id="newNoteText" placeholder="ഇന്നത്തെ കുറിപ്പുകൾ ഇവിടെ എഴുതുക..." rows="2" class="w-full p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="notes_placeholder"></textarea>
+                <button onclick="window.saveQuickNote()" class="w-full bg-amber-600 hover:bg-amber-500 py-2.5 rounded-xl text-slate-950 font-black text-xs transition shadow-sm lang" data-key="save_note_btn">കുറിപ്പ് സേവ് ചെയ്യുക</button>
                 <div id="notesList" class="max-h-36 overflow-y-auto space-y-2 pt-1">
-                    <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="noNotes">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</div>
+                    <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_notes_available">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</div>
                 </div>
             </div>
         </div>
@@ -106,64 +106,64 @@
         <!-- സപ്ലയർ ലിസ്റ്റും ഫിൽട്ടറും -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="relative">
-                <input type="text" id="filterSite" placeholder="🔍 സൈറ്റ് പേര് വെച്ച് തിരയുക..." oninput="filterMaterials()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="searchSitePlaceholder">
+                <input type="text" id="filterSite" placeholder="🔍 സൈറ്റ് പേര് വെച്ച് തിരയുക..." oninput="filterMaterials()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="search_site_placeholder">
             </div>
         </div>
         
         <!-- മെറ്റീരിയൽസ് ഫോം -->
         <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4 backdrop-blur-sm no-print">
-            <h2 id="formTitle" class="text-sm font-black text-amber-400 lang" data-key="addNewMaterialForm">പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക</h2>
+            <h2 id="formTitle" class="text-sm font-black text-amber-400 lang" data-key="add_new_material_form">പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക</h2>
             
             <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="dateLabel">തീയതി</label>
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="date">തീയതി</label>
                 <input type="date" id="matDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
             </div>
             
             <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="selectActionType">പ്രവർത്തനം തിരഞ്ഞെടുക്കുക</label>
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="select_action_type">പ്രവർത്തനം തിരഞ്ഞെടുക്കുക</label>
                 <select id="matActionType" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs font-bold text-white">
-                    <option value="purchase" class="lang" data-key="purchaseAction">പുതിയ മെറ്റീരിയൽ വാങ്ങിയത്</option>
-                    <option value="transfer" class="lang" data-key="transferAction">മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</option>
+                    <option value="purchase" class="lang" data-key="purchase_action">പുതിയ മെറ്റീരിയൽ വാങ്ങിയത്</option>
+                    <option value="transfer" class="lang" data-key="transfer_action">മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</option>
                 </select>
             </div>
 
             <div>
-                <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ് / കമ്പി)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="materialNamePlaceholder">
+                <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ് / കമ്പി)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="material_name_placeholder">
             </div>
 
             <div>
-                <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: Edumba)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="siteNamePlaceholder">
+                <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: Edumba)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="site_name_placeholder">
             </div>
             
             <div class="grid grid-cols-2 gap-2">
-                <input type="number" id="matQty" placeholder="അളവ്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="qtyPlaceholder">
-                <input type="number" id="matUsed" placeholder="ഉപയോഗിച്ചത്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="usedPlaceholder">
+                <input type="number" id="matQty" placeholder="അളവ്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="qty_placeholder">
+                <input type="number" id="matUsed" placeholder="ഉപയോഗിച്ചത്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="used_placeholder">
             </div>
 
-            <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / കിലോ)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="unitPlaceholder">
-            <input type="number" id="matPrice" placeholder="ആകെ വില (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="totalPricePlaceholder">
-            <input type="tel" id="matPhone" placeholder="സപ്ലയർ ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="supplierPhonePlaceholder">
-            <input type="number" id="matPaid" placeholder="സപ്ലയർക്ക് കൊടുത്ത തുക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="paidAmountPlaceholder">
+            <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / കിലോ)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="unit_placeholder">
+            <input type="number" id="matPrice" placeholder="ആകെ വില (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="total_price_placeholder">
+            <input type="tel" id="matPhone" placeholder="സപ്ലയർ ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="supplier_phone_placeholder">
+            <input type="number" id="matPaid" placeholder="സപ്ലയർക്ക് കൊടുത്ത തുക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="paid_amount_placeholder">
 
             <div class="flex gap-2">
-                <button id="cancelEditBtn" class="hidden flex-1 bg-slate-800 text-slate-300 p-4 rounded-2xl font-black text-xs lang" data-key="cancelBtn">ക്ൻസൽ</button>
-                <button id="saveBtn" class="flex-1 bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs lang" data-key="saveInfoBtn">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
+                <button id="cancelEditBtn" class="hidden flex-1 bg-slate-800 text-slate-300 p-4 rounded-2xl font-black text-xs lang" data-key="cancel">ക്ൻസൽ</button>
+                <button id="saveBtn" class="flex-1 bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs lang" data-key="save_info_btn">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
             </div>
         </div>
 
         <!-- റിപ്പോർട്ട് ഡൗൺലോഡ് ബട്ടണുകൾ -->
         <div class="grid grid-cols-2 gap-2 no-print">
             <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs flex items-center justify-center gap-1">
-                <span>🖨️</span> <span class="lang" data-key="pdfReportBtn">PDF റിപ്പോർട്ട്</span>
+                <span>🖨️</span> <span class="lang" data-key="pdf_report_btn">PDF റിപ്പോർട്ട്</span>
             </button>
             <button onclick="exportToExcel()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs flex items-center justify-center gap-1">
-                <span>📊</span> <span class="lang" data-key="excelExportBtn">Excel എക്സ്‌പോർട്ട്</span>
+                <span>📊</span> <span class="lang" data-key="excel_export_btn">Excel എക്സ്‌പോർട്ട്</span>
             </button>
         </div>
 
         <!-- ലിസ്റ്റ് സെക്ഷൻ -->
         <section class="space-y-4 pb-12">
-            <h2 class="font-black text-white text-base mb-2 lang" data-key="stockStatusHeading">സ്റ്റോക്ക് നിലവാരവും വിവരങ്ങളും</h2>
+            <h2 class="font-black text-white text-base mb-2 lang" data-key="stock_status_heading">സ്റ്റോക്ക് നിലവാരവും വിവരങ്ങളും</h2>
             <div id="materialList" class="space-y-4"></div>
         </section>
     </div>
@@ -175,8 +175,8 @@
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl text-center">
             <h3 id="confirmTitle" class="font-black text-white text-sm">ഉറപ്പാണോ?</h3>
             <div class="flex gap-2">
-                <button id="confirmCancelBtn" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black lang" data-key="noBtn">ഇല്ല</button>
-                <button id="confirmOkBtn" class="flex-1 bg-red-600 text-white py-3 rounded-2xl text-xs font-black lang" data-key="yesBtn">ഉവ്വ്</button>
+                <button id="confirmCancelBtn" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black lang" data-key="no">ഇല്ല</button>
+                <button id="confirmOkBtn" class="flex-1 bg-red-600 text-white py-3 rounded-2xl text-xs font-black lang" data-key="yes">ഉവ്വ്</button>
             </div>
         </div>
     </div>
@@ -188,7 +188,7 @@
 
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
-        // ലാംഗ്വേജ് മാറ്റിമാറി വരുന്നതിനായി കൃത്യമായി കോൺഫിഗർ ചെയ്തിരിക്കുന്നു
+        // ലാംഗ്വേജ് ഫങ്ഷൻ സിങ്ക് ചെയ്യൽ
         window.switchLanguage = function(lang) {
             if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
             
@@ -277,22 +277,22 @@
         window.toggleLedgerList = () => {
             const container = document.getElementById('ledgerContainer');
             const icon = document.getElementById('ledgerToggleIcon');
-            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
-            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "കാണുക"; }
         };
 
         window.toggleSupplierBook = () => {
             const container = document.getElementById('supplierBookContainer');
             const icon = document.getElementById('supBookToggleIcon');
-            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
-            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "കാണുക"; }
         };
 
         window.toggleNotesBook = () => {
             const container = document.getElementById('notesContainer');
             const icon = document.getElementById('notesToggleIcon');
-            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
-            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "കാണുക"; }
         };
 
         window.saveSupplierContact = async () => {
@@ -529,7 +529,7 @@
                 });
                 ledgerContainer.innerHTML = ledgerHtml;
             } else {
-                ledgerContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledgerDataNotAvailable">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</p>`;
+                ledgerContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledger_data_not_available">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</p>`;
             }
 
             const chartContainer = document.getElementById('monthlyChartContainer');
@@ -546,12 +546,11 @@
                 });
                 chartContainer.innerHTML = chartHtml;
             } else {
-                chartContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="chartDataNotAvailable">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</p>`;
+                chartContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="chart_data_not_available">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</p>`;
             }
 
             document.getElementById('totalMaterialCost').innerText = "₹" + totalCost;
             
-            // ഡാറ്റ ലോഡ് ആകുമ്പോൾ നിലവിലെ ലാംഗ്വേജ് അനുസരിച്ച് ടെക്സ്റ്റുകൾ അപ്ഡേറ്റ് ചെയ്യുന്നു
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             window.switchLanguage(currentLang);
         });
@@ -577,7 +576,7 @@
             });
 
             if (!hasContacts) {
-                contactList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="noContacts">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
+                contactList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_contacts_saved">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
             }
         });
 
@@ -603,7 +602,7 @@
             });
 
             if (!hasNotes) {
-                notesList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="noNotes">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</p>`;
+                notesList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_notes_available">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</p>`;
             }
         });
 
