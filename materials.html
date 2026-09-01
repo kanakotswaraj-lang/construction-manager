@@ -73,7 +73,7 @@
                 <span id="ledgerToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view">കാണുക</span>
             </div>
             <div id="ledgerContainer" class="hidden space-y-2 pt-2 border-t border-slate-800 max-h-48 overflow-y-auto">
-                <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledger_data_not_available">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</div>
+                <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledger_info_not_available">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</div>
             </div>
         </div>
 
@@ -83,11 +83,10 @@
                 <p class="text-xs font-black text-emerald-400 lang" data-key="supplier_contact_book">സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
                 <span id="supBookToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view">കാണുക</span>
             </div>
-            <!-- ഇൻപുട്ടുകൾ ബോക്സിനുള്ളിൽ തന്നെ ഒതുങ്ങി നിൽക്കാൻ flex-col / sm:flex-row ഉപയോഗിച്ചു -->
             <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
                 <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" id="newSupName" placeholder="സപ്ലയർ പേര്" class="w-full sm:flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="supplier_name_placeholder">
-                    <input type="tel" id="newSupPhone" inputmode="numeric" pattern="[0-9]*" placeholder="ഫോൺ നമ്പർ" class="w-full sm:flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="phone_number_placeholder">
+                    <input type="text" id="newSupName" placeholder="സപ്ലയർ പേര്" class="w-full sm:flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="supplier_name">
+                    <input type="tel" id="newSupPhone" inputmode="numeric" pattern="[0-9]*" placeholder="ഫോൺ നമ്പർ" class="w-full sm:flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="phone_number">
                     <button onclick="window.saveSupplierContact()" class="bg-emerald-600 hover:bg-emerald-500 py-2.5 sm:py-0 px-4 rounded-xl text-white font-black text-xs transition shadow-sm">+</button>
                 </div>
                 <div id="contactList" class="max-h-40 overflow-y-auto space-y-2 pt-1">
@@ -131,7 +130,7 @@
                 <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="select_action_type">പ്രവർത്തനം തിരഞ്ഞെടുക്കുക</label>
                 <select id="matActionType" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs font-bold text-white">
                     <option value="purchase" class="lang" data-key="purchase_action">പുതിയ മെറ്റീരിയൽ വാങ്ങിയത്</option>
-                    <option value="transfer" class="lang" data-key="transfer_action">മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</option>
+                    <option value="transfer" class="lang" data-key="transfer_from_another_site">മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</option>
                 </select>
             </div>
 
@@ -140,7 +139,7 @@
             </div>
 
             <div>
-                <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: Edumba)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="site_name_placeholder">
+                <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: കണ്ണൂർ)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="site_name_placeholder">
             </div>
             
             <div class="grid grid-cols-2 gap-2">
@@ -154,7 +153,7 @@
             <input type="number" id="matPaid" placeholder="സപ്ലയർക്ക് കൊടുത്ത തുക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="paid_amount_placeholder">
 
             <div class="flex gap-2">
-                <button id="cancelEditBtn" class="hidden flex-1 bg-slate-800 text-slate-300 p-4 rounded-2xl font-black text-xs lang" data-key="cancel">ക്ൻസൽ</button>
+                <button id="cancelEditBtn" class="hidden flex-1 bg-slate-800 text-slate-300 p-4 rounded-2xl font-black text-xs lang" data-key="cancelEditBtn">ക്ൻസൽ</button>
                 <button id="saveBtn" class="flex-1 bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs lang" data-key="save_info_btn">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
             </div>
         </div>
@@ -566,7 +565,7 @@
                 });
                 ledgerContainer.innerHTML = ledgerHtml;
             } else {
-                ledgerContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledger_data_not_available">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</p>`;
+                ledgerContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledger_info_not_available">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</p>`;
             }
 
             const chartContainer = document.getElementById('monthlyChartContainer');
@@ -682,7 +681,7 @@
             document.getElementById('matQty').value = qty;
             document.getElementById('matUsed').value = used;
             document.getElementById('matUnit').value = unit;
-            document.getElementById('matPrice').value, price;
+            document.getElementById('matPrice').value = price;
             document.getElementById('matPhone').value = phone;
             document.getElementById('matPaid').value = paid;
             document.getElementById('formTitle').innerText = "മെറ്റീരിയൽ വിവരങ്ങൾ മാറ്റം വരുത്തുക";
