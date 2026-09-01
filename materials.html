@@ -23,10 +23,11 @@
             background-color: #1e293b !important;
         }
 
+        /* ഇൻപുട്ട് ഫീൽഡുകളിൽ അമർത്തുമ്പോൾ (Focus) നീല ഔട്ട്‌ലൈൻ വരാൻ */
         input:focus, select:focus, textarea:focus {
-            border-color: #22d3ee !important; 
+            border-color: #3b82f6 !important; 
             outline: none;
-            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2); 
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25); 
         }
 
         .mic-btn {
@@ -49,7 +50,7 @@
 </head>
 <body class="text-white min-h-screen pb-12 p-2 flex flex-col items-center justify-center">
 
-    <!-- ഡാഷ്‌ബോർഡ് മാതൃകയിലുള്ള നീല ഔട്ടർ ബോർഡും ഗ്ലോ ഇഫക്റ്റും (കുറച്ചുകൂടി പുറത്തേക്ക് വിപുലീകരിച്ചത്) -->
+    <!-- ഡാഷ്‌ബോർഡ് മാതൃകയിലുള്ള നീല ഔട്ടർ ബോർഡും ഗ്ലോ ഇഫക്റ്റും -->
     <div class="w-[96%] max-w-lg mx-auto border-2 border-blue-500 rounded-[35px] p-4 sm:p-6 shadow-[0_0_30px_rgba(59,130,246,0.35)] my-4 box-border space-y-4 bg-[#050B18]">
         
         <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
@@ -81,7 +82,7 @@
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleLedgerList()">
                 <p class="lang text-xs font-black text-amber-400" data-key="supplierLedgerTitle">🤝 സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ (ബാക്കി തുക)</p>
-                <span id="ledgerToggleIcon" class="lang text-xs text-slate-400 font-bold" data-key="viewText">▼ കാണുക</span>
+                <span id="ledgerToggleIcon" class="lang text-xs text-blue-400 font-bold" data-key="viewText">▼ കാണുക</span>
             </div>
             <div id="ledgerContainer" class="hidden space-y-2 pt-2 border-t border-slate-800 max-h-48 overflow-y-auto">
                 <!-- ലെഡ്ജർ വിവരങ്ങൾ ഇവിടെ വരും -->
@@ -92,7 +93,7 @@
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
                 <p class="lang text-xs font-black text-blue-400" data-key="supplierBookTitle">📖 സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
-                <span id="supBookToggleIcon" class="lang text-xs text-slate-400 font-bold" data-key="viewText">▼ കാണുക</span>
+                <span id="supBookToggleIcon" class="lang text-xs text-blue-400 font-bold" data-key="viewText">▼ കാണുക</span>
             </div>
             <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
                 <div class="flex gap-2">
@@ -110,7 +111,7 @@
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
             <div class="flex justify-between items-center cursor-pointer" onclick="toggleNotesBook()">
                 <p class="lang text-xs font-black text-amber-400" data-key="quickNotesTitle">📝 പ്രത്യേക കുറിപ്പുകൾ (Quick Notes)</p>
-                <span id="notesToggleIcon" class="lang text-xs text-slate-400 font-bold" data-key="viewText">▼ കാണുക</span>
+                <span id="notesToggleIcon" class="lang text-xs text-blue-400 font-bold" data-key="viewText">▼ കാണുക</span>
             </div>
             <div id="notesContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
                 <textarea id="newNoteText" class="lang-placeholder w-full p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white" data-key-placeholder="notePlaceholder" placeholder="ഇന്നത്തെ കുറിപ്പുകൾ ഇവിടെ എഴുതുക..." rows="2"></textarea>
@@ -133,12 +134,12 @@
             <h2 id="formTitle" class="lang text-sm font-black text-amber-400" data-key="formTitleAdd">പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക</h2>
             
             <div>
-                <label class="lang text-[10px] text-slate-400 font-bold block mb-1" data-key="dateLabel">തീയതി</label>
+                <label class="lang text-[10px] text-blue-400 font-bold block mb-1" data-key="dateLabel">തീയതി</label>
                 <input type="date" id="matDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white">
             </div>
             
             <div>
-                <label class="lang text-[10px] text-slate-400 font-bold block mb-1" data-key="actionTypeLabel">പ്രവർത്തനം തിരഞ്ഞെടുക്കുക</label>
+                <label class="lang text-[10px] text-blue-400 font-bold block mb-1" data-key="actionTypeLabel">പ്രവർത്തനം തിരഞ്ഞെടുക്കുക</label>
                 <select id="matActionType" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs font-bold text-white">
                     <option value="purchase" class="lang" data-key="optPurchase">പുതിയ മെറ്റീരിയൽ വാങ്ങിയത്</option>
                     <option value="transfer" class="lang" data-key="optTransfer">മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</option>
@@ -151,7 +152,7 @@
             </div>
 
             <div class="relative">
-                <input type="text" id="matSite" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="matSitePlaceholder" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: Edumba)">
+                <input type="text" id="matSite" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="matSitePlaceholder" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: കണ്ണൂർ)">
                 <button type="button" onclick="startVoiceInputFor('matSite')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
             </div>
             
@@ -162,7 +163,13 @@
 
             <input type="text" id="matUnit" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="unitPlaceholder" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / കിലോ)">
             <input type="number" id="matPrice" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="pricePlaceholder" placeholder="ആകെ വില (₹)">
-            <input type="tel" id="matPhone" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="supPhonePlaceholder" placeholder="സപ്ലയർ ഫോൺ നമ്പർ">
+            
+            <!-- സപ്ലയർ ഫോൺ നമ്പർ ഫീൽഡ് താഴേക്ക് മാറ്റിയിരിക്കുന്നു -->
+            <div>
+                <label class="lang text-[10px] text-blue-400 font-bold block mb-1" data-key="supPhoneLabel">സപ്ലയർ ഫോൺ നമ്പർ</label>
+                <input type="tel" id="matPhone" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-blue-400 font-bold" data-key-placeholder="supPhonePlaceholder" placeholder="സപ്ലയർ ഫോൺ നമ്പർ">
+            </div>
+
             <input type="number" id="matPaid" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="paidPlaceholder" placeholder="സപ്ലയർക്ക് കൊടുത്ത തുക (₹)">
 
             <div class="flex gap-2">
@@ -199,40 +206,6 @@
 
     <!-- ജാവാസ്ക്രിപ്റ്റ് ലാംഗ്വേജ് ഡിക്ഷണറിയും ഫയർബേസ് ലോജിക്കും -->
     <script>
-        // 7 ഭാഷകളിലേക്കുള്ള വാക്കുകൾ (Dictionary)
-        window.words = {
-            materialsTitle: { ml: "മെറ്റീരിയൽസ് & സ്റ്റോക്ക്", en: "Materials & Stock", hi: "सामग्री और स्टॉक", ta: "பொருட்கள் & பங்கு", kn: "ಸಾಮಗ್ರಿಗಳು ಮತ್ತು ಸ್ಟಾಕ್", bn: "সামগ্রী এবং স্টক", as: "সামগ্ৰী আৰু ষ্টক" },
-            dashboardBackBtn: { ml: "← ഡാഷ്‌ബോർഡ്", en: "← Dashboard", hi: "← डैशबोर्ड", ta: "← டாஷ்போர்டு", kn: "← ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", bn: "← ড্যাশবোর্ড", as: "← ডেচবৰ্ড" },
-            totalMatCostLabel: { ml: "ആകെ മെറ്റീരിയൽ ചെലവ്", en: "Total Material Cost", hi: "कुल सामग्री लागत", ta: "மொத்த பொருள் செலவு", kn: "ಒಟ್ಟು ವಸ್ತುಗಳ ವೆಚ್ಚ", bn: "মোট উপাদান খরচ", as: "মুঠ সামগ্ৰীৰ খৰচ" },
-            monthlyChartTitle: { ml: "📈 മാസത്തിലെ മെറ്റീരിയൽ ചെലവ് ചാർട്ട്", en: "📈 Monthly Material Cost Chart", hi: "📈 मासिक सामग्री लागत चार्ट", ta: "📈 மாத பொருள் செலவு விளக்கப்படம்", kn: "📈 ಮಾಸಿಕ ವಸ್ತುಗಳ ವೆಚ್ಚದ ಚಾರ್ಟ್", bn: "📈 মাসিক উপাদান খরচ চার্ট", as: "📈 মাহেকীয়া সামগ্ৰীৰ খৰচ চাৰ্ট" },
-            supplierLedgerTitle: { ml: "🤝 സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ (ബാക്കി തുക)", en: "🤝 Supplier Payment Ledger (Balance Due)", hi: "🤝 आपूर्तिकर्ता भुगतान खाता (बकाया राशि)", ta: "🤝 சப்ளையர் கட்டண லெட்ஜர் (பாக்கி தொகை)", kn: "🤝 ಸರಬರಾಜುದಾರರ ಪಾವತಿ ಖಾತೆ (ಬಾಕಿ ಮೊತ್ತ)", bn: "🤝 সরবরাহকারী পেমেন্ট লেজার (বকেয়া)", as: "🤝 যোগানকাৰী পেমেণ্ট লেজাৰ (বকেয়া ধন)" },
-            supplierBookTitle: { ml: "📖 സപ്ലയർ കോൺടാക്ട് ബുക്ക്", en: "📖 Supplier Contact Book", hi: "📖 आपूर्तिकर्ता संपर्क पुस्तिका", ta: "📖 சப்ளையர் தொடர்பு புத்தகம்", kn: "📖 ಸರಬರಾಜುದಾರರ ಸಂಪರ್ಕ ಪುಸ್ತಕ", bn: "📖 সরবরাহকারী যোগাযোগ বই", as: "📖 যোগানকাৰী যোগাযোগ পুথি" },
-            quickNotesTitle: { ml: "📝 പ്രത്യേക കുറിപ്പുകൾ (Quick Notes)", en: "📝 Quick Notes", hi: "📝 त्वरित नोट्स", ta: "📝 விரைவான குறிப்புகள்", kn: "📝 ತ್ವರಿತ ಟಿಪ್ಪಣಿಗಳು", bn: "📝 দ্রুত নোট", as: "📝 দ্ৰুত টোকা" },
-            viewText: { ml: "▼ കാണുക", en: "▼ View", hi: "▼ देखें", ta: "▼ காண்க", kn: "▼ ವೀಕ್ಷಿಸಿ", bn: "▼ দেখুন", as: "▼ চাওক" },
-            saveNoteBtn: { ml: "കുറിപ്പ് സേവ് ചെയ്യുക", en: "Save Note", hi: "नोट सहेजें", ta: "குறிப்பை சேமிக்கவும்", kn: "ಟಿಪ್ಪಣಿ ಉಳಿಸಿ", bn: "নোট সংরক্ষণ করুন", as: "টোকা ছেভ কৰক" },
-            formTitleAdd: { ml: "പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക", en: "Add New Material / Stock", hi: "नई सामग्री / स्टॉक जोड़ें", ta: "புதிய பொருள் / பங்கு சேர்க்கவும்", kn: "ಹೊಸ ವಸ್ತು / ಸ್ಟಾಕ್ ಸೇರಿಸಿ", bn: "নতুন উপাদান / স্টক যোগ করুন", as: "নতুন সামগ্ৰী / ষ্টক যোগ কৰক" },
-            dateLabel: { ml: "തീയതി", en: "Date", hi: "दिनांक", ta: "தேதி", kn: "ದಿನಾಂಕ", bn: "তারিখ", as: "তাৰিখ" },
-            actionTypeLabel: { ml: "പ്രവർത്തനം തിരഞ്ഞെടുക്കുക", en: "Select Action Type", hi: "क्रिया प्रकार चुनें", ta: "செயல் வகையைத் தேர்ந்தெடுக்கவும்", kn: "ಕ್ರಿಯಾ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ", bn: "অ্যাকশন টাইপ নির্বাচন করুন", as: "কাৰ্য্যৰ প্ৰকাৰ নিৰ্বাচন কৰক" },
-            optPurchase: { ml: "പുതിയ മെറ്റീരിയൽ വാങ്ങിയത്", en: "Purchased New Material", hi: "नई सामग्री खरीदी गई", ta: "புதிய பொருள் வாங்கப்பட்டது", kn: "ಹೊಸ ವಸ್ತು ಖರೀದಿಸಲಾಗಿದೆ", bn: "নতুন উপাদান কেনা হয়েছে", as: "নতুন সামগ্ৰী ক্রয় কৰা হ'ল" },
-            optTransfer: { ml: "മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)", en: "Transferred from Another Site", hi: "दूसरे साइट से स्थानांतरित", ta: "மற்றொரு தளத்திலிருந்து மாற்றப்பட்டது", kn: "ಮತ್ತೊಂದು ಸೈಟ್‌ನಿಂದ ವರ್ಗಾಯಿಸಲಾಗಿದೆ", bn: "অন্য সাইট থেকে স্থানান্তরিত", as: "অন্য ছাইটৰ পৰা স্থানান্তৰিত" },
-            qtyPlaceholder: { ml: "അളവ്", en: "Quantity", hi: "मात्रा", ta: "அளவு", kn: "ಪ್ರಮಾಣ", bn: "পরিমাণ", as: "পৰিমাণ" },
-            usedPlaceholder: { ml: "ഉപയോഗിച്ചത്", en: "Used Quantity", hi: "उपयोग किया गया", ta: "பயன்படுத்தப்பட்டது", kn: "ಬಳಸಲಾಗಿದೆ", bn: "ব্যবহৃত", as: "ব্যৱহৃত" },
-            unitPlaceholder: { ml: "യൂണിറ്റ് (ചാക്ക് / ടൺ / കിലോ)", en: "Unit (Bag / Ton / Kg)", hi: "इकाई (बोरी / टन / किलो)", ta: "அலகு (மூட்டை / டன் / கிலோ)", kn: "ಘಟಕ (ಚೀಲ / ಟನ್ / কেজি)", bn: "ইউনিট (ব্যাগ / টন / কেজি)", as: "ইউনিট (বেগ / টন / কেজি)" },
-            pricePlaceholder: { ml: "ആകെ വില (₹)", en: "Total Price (₹)", hi: "कुल मूल्य (₹)", ta: "மொத்த விலை (₹)", kn: "ಒಟ್ಟು ಬೆಲೆ (₹)", bn: "মোট মূল্য (₹)", as: "মুঠ দাম (₹)" },
-            supPhonePlaceholder: { ml: "സപ്ലയർ ഫോൺ നമ്പർ", en: "Supplier Phone Number", hi: "आपूर्तिकर्ता फोन नंबर", ta: "சப்ளையர் தொலைபேசி எண்", kn: "ಸರಬರಾಜುದಾರರ ಫೋನ್ ಸಂಖ್ಯೆ", bn: "সরবরাহকারীর ফোন নম্বর", as: "যোগানকাৰীৰ ফোন নম্বৰ" },
-            paidPlaceholder: { ml: "സപ്ലയർക്ക് കൊടുത്ത തുക (₹)", en: "Amount Paid to Supplier (₹)", hi: "आपूर्तिकर्ता को भुगतान की गई राशि (₹)", ta: "சப்ளையருக்கு செலுத்தப்பட்ட தொகை (₹)", kn: "ಸರಬರಾಜುದಾರರಿಗೆ ಪಾವತಿಸಿದ ಮೊತ್ತ (₹)", bn: "সরবরাহকারীকে প্রদত্ত পরিমাণ (₹)", as: "যোগানকাৰীক পৰিশোধ কৰা ধন (₹)" },
-            saveBtn: { ml: "വിവരങ്ങൾ സേവ് ചെയ്യുക", en: "Save Information", hi: "जानकारी सहेजें", ta: "தகவலை சேமிக்கவும்", kn: "ಮಾಹಿತಿಯನ್ನು ಉಳಿಸಿ", bn: "তথ্য সংরক্ষণ করুন", as: "তথ্য ছেভ কৰক" },
-            cancelBtn: { ml: "ക്ൻസൽ", en: "Cancel", hi: "रद्द करें", ta: "ரத்து செய்", kn: "ರದ್ದುಮಾಡಿ", bn: "বাতিল", as: "বাতিল" },
-            pdfReportBtn: { ml: "🖨️ PDF റിപ്പോർട്ട്", en: "🖨️ PDF Report", hi: "🖨️ पीडीएफ रिपोर्ट", ta: "🖨️ PDF அறிக்கை", kn: "🖨️ PDF ವರದಿ", bn: "🖨️ পিডিএফ রিপোর্ট", as: "🖨️ পিডিএফ প্ৰতিবেদন" },
-            excelExportBtn: { ml: "📊 Excel എക്സ്‌പോർട്ട്", en: "📊 Excel Export", hi: "📊 एक्सेल निर्यात", ta: "📊 எக்செல் ஏற்றுமதி", kn: "📊 ಎಕ್ಸೆಲ್ ರಫ್ತು", bn: "📊 এক্সেল এক্সপোর্ট", as: "📊 এক্সেল এক্সপ’ৰ্ট" },
-            stockListTitle: { ml: "സ്റ്റോക്ക് നിലവാരവും വിവരങ്ങളും", en: "Stock Level and Details", hi: "स्टॉक स्तर और विवरण", ta: "பங்கு நிலை மற்றும் விவரங்கள்", kn: "ಸ್ಟಾಕ್ ಮಟ್ಟ ಮತ್ತು ವಿವರಗಳು", bn: "স্টক লেভেল এবং বিবরণ", as: "ষ্টক স্তৰ আৰু বিৱৰণ" },
-            supNamePlaceholder: { ml: "സപ്ലയർ പേര്", en: "Supplier Name", hi: "आपूर्तिकर्ता का नाम", ta: "சப்ளையர் பெயர்", kn: "ಸರಬರಾಜುದಾರರ ಹೆಸರು", bn: "সরবরাহকারীর নাম", as: "যোগানকাৰীৰ নাম" },
-            phonePlaceholder: { ml: "ഫോൺ നമ്പർ", en: "Phone Number", hi: "फोन नंबर", ta: "தொலைபேசி எண்", kn: "ಫೋನ್ ಸಂಖ್ಯೆ", bn: "ফোন নম্বর", as: "ফোন নম্বৰ" },
-            notePlaceholder: { ml: "ഇന്നത്തെ കുറിപ്പുകൾ ഇവിടെ എഴുതുക...", en: "Write today's notes here...", hi: "आज के नोट्स यहाँ लिखें...", ta: "இன்றைய குறிப்புகளை இங்கு எழுதவும்...", kn: "ಇಂದಿನ ಟಿಪ್ಪಣಿಗಳನ್ನು ಇಲ್ಲಿ ಬರೆಯಿರಿ...", bn: "আজকের নোট এখানে লিখুন...", as: "আজৰ টোকা এখানে লিখক..." },
-            filterSitePlaceholder: { ml: "🔍 സൈറ്റ് പേര് വെച്ച് തിരയുക...", en: "🔍 Search by Site Name...", hi: "🔍 साइट नाम से खोजें...", ta: "🔍 தளம் மூலம் தேடவும்...", kn: "🔍 ಸೈಟ್ ಹೆಸರಿನಿಂದ ಹುಡುಕಿ...", bn: "🔍 সাইটের নাম দিয়ে খুঁজুন...", as: "🔍 ছাইটৰ নাম দ্বাৰা সন্ধান কৰক..." },
-            yesBtn: { ml: "ഉവ്വ്", en: "Yes", hi: "हाँ", ta: "ஆம்", kn: "ಹೌದು", bn: "হ্যাঁ", as: "হয়" },
-            noBtn: { ml: "ഇല്ല", en: "No", hi: "नहीं", ta: "இல்லை", kn: "ಇಲ್ಲ", bn: "না", as: "নহয়" }
-        };
 
         // ഭാഷ മാറ്റാനുള്ള ഫങ്ഷൻ
         window.switchLanguage = function(lang) {
@@ -316,7 +289,7 @@
             if (!SpeechRecognition) { alert("ബ്രൗസർ വോയിസ് ഇൻപുട്ട് പിന്തുണയ്ക്കുന്നില്ല."); return; }
             const recognition = new SpeechRecognition();
             recognition.lang = 'ml-IN';
-            target.style.borderColor = "#fbbf24"; 
+            target.style.borderColor = "#3b82f6"; 
             window.showToast("🎙️ സംസാരിക്കൂ...");
             try { recognition.start(); } catch (err) { console.log(err); }
             recognition.onresult = (e) => { target.value = e.results[0][0].transcript; target.dispatchEvent(new Event('input')); window.showToast("✓ കേട്ടെടുത്തു!"); };
@@ -327,22 +300,40 @@
         window.toggleLedgerList = () => {
             const container = document.getElementById('ledgerContainer');
             const icon = document.getElementById('ledgerToggleIcon');
-            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
-            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            if (container.classList.contains('hidden')) { 
+                container.classList.remove('hidden'); 
+                icon.innerText = window.words.hideText[currentLang]; 
+            } else { 
+                container.classList.add('hidden'); 
+                icon.innerText = window.words.viewText[currentLang]; 
+            }
         };
 
         window.toggleSupplierBook = () => {
             const container = document.getElementById('supplierBookContainer');
             const icon = document.getElementById('supBookToggleIcon');
-            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
-            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            if (container.classList.contains('hidden')) { 
+                container.classList.remove('hidden'); 
+                icon.innerText = window.words.hideText[currentLang]; 
+            } else { 
+                container.classList.add('hidden'); 
+                icon.innerText = window.words.viewText[currentLang]; 
+            }
         };
 
         window.toggleNotesBook = () => {
             const container = document.getElementById('notesContainer');
             const icon = document.getElementById('notesToggleIcon');
-            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "▲ മറയ്ക്കുക"; }
-            else { container.classList.add('hidden'); icon.innerText = "▼ കാണുക"; }
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            if (container.classList.contains('hidden')) { 
+                container.classList.remove('hidden'); 
+                icon.innerText = window.words.hideText[currentLang]; 
+            } else { 
+                container.classList.add('hidden'); 
+                icon.innerText = window.words.viewText[currentLang]; 
+            }
         };
 
         window.saveSupplierContact = async () => {
@@ -623,7 +614,7 @@
             });
 
             if (!hasContacts) {
-                contactList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
+                contactList.innerHTML = `<p class="lang text-[11px] text-slate-400 text-center py-1" data-key="noContactsText">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
             }
         });
 
@@ -649,7 +640,7 @@
             });
 
             if (!hasNotes) {
-                notesList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</p>`;
+                notesList.innerHTML = `<p class="lang text-[11px] text-slate-400 text-center py-1" data-key="noNotesText">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</p>`;
             }
         });
 
