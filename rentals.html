@@ -28,30 +28,19 @@
         -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
         -webkit-text-fill-color: white !important;
     }
-
-    .mic-btn {
-        position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-        color: #94a3b8; background: transparent;
-        width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: none;
-        display: flex; align-items: center; justify-content: center;
-        z-index: 20;
-        transition: all 0.2s ease;
-    }
-    .mic-btn:hover {
-        background: rgba(34, 211, 238, 0.1);
-        color: #22d3ee;
-    }
 </style>
     <title class="lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</title>
 </head>
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
-    <div class="max-w-md mx-auto space-y-4">
+    <!-- മൊത്തത്തിലുള്ള ഔട്ടർ ബോർഡിൽ പച്ച തിളങ്ങുന്ന കളർ (Glow Effect) -->
+    <div class="max-w-md mx-auto space-y-4 p-2 rounded-3xl border-2 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] bg-[#050B18]">
         
         <!-- ഹെഡർ -->
         <div id="appHeader" class="w-full"></div>
 
-        <!-- വാടക ഉപകരണങ്ങൾ ബോക്സും വ്യക്തമായ ഹോം ബട്ടണും -->
-        <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+        <!-- വാടക ഉപകരണങ്ങൾ ബോക്സ് (ഗ്രേഡിയന്റ് പച്ച ബോർഡും ബാക്ക്ഗ്രൗണ്ടും) -->
+        <div class="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-emerald-950/80 border-2 border-emerald-500/70 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm shadow-emerald-950/50">
+            <!-- വാക്കുകൾ ഗ്രേഡിയന്റ് പച്ച കളർ -->
             <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-green-400 tracking-wide lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</h1>
 
             <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
@@ -102,38 +91,33 @@
             </div>
         </div>
 
-        <!-- ഫോം ഭാഗം -->
+        <!-- ഫോം ഭാഗം (മൈക്ക് ബട്ടണുകൾ പൂർണ്ണമായി ഒഴിവാക്കി) -->
         <div class="bg-slate-900/90 p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4">
             <h2 class="font-black text-amber-400 text-sm lang" data-key="add_new_equipment">പുതിയ ഉപകരണം ചേർക്കുക</h2>
             
-            <div class="relative">
-                <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="item_name_placeholder">
-                <button type="button" onclick="startVoiceInputFor('itemName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
+            <div>
+                <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="item_name_placeholder">
             </div>
 
-            <div class="relative">
-                <input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ (ഉദാ: റൂം 1 / ഫസ്റ്റ് ഫ്ലോർ)" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="bedroom_placeholder">
-                <button type="button" onclick="startVoiceInputFor('bedroomName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
+            <div>
+                <input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ (ഉദാ: റൂം 1 / ഫസ്റ്റ് ഫ്ലോർ)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="bedroom_placeholder">
             </div>
 
-            <div class="relative">
-                <input type="text" id="siteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="site_name_placeholder">
-                <button type="button" onclick="startVoiceInputFor('siteName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
+            <div>
+                <input type="text" id="siteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="site_name_placeholder">
             </div>
 
-            <div class="relative">
-                <input type="text" id="shopName" list="shopSuggestions" placeholder="കടയുടെ പേര് തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="shop_name_placeholder">
+            <div>
+                <input type="text" id="shopName" list="shopSuggestions" placeholder="കടയുടെ പേര് തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="shop_name_placeholder">
                 <datalist id="shopSuggestions"></datalist>
-                <button type="button" onclick="startVoiceInputFor('shopName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
             </div>
 
-            <div class="relative">
-                <input type="text" id="clientName" list="clientSuggestions" placeholder="വാങ്ങിയ ആളിന്റെ പേര് തിരഞ്ഞെടുക്കുക" class="w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="client_name_placeholder">
+            <div>
+                <input type="text" id="clientName" list="clientSuggestions" placeholder="വാങ്ങിയ ആളിന്റെ പേര് തിരഞ്ഞെടുക്കുക" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="client_name_placeholder">
                 <datalist id="clientSuggestions"></datalist>
-                <button type="button" onclick="startVoiceInputFor('clientName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
             </div>
 
-            <div class="relative flex gap-2">
+            <div class="flex gap-2">
                 <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="phone_placeholder">
                 <button type="button" id="pickContactBtn" onclick="pickContact()" class="bg-cyan-700 hover:bg-cyan-600 text-white px-3.5 rounded-2xl text-xs font-black whitespace-nowrap shadow-md lang" data-key="contact">📇 കോൺടാക്റ്റ്</button>
             </div>
@@ -185,12 +169,10 @@
     </div>
 
     <script>
-        // language.js ഡിക്ഷണറി അനുസരിച്ച് ഭാഷ മാറ്റുന്ന ഗ്ലോബൽ ഫങ്ഷൻ
         window.switchLanguage = function(lang) {
             if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
             localStorage.setItem('selectedLang', lang);
 
-            // എല്ലാ .lang ക്ലാസ് ഉള്ള ടെക്സ്റ്റുകളും മാറ്റുക
             document.querySelectorAll('.lang').forEach(element => {
                 let key = element.getAttribute('data-key');
                 if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
@@ -198,7 +180,6 @@
                 }
             });
 
-            // ഇൻപുട്ട് placeholder-കൾ മാറ്റുക
             document.querySelectorAll('.lang-placeholder').forEach(element => {
                 let key = element.getAttribute('data-key-placeholder');
                 if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
@@ -206,13 +187,11 @@
                 }
             });
 
-            // ലിസ്റ്റിലെ വിവരങ്ങൾ പുനഃക്രമീകരിക്കാൻ
             if (typeof window.refreshRentList === 'function') {
                 window.refreshRentList();
             }
         };
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷ അപ്ലൈ ചെയ്യുക
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             setTimeout(() => {
@@ -290,34 +269,6 @@
             }
         };
 
-        window.startVoiceInputFor = (fieldId) => {
-            const target = document.getElementById(fieldId);
-            if (!target) return;
-
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("നിങ്ങളുടെ ബ്രൗസർ വോയിസ് ഇൻപുട്ട് പിന്തുണയ്ക്കുന്നില്ല.");
-                return;
-            }
-
-            const recognition = new SpeechRecognition();
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            recognition.lang = currentLang === 'ml' ? 'ml-IN' : 'en-US';
-            
-            target.style.borderColor = "#fbbf24"; 
-            window.showToast("🎙️ സംസാരിക്കൂ...");
-
-            try { recognition.start(); } catch (err) { console.log(err); }
-
-            recognition.onresult = (e) => {
-                target.value = e.results[0][0].transcript;
-                target.dispatchEvent(new Event('input'));
-                window.showToast("✓ കേട്ടെടുത്തു!");
-            };
-            recognition.onerror = () => { window.showToast("ശബ്ദം വ്യക്തമല്ല, വീണ്ടും ശ്രമിക്കുക", false); };
-            recognition.onend = () => { target.style.borderColor = ""; };
-        };
-
         window.openCustomPrompt = (title, placeholder) => new Promise(resolve => {
             const modal = document.getElementById('customPromptModal');
             document.getElementById('promptTitle').innerText = title;
@@ -348,8 +299,6 @@
         window.toggleShopList = () => {
             const container = document.getElementById('shopDirectoryContainer');
             const icon = document.getElementById('shopToggleIcon');
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const viewTextKey = (currentLang === 'en') ? '▼ View' : '▼ കാണുക';
             if (container.classList.contains('hidden')) {
                 container.classList.remove('hidden');
                 icon.innerText = "▲";
@@ -657,7 +606,7 @@
                 });
                 shopContainer.innerHTML = shopHtml;
             } else {
-                shopContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1">കടകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>`;
+                shopContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_shops_added">${getTxt('no_shops_added', 'കടകൾ ഒന്നും ചേർത്തിട്ടില്ല')}</p>`;
             }
 
             const clientSuggestions = document.getElementById('clientSuggestions');
