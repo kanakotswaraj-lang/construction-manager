@@ -32,15 +32,11 @@
     <title class="lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</title>
 </head>
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
-    <!-- മൊത്തത്തിലുള്ള ഔട്ടർ ബോർഡിൽ പച്ച തിളങ്ങുന്ന കളർ (Glow Effect) -->
     <div class="max-w-md mx-auto space-y-4 p-2 rounded-3xl border-2 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] bg-[#050B18]">
         
-        <!-- ഹെഡർ -->
         <div id="appHeader" class="w-full"></div>
 
-        <!-- വാടക ഉപകരണങ്ങൾ ബോക്സ് (ഗ്രേഡിയന്റ് പച്ച ബോർഡും ബാക്ക്ഗ്രൗണ്ടും) -->
         <div class="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-emerald-950/80 border-2 border-emerald-500/70 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm shadow-emerald-950/50">
-            <!-- വാക്കുകൾ ഗ്രേഡിയന്റ് പച്ച കളർ -->
             <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-green-400 tracking-wide lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</h1>
 
             <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
@@ -52,7 +48,6 @@
             </a>
         </div>
 
-        <!-- സ്റ്റാറ്റിസ്റ്റിക്സ് & ഫിൽട്ടർ -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
             <div class="grid grid-cols-2 gap-3 text-center">
                 <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
@@ -91,7 +86,6 @@
             </div>
         </div>
 
-        <!-- ഫോം ഭാഗം (മൈക്ക് ബട്ടണുകൾ പൂർണ്ണമായി ഒഴിവാക്കി) -->
         <div class="bg-slate-900/90 p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4">
             <h2 class="font-black text-amber-400 text-sm lang" data-key="add_new_equipment">പുതിയ ഉപകരണം ചേർക്കുക</h2>
             
@@ -507,7 +501,7 @@
             cachedSnapshot.forEach((d) => {
                 const r = d.data();
                 if (r.meshtriOwner === currentMeshtri) {
-                    if (r.shop) { shopsMap.set(r.shop, r.phone || 'നമ്പർ ഇല്ല'); }
+                    if (r.shop) { shopsMap.set(r.shop, r.phone || ''); }
                     if (r.client) { clientsSet.add(r.client); }
 
                     const isRet = r.isReturned === true;
@@ -557,7 +551,7 @@
                             </div>
                             ${r.bedroom ? `<p class="text-xs text-amber-300 font-bold mb-1">🚪 ${getTxt('bedroom', 'ബെഡ്റൂം')}: ${r.bedroom}</p>` : ''}
                             ${r.site ? `<p class="text-xs text-cyan-400 font-bold mb-1">🏗️ ${getTxt('site', 'സൈറ്റ്')}: ${r.site}</p>` : ''}
-                            <p class="text-xs text-slate-300 font-bold mb-1">${getTxt('shop', 'കട')}: <span class="text-amber-400">${r.shop}</span> ${r.client ? `| ${getTxt('for_whom', 'ആർക്ക്')}: <span class="text-cyan-300">${r.client}</span>` : ''} | 📞 ${r.phone}</p>
+                            <p class="text-xs text-slate-300 font-bold mb-1">${getTxt('shop', 'കട')}: <span class="text-amber-400">${r.shop}</span> ${r.client ? `| ${getTxt('for_whom', 'ആർക്ക്')}: <span class="text-cyan-300">${r.client}</span>` : ''} | 📞 ${r.phone ? r.phone : '<span class="lang" data-key="no_number">നമ്പർ ഇല്ല</span>'}</p>
                             <p class="text-[11px] text-slate-400 mb-2">${getTxt('date', 'തീയതി')}: ${r.start} ${getTxt('from', 'മുതൽ')} ${r.end} ${getTxt('to', 'വരെ')} | <strong class="text-amber-300">${totalDays} ${getTxt('days', 'ദിവസങ്ങൾ')}</strong></p>
                             
                             <div class="border-t border-slate-800 pt-2 flex flex-col gap-2">
@@ -596,7 +590,7 @@
                         <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl text-xs">
                             <div>
                                 <span class="font-bold text-white block">${shopName}</span>
-                                <a href="tel:${phone}" class="text-cyan-400 font-bold text-[11px]">📞 ${phone}</a>
+                                ${phone ? `<a href="tel:${phone}" class="text-cyan-400 font-bold text-[11px]">📞 ${phone}</a>` : `<span class="text-slate-400 text-[11px] lang" data-key="no_number">നമ്പർ ഇല്ല</span>`}
                             </div>
                             <div class="flex gap-1">
                                 <button onclick="editShopNameGlobally('${shopName}')" class="bg-cyan-900/60 text-cyan-200 px-2 py-1 rounded-lg text-[10px] font-black">${getTxt('edit', 'മാറ്റുക')}</button>
@@ -611,6 +605,9 @@
 
             const clientSuggestions = document.getElementById('clientSuggestions');
             clientSuggestions.innerHTML = '';
+            clientsSet.append ? null : clientsSet.forEach(clientName => {
+                clientSuggestions.innerHTML += `<option value="${clientName}">`;
+            });
             clientsSet.forEach(clientName => {
                 clientSuggestions.innerHTML += `<option value="${clientName}">`;
             });
