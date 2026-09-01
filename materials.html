@@ -592,55 +592,63 @@
         });
 
         onSnapshot(query(collection(db, "suppliers")), (snapshot) => {
-            const contactList = document.getElementById('contactList');
-            contactList.innerHTML = '';
-            let hasContacts = false;
-            
-            snapshot.forEach(docSnap => {
-                const s = docSnap.data();
-                if (s.meshtriOwner === currentMeshtri) {
-                    hasContacts = true;
-                    contactList.innerHTML += `
-                        <div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
-                            <div>
-                                <p class="font-black text-white">${s.name}</p>
-                                <a href="tel:${s.phone}" class="text-cyan-400 font-bold">📞 ${s.phone}</a>
-                            </div>
-                            <button onclick="window.deleteSupplierContact('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
-                        </div>`;
-                }
-            });
+    const contactList = document.getElementById('contactList');
+    contactList.innerHTML = '';
+    let hasContacts = false;
+    
+    snapshot.forEach(docSnap => {
+        const s = docSnap.data();
+        if (s.meshtriOwner === currentMeshtri) {
+            hasContacts = true;
+            contactList.innerHTML += `
+                <div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
+                    <div>
+                        <p class="font-black text-white">${s.name}</p>
+                        <a href="tel:${s.phone}" class="text-cyan-400 font-bold">📞 ${s.phone}</a>
+                    </div>
+                    <button onclick="window.deleteSupplierContact('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
+                </div>`;
+        }
+    });
 
-            if (!hasContacts) {
-                contactList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_contacts_saved">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
-            }
-        });
+    if (!hasContacts) {
+        contactList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_contacts_saved">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
+    }
+
+    // ഈ താഴെയുള്ള 2 വരികൾ പുതിയതായി ചേർത്തതാണ്
+    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+    window.switchLanguage(currentLang);
+});
 
         onSnapshot(query(collection(db, "notes")), (snapshot) => {
-            const notesList = document.getElementById('notesList');
-            if(!notesList) return;
-            notesList.innerHTML = '';
-            let hasNotes = false;
-            
-            snapshot.forEach(docSnap => {
-                const n = docSnap.id ? docSnap.data() : null;
-                if (n && n.meshtriOwner === currentMeshtri) {
-                    hasNotes = true;
-                    notesList.innerHTML += `
-                        <div class="flex justify-between items-start bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
-                            <div>
-                                <p class="text-[10px] text-slate-400 font-bold">${n.date || ''}</p>
-                                <p class="font-bold text-white mt-0.5">${n.text}</p>
-                            </div>
-                            <button onclick="window.deleteQuickNote('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
-                        </div>`;
-                }
-            });
+    const notesList = document.getElementById('notesList');
+    if(!notesList) return;
+    notesList.innerHTML = '';
+    let hasNotes = false;
+    
+    snapshot.forEach(docSnap => {
+        const n = docSnap.id ? docSnap.data() : null;
+        if (n && n.meshtriOwner === currentMeshtri) {
+            hasNotes = true;
+            notesList.innerHTML += `
+                <div class="flex justify-between items-start bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
+                    <div>
+                        <p class="text-[10px] text-slate-400 font-bold">${n.date || ''}</p>
+                        <p class="font-bold text-white mt-0.5">${n.text}</p>
+                    </div>
+                    <button onclick="window.deleteQuickNote('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
+                </div>`;
+        }
+    });
 
-            if (!hasNotes) {
-                notesList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_notes_available">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</p>`;
-            }
-        });
+    if (!hasNotes) {
+        notesList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_notes_available">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</p>`;
+    }
+
+    // ഈ താഴെയുള്ള 2 വരികൾ പുതിയതായി ചേർത്തതാണ്
+    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+    window.switchLanguage(currentLang);
+});
 
         window.filterMaterials = () => {
             const searchTerm = document.getElementById('filterSite').value.toLowerCase();
