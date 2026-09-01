@@ -1,249 +1,18 @@
 <!DOCTYPE html>
 <html lang="ml">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>കണക്ക് മാനേജർ - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="language.js?v=2.0"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <title>മേസ്തിരി പ്രോ - മെറ്റീരിയൽസ് മാനേജ്മെന്റ്</title>
-    
-    <!-- language.js ഫയൽ ഇവിടെ ഉൾക്കൊള്ളിച്ചിരിക്കുന്നു -->
-    <script src="language.js?v=2.0"></script>
-
-    <style>
-        body { 
-            font-family: 'Manjari', sans-serif; 
-            background-color: #050B18;
-        }
-        
-        input, select, textarea {
-            border: 2px solid rgba(51, 65, 85, 1);
-            transition: all 0.3s ease;
-            background-color: #1e293b !important;
-        }
-
-        /* ഇൻപുട്ട് ഫീൽഡുകളിൽ അമർത്തുമ്പോൾ (Focus) നീല ഔട്ട്‌ലൈൻ വരാൻ */
-        input:focus, select:focus, textarea:focus {
-            border-color: #3b82f6 !important; 
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25); 
-        }
-
-        .mic-btn {
-            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-            color: #94a3b8; background: transparent;
-            width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: none;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 20;
-            transition: all 0.2s ease;
-        }
-        .mic-btn:hover {
-            background: rgba(34, 211, 238, 0.1);
-            color: #22d3ee;
-        }
-
-        @media print {
-            .no-print { display: none !important; }
-        }
-    </style>
-</head>
-<body class="text-white min-h-screen pb-12 p-2 flex flex-col items-center justify-center">
-
-    <!-- ഡാഷ്‌ബോർഡ് മാതൃകയിലുള്ള നീല ഔട്ടർ ബോർഡും ഗ്ലോ ഇഫക്റ്റും -->
-    <div class="w-[96%] max-w-lg mx-auto border-2 border-blue-500 rounded-[35px] p-4 sm:p-6 shadow-[0_0_30px_rgba(59,130,246,0.35)] my-4 box-border space-y-4 bg-[#050B18]">
-        
-        <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
-
-        <!-- ഹെഡർ ഭാഗം -->
-        <div id="appHeader" class="w-full flex justify-center pt-2 px-2 overflow-hidden"></div>
-
-        <!-- പേജ് തലക്കെട്ടും ഡാഷ്‌ബോർഡ് ബട്ടണും -->
-        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-            <h1 class="lang text-base sm:text-lg font-black text-white" data-key="materialsTitle">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</h1>
-            <a href="dashboard.html" class="lang px-3 py-1.5 bg-slate-800 border border-amber-400/40 text-amber-400 rounded-xl text-xs font-bold" data-key="dashboardBackBtn">← ഡാഷ്‌ബോർഡ്</a>
-        </div>
-        
-        <!-- ആകെ തുക കാണിക്കുന്ന ബോക്സ് -->
-        <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-lg text-center border border-slate-700">
-            <p class="lang text-[11px] opacity-75 uppercase tracking-widest font-black text-slate-300" data-key="totalMatCostLabel">ആകെ മെറ്റീരിയൽ ചെലവ്</p>
-            <h2 id="totalMaterialCost" class="text-3xl font-black mt-1 text-emerald-400">₹0</h2>
-        </div>
-
-        <!-- മാസച്ചെലവ് ബാർ ചാർട്ട് സെക്ഷൻ -->
-        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-2 no-print">
-            <p class="lang text-xs font-black text-amber-400" data-key="monthlyChartTitle">📈 മാസത്തിലെ മെറ്റീരിയൽ ചെലവ് ചാർട്ട്</p>
-            <div id="monthlyChartContainer" class="space-y-2 pt-2 border-t border-slate-800">
-                <!-- ജാവാസ്ക്രിപ്റ്റ് വഴി ബാറുകൾ ഇവിടെ വരും -->
-            </div>
-        </div>
-
-        <!-- സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ ട്രാക്കർ -->
-        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
-            <div class="flex justify-between items-center cursor-pointer" onclick="toggleLedgerList()">
-                <p class="lang text-xs font-black text-amber-400" data-key="supplierLedgerTitle">🤝 സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ (ബാക്കി തുക)</p>
-                <span id="ledgerToggleIcon" class="lang text-xs text-blue-400 font-bold" data-key="viewText">▼ കാണുക</span>
-            </div>
-            <div id="ledgerContainer" class="hidden space-y-2 pt-2 border-t border-slate-800 max-h-48 overflow-y-auto">
-                <!-- ലെഡ്ജർ വിവരങ്ങൾ ഇവിടെ വരും -->
-            </div>
-        </div>
-
-        <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
-        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
-            <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
-                <p class="lang text-xs font-black text-blue-400" data-key="supplierBookTitle">📖 സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
-                <span id="supBookToggleIcon" class="lang text-xs text-blue-400 font-bold" data-key="viewText">▼ കാണുക</span>
-            </div>
-            <!-- ഫോൺ നമ്പർ വായിക്കാൻ ബുദ്ധിമുട്ടാകാതിരിക്കാൻ കോളം രീതിയിലേക്ക് (Vertical Stack) മാറ്റിയിരിക്കുന്നു -->
-            <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
-                <div class="flex flex-col gap-2">
-                    <input type="text" id="newSupName" class="lang-placeholder w-full p-3 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white" data-key-placeholder="supNamePlaceholder" placeholder="സപ്ലയർ പേര്">
-                    <input type="tel" id="newSupPhone" class="lang-placeholder w-full p-3 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white" data-key-placeholder="phonePlaceholder" placeholder="ഫോൺ നമ്പർ">
-                    <button onclick="window.saveSupplierContact()" class="lang w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl text-white font-black text-xs transition shadow-sm" data-key="saveContactBtn">+ കോൺടാക്റ്റ് സേവ് ചെയ്യുക</button>
-                </div>
-                <div id="contactList" class="max-h-40 overflow-y-auto space-y-2 pt-1">
-                    <!-- കോൺടാക്റ്റുകൾ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
-                </div>
-            </div>
-        </div>
-
-        <!-- പ്രത്യേക കുറിപ്പുകൾ (Quick Notes) -->
-        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
-            <div class="flex justify-between items-center cursor-pointer" onclick="toggleNotesBook()">
-                <p class="lang text-xs font-black text-amber-400" data-key="quickNotesTitle">📝 പ്രത്യേക കുറിപ്പുകൾ (Quick Notes)</p>
-                <span id="notesToggleIcon" class="lang text-xs text-blue-400 font-bold" data-key="viewText">▼ കാണുക</span>
-            </div>
-            <div id="notesContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
-                <textarea id="newNoteText" class="lang-placeholder w-full p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white" data-key-placeholder="notePlaceholder" placeholder="ഇന്നത്തെ കുറിപ്പുകൾ ഇവിടെ എഴുതുക..." rows="2"></textarea>
-                <button onclick="window.saveQuickNote()" class="lang w-full bg-amber-600 hover:bg-amber-500 py-2.5 rounded-xl text-slate-950 font-black text-xs transition shadow-sm" data-key="saveNoteBtn">കുറിപ്പ് സേവ് ചെയ്യുക</button>
-                <div id="notesList" class="max-h-36 overflow-y-auto space-y-2 pt-1">
-                    <!-- കുറിപ്പുകൾ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
-                </div>
-            </div>
-        </div>
-
-        <!-- സപ്ലയർ ലിസ്റ്റും ഫിൽട്ടറും -->
-        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
-            <div class="relative">
-                <input type="text" id="filterSite" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="filterSitePlaceholder" placeholder="🔍 സൈറ്റ് പേര് വെച്ച് തിരയുക..." oninput="filterMaterials()">
-            </div>
-        </div>
-        
-        <!-- മെറ്റീരിയൽസ് ഫോം -->
-        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4 backdrop-blur-sm no-print">
-            <h2 id="formTitle" class="lang text-sm font-black text-amber-400" data-key="formTitleAdd">പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക</h2>
-            
-            <div>
-                <label class="lang text-[10px] text-blue-400 font-bold block mb-1" data-key="dateLabel">തീയതി</label>
-                <input type="date" id="matDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white">
-            </div>
-            
-            <div>
-                <label class="lang text-[10px] text-blue-400 font-bold block mb-1" data-key="actionTypeLabel">പ്രവർത്തനം തിരഞ്ഞെടുക്കുക</label>
-                <select id="matActionType" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs font-bold text-white">
-                    <option value="purchase" class="lang" data-key="optPurchase">പുതിയ മെറ്റീരിയൽ വാങ്ങിയത്</option>
-                    <option value="transfer" class="lang" data-key="optTransfer">മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</option>
-                </select>
-            </div>
-
-            <div class="relative">
-                <input type="text" id="matName" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="matNamePlaceholder" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ് / കമ്പി)">
-                <button type="button" onclick="startVoiceInputFor('matName')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
-            </div>
-
-            <div class="relative">
-                <input type="text" id="matSite" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="matSitePlaceholder" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: കണ്ണൂർ)">
-                <button type="button" onclick="startVoiceInputFor('matSite')" class="mic-btn"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></button>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-2">
-                <input type="number" id="matQty" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="qtyPlaceholder" placeholder="അളവ്">
-                <input type="number" id="matUsed" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="usedPlaceholder" placeholder="ഉപയോഗിച്ചത്">
-            </div>
-
-            <input type="text" id="matUnit" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="unitPlaceholder" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / കിലോ)">
-            <input type="number" id="matPrice" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="pricePlaceholder" placeholder="ആകെ വില (₹)">
-            
-            <div>
-                <label class="lang text-[10px] text-blue-400 font-bold block mb-1" data-key="supPhoneLabel">സപ്ലയർ ഫോൺ നമ്പർ</label>
-                <input type="tel" id="matPhone" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-blue-400 font-bold" data-key-placeholder="supPhonePlaceholder" placeholder="സപ്ലയർ ഫോൺ നമ്പർ">
-            </div>
-
-            <input type="number" id="matPaid" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="paidPlaceholder" placeholder="സപ്ലയർക്ക് കൊടുത്ത തുക (₹)">
-
-            <div class="flex gap-2">
-                <button id="cancelEditBtn" class="lang hidden flex-1 bg-slate-800 text-slate-300 p-4 rounded-2xl font-black text-xs" data-key="cancelBtn">ക്ൻസൽ</button>
-                <button id="saveBtn" class="lang flex-1 bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs" data-key="saveBtn">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
-            </div>
-        </div>
-
-        <!-- റിപ്പോർട്ട് ഡൗൺലോഡ് ബട്ടണുകൾ -->
-        <div class="grid grid-cols-2 gap-2 no-print">
-            <button onclick="window.print()" class="lang w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs" data-key="pdfReportBtn">🖨️ PDF റിപ്പോർട്ട്</button>
-            <button onclick="exportToExcel()" class="lang w-full bg-blue-700 hover:bg-blue-800 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs" data-key="excelExportBtn">📊 Excel എക്സ്‌പോർട്ട്</button>
-        </div>
-
-        <!-- ലിസ്റ്റ് സെക്ഷൻ -->
-        <section class="space-y-4 pb-4">
-            <h2 class="lang font-black text-white text-base mb-2" data-key="stockListTitle">സ്റ്റോക്ക് നിലവാരവും വിവരങ്ങളും</h2>
-            <div id="materialList" class="space-y-4"></div>
-        </section>
-    </div>
-
-    <!-- മോഡലുകളും ടോസ്റ്റും -->
-    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
-
-    <div id="customConfirmModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl text-center">
-            <h3 id="confirmTitle" class="font-black text-white text-sm">ഉറപ്പാണോ?</h3>
-            <div class="flex gap-2">
-                <button id="confirmCancelBtn" class="lang flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black" data-key="noBtn">ഇല്ല</button>
-                <button id="confirmOkBtn" class="lang flex-1 bg-red-600 text-white py-3 rounded-2xl text-xs font-black" data-key="yesBtn">ഉവ്വ്</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ജാവാസ്ക്രിപ്റ്റ് ലാംഗ്വേജ് ഡിക്ഷണറിയും ഫയർബേസ് ലോജിക്കും -->
-    <script>
-        // ഭാഷ മാറ്റാനുള്ള ഫങ്ഷൻ
-        window.switchLanguage = function(lang) {
-            localStorage.setItem('selectedLang', lang);
-            const elements = document.querySelectorAll('.lang');
-            elements.forEach(el => {
-                const key = el.getAttribute('data-key');
-                if (key && window.words[key] && window.words[key][lang]) {
-                    el.innerText = window.words[key][lang];
-                }
-            });
-
-            const placeholders = document.querySelectorAll('.lang-placeholder');
-            placeholders.forEach(el => {
-                const key = el.getAttribute('data-key-placeholder');
-                if (key && window.words[key] && window.words[key][lang]) {
-                    el.placeholder = window.words[key][lang];
-                }
-            });
-        };
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            window.switchLanguage(savedLang);
-        });
-    </script>
-
-    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
-        import { setupHeader } from './header.js';
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-        document.addEventListener("DOMContentLoaded", () => {
-            try {
-                if (typeof setupHeader === 'function') { setupHeader('appHeader'); }
-                else { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
-            } catch (e) { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
-        });
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { setupHeader } from './header.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -257,446 +26,453 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
+        const db = getFirestore(app); 
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
-        document.getElementById('matDate').valueAsDate = new Date();
-
+        
         let editId = null;
+        let allTransactions = [];
+        let filteredTransactions = [];
+        
+        window.switchLanguage = function(lang) {
+            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
+            
+            // ടെക്സ്റ്റ് ഉള്ള ലേബലുകളും ഹെഡിംഗുകളും മാറ്റാൻ
+            document.querySelectorAll('.lang').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.innerText = words[key][lang];
+                }
+            });
 
-        window.showToast = (message, isSuccess = true) => {
-            const toast = document.getElementById('customToast');
-            toast.innerText = message;
-            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 text-center backdrop-blur-md ${isSuccess ? 'bg-gradient-to-r from-emerald-900 to-teal-900 border-2 border-emerald-400 text-emerald-200 shadow-emerald-950/50' : 'bg-gradient-to-r from-red-900 to-rose-900 border-2 border-rose-400 text-rose-200 shadow-rose-950/50'} opacity-100 scale-105`;
-            setTimeout(() => {
-                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
-            }, 2500);
+            // ഇൻപുട്ട് പ്ലേസ്‌ഹോൾഡറുകൾ മാറ്റാൻ
+            document.querySelectorAll('.lang-placeholder').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.placeholder = words[key][lang];
+                }
+            });
+
+            const siteSelect = document.getElementById('filterSite');
+            if (siteSelect && siteSelect.options.length > 0) {
+                const defaultSiteText = (typeof words !== 'undefined' && words['allSites'] && words['allSites'][lang]) ? words['allSites'][lang] : 'എല്ലാ സൈറ്റുകളും';
+                siteSelect.options[0].text = defaultSiteText;
+            }
         };
 
-        window.openCustomConfirm = (title) => new Promise(resolve => {
-            const modal = document.getElementById('customConfirmModal');
-            document.getElementById('confirmTitle').innerText = title;
-            modal.classList.remove('hidden');
-            document.getElementById('confirmOkBtn').onclick = () => { modal.classList.add('hidden'); resolve(true); };
-            document.getElementById('confirmCancelBtn').onclick = () => { modal.classList.add('hidden'); resolve(false); };
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader', true, currentMeshtri);
+            }
+            fetchLiveAccounts();
+            
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
         });
 
-        window.startVoiceInputFor = (fieldId) => {
-            const target = document.getElementById(fieldId);
-            if (!target) return;
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
+            }
+            if (typeof renderList === 'function') {
+                renderList();
+            }
+        });
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'selectedLang') {
+                const newLang = e.newValue || 'ml';
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage(newLang);
+                }
+                if (typeof renderList === 'function') {
+                    renderList();
+                }
+            }
+        });
+
+        window.showToast = function(message, isSuccess = true) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `toast-animate pointer-events-auto px-6 py-4 rounded-2xl text-white font-bold text-base shadow-2xl border backdrop-blur-md flex items-center gap-3 ${
+                isSuccess 
+                    ? 'bg-blue-950/95 border-blue-500 text-blue-200 shadow-blue-500/20' 
+                    : 'bg-gradient-to-r from-red-950 to-rose-950 border-red-500 text-white'
+            }`;
+            toast.innerText = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+
+        window.startVoiceInput = function(fieldId) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) { alert("ബ്രൗസർ വോയിസ് ഇൻപുട്ട് പിന്തുണയ്ക്കുന്നില്ല."); return; }
+            if (!SpeechRecognition) {
+                window.showToast("ബ്രൗസർ വോയിസ് ടൈപ്പിംഗ് പിന്തുണയ്ക്കുന്നില്ല!", false);
+                return;
+            }
             const recognition = new SpeechRecognition();
             recognition.lang = 'ml-IN';
-            target.style.borderColor = "#3b82f6"; 
-            window.showToast("🎙️ സംസാരിക്കൂ...");
-            try { recognition.start(); } catch (err) { console.log(err); }
-            recognition.onresult = (e) => { target.value = e.results[0][0].transcript; target.dispatchEvent(new Event('input')); window.showToast("✓ കേട്ടെടുത്തു!"); };
-            recognition.onerror = () => { window.showToast("ശബ്ദം വ്യക്തമല്ല", false); };
-            recognition.onend = () => { target.style.borderColor = ""; };
+            recognition.interimResults = false;
+
+            window.showToast("പറയൂ, കേൾക്കുന്നുണ്ട്...", true);
+            recognition.onresult = function(event) {
+                const speechResult = event.results[0][0].transcript;
+                document.getElementById(fieldId).value = speechResult;
+                window.showToast("ടൈപ്പ് ചെയ്തു കഴിഞ്ഞു!", true);
+            };
+            recognition.onerror = function() {
+                window.showToast("ശബ്ദം വ്യക്തമല്ല, വീണ്ടും ശ്രമിക്കുക.", false);
+            };
+            recognition.start();
         };
 
-        window.toggleLedgerList = () => {
-            const container = document.getElementById('ledgerContainer');
-            const icon = document.getElementById('ledgerToggleIcon');
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            if (container.classList.contains('hidden')) { 
-                container.classList.remove('hidden'); 
-                icon.innerText = window.words.hideText[currentLang]; 
-            } else { 
-                container.classList.add('hidden'); 
-                icon.innerText = window.words.viewText[currentLang]; 
-            }
-        };
-
-        window.toggleSupplierBook = () => {
-            const container = document.getElementById('supplierBookContainer');
-            const icon = document.getElementById('supBookToggleIcon');
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            if (container.classList.contains('hidden')) { 
-                container.classList.remove('hidden'); 
-                icon.innerText = window.words.hideText[currentLang]; 
-            } else { 
-                container.classList.add('hidden'); 
-                icon.innerText = window.words.viewText[currentLang]; 
-            }
-        };
-
-        window.toggleNotesBook = () => {
-            const container = document.getElementById('notesContainer');
-            const icon = document.getElementById('notesToggleIcon');
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            if (container.classList.contains('hidden')) { 
-                container.classList.remove('hidden'); 
-                icon.innerText = window.words.hideText[currentLang]; 
-            } else { 
-                container.classList.add('hidden'); 
-                icon.innerText = window.words.viewText[currentLang]; 
-            }
-        };
-
-        window.saveSupplierContact = async () => {
-            const name = document.getElementById('newSupName').value.trim();
-            const phone = document.getElementById('newSupPhone').value.trim();
-            if (!name || !phone) {
-                window.showToast("പേരും ഫോൺ നമ്പറും നൽകുക!", false);
-                return;
-            }
-            try {
-                await addDoc(collection(db, "suppliers"), {
-                    meshtriOwner: currentMeshtri,
-                    name: name,
-                    phone: phone
+        function fetchLiveAccounts() {
+            const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+            onSnapshot(q, (snapshot) => {
+                allTransactions = []; 
+                const siteSet = new Set();
+                snapshot.forEach(docSnap => {
+                    const d = docSnap.data();
+                    if (d.meshtriOwner === currentMeshtri) {
+                        allTransactions.push({ id: docSnap.id, ...d });
+                        if (d.site) siteSet.add(d.site.trim());
+                    }
                 });
-                document.getElementById('newSupName').value = '';
-                document.getElementById('newSupPhone').value = '';
-                window.showToast("👍 കോൺടാക്റ്റ് സേവ് ചെയ്തു!");
-            } catch (err) {
-                window.showToast("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല", false);
-            }
-        };
 
-        window.deleteSupplierContact = async (id) => {
-            if (await window.openCustomConfirm("ഈ കോൺടാക്റ്റ് ഡിലീറ്റ് ചെയ്യണോ?")) {
-                await deleteDoc(doc(db, "suppliers", id));
-                window.showToast("🗑️ നീക്കം ചെയ്തു!", false);
-            }
-        };
+                allTransactions.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
-        window.saveQuickNote = async () => {
-            const text = document.getElementById('newNoteText').value.trim();
-            if (!text) {
-                window.showToast("കുറിപ്പ് എഴുതുക!", false);
-                return;
-            }
-            try {
-                await addDoc(collection(db, "notes"), {
-                    meshtriOwner: currentMeshtri,
-                    text: text,
-                    date: new Date().toLocaleDateString()
-                });
-                document.getElementById('newNoteText').value = '';
-                window.showToast("👍 കുറിപ്പ് സേവ് ചെയ്തു!");
-            } catch (err) {
-                window.showToast("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല", false);
-            }
-        };
+                const siteSelect = document.getElementById('filterSite');
+                if (siteSelect) {
+                    const currentSelectedSite = siteSelect.value;
+                    const lang = localStorage.getItem('selectedLang') || 'ml';
+                    const defaultSiteText = (typeof words !== 'undefined' && words['allSites'] && words['allSites'][lang]) ? words['allSites'][lang] : 'എല്ലാ സൈറ്റുകളും';
+                    
+                    siteSelect.innerHTML = `<option value="" class="lang" data-key="allSites">${defaultSiteText}</option>`;
+                    siteSet.forEach(site => {
+                        if (site) {
+                            const isSelected = site === currentSelectedSite ? 'selected' : '';
+                            siteSelect.innerHTML += `<option value="${site}" ${isSelected}>${site}</option>`;
+                        }
+                    });
+                    siteSelect.value = currentSelectedSite;
+                }
+                
+                renderList();
+            }, (error) => {
+                console.error("Firebase error:", error);
+            });
+        }
 
-        window.deleteQuickNote = async (id) => {
-            if (await window.openCustomConfirm("ഈ കുറിപ്പ് ഡിലീറ്റ് ചെയ്യണോ?")) {
-                await deleteDoc(doc(db, "notes", id));
-                window.showToast("🗑️ നീക്കം ചെയ്തു!", false);
-            }
-        };
-
-        document.getElementById('saveBtn').onclick = async () => {
-            const name = document.getElementById('matName').value.trim();
-            const site = document.getElementById('matSite').value.trim();
+        window.saveTransaction = async function() {
+            const data = { 
+                meshtriOwner: currentMeshtri, 
+                name: document.getElementById('ownerName').value.trim(), 
+                site: document.getElementById('siteName').value.trim() || "പ്രധാന സൈറ്റ്", 
+                type: document.getElementById('type').value, 
+                payment: document.getElementById('paymentMethod').value, 
+                amount: parseFloat(document.getElementById('amount').value) || 0, 
+                date: document.getElementById('transDate').value 
+            };
             
-            if (!name) { window.showToast("മെറ്റീരിയൽ പേര് നൽകുക!", false); return; }
-            if (!site) { window.showToast("സൈറ്റിന്റെ പേര് നൽകുക!", false); return; }
+            if (!data.name) { window.showToast("പേര് / വിവരം നൽകുക!", false); return; }
+            if (!data.date) { window.showToast("തീയതി നൽകുക!", false); return; }
+            if (!data.amount || data.amount <= 0) { window.showToast("ശരിയായ തുക നൽകുക!", false); return; }
 
             const saveBtn = document.getElementById('saveBtn');
-            saveBtn.innerText = "സേവ് ആകുന്നുണ്ട്...";
             saveBtn.disabled = true;
-
-            const actionType = document.getElementById('matActionType').value;
-
-            const data = {
-                meshtriOwner: currentMeshtri,
-                date: document.getElementById('matDate').value,
-                actionType: actionType,
-                name: name,
-                site: site,
-                qty: parseFloat(document.getElementById('matQty').value) || 0,
-                used: parseFloat(document.getElementById('matUsed').value) || 0,
-                unit: document.getElementById('matUnit').value.trim(),
-                price: parseFloat(document.getElementById('matPrice').value) || 0,
-                phone: document.getElementById('matPhone').value.trim(),
-                paid: parseFloat(document.getElementById('matPaid').value) || 0
-            };
-
             try {
-                if (editId) {
-                    await updateDoc(doc(db, "materials", editId), data);
-                    editId = null;
-                    document.getElementById('formTitle').innerText = "പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക";
-                    document.getElementById('cancelEditBtn').classList.add('hidden');
-                    saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
-                    window.showToast("✏️ വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്തു!");
-                } else {
-                    await addDoc(collection(db, "materials"), data);
-                    saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
-                    window.showToast("🚀 വിജയകരമായി ചേർത്തു!");
+                if (editId) { 
+                    await updateDoc(doc(db, "accounts", editId), data); 
+                    window.showToast("കണക്ക് അപ്ഡേറ്റ് ചെയ്തു!", true);
+                    cancelEdit();
+                } else { 
+                    await addDoc(collection(db, "accounts"), data); 
+                    window.showToast("കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!", true);
+                    document.getElementById('ownerName').value = '';
+                    document.getElementById('amount').value = '';
                 }
-
+            } catch (e) { 
+                window.showToast("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല.", false); 
+            } finally {
                 saveBtn.disabled = false;
-                document.getElementById('matName').value = '';
-                document.getElementById('matSite').value = '';
-                document.getElementById('matQty').value = '';
-                document.getElementById('matUsed').value = '';
-                document.getElementById('matUnit').value = '';
-                document.getElementById('matPrice').value = '';
-                document.getElementById('matPhone').value = '';
-                document.getElementById('matPaid').value = '';
-            } catch (error) {
-                saveBtn.disabled = false;
-                saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
-                window.showToast("തടസ്സമുണ്ടായി, വീണ്ടും ശ്രമിക്കുക.", false);
             }
         };
 
-        document.getElementById('cancelEditBtn').onclick = () => {
+        window.editTransaction = function(id, name, site, type, payment, amount, date) {
+            editId = id;
+            document.getElementById('ownerName').value = name;
+            document.getElementById('siteName').value = site;
+            document.getElementById('type').value = type;
+            document.getElementById('paymentMethod').value = payment;
+            document.getElementById('amount').value = amount;
+            document.getElementById('transDate').value = date;
+            
+            const lang = localStorage.getItem('selectedLang') || 'ml';
+            document.getElementById('formTitle').innerText = (typeof words !== 'undefined' && words['editAcc'] && words['editAcc'][lang]) ? words['editAcc'][lang] : "കണക്ക് എഡിറ്റ് ചെയ്യുക";
+            document.getElementById('saveBtn').innerText = (typeof words !== 'undefined' && words['updateBtn'] && words['updateBtn'][lang]) ? words['updateBtn'][lang] : "അപ്ഡേറ്റ് ചെയ്യുക";
+            
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        };
+
+        window.cancelEdit = function() {
             editId = null;
-            document.getElementById('formTitle').innerText = "പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക";
+            document.getElementById('ownerName').value = '';
+            document.getElementById('siteName').value = '';
+            document.getElementById('amount').value = '';
+            
+            const lang = localStorage.getItem('selectedLang') || 'ml';
+            document.getElementById('formTitle').innerText = (typeof words !== 'undefined' && words['addNewAcc'] && words['addNewAcc'][lang]) ? words['addNewAcc'][lang] : "പുതിയ കണക്ക് ചേർക്കുക";
+            document.getElementById('saveBtn').innerText = (typeof words !== 'undefined' && words['saveBtn'] && words['saveBtn'][lang]) ? words['saveBtn'][lang] : "സേവ് ചെയ്യുക";
+            
             document.getElementById('cancelEditBtn').classList.add('hidden');
-            document.getElementById('saveBtn').innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
-            document.getElementById('matName').value = '';
-            document.getElementById('matSite').value = '';
-            document.getElementById('matQty').value = '';
-            document.getElementById('matUsed').value = '';
-            document.getElementById('matUnit').value = '';
-            document.getElementById('matPrice').value = '';
-            document.getElementById('matPhone').value = '';
-            document.getElementById('matPaid').value = '';
         };
 
-        let currentMaterialsData = [];
-
-        onSnapshot(query(collection(db, "materials"), orderBy("date", "desc")), (snapshot) => {
-            const list = document.getElementById('materialList');
-            list.innerHTML = '';
-            let totalCost = 0;
-            let suppliersLedgerMap = new Map();
-            let monthlyMap = {};
-            currentMaterialsData = [];
-            
-            snapshot.forEach(docSnap => {
-                const d = docSnap.data();
-                
-                if (d.meshtriOwner === currentMeshtri) {
-                    currentMaterialsData.push({ id: docSnap.id, ...d });
-                    
-                    const price = parseFloat(d.price) || 0;
-                    const paid = parseFloat(d.paid) || 0;
-                    
-                    if (d.actionType !== 'transfer') {
-                        totalCost += price;
-                    }
-
-                    if (d.date) {
-                        const monthKey = d.date.substring(0, 7);
-                        monthlyMap[monthKey] = (monthlyMap[monthKey] || 0) + (d.actionType !== 'transfer' ? price : 0);
-                    }
-
-                    if (d.phone || d.name) {
-                        const supKey = d.phone ? `${d.phone}` : `${d.name} സപ്ലയർ`;
-                        if (!suppliersLedgerMap.has(supKey)) {
-                            suppliersLedgerMap.set(supKey, { name: d.name + " സപ്ലയർ", phone: d.phone || '', totalBill: 0, totalPaid: 0 });
-                        }
-                        let supData = suppliersLedgerMap.get(supKey);
-                        if (d.actionType !== 'transfer') {
-                            supData.totalBill += price;
-                        }
-                        supData.totalPaid += paid;
-                    }
-                    
-                    const totalQty = parseFloat(d.qty) || 0;
-                    const usedQty = parseFloat(d.used) || 0;
-                    const remainingQty = totalQty - usedQty;
-
-                    let stockWarning = remainingQty <= 2 ? `<div class="text-[10px] font-black text-amber-300 bg-amber-950/60 p-2 rounded-xl border border-amber-600/40 mb-2">⚠️ സ്റ്റോക്ക് കുറവാണ് / തീരാറായി!</div>` : '';
-                    let isTransfer = d.actionType === 'transfer';
-                    let actionBadge = isTransfer 
-                        ? `<div class="text-xs font-black text-cyan-300 bg-cyan-950/60 p-2 rounded-xl border border-cyan-700/50 mb-2">🔄 മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</div>` 
-                        : '';
-
-                    list.innerHTML += `
-                        <div class="bg-slate-900/90 text-white p-5 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm material-item" data-site="${(d.site || '').toLowerCase()}">
-                            <div class="flex justify-between items-start mb-1">
-                                <p class="font-black text-white text-base">${d.name}</p>
-                                <a href="tel:${d.phone}" class="bg-blue-900/50 text-blue-300 border border-blue-700/50 px-3 py-1 rounded-xl font-black text-xs no-print shadow-sm">📞 വിളിക്കുക</a>
-                            </div>
-                            <p class="text-xs text-slate-400 font-bold mb-3">
-                                ${d.date || ''} ${d.site ? '• സൈറ്റ്: ' + d.site : ''}
-                            </p>
-                            
-                            ${actionBadge}
-                            ${stockWarning}
-
-                            <div class="bg-slate-800/80 p-3 rounded-2xl mb-3 border border-slate-700">
-                                <div class="flex justify-between text-xs font-bold text-slate-400 mb-1">
-                                    <span>അളവ്: ${totalQty} ${d.unit || ''}</span>
-                                    <span>ഉപയോഗിച്ചത്: ${usedQty} ${d.unit || ''}</span>
-                                </div>
-                                <div class="text-xs font-black text-emerald-400">
-                                    ബാക്കി സ്റ്റോക്ക്: ${remainingQty} ${d.unit || ''}
-                                </div>
-                            </div>
-                            
-                            <div class="flex gap-2 mb-3">
-                                <p class="text-xs font-black text-slate-200 bg-slate-800 p-2.5 rounded-xl inline-block border border-slate-700">വില: ₹${d.price}</p>
-                                <p class="text-xs font-black text-emerald-300 bg-slate-800 p-2.5 rounded-xl inline-block border border-slate-700">കൊടുത്തത്: ₹${d.paid || 0}</p>
-                            </div>
-
-                            <div class="flex gap-2.5 no-print mt-3">
-                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.actionType || 'purchase'}', '${d.name}', '${d.site || ''}', ${totalQty}, ${usedQty}, '${d.unit || ''}', ${d.price}, '${d.phone}', ${d.paid || 0})" class="flex-1 bg-amber-500 text-slate-950 py-2.5 rounded-xl font-black text-xs hover:bg-amber-400 transition shadow-sm">എഡിറ്റ്</button>
-                                <button onclick="window.delMat('${docSnap.id}')" class="bg-red-600 text-white px-4 py-2.5 rounded-xl font-black text-xs hover:bg-red-500 transition shadow-sm">ഡിലീറ്റ്</button>
-                            </div>
-                        </div>`;
+        window.deleteTransaction = async function(id) {
+            if (confirm("ഈ കണക്ക് ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
+                try {
+                    await deleteDoc(doc(db, "accounts", id));
+                    window.showToast("കണക്ക് ഡിലീറ്റ് ചെയ്തു!", false);
+                } catch (e) {
+                    window.showToast("ഡിലീറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല.", false);
                 }
-            });
-
-            const ledgerContainer = document.getElementById('ledgerContainer');
-            if (suppliersLedgerMap.size > 0) {
-                let ledgerHtml = '';
-                suppliersLedgerMap.forEach((val) => {
-                    let balanceDue = val.totalBill - val.totalPaid;
-                    ledgerHtml += `
-                        <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 text-xs space-y-1">
-                            <div class="flex justify-between font-bold text-white">
-                                <span>${val.name}</span>
-                                <a href="tel:${val.phone}" class="text-cyan-400">📞 ${val.phone || 'നമ്പർ ഇല്ല'}</a>
-                            </div>
-                            <div class="flex justify-between text-[11px] text-slate-300">
-                                <span>ആകെ ബിൽ: ₹${val.totalBill}</span>
-                                <span>കൊടുത്തത്: ₹${val.totalPaid}</span>
-                            </div>
-                            <div class="text-[11px] font-black ${balanceDue > 0 ? 'text-red-400' : 'text-emerald-400'}">
-                                ബാക്കി നൽകാനുള്ളത്: ₹${balanceDue}
-                            </div>
-                        </div>`;
-                });
-                ledgerContainer.innerHTML = ledgerHtml;
-            } else {
-                ledgerContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</p>`;
             }
-
-            const chartContainer = document.getElementById('monthlyChartContainer');
-            let chartHtml = '';
-            let sortedMonths = Object.keys(monthlyMap).sort().reverse();
-            if (sortedMonths.length > 0) {
-                sortedMonths.slice(0, 3).forEach(month => {
-                    let cost = monthlyMap[month];
-                    chartHtml += `
-                        <div class="flex justify-between items-center text-xs bg-slate-800/60 p-2 rounded-xl">
-                            <span class="font-bold text-slate-300">മാസം (${month}):</span>
-                            <span class="font-black text-emerald-400">₹${cost}</span>
-                        </div>`;
-                });
-                chartContainer.innerHTML = chartHtml;
-            } else {
-                chartContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</p>`;
-            }
-
-            document.getElementById('totalMaterialCost').innerText = "₹" + totalCost;
-        });
-
-        onSnapshot(query(collection(db, "suppliers")), (snapshot) => {
-            const contactList = document.getElementById('contactList');
-            contactList.innerHTML = '';
-            let hasContacts = false;
-            
-            snapshot.forEach(docSnap => {
-                const s = docSnap.data();
-                if (s.meshtriOwner === currentMeshtri) {
-                    hasContacts = true;
-                    contactList.innerHTML += `
-                        <div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
-                            <div>
-                                <p class="font-black text-white">${s.name}</p>
-                                <a href="tel:${s.phone}" class="text-cyan-400 font-bold">📞 ${s.phone}</a>
-                            </div>
-                            <button onclick="window.deleteSupplierContact('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
-                        </div>`;
-                }
-            });
-
-            if (!hasContacts) {
-                contactList.innerHTML = `<p class="lang text-[11px] text-slate-400 text-center py-1" data-key="noContactsText">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
-            }
-        });
-
-        onSnapshot(query(collection(db, "notes")), (snapshot) => {
-            const notesList = document.getElementById('notesList');
-            if(!notesList) return;
-            notesList.innerHTML = '';
-            let hasNotes = false;
-            
-            snapshot.forEach(docSnap => {
-                const n = docSnap.data();
-                if (n.meshtriOwner === currentMeshtri) {
-                    hasNotes = true;
-                    notesList.innerHTML += `
-                        <div class="flex justify-between items-start bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
-                            <div>
-                                <p class="text-[10px] text-slate-400 font-bold">${n.date || ''}</p>
-                                <p class="font-bold text-white mt-0.5">${n.text}</p>
-                            </div>
-                            <button onclick="window.deleteQuickNote('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
-                        </div>`;
-                }
-            });
-
-            if (!hasNotes) {
-                notesList.innerHTML = `<p class="lang text-[11px] text-slate-400 text-center py-1" data-key="noNotesText">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</p>`;
-            }
-        });
-
-        window.filterMaterials = () => {
-            const searchTerm = document.getElementById('filterSite').value.toLowerCase();
-            const items = document.querySelectorAll('.material-item');
-            items.forEach(item => {
-                const siteName = item.getAttribute('data-site');
-                if (siteName.includes(searchTerm)) { item.style.display = 'block'; }
-                else { item.style.display = 'none'; }
-            });
         };
 
-        window.exportToExcel = () => {
-            if (currentMaterialsData.length === 0) {
-                alert("ഡൗൺലോഡ് ചെയ്യാൻ ഡാറ്റകളൊന്നും ലഭ്യമല്ല!");
+        window.renderList = () => {
+            const sSite = (document.getElementById('filterSite')?.value || '').trim();
+            const sStartDate = document.getElementById('startDate')?.value || '';
+            const sEndDate = document.getElementById('endDate')?.value || '';
+            const sMonth = document.getElementById('filterMonth')?.value || '';
+            const sWorker = (document.getElementById('filterWorker')?.value || '').toLowerCase().trim();
+            
+            const list = document.getElementById('transactionList');
+            if (list) list.innerHTML = '';
+            
+            let inc = 0, exp = 0;
+            filteredTransactions = [];
+
+            if (typeof allTransactions !== 'undefined' && Array.isArray(allTransactions)) {
+                allTransactions.forEach(d => {
+                    if (d.meshtriOwner !== currentMeshtri) return;
+
+                    const itemDate = d.date || '';
+                    const itemSite = (d.site || '').trim();
+                    
+                    const matchesSite = !sSite || itemSite === sSite;
+                    const matchesStartDate = !sStartDate || itemDate >= sStartDate;
+                    const matchesEndDate = !sEndDate || itemDate <= sEndDate;
+                    const matchesDateRange = matchesStartDate && matchesEndDate;
+                    const matchesMonth = !sMonth || itemDate.startsWith(sMonth);
+                    const matchesWorker = !sWorker || (d.name || '').toLowerCase().includes(sWorker);
+
+                    if (matchesSite && matchesDateRange && matchesMonth && matchesWorker) {
+                        filteredTransactions.push(d);
+
+                        const dataType = String(d.type || '').toLowerCase();
+                        let isIncome = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
+                        const amt = Number(d.amount || 0);
+
+                        if (isIncome) {
+                            inc += amt;
+                        } else {
+                            exp += amt;
+                        }
+
+                        if (list) {
+                            list.innerHTML += `
+                                <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
+                                    <div class="cursor-pointer flex-1" onclick="editTransaction('${d.id}', '${d.name}', '${d.site}', '${d.type}', '${d.payment}', ${d.amount}, '${d.date}')">
+                                        <p class="font-black text-base text-white">${d.name}</p>
+                                        <p class="text-xs text-slate-400 font-bold mt-0.5">${d.date || ''} • ${d.site || ''} • <span class="text-amber-400/80 uppercase">${d.type || ''}</span></p>
+                                    </div>
+                                    <div class="text-right flex items-center gap-3">
+                                        <div>
+                                            <p class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-red-400'}">${isIncome ? '+' : '-'}₹${d.amount || 0}</p>
+                                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md font-bold uppercase">${d.payment || 'ക്യാഷ്'}</span>
+                                        </div>
+                                        <button onclick="deleteTransaction('${d.id}')" class="p-2 text-red-400 hover:bg-red-500/10 rounded-xl transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
+                                    </div>
+                                </div>`;
+                        }
+                    }
+                });
+            }
+
+            if (document.getElementById('totalIncome')) document.getElementById('totalIncome').innerText = '₹' + inc;
+            if (document.getElementById('totalExpense')) document.getElementById('totalExpense').innerText = '₹' + exp;
+            if (document.getElementById('netBalance')) document.getElementById('netBalance').innerText = '₹' + (inc - exp);
+        };
+
+        window.downloadExcel = function() {
+            if (!filteredTransactions || filteredTransactions.length === 0) {
+                window.showToast("ഡൗൺലോഡ് ചെയ്യാൻ കണക്കുകളൊന്നും ലഭ്യമല്ല!", false);
                 return;
             }
-            let csvContent = "\uFEFFതീയതി,തരം,മെറ്റീരിയൽ പേര്,സൈറ്റ്,അളവ്,ഉപയോഗിച്ചത്,യൂണിറ്റ്,വില,കൊടുത്തത്,ഫോൺ\n";
-            currentMaterialsData.forEach(item => {
-                csvContent += `"${item.date}","${item.actionType || 'purchase'}","${item.name}","${item.site}",${item.qty},${item.used},"${item.unit}",${item.price},${item.paid || 0},"${item.phone || ''}"\n`;
+
+            let csvContent = "\uFEFF"; 
+            csvContent += "തീയതി,പേര് / വിവരം,സൈറ്റ്,ഇനം,തുക,പേയ്‌മെന്റ്\n";
+
+            filteredTransactions.forEach(row => {
+                const dataType = String(row.type || '').toLowerCase();
+                const typeText = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്') ? 'വരവ്' : 'ചെലവ്';
+                const line = `"${row.date || ''}","${row.name || ''}","${row.site || ''}","${typeText}","${row.amount || 0}","${row.payment || 'Cash'}"`;
+                csvContent += line + "\n";
             });
+
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.setAttribute('download', 'materials_ledger_report.csv');
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.showToast("📊 എക്സൽ റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്തു!");
-        };
-
-        window.editMat = (id, date, actionType, name, site, qty, used, unit, price, phone, paid) => {
-            editId = id;
-            document.getElementById('matDate').value = date;
-            document.getElementById('matActionType').value = actionType;
-            document.getElementById('matName').value = name;
-            document.getElementById('matSite').value = site;
-            document.getElementById('matQty').value = qty;
-            document.getElementById('matUsed').value = used;
-            document.getElementById('matUnit').value = unit;
-            document.getElementById('matPrice').value = price;
-            document.getElementById('matPhone').value = phone;
-            document.getElementById('matPaid').value = paid;
-            document.getElementById('formTitle').innerText = "മെറ്റീരിയൽ വിവരങ്ങൾ മാറ്റം വരുത്തുക";
-            document.getElementById('cancelEditBtn').classList.remove('hidden');
-            document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.delMat = async (id) => {
-            if (await window.openCustomConfirm("ഈ വിവരങ്ങൾ ഡിലീറ്റ് ചെയ്യണോ?")) {
-                await deleteDoc(doc(db, "materials", id));
-                window.showToast("🗑️ ഡാറ്റ നീക്കം ചെയ്തു!", false);
-            }
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Mesthri_Accounts_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            
+            link.click();
+            document.body.removeChild(link);
+            window.showToast("Excel ഫയൽ ഡൗൺലോഡ് ആയി!", true);
         };
     </script>
+</head>
+<body class="text-white min-h-screen pb-12 bg-slate-950 flex flex-col items-center justify-center">
+
+    <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"></div>
+    
+    <div class="w-[92%] max-w-md mx-auto border-2 border-red-600 rounded-[35px] p-5 shadow-[0_0_20px_rgba(239,68,68,0.5)] my-8 box-border space-y-4">
+
+        <div id="appHeader" class="w-full"></div>
+
+        <!-- ഹെഡർ ബോർഡ് -->
+        <div class="bg-slate-900 border-2 border-red-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-red-950/50">
+            <h1 class="text-base font-black">
+                <span class="lang bg-gradient-to-r from-red-400 via-rose-300 to-red-500 bg-clip-text text-transparent drop-shadow-md" data-key="accInfoTitle">വരവ് - ചെലവ് വിവരങ്ങൾ</span>
+            </h1>
+            
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white rounded-xl text-xs font-black shadow-lg shadow-red-900/50 transition flex items-center gap-2 border border-white/40 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a22 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="lang" data-key="homeBtn">Home</span>
+            </a>
+        </div>
+
+        <!-- വരവ്, ചെലവ് കാർഡുകൾ -->
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-emerald-600/90 p-4 rounded-2xl shadow-md text-center border border-emerald-500/30 backdrop-blur-sm">
+                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="income">വരവ്</p>
+                <h2 id="totalIncome" class="text-xl font-black mt-1">₹0</h2>
+            </div>
+            <div class="bg-red-600/90 p-4 rounded-2xl shadow-md text-center border border-red-500/30 backdrop-blur-sm">
+                <p class="text-[10px] opacity-90 uppercase tracking-widest font-black lang" data-key="expenseWage">ചെലവ് / കൂലി</p>
+                <h2 id="totalExpense" class="text-xl font-black mt-1">₹0</h2>
+            </div>
+        </div>
+
+        <!-- ലാഭത്തിന്റെ കള്ളി -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl shadow-lg text-center border border-slate-700">
+            <p class="text-[10px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="netProfit">ലാഭം / ബാക്കി തുക</p>
+            <h2 id="netBalance" class="text-2xl font-black mt-1 text-red-400">₹0</h2>
+        </div>
+
+        <!-- ഫിൽട്ടർ സെക്ഷൻ -->
+        <div class="bg-slate-900/90 text-white p-5 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterSiteLabel">സൈറ്റ് തിരിച്ച് നോക്കാൻ</label>
+                <select id="filterSite" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                    <option value="" class="lang" data-key="allSites">എല്ലാ സൈറ്റുകളും</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterMonthLabel">മാസാവസാന കണക്ക് (മാസം തിരഞ്ഞെടുക്കുക)</label>
+                <input type="month" id="filterMonth" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+            </div>
+
+            <div class="flex gap-3 items-end">
+                <div class="w-1/2">
+                    <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate lang" data-key="startDateLabel">തുടങ്ങുന്ന തീയതി</label>
+                    <input type="date" id="startDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                </div>
+                <div class="w-1/2">
+                    <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide truncate lang" data-key="endDateLabel">അവസാനിക്കുന്ന തീയതി</label>
+                    <input type="date" id="endDate" onchange="renderList()" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="filterWorkerLabel">പേര് വെച്ച് തിരയാൻ</label>
+                <input type="text" id="filterWorker" onkeyup="renderList()" placeholder="പേര് ടൈപ്പ് ചെയ്യുക..." class="lang-placeholder w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="searchNamePlaceholder">
+            </div>
+        </div>
+
+        <!-- പുതിയ കണക്ക് ചേർക്കുന്ന ഫോം -->
+        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border-2 border-slate-700/80 backdrop-blur-sm space-y-4 no-print">
+            <h2 id="formTitle" class="text-base font-black text-red-400 mb-2 lang" data-key="addNewAcc">പുതിയ കണക്ക് ചേർക്കുക</h2>
+            
+            <div>
+                <label class="block text-xs font-black text-slate-300 mb-1.5 uppercase tracking-wide lang" data-key="selectDateLabel">തീയതി തിരഞ്ഞെടുക്കുക</label>
+                <input type="date" id="transDate" class="w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+            </div>
+
+            <div class="relative">
+                <input type="text" id="ownerName" placeholder="ആളുകളുടെ പേര് / വിവരം ടൈപ്പ് ചെയ്യുക" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="nameDescPlaceholder">
+                <button type="button" onclick="startVoiceInput('ownerName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-red-400 hover:bg-slate-700 rounded-xl transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </button>
+            </div>
+
+            <div class="relative">
+                <input type="text" id="siteName" placeholder="സ്ഥലം / സൈറ്റ്" class="lang-placeholder w-full p-3.5 pr-12 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold placeholder-slate-400 focus:outline-none text-white shadow-inner" data-key="sitePlaceholder">
+                <button type="button" onclick="startVoiceInput('siteName')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-red-400 hover:bg-slate-700 rounded-xl transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <select id="type" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                    <option value="income" class="lang" data-key="income">വരവ്</option>
+                    <option value="wage" class="lang" data-key="wage">കൂലി</option>
+                    <option value="material" class="lang" data-key="materials">മെറ്റീരിയൽസ്</option>
+                    <option value="rent" class="lang" data-key="rent">വാടക</option>
+                    <option value="other" class="lang" data-key="otherExp">മറ്റ് ചെലവ്</option>
+                </select>
+                <select id="paymentMethod" class="p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner">
+                    <option value="cash" class="lang" data-key="cash">ക്യാഷ്</option>
+                    <option value="gpay">GPay</option>
+                    <option value="UPI" class="lang" data-key="upi">യുപിഐ</option>
+                    <option value="bank" class="lang" data-key="bank">ബാങ്ക്</option>
+                </select>
+            </div>
+            
+            <input type="number" id="amount" placeholder="തുക (₹)" class="lang-placeholder w-full p-3.5 bg-slate-800/90 rounded-2xl border-2 border-slate-600 focus:border-red-500 text-sm font-bold focus:outline-none text-white shadow-inner" data-key="amountPlaceholder">
+            
+            <button id="saveBtn" onclick="saveTransaction()" class="w-full bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white p-4 rounded-2xl font-black text-sm shadow-lg shadow-red-950/50 transition lang" data-key="saveBtn">സേവ് ചെയ്യുക</button>
+            <button id="cancelEditBtn" onclick="cancelEdit()" class="w-full bg-slate-800 text-slate-300 p-3 rounded-2xl font-bold text-xs hidden lang" data-key="cancelEditBtn">എഡിറ്റിംഗ് കാൻസൽ ചെയ്യുക</button>
+        </div>
+
+        <!-- റിപ്പോർട്ട് ബട്ടണുകൾ -->
+        <div class="grid grid-cols-2 gap-3 no-print">
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-blue-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="pdfReport">
+                📄 PDF റിപ്പോർട്ട്
+            </button>
+            <button onclick="downloadExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-1.5 lang" data-key="excelDownload">
+                📊 Excel ഡൗൺലോഡ്
+            </button>
+        </div>
+
+        <!-- ട്രാൻസാക്ഷൻ ലിസ്റ്റ് -->
+        <div id="transactionList" class="space-y-3 pb-4"></div>
+
+    </div>
+
 </body>
 </html>
