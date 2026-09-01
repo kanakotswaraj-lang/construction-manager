@@ -95,11 +95,12 @@
                 <p class="lang text-xs font-black text-blue-400" data-key="supplierBookTitle">📖 സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
                 <span id="supBookToggleIcon" class="lang text-xs text-blue-400 font-bold" data-key="viewText">▼ കാണുക</span>
             </div>
+            <!-- ഫോൺ നമ്പർ വായിക്കാൻ ബുദ്ധിമുട്ടാകാതിരിക്കാൻ കോളം രീതിയിലേക്ക് (Vertical Stack) മാറ്റിയിരിക്കുന്നു -->
             <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
-                <div class="flex gap-2">
-                    <input type="text" id="newSupName" class="lang-placeholder flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white" data-key-placeholder="supNamePlaceholder" placeholder="സപ്ലയർ പേര്">
-                    <input type="tel" id="newSupPhone" class="lang-placeholder flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white" data-key-placeholder="phonePlaceholder" placeholder="ഫോൺ നമ്പർ">
-                    <button onclick="window.saveSupplierContact()" class="bg-blue-600 hover:bg-blue-500 px-4 rounded-xl text-white font-black text-xs transition shadow-sm">+</button>
+                <div class="flex flex-col gap-2">
+                    <input type="text" id="newSupName" class="lang-placeholder w-full p-3 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white" data-key-placeholder="supNamePlaceholder" placeholder="സപ്ലയർ പേര്">
+                    <input type="tel" id="newSupPhone" class="lang-placeholder w-full p-3 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white" data-key-placeholder="phonePlaceholder" placeholder="ഫോൺ നമ്പർ">
+                    <button onclick="window.saveSupplierContact()" class="lang w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl text-white font-black text-xs transition shadow-sm" data-key="saveContactBtn">+ കോൺടാക്റ്റ് സേവ് ചെയ്യുക</button>
                 </div>
                 <div id="contactList" class="max-h-40 overflow-y-auto space-y-2 pt-1">
                     <!-- കോൺടാക്റ്റുകൾ ഇവിടെ ലിസ്റ്റ് ചെയ്യപ്പെടും -->
@@ -164,7 +165,6 @@
             <input type="text" id="matUnit" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="unitPlaceholder" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / കിലോ)">
             <input type="number" id="matPrice" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white" data-key-placeholder="pricePlaceholder" placeholder="ആകെ വില (₹)">
             
-            <!-- സപ്ലയർ ഫോൺ നമ്പർ ഫീൽഡ് താഴേക്ക് മാറ്റിയിരിക്കുന്നു -->
             <div>
                 <label class="lang text-[10px] text-blue-400 font-bold block mb-1" data-key="supPhoneLabel">സപ്ലയർ ഫോൺ നമ്പർ</label>
                 <input type="tel" id="matPhone" class="lang-placeholder w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-blue-400 font-bold" data-key-placeholder="supPhonePlaceholder" placeholder="സപ്ലയർ ഫോൺ നമ്പർ">
@@ -206,7 +206,6 @@
 
     <!-- ജാവാസ്ക്രിപ്റ്റ് ലാംഗ്വേജ് ഡിക്ഷണറിയും ഫയർബേസ് ലോജിക്കും -->
     <script>
-
         // ഭാഷ മാറ്റാനുള്ള ഫങ്ഷൻ
         window.switchLanguage = function(lang) {
             localStorage.setItem('selectedLang', lang);
