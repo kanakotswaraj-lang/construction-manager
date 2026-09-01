@@ -1,182 +1,228 @@
 <!DOCTYPE html>
 <html lang="ml">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മേസ്തിരി പ്രോ - എസ്റ്റിമേറ്റർ കാൽക്കുലേറ്റർ</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="language.js?v=3.0"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="apple-touch-icon" href="icon.png">
-    <script src="language.js"></script>
+    <title class="lang" data-key="materials_management_title">മെറ്റീരിയൽസ് മാനേജ്മെന്റ്</title>
     <style>
-        body { 
-            background-color: #0d1117 !important;
-            color: #f3f4f6 !important;
-            font-family: 'Manjari', sans-serif; 
+        body { font-family: 'Manjari', sans-serif; }
+        
+        input, select, textarea {
+            border: 2px solid rgba(51, 65, 85, 1);
+            transition: all 0.3s ease;
+            background-color: #1e293b !important;
         }
-        @media print { .no-print { display: none !important; } }
-        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .toast-animate { animation: slideIn 0.3s ease-out forwards; }
 
-        .max-w-md {
-            border: 3px solid #fbbf24;
-            border-radius: 2.5rem;
-            box-shadow: 0 0 25px rgba(251, 191, 36, 0.3);
-            overflow: hidden;
-            background-color: #0d1117;
+        input:focus, select:focus, textarea:focus {
+            border-color: #22d3ee !important; 
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2); 
+        }
+
+        @media print {
+            .no-print { display: none !important; }
         }
     </style>
-    
-    <script>
-        window.switchLanguage = function(langCode) {
-            if (!langCode) {
-                langCode = localStorage.getItem('selectedLang') || 'ml';
-            }
-            localStorage.setItem('selectedLang', langCode);
-
-            if (typeof words !== 'undefined') {
-                document.querySelectorAll('[data-key]').forEach(element => {
-                    const key = element.getAttribute('data-key');
-                    if (words[key] && words[key][langCode]) {
-                        element.innerText = words[key][langCode];
-                    }
-                });
-
-                document.querySelectorAll('[data-key-placeholder]').forEach(input => {
-                    const key = input.getAttribute('data-key-placeholder');
-                    if (words[key] && words[key][langCode]) {
-                        input.placeholder = words[key][langCode];
-                    }
-                });
-            }
-
-            const dropdown = document.getElementById('langDropdown');
-            if (dropdown && !dropdown.classList.contains('hidden')) {
-                dropdown.classList.add('hidden');
-            }
-        };
-
-        window.changeLanguage = window.switchLanguage;
-
-        window.toggleLangMenu = function(e) {
-            if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
-            const dropdown = document.getElementById('langDropdown');
-            if (dropdown) {
-                dropdown.classList.toggle('hidden');
-            }
-        };
-
-        if (!localStorage.getItem('userName')) {
-            window.location.href = "login.html";
-        }
-    </script>
 </head>
-<body class="text-white min-h-screen pb-16 p-4 font-sans">
-
-    <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
-
-    <div class="max-w-md mx-auto space-y-4">
+<body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
+    <!-- ഔട്ടർ ഗ്ലോയിങ് ബോർഡർ കണ്ടെയ്നർ -->
+    <div class="max-w-md mx-auto space-y-4 border-2 border-blue-500/60 p-4 rounded-3xl shadow-[0_0_25px_rgba(37,99,235,0.25)] bg-[#050B18]/95">
         
-        <!-- ഹെഡർ ഭാഗം (ഇതിൽ ഹെഡറും ലാംഗ്വേജ് ബട്ടണും കൺട്രോൾ ചെയ്യപ്പെടും) -->
-        <div id="appHeader" class="w-full pt-2 px-2"></div>
+        <!-- ഹെഡർ -->
+        <div id="appHeader" class="w-full flex justify-center"></div>
 
-        <!-- ടോപ്പ് ബാർ -->
-        <div class="mx-4 bg-slate-900/90 border-2 border-amber-500 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-            <div>
-                <h1 class="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide" data-key="estimator_title">എസ്റ്റിമേറ്റർ കാൽക്കുലേറ്റർ</h1>
-                <p class="text-[10px] text-slate-400 font-bold uppercase mt-0.5" data-key="estimator_subtitle">മേസ്തിരി അനുഭവക്കണക്ക് പ്രകാരം</p>
-            </div>
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-xl text-xs font-black shadow-lg transition flex items-center gap-1.5" data-key="home_btn">
-                Home
+        <!-- നീല ഗ്രേഡിയൻ്റ് ബോർഡറും കളറും (Blue Theme) -->
+        <div class="bg-slate-900 border-2 border-blue-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-blue-950/50" style="margin-top: 20px; margin-bottom: 15px;">
+            <h1 class="text-base font-black">
+                <span class="lang bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-500 bg-clip-text text-transparent drop-shadow-md" data-key="materials_and_stock">മെറ്റീരിയൽസ് & സ്റ്റോക്ക്</span>
+            </h1>
+            
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-black shadow-lg shadow-blue-900/50 transition flex items-center gap-2 border border-white/40 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a22 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="lang" data-key="homeBtn">Home</span>
             </a>
         </div>
-
-        <!-- കാൽക്കുലേറ്റർ ഫോം ഭാഗം -->
-        <div class="mx-4 bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 backdrop-blur-sm space-y-3.5">
-            <h2 class="text-base font-black text-amber-400 mb-2" data-key="work_details_heading">📐 പണിയുടെ വിവരങ്ങൾ തിരഞ്ഞെടുക്കുക</h2>
-            
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="work_category_label">പണിയുടെ തരം (Work Category)</label>
-                <select id="workCategory" onchange="toggleCategory()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
-                    <option value="slab" data-key="opt_slab">സ്ലാബ് വാർപ്പ് (RCC Slab Steel & Materials)</option>
-                    <option value="beam" data-key="opt_beam">ബീം വാർപ്പ് (Roof Beam Steel)</option>
-                    <option value="lintel" data-key="opt_lintel">ലിന്റൽ വാർപ്പ് (Lintel Steel)</option>
-                    <option value="stone" data-key="opt_stone">വെട്ടുകല്ല് കെട്ടൽ (Laterite Stone)</option>
-                    <option value="plaster" data-key="opt_plaster">പ്ലാസ്റ്റിംഗ് (Plastering)</option>
-                </select>
-            </div>
-
-            <div>
-                <label id="inputLabel" class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="input_area_label">പണിയേണ്ട ഏരിയ (Square Feet)</label>
-                <input type="number" id="mainInput" data-key-placeholder="input_placeholder" placeholder="ഉദാ: 1000" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none">
-            </div>
-
-            <!-- സ്ലാബിന്റെ കനം -->
-            <div id="slabThicknessBox">
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="thickness_label">വാർപ്പിന്റെ കനം (Thickness)</label>
-                <select id="slabThickness" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
-                    <option value="4.5" data-key="thick_4_5">4.5 ഇഞ്ച്</option>
-                    <option value="5" selected data-key="thick_5">5 ഇഞ്ച് - സ്റ്റാൻഡേർഡ്</option>
-                    <option value="5.5" data-key="thick_5_5">5.5 ഇഞ്ച്</option>
-                    <option value="6" data-key="thick_6">6 ഇഞ്ച്</option>
-                </select>
-            </div>
-            <!-- കമ്പി തമ്മിലുള്ള അകലം -->
-            <div id="spacingBox">
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="spacing_label">കമ്പി തമ്മിലുള്ള അകലം (Spacing)</label>
-                <select id="barSpacing" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
-                    <option value="6" selected data-key="spacing_opt1">6 ഇഞ്ച് (സാധാരണ വീടുകൾക്ക്)</option>
-                    <option value="7" data-key="spacing_opt2">7 ഇഞ്ച്</option>
-                    <option value="8" data-key="spacing_opt3">8 ഇഞ്ച്</option>
-                </select>
-            </div>
-
-
-            <button onclick="calculateEstimation()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition" data-key="calculate_btn">കണക്കുകൂട്ടുക (Calculate)</button>
+        
+        <!-- ആകെ തുക കാണിക്കുന്ന ബോക്സ് -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-lg text-center border border-slate-700">
+            <p class="text-[11px] opacity-75 uppercase tracking-widest font-black text-slate-300 lang" data-key="total_material_expense">ആകെ മെറ്റീരിയൽ ചെലവ്</p>
+            <h2 id="totalMaterialCost" class="text-3xl font-black mt-1 text-emerald-400">₹0</h2>
         </div>
 
-        <!-- ഫലം കാണിക്കുന്ന ഭാഗം -->
-        <div id="resultBox" class="hidden mx-4 bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 backdrop-blur-sm space-y-4">
-            <h2 class="text-base font-black text-emerald-400 mb-2 border-b border-slate-800 pb-2" data-key="result_heading">📊 കണക്കാക്കിയ അളവുകൾ (വെവ്വേറെ)</h2>
-            
-            <div class="grid grid-cols-2 gap-3">
-                <div class="bg-slate-800/90 border border-blue-500/40 p-4 rounded-2xl text-center shadow-md">
-                    <p id="labelItem1" class="text-[10px] text-slate-400 font-black uppercase" data-key="main_steel">മെയിൻ കമ്പി</p>
-                    <p id="resItem1" class="text-base font-black text-amber-400 mt-1">-</p>
-                </div>
-                <div class="bg-slate-800/90 border border-blue-500/40 p-4 rounded-2xl text-center shadow-md">
-                    <p id="labelItem2" class="text-[10px] text-slate-400 font-black uppercase" data-key="ring_steel">റിങ് കമ്പി</p>
-                    <p id="resItem2" class="text-base font-black text-amber-400 mt-1">-</p>
-                </div>
-                <div class="bg-slate-800/90 border border-blue-500/40 p-4 rounded-2xl text-center shadow-md">
-                    <p id="labelItem3" class="text-[10px] text-slate-400 font-black uppercase" data-key="binding_wire">കെട്ടുകമ്പി</p>
-                    <p id="resItem3" class="text-base font-black text-amber-400 mt-1">-</p>
-                </div>
-                <div class="bg-slate-800/90 border border-blue-500/40 p-4 rounded-2xl text-center shadow-md">
-                    <p id="labelItem4" class="text-[10px] text-slate-400 font-black uppercase" data-key="total_length">ആകെ നീളം</p>
-                    <p id="resItem4" class="text-base font-black text-amber-400 mt-1">-</p>
-                </div>
-            </div>
-
-            <div class="bg-blue-950/40 border border-blue-500/40 p-4 rounded-2xl space-y-2">
-                <p class="text-xs font-black text-cyan-300 uppercase" data-key="site_team_details">👥 സൈറ്റ് വിവരങ്ങൾ & ടീം അളവ്</p>
-                <p id="resDetails" class="text-xs font-bold text-slate-200 leading-relaxed">-</p>
+        <!-- മാസച്ചെലവ് ബാർ ചാർട്ട് സെക്ഷൻ -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-2 no-print">
+            <p class="text-xs font-black text-amber-400 flex items-center gap-1">
+                📈 <span class="lang" data-key="monthly_material_expense_chart">മാസത്തിലെ മെറ്റീരിയൽ ചെലവ് ചാർട്ട്</span>
+            </p>
+            <div id="monthlyChartContainer" class="space-y-2 pt-2 border-t border-slate-800">
+                <div class="p-2 text-center text-xs text-slate-400 font-bold lang" data-key="chart_data_not_available">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</div>
             </div>
         </div>
 
+        <!-- സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ ട്രാക്കർ -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleLedgerList()">
+                <p class="text-xs font-black text-amber-400 lang" data-key="supplier_payment_ledger">സപ്ലയർ പേയ്മെന്റ് ലെഡ്ജർ (ബാക്കി തുക)</p>
+                <span id="ledgerToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view">കാണുക</span>
+            </div>
+            <div id="ledgerContainer" class="hidden space-y-2 pt-2 border-t border-slate-800 max-h-48 overflow-y-auto">
+                <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledger_data_not_available">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</div>
+            </div>
+        </div>
+
+        <!-- സപ്ലയർ കോൺടാക്ട് ബുക്ക് -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleSupplierBook()">
+                <p class="text-xs font-black text-emerald-400 lang" data-key="supplier_contact_book">സപ്ലയർ കോൺടാക്ട് ബുക്ക്</p>
+                <span id="supBookToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view">കാണുക</span>
+            </div>
+            <div id="supplierBookContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
+                <div class="flex gap-2">
+                    <input type="text" id="newSupName" placeholder="സപ്ലയർ പേര്" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="supplier_name_placeholder">
+                    <input type="tel" id="newSupPhone" inputmode="numeric" pattern="[0-9]*" placeholder="ഫോൺ നമ്പർ" class="flex-1 p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="phone_number_placeholder">
+                    <button onclick="window.saveSupplierContact()" class="bg-emerald-600 hover:bg-emerald-500 px-4 rounded-xl text-white font-black text-xs transition shadow-sm">+</button>
+                </div>
+                <div id="contactList" class="max-h-40 overflow-y-auto space-y-2 pt-1">
+                    <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_contacts_saved">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- പ്രത്യേക കുറിപ്പുകൾ (Quick Notes) -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleNotesBook()">
+                <p class="text-xs font-black text-amber-400 lang" data-key="quick_notes">പ്രത്യേക കുറിപ്പുകൾ (Quick Notes)</p>
+                <span id="notesToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view">കാണുക</span>
+            </div>
+            <div id="notesContainer" class="hidden space-y-3 pt-2 border-t border-slate-800">
+                <textarea id="newNoteText" placeholder="ഇന്നത്തെ കുറിപ്പുകൾ ഇവിടെ എഴുതുക..." rows="2" class="w-full p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs text-white lang-placeholder" data-key="notes_placeholder"></textarea>
+                <button onclick="window.saveQuickNote()" class="w-full bg-amber-600 hover:bg-amber-500 py-2.5 rounded-xl text-slate-950 font-black text-xs transition shadow-sm lang" data-key="save_note_btn">കുറിപ്പ് സേവ് ചെയ്യുക</button>
+                <div id="notesList" class="max-h-36 overflow-y-auto space-y-2 pt-1">
+                    <div class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_notes_available">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- സപ്ലയർ ലിസ്റ്റും ഫിൽട്ടറും -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3 no-print">
+            <div class="relative">
+                <input type="text" id="filterSite" placeholder="🔍 സൈറ്റ് പേര് വെച്ച് തിരയുക..." oninput="filterMaterials()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="search_site_placeholder">
+            </div>
+        </div>
+        
+        <!-- മെറ്റീരിയൽസ് ഫോം -->
+        <div class="bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4 backdrop-blur-sm no-print">
+            <h2 id="formTitle" class="text-sm font-black text-amber-400 lang" data-key="add_new_material_form">പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക</h2>
+            
+            <div>
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="date">തീയതി</label>
+                <input type="date" id="matDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+            </div>
+            
+            <div>
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="select_action_type">പ്രവർത്തനം തിരഞ്ഞെടുക്കുക</label>
+                <select id="matActionType" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs font-bold text-white">
+                    <option value="purchase" class="lang" data-key="purchase_action">പുതിയ മെറ്റീരിയൽ വാങ്ങിയത്</option>
+                    <option value="transfer" class="lang" data-key="transfer_action">മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</option>
+                </select>
+            </div>
+
+            <div>
+                <input type="text" id="matName" placeholder="മെറ്റീരിയൽ പേര് (ഉദാ: സിമന്റ് / കമ്പി)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="material_name_placeholder">
+            </div>
+
+            <div>
+                <input type="text" id="matSite" placeholder="സ്ഥലം/സൈറ്റ് പേര് (ഉദാ: Edumba)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="site_name_placeholder">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2">
+                <input type="number" id="matQty" placeholder="അളവ്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="qty_placeholder">
+                <input type="number" id="matUsed" placeholder="ഉപയോഗിച്ചത്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="used_placeholder">
+            </div>
+
+            <input type="text" id="matUnit" placeholder="യൂണിറ്റ് (ചാക്ക് / ടൺ / കിലോ)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="unit_placeholder">
+            <input type="number" id="matPrice" placeholder="ആകെ വില (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="total_price_placeholder">
+            <input type="tel" id="matPhone" inputmode="numeric" pattern="[0-9]*" placeholder="സപ്ലയർ ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="supplier_phone_placeholder">
+            <input type="number" id="matPaid" placeholder="സപ്ലയർക്ക് കൊടുത്ത തുക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="paid_amount_placeholder">
+
+            <div class="flex gap-2">
+                <button id="cancelEditBtn" class="hidden flex-1 bg-slate-800 text-slate-300 p-4 rounded-2xl font-black text-xs lang" data-key="cancel">ക്ൻസൽ</button>
+                <button id="saveBtn" class="flex-1 bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs lang" data-key="save_info_btn">വിവരങ്ങൾ സേവ് ചെയ്യുക</button>
+            </div>
+        </div>
+
+        <!-- റിപ്പോർട്ട് ഡൗൺലോഡ് ബട്ടണുകൾ -->
+        <div class="grid grid-cols-2 gap-2 no-print">
+            <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs flex items-center justify-center gap-1">
+                <span>🖨️</span> <span class="lang" data-key="pdf_report_btn">PDF റിപ്പോർട്ട്</span>
+            </button>
+            <button onclick="exportToExcel()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black transition shadow-lg text-xs flex items-center justify-center gap-1">
+                <span>📊</span> <span class="lang" data-key="excel_export_btn">Excel എക്സ്‌പോർട്ട്</span>
+            </button>
+        </div>
+
+        <!-- ലിസ്റ്റ് സെക്ഷൻ -->
+        <section class="space-y-4 pb-12">
+            <h2 class="font-black text-white text-base mb-2 lang" data-key="stock_status_heading">സ്റ്റോക്ക് നിലവാരവും വിവരങ്ങളും</h2>
+            <div id="materialList" class="space-y-4"></div>
+        </section>
+    </div>
+
+    <!-- മോഡലുകളും ടോസ്റ്റും -->
+    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
+
+    <div id="customConfirmModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl text-center">
+            <h3 id="confirmTitle" class="font-black text-white text-sm">ഉറപ്പാണോ?</h3>
+            <div class="flex gap-2">
+                <button id="confirmCancelBtn" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black lang" data-key="no">ഇല്ല</button>
+                <button id="confirmOkBtn" class="flex-1 bg-red-600 text-white py-3 rounded-2xl text-xs font-black lang" data-key="yes">ഉവ്വ്</button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { setupHeader } from './header.js';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+
+        window.switchLanguage = function(lang) {
+            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
+            
+            document.querySelectorAll('.lang').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.innerText = words[key][lang];
+                }
+            });
+
+            document.querySelectorAll('.lang-placeholder').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.placeholder = words[key][lang];
+                }
+            });
+        };
 
         document.addEventListener("DOMContentLoaded", () => {
             try {
-                if (typeof setupHeader === 'function') { setupHeader('appHeader'); }
-                else { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
-            } catch (e) { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
+                if (typeof setupHeader === 'function') { 
+                    setupHeader('appHeader', true, currentMeshtri); 
+                } else { 
+                    document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
+                }
+            } catch (e) { 
+                document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
+            }
 
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
@@ -184,192 +230,442 @@
             }
         });
 
-        window.showToast = function(messageKey, isSuccess = true) {
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            let message = messageKey;
-            
-            if (typeof words !== 'undefined' && words[messageKey] && words[messageKey][currentLang]) {
-                message = words[messageKey][currentLang];
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
             }
+        });
 
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast-animate pointer-events-auto px-6 py-4 rounded-2xl text-white font-bold text-base shadow-2xl border backdrop-blur-md flex items-center gap-3 ${
-                isSuccess 
-                    ? 'bg-blue-950/95 border-blue-500 text-blue-200 shadow-blue-500/20' 
-                    : 'bg-gradient-to-r from-red-950 to-rose-950 border-red-500 text-white'
-            }`;
-            toast.innerText = message;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transition = 'opacity 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        };
-
-        window.toggleCategory = function() {
-            const category = document.getElementById('workCategory').value;
-            const inputLabel = document.getElementById('inputLabel');
-            const slabThicknessBox = document.getElementById('slabThicknessBox');
-            const spacingBox = document.getElementById('spacingBox');
-
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-
-            if (category === 'slab') {
-                inputLabel.innerText = words.input_area_label ? words.input_area_label[currentLang] : "പണിയേണ്ട ഏരിയ (Square Feet)";
-                slabThicknessBox.style.display = 'block';
-                spacingBox.style.display = 'block';
-            } else if (category === 'beam' || category === 'lintel') {
-                inputLabel.innerText = words.input_length_label ? words.input_length_label[currentLang] : "ബീമിന്റെ ആകെ നീളം (Running Feet)";
-                slabThicknessBox.style.display = 'none';
-                spacingBox.style.display = 'none';
-            } else if (category === 'stone') {
-                inputLabel.innerText = words.input_area_label ? words.input_area_label[currentLang] : "പണിയേണ്ട ഏരിയ (Square Feet)";
-                slabThicknessBox.style.display = 'none';
-                spacingBox.style.display = 'none';
-            } else if (category === 'plaster') {
-                inputLabel.innerText = words.input_area_label ? words.input_area_label[currentLang] : "പണിയേണ്ട ഏരിയ (Square Feet)";
-                slabThicknessBox.style.display = 'none';
-                spacingBox.style.display = 'none';
-            }
-        };
-
-        window.calculateEstimation = function() {
-            const val = parseFloat(document.getElementById('mainInput').value);
-            const category = document.getElementById('workCategory').value;
-            const thickness = parseFloat(document.getElementById('slabThickness').value);
-            const spacing = parseFloat(document.getElementById('barSpacing').value);
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-
-            if (!val || val <= 0) {
-                window.showToast('msg_valid_measurement', false);
-                return;
-            }
-
-            let i1 = "", i2 = "", i3 = "", i4 = "", detailsKey = "";
-
-            if (category === 'slab') {
-                let totalCft = val * (thickness / 12);
-                let dryVolume = totalCft * 1.54;
-                let cementBags = (dryVolume / 6) / 1.25;
-                let sandCft = (dryVolume / 6) * 2;
-                let metalCft = (dryVolume / 6) * 3;
-
-                let spacingMultiplier = 6 / spacing; 
-                let steel8mm = Math.round(val * 0.22 * spacingMultiplier);  
-                let steelMain = Math.round(val * 0.50 * spacingMultiplier); 
-
-                document.getElementById('labelItem1').setAttribute('data-key', 'cement_bag');
-                document.getElementById('labelItem2').setAttribute('data-key', 'spacing');
-                document.getElementById('labelItem3').setAttribute('data-key', 'ring_steel');
-                document.getElementById('labelItem4').setAttribute('data-key', 'main_steel');
-
-                i1 = Math.round(cementBags) + " " + (words.cement_bag ? words.cement_bag[currentLang] : "ചാക്ക്");
-                i2 = Math.round(sandCft) + " Cft";
-                i3 = Math.round(metalCft) + " Cft";
-                i4 = (steel8mm + steelMain) + " " + (words.kilo ? words.kilo[currentLang] : "കിലോ");
-
-                let slabWord = words.slab ? words.slab[currentLang] : "സ്ലാബ്";
-                let thickWord = words.thickness ? words.thickness[currentLang] : "കനം";
-                let spaceWord = words.spacing ? words.spacing[currentLang] : "അകലം";
-                let masonWord = words.required_masons ? words.required_masons[currentLang] : "ആവശ്യമായ മേസ്തിരിമാർ";
-                let workerWord = words.workers ? words.workers[currentLang] : "തൊഴിലാളികൾ";
-
-                document.getElementById('resDetails').innerText = `${slabWord} ${thickWord}: ${thickness} ${words.inch ? words.inch[currentLang] : "ഇഞ്ച്"}, ${spaceWord}: ${spacing} ${words.inch ? words.inch[currentLang] : "ഇഞ്ച്"}. ${masonWord}: ${Math.ceil(val/150)}, ${workerWord}: ${Math.ceil(val/100)}.`;
-            } 
-            else if (category === 'beam') {
-                let mainSteel = Math.round(val * 0.65); 
-                let ringSteel = Math.round(val * 0.30); 
-                let bindingWire = 5;
-
-                document.getElementById('labelItem1').setAttribute('data-key', 'main_steel');
-                document.getElementById('labelItem2').setAttribute('data-key', 'ring_steel');
-                document.getElementById('labelItem3').setAttribute('data-key', 'binding_wire');
-                document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
-
-                let kiloWord = words.kilo ? words.kilo[currentLang] : "കിലോ";
-                i1 = mainSteel + " " + kiloWord;
-                i2 = ringSteel + " " + kiloWord;
-                i3 = bindingWire + " " + kiloWord;
-                i4 = val + " R.Ft";
-
-                detailsKey = 'beam_steel_calc';
-            }
-            else if (category === 'lintel') {
-                let mainSteel = Math.round(val * 0.35);
-                let ringSteel = Math.round(val * 0.18);
-                let bindingWire = 3;
-
-                document.getElementById('labelItem1').setAttribute('data-key', 'main_steel');
-                document.getElementById('labelItem2').setAttribute('data-key', 'ring_steel');
-                document.getElementById('labelItem3').setAttribute('data-key', 'binding_wire');
-                document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
-
-                let kiloWord = words.kilo ? words.kilo[currentLang] : "കിലോ";
-                i1 = mainSteel + " " + kiloWord;
-                i2 = ringSteel + " " + kiloWord;
-                i3 = bindingWire + " " + kiloWord;
-                i4 = val + " R.Ft";
-
-                detailsKey = 'lintel_steel_calc';
-            }
-            else if (category === 'stone') {
-                let baseBricks = val * 1.15;
-                let totalBricks = Math.ceil(baseBricks);
-                let cementBags = Math.ceil(totalBricks / 100);
-                let sandCft = Math.round(cementBags * 3);
-
-                document.getElementById('labelItem1').setAttribute('data-key', 'cement_bag');
-                document.getElementById('labelItem2').setAttribute('data-key', 'spacing');
-                document.getElementById('labelItem3').setAttribute('data-key', 'slab');
-                document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
-
-                i1 = cementBags + " " + (words.cement_bag ? words.cement_bag[currentLang] : "ചാക്ക്");
-                i2 = sandCft + " Cft";
-                i3 = totalBricks + " എണ്ണം";
-                i4 = val + " Sq.Ft";
-
-                detailsKey = 'stone_material_estimate';
-            }
-            else if (category === 'plaster') {
-                let cementBags = Math.round((val / 1000) * 25);
-                let sandCft = Math.round((val / 1000) * 150);
-
-                document.getElementById('labelItem1').setAttribute('data-key', 'cement_bag');
-                document.getElementById('labelItem2').setAttribute('data-key', 'spacing');
-                document.getElementById('labelItem3').setAttribute('data-key', 'binding_wire');
-                document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
-
-                i1 = cementBags + " " + (words.cement_bag ? words.cement_bag[currentLang] : "ചാക്ക്");
-                i2 = sandCft + " Cft";
-                i3 = "ബാധകമല്ല";
-                i4 = "ബാധകമല്ല";
-
-                detailsKey = 'plastering_calc';
-            }
-
-            document.getElementById('resItem1').innerText = i1;
-            document.getElementById('resItem2').innerText = i2;
-            document.getElementById('resItem3').innerText = i3;
-            document.getElementById('resItem4').innerText = i4;
-
-            if (category !== 'slab' && detailsKey) {
-                const detailsElement = document.getElementById('resDetails');
-                detailsElement.setAttribute('data-key', detailsKey);
-                if (typeof words !== 'undefined' && words[detailsKey] && words[detailsKey][currentLang]) {
-                    detailsElement.innerText = words[detailsKey][currentLang];
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'selectedLang') {
+                const newLang = e.newValue || 'ml';
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage(newLang);
                 }
             }
+        });
 
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(currentLang);
-            }
-
-            document.getElementById('resultBox').classList.remove('hidden');
-            window.showToast("msg_estimated_success", true);
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
         };
 
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.getElementById('matDate').valueAsDate = new Date();
+        let editId = null;
+
+        window.showToast = (message, isSuccess = true) => {
+            const toast = document.getElementById('customToast');
+            toast.innerText = message;
+            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-3 rounded-2xl shadow-2xl font-black text-sm z-50 transition-all duration-300 text-center backdrop-blur-md ${isSuccess ? 'bg-gradient-to-r from-emerald-900 to-teal-900 border-2 border-emerald-400 text-emerald-200 shadow-emerald-950/50' : 'bg-gradient-to-r from-red-900 to-rose-900 border-2 border-rose-400 text-rose-200 shadow-rose-950/50'} opacity-100 scale-105`;
+            setTimeout(() => {
+                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
+            }, 2500);
+        };
+
+        window.openCustomConfirm = (title) => new Promise(resolve => {
+            const modal = document.getElementById('customConfirmModal');
+            document.getElementById('confirmTitle').innerText = title;
+            modal.classList.remove('hidden');
+            document.getElementById('confirmOkBtn').onclick = () => { modal.classList.add('hidden'); resolve(true); };
+            document.getElementById('confirmCancelBtn').onclick = () => { modal.classList.add('hidden'); resolve(false); };
+        });
+
+        window.toggleLedgerList = () => {
+            const container = document.getElementById('ledgerContainer');
+            const icon = document.getElementById('ledgerToggleIcon');
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "കാണുക"; }
+        };
+
+        window.toggleSupplierBook = () => {
+            const container = document.getElementById('supplierBookContainer');
+            const icon = document.getElementById('supBookToggleIcon');
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "കാണുക"; }
+        };
+
+        window.toggleNotesBook = () => {
+            const container = document.getElementById('notesContainer');
+            const icon = document.getElementById('notesToggleIcon');
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); icon.innerText = "മറയ്ക്കുക"; }
+            else { container.classList.add('hidden'); icon.innerText = "കാണുക"; }
+        };
+
+        window.saveSupplierContact = async () => {
+            const name = document.getElementById('newSupName').value.trim();
+            const phone = document.getElementById('newSupPhone').value.trim();
+            if (!name || !phone) {
+                window.showToast("പേരും ഫോൺ നമ്പറും നൽകുക!", false);
+                return;
+            }
+            try {
+                await addDoc(collection(db, "suppliers"), {
+                    meshtriOwner: currentMeshtri,
+                    name: name,
+                    phone: phone
+                });
+                document.getElementById('newSupName').value = '';
+                document.getElementById('newSupPhone').value = '';
+                window.showToast("👍 കോൺടാക്റ്റ് സേവ് ചെയ്തു!");
+            } catch (err) {
+                window.showToast("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല", false);
+            }
+        };
+
+        window.deleteSupplierContact = async (id) => {
+            if (await window.openCustomConfirm("ഈ കോൺടാക്റ്റ് ഡിലീറ്റ് ചെയ്യണോ?")) {
+                await deleteDoc(doc(db, "suppliers", id));
+                window.showToast("🗑️ നീക്കം ചെയ്തു!", false);
+            }
+        };
+
+        window.saveQuickNote = async () => {
+            const text = document.getElementById('newNoteText').value.trim();
+            if (!text) {
+                window.showToast("കുറിപ്പ് എഴുതുക!", false);
+                return;
+            }
+            try {
+                await addDoc(collection(db, "notes"), {
+                    meshtriOwner: currentMeshtri,
+                    text: text,
+                    date: new Date().toLocaleDateString()
+                });
+                document.getElementById('newNoteText').value = '';
+                window.showToast("👍 കുറിപ്പ് സേവ് ചെയ്തു!");
+            } catch (err) {
+                window.showToast("സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല", false);
+            }
+        };
+
+        window.deleteQuickNote = async (id) => {
+            if (await window.openCustomConfirm("ഈ കുറിപ്പ് ഡിലീറ്റ് ചെയ്യണോ?")) {
+                await deleteDoc(doc(db, "notes", id));
+                window.showToast("🗑️ നീക്കം ചെയ്തു!", false);
+            }
+        };
+
+        document.getElementById('saveBtn').onclick = async () => {
+            const name = document.getElementById('matName').value.trim();
+            const site = document.getElementById('matSite').value.trim();
+            
+            if (!name) { window.showToast("മെറ്റീരിയൽ പേര് നൽകുക!", false); return; }
+            if (!site) { window.showToast("സൈറ്റിന്റെ പേര് നൽകുക!", false); return; }
+
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.innerText = "സേവ് ആകുന്നുണ്ട്...";
+            saveBtn.disabled = true;
+
+            const actionType = document.getElementById('matActionType').value;
+
+            const data = {
+                meshtriOwner: currentMeshtri,
+                date: document.getElementById('matDate').value,
+                actionType: actionType,
+                name: name,
+                site: site,
+                qty: parseFloat(document.getElementById('matQty').value) || 0,
+                used: parseFloat(document.getElementById('matUsed').value) || 0,
+                unit: document.getElementById('matUnit').value.trim(),
+                price: parseFloat(document.getElementById('matPrice').value) || 0,
+                phone: document.getElementById('matPhone').value.trim(),
+                paid: parseFloat(document.getElementById('matPaid').value) || 0
+            };
+
+            try {
+                if (editId) {
+                    await updateDoc(doc(db, "materials", editId), data);
+                    editId = null;
+                    document.getElementById('formTitle').innerText = "പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക";
+                    document.getElementById('cancelEditBtn').classList.add('hidden');
+                    saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
+                    window.showToast("✏️ വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്തു!");
+                } else {
+                    await addDoc(collection(db, "materials"), data);
+                    saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
+                    window.showToast("🚀 വിജയകരമായി ചേർത്തു!");
+                }
+
+                saveBtn.disabled = false;
+                document.getElementById('matName').value = '';
+                document.getElementById('matSite').value = '';
+                document.getElementById('matQty').value = '';
+                document.getElementById('matUsed').value = '';
+                document.getElementById('matUnit').value = '';
+                document.getElementById('matPrice').value = '';
+                document.getElementById('matPhone').value = '';
+                document.getElementById('matPaid').value = '';
+            } catch (error) {
+                saveBtn.disabled = false;
+                saveBtn.innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
+                window.showToast("തടസ്സമുണ്ടായി, വീണ്ടും ശ്രമിക്കുക.", false);
+            }
+        };
+
+        document.getElementById('cancelEditBtn').onclick = () => {
+            editId = null;
+            document.getElementById('formTitle').innerText = "പുതിയ മെറ്റീരിയൽ / സ്റ്റോക്ക് ചേർക്കുക";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+            document.getElementById('saveBtn').innerText = "വിവരങ്ങൾ സേവ് ചെയ്യുക";
+            document.getElementById('matName').value = '';
+            document.getElementById('matSite').value = '';
+            document.getElementById('matQty').value = '';
+            document.getElementById('matUsed').value = '';
+            document.getElementById('matUnit').value = '';
+            document.getElementById('matPrice').value = '';
+            document.getElementById('matPhone').value = '';
+            document.getElementById('matPaid').value = '';
+        };
+
+        let currentMaterialsData = [];
+
+        onSnapshot(query(collection(db, "materials"), orderBy("date", "desc")), (snapshot) => {
+            const list = document.getElementById('materialList');
+            list.innerHTML = '';
+            let totalCost = 0;
+            let suppliersLedgerMap = new Map();
+            let monthlyMap = {};
+            currentMaterialsData = [];
+            
+            snapshot.forEach(docSnap => {
+                const d = docSnap.data();
+                
+                if (d.meshtriOwner === currentMeshtri) {
+                    currentMaterialsData.push({ id: docSnap.id, ...d });
+                    
+                    const price = parseFloat(d.price) || 0;
+                    const paid = parseFloat(d.paid) || 0;
+                    
+                    if (d.actionType !== 'transfer') {
+                        totalCost += price;
+                    }
+
+                    if (d.date) {
+                        const monthKey = d.date.substring(0, 7);
+                        monthlyMap[monthKey] = (monthlyMap[monthKey] || 0) + (d.actionType !== 'transfer' ? price : 0);
+                    }
+
+                    if (d.phone || d.name) {
+                        const supKey = d.phone ? `${d.phone}` : `${d.name} സപ്ലയർ`;
+                        if (!suppliersLedgerMap.has(supKey)) {
+                            suppliersLedgerMap.set(supKey, { name: d.name + " സപ്ലയർ", phone: d.phone || '', totalBill: 0, totalPaid: 0 });
+                        }
+                        let supData = suppliersLedgerMap.get(supKey);
+                        if (d.actionType !== 'transfer') {
+                            supData.totalBill += price;
+                        }
+                        supData.totalPaid += paid;
+                    }
+                    
+                    const totalQty = parseFloat(d.qty) || 0;
+                    const usedQty = parseFloat(d.used) || 0;
+                    const remainingQty = totalQty - usedQty;
+
+                    let stockWarning = remainingQty <= 2 ? `<div class="text-[10px] font-black text-amber-300 bg-amber-950/60 p-2 rounded-xl border border-amber-600/40 mb-2">⚠️ സ്റ്റോക്ക് കുറവാണ് / തീരാറായി!</div>` : '';
+                    let isTransfer = d.actionType === 'transfer';
+                    let actionBadge = isTransfer 
+                        ? `<div class="text-xs font-black text-cyan-300 bg-cyan-950/60 p-2 rounded-xl border border-cyan-700/50 mb-2">🔄 മറ്റൊരു സൈറ്റിൽ നിന്ന് മാറ്റിയത് (Transfer)</div>` 
+                        : '';
+
+                    list.innerHTML += `
+                        <div class="bg-slate-900/90 text-white p-5 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm material-item" data-site="${(d.site || '').toLowerCase()}">
+                            <div class="flex justify-between items-start mb-1">
+                                <p class="font-black text-white text-base">${d.name}</p>
+                                <a href="tel:${d.phone}" class="bg-blue-900/50 text-blue-300 border border-blue-700/50 px-3 py-1 rounded-xl font-black text-xs no-print shadow-sm">📞 വിളിക്കുക</a>
+                            </div>
+                            <p class="text-xs text-slate-400 font-bold mb-3">
+                                ${d.date || ''} ${d.site ? '• സൈറ്റ്: ' + d.site : ''}
+                            </p>
+                            
+                            ${actionBadge}
+                            ${stockWarning}
+
+                            <div class="bg-slate-800/80 p-3 rounded-2xl mb-3 border border-slate-700">
+                                <div class="flex justify-between text-xs font-bold text-slate-400 mb-1">
+                                    <span>അളവ്: ${totalQty} ${d.unit || ''}</span>
+                                    <span>ഉപയോഗിച്ചത്: ${usedQty} ${d.unit || ''}</span>
+                                </div>
+                                <div class="text-xs font-black text-emerald-400">
+                                    ബാക്കി സ്റ്റോക്ക്: ${remainingQty} ${d.unit || ''}
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-2 mb-3">
+                                <p class="text-xs font-black text-slate-200 bg-slate-800 p-2.5 rounded-xl inline-block border border-slate-700">വില: ₹${d.price}</p>
+                                <p class="text-xs font-black text-emerald-300 bg-slate-800 p-2.5 rounded-xl inline-block border border-slate-700">കൊടുത്തത്: ₹${d.paid || 0}</p>
+                            </div>
+
+                            <div class="flex gap-2.5 no-print mt-3">
+                                <button onclick="window.editMat('${docSnap.id}', '${d.date || ''}', '${d.actionType || 'purchase'}', '${d.name}', '${d.site || ''}', ${totalQty}, ${usedQty}, '${d.unit || ''}', ${d.price}, '${d.phone}', ${d.paid || 0})" class="flex-1 bg-amber-500 text-slate-950 py-2.5 rounded-xl font-black text-xs hover:bg-amber-400 transition shadow-sm">എഡിറ്റ്</button>
+                                <button onclick="window.delMat('${docSnap.id}')" class="bg-red-600 text-white px-4 py-2.5 rounded-xl font-black text-xs hover:bg-red-500 transition shadow-sm">ഡിലീറ്റ്</button>
+                            </div>
+                        </div>`;
+                }
+            });
+
+            const ledgerContainer = document.getElementById('ledgerContainer');
+            if (suppliersLedgerMap.size > 0) {
+                let ledgerHtml = '';
+                suppliersLedgerMap.forEach((val) => {
+                    let balanceDue = val.totalBill - val.totalPaid;
+                    ledgerHtml += `
+                        <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 text-xs space-y-1">
+                            <div class="flex justify-between font-bold text-white">
+                                <span>${val.name}</span>
+                                <a href="tel:${val.phone}" class="text-cyan-400">📞 ${val.phone || 'നമ്പർ ഇല്ല'}</a>
+                            </div>
+                            <div class="flex justify-between text-[11px] text-slate-300">
+                                <span>ആകെ ബിൽ: ₹${val.totalBill}</span>
+                                <span>കൊടുത്തത്: ₹${val.totalPaid}</span>
+                            </div>
+                            <div class="text-[11px] font-black ${balanceDue > 0 ? 'text-red-400' : 'text-emerald-400'}">
+                                ബാക്കി നൽകാനുള്ളത്: ₹${balanceDue}
+                            </div>
+                        </div>`;
+                });
+                ledgerContainer.innerHTML = ledgerHtml;
+            } else {
+                ledgerContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="ledger_data_not_available">ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല</p>`;
+            }
+
+            const chartContainer = document.getElementById('monthlyChartContainer');
+            let chartHtml = '';
+            let sortedMonths = Object.keys(monthlyMap).sort().reverse();
+            if (sortedMonths.length > 0) {
+                sortedMonths.slice(0, 3).forEach(month => {
+                    let cost = monthlyMap[month];
+                    chartHtml += `
+                        <div class="flex justify-between items-center text-xs bg-slate-800/60 p-2 rounded-xl">
+                            <span class="font-bold text-slate-300">മാസം (${month}):</span>
+                            <span class="font-black text-emerald-400">₹${cost}</span>
+                        </div>`;
+                });
+                chartContainer.innerHTML = chartHtml;
+            } else {
+                chartContainer.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="chart_data_not_available">ചാർട്ട് ഡാറ്റ ലഭ്യമല്ല</p>`;
+            }
+
+            document.getElementById('totalMaterialCost').innerText = "₹" + totalCost;
+            
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            window.switchLanguage(currentLang);
+        });
+
+        onSnapshot(query(collection(db, "suppliers")), (snapshot) => {
+            const contactList = document.getElementById('contactList');
+            contactList.innerHTML = '';
+            let hasContacts = false;
+            
+            snapshot.forEach(docSnap => {
+                const s = docSnap.data();
+                if (s.meshtriOwner === currentMeshtri) {
+                    hasContacts = true;
+                    contactList.innerHTML += `
+                        <div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
+                            <div>
+                                <p class="font-black text-white">${s.name}</p>
+                                <a href="tel:${s.phone}" class="text-cyan-400 font-bold">📞 ${s.phone}</a>
+                            </div>
+                            <button onclick="window.deleteSupplierContact('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
+                        </div>`;
+                }
+            });
+
+            if (!hasContacts) {
+                contactList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_contacts_saved">സേവ് ചെയ്ത കോൺടാക്റ്റുകൾ ഇല്ല</p>`;
+            }
+        });
+
+        onSnapshot(query(collection(db, "notes")), (snapshot) => {
+            const notesList = document.getElementById('notesList');
+            if(!notesList) return;
+            notesList.innerHTML = '';
+            let hasNotes = false;
+            
+            snapshot.forEach(docSnap => {
+                const n = docSnap.data();
+                if (n.meshtriOwner === currentMeshtri) {
+                    hasNotes = true;
+                    notesList.innerHTML += `
+                        <div class="flex justify-between items-start bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs">
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-bold">${n.date || ''}</p>
+                                <p class="font-bold text-white mt-0.5">${n.text}</p>
+                            </div>
+                            <button onclick="window.deleteQuickNote('${docSnap.id}')" class="text-red-400 font-black p-1 hover:text-red-300">✕</button>
+                        </div>`;
+                }
+            });
+
+            if (!hasNotes) {
+                notesList.innerHTML = `<p class="text-[11px] text-slate-400 text-center py-1 lang" data-key="no_notes_available">കുറിപ്പുകൾ ഒന്നും ലഭ്യമല്ല</p>`;
+            }
+        });
+
+        window.filterMaterials = () => {
+            const searchTerm = document.getElementById('filterSite').value.toLowerCase();
+            const items = document.querySelectorAll('.material-item');
+            items.forEach(item => {
+                const siteName = item.getAttribute('data-site');
+                if (siteName.includes(searchTerm)) { item.style.display = 'block'; }
+                else { item.style.display = 'none'; }
+            });
+        };
+
+        window.exportToExcel = () => {
+            if (currentMaterialsData.length === 0) {
+                alert("ഡൗൺലോഡ് ചെയ്യാൻ ഡാറ്റകളൊന്നും ലഭ്യമല്ല!");
+                return;
+            }
+            let csvContent = "\uFEFFതീയതി,തരം,മെറ്റീരിയൽ പേര്,സൈറ്റ്,അളവ്,ഉപയോഗിച്ചത്,യൂണിറ്റ്,വില,കൊടുത്തത്,ഫോൺ\n";
+            currentMaterialsData.forEach(item => {
+                csvContent += `"${item.date}","${item.actionType || 'purchase'}","${item.name}","${item.site}",${item.qty},${item.used},"${item.unit}",${item.price},${item.paid || 0},"${item.phone || ''}"\n`;
+            });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.setAttribute('download', 'materials_ledger_report.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.showToast("📊 എക്സൽ റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്തു!");
+        };
+
+        window.editMat = (id, date, actionType, name, site, qty, used, unit, price, phone, paid) => {
+            editId = id;
+            document.getElementById('matDate').value = date;
+            document.getElementById('matActionType').value = actionType;
+            document.getElementById('matName').value = name;
+            document.getElementById('matSite').value = site;
+            document.getElementById('matQty').value = qty;
+            document.getElementById('matUsed').value = used;
+            document.getElementById('matUnit').value = unit;
+            document.getElementById('matPrice').value = price;
+            document.getElementById('matPhone').value = phone;
+            document.getElementById('matPaid').value = paid;
+            document.getElementById('formTitle').innerText = "മെറ്റീരിയൽ വിവരങ്ങൾ മാറ്റം വരുത്തുക";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            document.getElementById('saveBtn').innerText = "അപ്ഡേറ്റ് ചെയ്യുക";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.delMat = async (id) => {
+            if (await window.openCustomConfirm("ഈ വിവരങ്ങൾ ഡിലീറ്റ് ചെയ്യണോ?")) {
+                await deleteDoc(doc(db, "materials", id));
+                window.showToast("🗑️ ഡാറ്റ നീക്കം ചെയ്തു!", false);
+            }
+        };
     </script>
 </body>
 </html>
