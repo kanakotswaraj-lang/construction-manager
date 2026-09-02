@@ -590,8 +590,9 @@
                         <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl text-xs">
                             <div>
                                 <span class="font-bold text-white block">${shopName}</span>
-                                ${phone ? `<a href="tel:${phone}" class="text-cyan-400 font-bold text-[11px]">📞 ${phone}</a>` : `<span class="text-slate-400 text-[11px] lang" data-key="no_number">നമ്പർ ഇല്ല</span>`}
-                            </div>
+                                ${phone ? `<a href="tel:${phone}" class="text-cyan-400 font-bold text-[11px]">📞 ${phone}</a>` : `<span class="text-slate-400 text-[11px] lang" data-key="no_number">${getTxt('no_number', 'നമ്പർ ഇല്ല')}</span>`}
+
+                                  </div>
                             <div class="flex gap-1">
                                 <button onclick="editShopNameGlobally('${shopName}')" class="bg-cyan-900/60 text-cyan-200 px-2 py-1 rounded-lg text-[10px] font-black">${getTxt('edit', 'മാറ്റുക')}</button>
                                 <button onclick="deleteShopGlobally('${shopName}')" class="bg-red-900/60 text-red-200 px-2 py-1 rounded-lg text-[10px] font-black">${getTxt('delete', 'ഡിലീറ്റ്')}</button>
