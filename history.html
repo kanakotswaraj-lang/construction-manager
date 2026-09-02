@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ് - മേസ്തിരി പ്രോ</title>
+    <title class="lang" data-key="historyEditTitle">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ് - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="language.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
@@ -31,9 +32,9 @@
         let allHistoryData = [];
         let currentFilter = 'all';
 
-        // ലാംഗ്വേജ് മാറ്റങ്ങൾ അപ്ലൈ ചെയ്യാൻ
         window.switchLanguage = function(lang) {
             if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
+            localStorage.setItem('selectedLang', lang);
             
             document.querySelectorAll('.lang').forEach(el => {
                 const key = el.getAttribute('data-key');
@@ -48,6 +49,7 @@
                     el.placeholder = words[key][lang];
                 }
             });
+            filterAndDisplay();
         };
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -60,18 +62,15 @@
             window.switchLanguage(savedLang);
         });
 
-        // ഭാഷ തത്സമയം മാറാൻ
         window.addEventListener('languageChanged', (e) => {
             const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
             window.switchLanguage(newLang);
-            filterAndDisplay();
         });
 
         window.addEventListener('storage', (e) => {
             if (e.key === 'selectedLang') {
                 const newLang = e.newValue || 'ml';
                 window.switchLanguage(newLang);
-                filterAndDisplay();
             }
         });
 
@@ -80,7 +79,7 @@
             if (!container) return;
             const toast = document.createElement('div');
             toast.className = `pointer-events-auto px-6 py-4 rounded-2xl text-white font-bold text-base shadow-2xl border backdrop-blur-md flex items-center gap-3 ${
-                isSuccess ? 'bg-blue-950/95 border-blue-500 text-blue-200' : 'bg-red-950 border-red-500 text-white'
+                isSuccess ? 'bg-amber-950/95 border-amber-500 text-amber-200' : 'bg-red-950 border-red-500 text-white'
             }`;
             toast.innerText = message;
             container.appendChild(toast);
@@ -263,15 +262,18 @@
 
     <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 
-    <div class="max-w-md mx-auto space-y-4">
+    <!-- ഔട്ടർ ബോർഡർ മഞ്ഞ കളറിൽ തിളങ്ങുന്ന രീതിയിൽ -->
+    <div class="max-w-md mx-auto space-y-4 p-2 rounded-3xl border-2 border-amber-500 shadow-[0_0_25px_rgba(245,158,11,0.3)] bg-[#050B18]">
         
         <!-- ഹെഡർ കണ്ടെയ്നർ -->
         <div id="appHeader" class="w-full"></div>
 
-        <!-- പേരിന്റെ ബോക്സും ഹോം ബട്ടണും -->
-        <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-            <h1 class="text-base font-black text-white lang" data-key="historyEditTitle">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</h1>
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
+        <!-- പേരിന്റെ ബോക്സും ഹോം ബട്ടണും (മഞ്ഞ ഗ്രേഡിയന്റ് തീം) -->
+        <div class="bg-gradient-to-r from-amber-950/80 via-slate-900 to-amber-950/80 border-2 border-amber-500/80 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 tracking-wide lang" data-key="historyEditTitle">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</h1>
+            
+            <!-- ഹോം ബട്ടൺ മഞ്ഞ കളറിൽ -->
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-amber-300/40">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -313,7 +315,7 @@
 
     <!-- മോഡൽ -->
     <div id="editModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl">
+        <div class="bg-slate-900 border border-amber-500/50 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl">
             <h3 class="text-base font-black text-amber-400 lang" data-key="editAccount">കണക്ക് തിരുത്തുക (Edit)</h3>
             <input type="hidden" id="editDocId">
             
