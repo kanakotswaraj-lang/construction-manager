@@ -50,7 +50,7 @@
             filterAndDisplay();
         };
 
-        document.addEventListener("DOMContentLoaded", () => {
+                document.addEventListener("DOMContentLoaded", () => {
             try {
                 if (typeof setupHeader === 'function') { 
                     setupHeader('appHeader', true, currentMeshtri); 
@@ -61,12 +61,14 @@
                 document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
             }
 
-            fetchHistory(); // ഡാറ്റ ലോഡ് ചെയ്യാൻ ഈ ഫങ്ഷൻ കോൾ ചെയ്യുന്നു
-
+            // 1. ആദ്യം ഭാഷ സെറ്റ് ചെയ്യുക
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
             }
+
+            // 2. അതിനുശേഷം ഡാറ്റ ലോഡ് ചെയ്യുക
+            fetchHistory();
         });
 
         window.addEventListener('languageChanged', (e) => {
@@ -86,7 +88,7 @@
         });
 
         // ഫയർബേസിൽ നിന്ന് കണക്കുകൾ എടുക്കുന്ന ഫങ്ഷൻ തിരികെ ചേർത്തു
-        async function fetchHistory() {
+                async function fetchHistory() {
             const container = document.getElementById('historyListContainer');
             try {
                 const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
@@ -98,6 +100,8 @@
                 });
 
                 allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                
+                // ഡാറ്റ കിട്ടിയ ശേഷം മാത്രം സമ്മറിയും ലിസ്റ്റും അപ്ഡേറ്റ് ചെയ്യുക
                 updateSummary(allHistoryData);
                 filterAndDisplay();
             } catch (error) {
@@ -109,6 +113,7 @@
                 }
             }
         }
+
 
         function updateSummary(data) {
             let totalIncome = 0;
