@@ -3,155 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title class="lang" data-key="historyEditTitle">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ് - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <script src="language.js"></script>
-    <style>
-    body { font-family: 'Manjari', sans-serif; }
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
-    input, select {
-        border: 2px solid rgba(51, 65, 85, 1);
-        transition: all 0.3s ease;
-        background-color: #1e293b !important;
-        color: white !important;
-    }
-
-    input:focus, select:focus {
-        border-color: #10b981 !important; 
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2); 
-    }
-
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover, 
-    input:-webkit-autofill:focus {
-        -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
-        -webkit-text-fill-color: white !important;
-    }
-</style>
-    <title class="lang" data-key="report_title">ഹാജർ & പണി റിപ്പോർട്ട്</title>
-</head>
-<body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
-    <!-- ഔട്ടർ ബോർഡർ തിളക്കമുള്ള പച്ച കളറിലേക്ക് മാറ്റിയിരിക്കുന്നു -->
-    <div class="max-w-md mx-auto space-y-4 p-2 rounded-3xl border-2 border-emerald-500 shadow-[0_0_25px_rgba(16,185,129,0.3)] bg-[#050B18]">
-        
-        <!-- ഹെഡർ ഭാഗം -->
-        <div id="appHeader" class="w-full"></div>
-
-        <!-- ടൈറ്റിലും ഹോം ബട്ടണും (പച്ച ഗ്രേഡിയന്റ് തീം) -->
-        <div class="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-emerald-950/80 border-2 border-emerald-500/80 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 tracking-wide lang" data-key="report_title">ഹാജർ & പണി റിപ്പോർട്ട്</h1>
-
-            <!-- ഹോം ബട്ടൺ പച്ച കളറിലേക്ക് മാറ്റിയിരിക്കുന്നു -->
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-900/40 transition flex items-center gap-2 border border-emerald-400/40 lang" data-key="home">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                Home
-            </a>
-        </div>
-
-        <!-- സ്റ്റാറ്റിസ്റ്റിക്സ് കാർഡുകൾ -->
-        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
-            <div class="grid grid-cols-2 gap-3 text-center">
-                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
-                    <p class="text-[11px] text-slate-400 font-bold lang" data-key="total_days">ആകെ പണി ദിവസങ്ങൾ</p>
-                    <p id="statTotalDays" class="text-base font-black text-cyan-300">0</p>
-                </div>
-                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
-                    <p class="text-[11px] text-slate-400 font-bold lang" data-key="total_wage">ആകെ നൽകിയ കൂലി</p>
-                    <p id="statTotalWage" class="text-base font-black text-emerald-400">₹0</p>
-                </div>
-            </div>
-
-            <!-- സെർച്ച് & ഫിൽട്ടറുകൾ -->
-            <input type="text" id="searchInput" placeholder="🔍 പേരോ സൈറ്റോ തിരയുക..." class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder text-white" data-key-placeholder="search_placeholder" oninput="loadAttendanceData()">
-
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="worker">തൊഴിലാളി</label>
-                    <select id="filterWorker" onchange="loadAttendanceData()" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-emerald-400 focus:outline-none">
-                        <option value="" class="lang" data-key="all_workers">എല്ലാ തൊഴിലാളികളും</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="site">സൈറ്റ്</label>
-                    <select id="filterSite" onchange="loadAttendanceData()" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-emerald-400 focus:outline-none">
-                        <option value="" class="lang" data-key="all_sites">എല്ലാ സൈറ്റുകളും</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- വാട്സാപ്പ് ഷെയർ ബട്ടൺ കണ്ടെയ്നർ -->
-            <div id="waBtnContainer" class="hidden pt-1"></div>
-        </div>
-
-        <!-- ഹാജർ വിവരങ്ങൾ ലിസ്റ്റ് ചെയ്യുവാൻ -->
-        <div class="space-y-2.5">
-            <h3 class="text-xs font-black text-slate-400 uppercase px-1 lang" data-key="attendance_info">ഹാജർ വിവരങ്ങൾ</h3>
-            <div id="reportList" class="space-y-3"></div>
-        </div>
-    </div>
-
-    <!-- മോഡലുകൾ (ടോസ്റ്റ് & കൺഫർമേഷൻ) -->
-    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-emerald-400 text-emerald-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
-
-    <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഷാ മാറ്റത്തിനുള്ള കോഡ് -->
-    <script>
-        window.switchLanguage = function(lang) {
-            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
-            localStorage.setItem('selectedLang', lang);
-
-            document.querySelectorAll('.lang').forEach(element => {
-                let key = element.getAttribute('data-key');
-                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                    element.innerText = words[key][lang];
-                }
-            });
-
-            document.querySelectorAll('.lang-placeholder').forEach(element => {
-                let key = element.getAttribute('data-key-placeholder');
-                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                    element.placeholder = words[key][lang];
-                }
-            });
-
-            if (typeof window.loadAttendanceData === 'function') {
-                window.loadAttendanceData();
-            }
-        };
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            setTimeout(() => {
-                if (typeof window.switchLanguage === 'function') {
-                    window.switchLanguage(savedLang);
-                }
-            }, 100);
-        });
-    </script>
-
-    <!-- ഫയർബേസും ഡാറ്റ ലോഡിംഗും -->
     <script type="module">
-        import { setupHeader } from './header.js';
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-        
-        const currentMeshtri = localStorage.getItem('userName') || localStorage.getItem('meshtriName') || "മേസ്തിരി";
-
-        document.addEventListener("DOMContentLoaded", () => {
-            try {
-                if (typeof setupHeader === 'function') {
-                    setupHeader('appHeader', true, currentMeshtri);
-                } else {
-                    document.getElementById('appHeader').innerHTML = `<h2 class="text-emerald-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
-                }
-            } catch (e) {
-                document.getElementById('appHeader').innerHTML = `<h2 class="text-emerald-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
-            }
-            loadAttendanceData();
-        });
+        import { getFirestore, collection, getDocs, query, where, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { setupHeader } from './header.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -163,183 +23,330 @@
             appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
             measurementId: "G-J9Y5TW9D7T"
         };
-        
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        
+        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        let allHistoryData = [];
+        let currentFilter = 'all';
 
-        window.showToast = (message, isSuccess = true) => {
-            const toast = document.getElementById('customToast');
-            toast.innerText = message;
-            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-emerald-950 border-2 border-emerald-500 text-emerald-200' : 'bg-red-950 border-2 border-red-500 text-red-200'} opacity-100 scale-105`;
-            setTimeout(() => {
-                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-emerald-400 text-emerald-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
-            }, 2500);
-        };
-
-        let allLogs = [];
-        let allWorkers = new Map();
-        let allSites = new Set();
-        let isDataLoaded = false;
-
-        window.loadAttendanceData = async function() {
-            const list = document.getElementById('reportList');
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const getTxt = (key, defaultTxt) => (typeof words !== 'undefined' && words[key] && words[key][currentLang]) ? words[key][currentLang] : defaultTxt;
-
-            if (!isDataLoaded) {
-                list.innerHTML = `<p class="text-center text-xs text-slate-400 font-bold py-8">${getTxt('checking_data', 'ഡാറ്റ പരിശോധിക്കുന്നു...')}</p>`;
-            }
-
-            try {
-                if (!isDataLoaded) {
-                    const staffQuery = query(collection(db, "staffs"), where("meshtriOwner", "==", currentMeshtri));
-                    const staffSnapshot = await getDocs(staffQuery);
-                    staffSnapshot.forEach(docSnap => {
-                        const s = docSnap.data();
-                        if (s.name) {
-                            const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
-                            allWorkers.set(s.name.trim(), cleanPhone);
-                        }
-                    });
-
-                    const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri), where("type", "==", "wage"));
-                    const querySnapshot = await getDocs(q);
-
-                    allLogs = [];
-                    allSites.clear();
-
-                    querySnapshot.forEach(docSnap => {
-                        const data = docSnap.data();
-                        let workerName = data.name ? data.name.split('(')[0].trim() : "തൊഴിലാളി";
-                        let siteName = data.site || "പ്രധാന സൈറ്റ്";
-
-                        if (!allWorkers.has(workerName)) {
-                            allWorkers.set(workerName, '');
-                        }
-                        allSites.add(siteName);
-
-                        allLogs.push({
-                            id: docSnap.id,
-                            workerName: workerName,
-                            site: siteName,
-                            amount: parseFloat(data.amount) || 0,
-                            date: data.date || "",
-                            days: data.days || 1
-                        });
-                    });
-
-                    allLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    isDataLoaded = true;
-                    populateDropdowns();
+        window.switchLanguage = function(lang) {
+            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
+            localStorage.setItem('selectedLang', lang);
+            
+            document.querySelectorAll('.lang').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.innerText = words[key][lang];
                 }
+            });
 
-                renderReportList();
-
-            } catch (err) {
-                console.error(err);
-                list.innerHTML = `<p class="text-center text-xs text-rose-400 font-bold py-4">${getTxt('load_error', 'ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.')}</p>`;
-            }
+            document.querySelectorAll('.lang-placeholder').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.placeholder = words[key][lang];
+                }
+            });
+            filterAndDisplay();
         };
 
-        function populateDropdowns() {
-            const workerSelect = document.getElementById('filterWorker');
-            const siteSelect = document.getElementById('filterSite');
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const getTxt = (key, defaultTxt) => (typeof words !== 'undefined' && words[key] && words[key][currentLang]) ? words[key][currentLang] : defaultTxt;
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof setupHeader === 'function') {
+                setupHeader('appHeader', true, currentMeshtri);
+            }
+            fetchHistory();
+            
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            window.switchLanguage(savedLang);
+        });
 
-            const allWorkersText = getTxt('all_workers', 'എല്ലാ തൊഴിലാളികളും');
-            const allSitesText = getTxt('all_sites', 'എല്ലാ സൈറ്റുകളും');
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
+            window.switchLanguage(newLang);
+        });
 
-            const selectedWorkerVal = workerSelect.value;
-            const selectedSiteVal = siteSelect.value;
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'selectedLang') {
+                const newLang = e.newValue || 'ml';
+                window.switchLanguage(newLang);
+            }
+        });
 
-            workerSelect.innerHTML = `<option value="">${allWorkersText}</option>`;
-            siteSelect.innerHTML = `<option value="">${allSitesText}</option>`;
+        window.showToast = function(message, isSuccess = true) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto px-6 py-4 rounded-2xl text-white font-bold text-base shadow-2xl border backdrop-blur-md flex items-center gap-3 ${
+                isSuccess ? 'bg-amber-950/95 border-amber-500 text-amber-200' : 'bg-red-950 border-red-500 text-white'
+            }`;
+            toast.innerText = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
 
-            allWorkers.forEach((phone, worker) => {
-                workerSelect.innerHTML += `<option value="${worker}">${worker}</option>`;
-            });
+        async function fetchHistory() {
+            const container = document.getElementById('historyListContainer');
+            try {
+                const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+                const querySnapshot = await getDocs(q);
+                allHistoryData = [];
+                
+                querySnapshot.forEach((document) => {
+                    allHistoryData.push({ id: document.id, ...document.data() });
+                });
 
-            allSites.forEach(site => {
-                siteSelect.innerHTML += `<option value="${site}">${site}</option>`;
-            });
-
-            workerSelect.value = selectedWorkerVal;
-            siteSelect.value = selectedSiteVal;
+                allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                updateSummary(allHistoryData);
+                filterAndDisplay();
+            } catch (error) {
+                console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
+                if(container) {
+                    container.innerHTML = `<div class="text-center text-red-400 py-8 text-xs font-bold lang" data-key="loadError">കണക്കുകൾ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്!</div>`;
+                    window.switchLanguage(localStorage.getItem('selectedLang') || 'ml');
+                }
+            }
         }
 
-        function renderReportList() {
-            const selectedWorker = document.getElementById('filterWorker').value;
-            const selectedSite = document.getElementById('filterSite').value;
-            const searchVal = document.getElementById('searchInput').value.toLowerCase();
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const getTxt = (key, defaultTxt) => (typeof words !== 'undefined' && words[key] && words[key][currentLang]) ? words[key][currentLang] : defaultTxt;
+        function updateSummary(data) {
+            let totalIncome = 0;
+            let totalExpense = 0;
 
-            const filtered = allLogs.filter(log => {
-                const matchWorker = !selectedWorker || log.workerName === selectedWorker;
-                const matchSite = !selectedSite || log.site === selectedSite;
-                const matchSearch = !searchVal || log.workerName.toLowerCase().includes(searchVal) || log.site.toLowerCase().includes(searchVal);
-                return matchWorker && matchSite && matchSearch;
+            data.forEach(item => {
+                let amt = parseFloat(item.amount) || 0;
+                let dataType = String(item.type || '').toLowerCase();
+                let isIncome = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
+
+                if (isIncome) {
+                    totalIncome += amt;
+                } else {
+                    totalExpense += amt;
+                }
             });
 
-            let totalDays = 0;
-            let totalWage = 0;
+            document.getElementById('totalIncomeText').innerText = `₹ ${totalIncome}`;
+            document.getElementById('totalExpenseText').innerText = `₹ ${totalExpense}`;
+        }
 
-            filtered.forEach(item => {
-                totalDays += parseFloat(item.days) || 1;
-                totalWage += item.amount;
+        window.setCategoryFilter = function(type) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('bg-amber-500', 'text-slate-950', 'border-amber-400', 'font-black');
+                tab.classList.add('bg-slate-800', 'text-white', 'border-slate-700', 'font-bold');
             });
-
-            document.getElementById('statTotalDays').innerText = totalDays;
-            document.getElementById('statTotalWage').innerText = "₹" + totalWage;
-
-            const waContainer = document.getElementById('waBtnContainer');
-            if (selectedWorker) {
-                const phone = allWorkers.get(selectedWorker) || '';
-                const msgPrefix = getTxt('wa_msg_prefix', 'നമസ്കാരം');
-                const waAtt = getTxt('wa_attendance', 'ഹാജർ വിവരങ്ങൾ');
-                const waTDays = getTxt('wa_total_days', 'ആകെ പണി ദിവസം');
-                const waTWage = getTxt('wa_total_wage', 'ആകെ കൂലി');
-                const waBtnTitle = getTxt('wa_btn_text', 'WhatsApp മെസ്സേജ് അയക്കുക');
-
-                const msg = `${msgPrefix} ${selectedWorker},%0A${waAtt}:%0A- ${waTDays}: ${totalDays}%0A- ${waTWage}: ₹${totalWage}`;
-                
-                waContainer.innerHTML = `
-                    <a href="https://wa.me/${phone}?text=${msg}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
-                        💬 ${selectedWorker} - ${waBtnTitle}
-                    </a>
-                `;
-                waContainer.classList.remove('hidden');
-            } else {
-                waContainer.classList.add('hidden');
+            const activeTab = document.getElementById(`tab-${type}`);
+            if(activeTab) {
+                activeTab.classList.remove('bg-slate-800', 'text-white', 'border-slate-700', 'font-bold');
+                activeTab.classList.add('bg-amber-500', 'text-slate-950', 'border-amber-400', 'font-black');
             }
+            filterAndDisplay();
+        }
 
-            const list = document.getElementById('reportList');
-            list.innerHTML = '';
+        window.filterAndDisplay = function() {
+            let queryVal = (document.getElementById('searchHistory')?.value || '').toLowerCase();
+            
+            let filtered = allHistoryData.filter(item => {
+                let dataType = String(item.type || '').toLowerCase();
+                let matchesCategory = true;
 
-            if (filtered.length === 0) {
-                list.innerHTML = `<p class="text-center text-slate-400 font-bold text-xs py-8">${getTxt('no_data', 'വിവരങ്ങൾ ഒന്നും ലഭ്യമല്ല')}</p>`;
+                if (currentFilter === 'income') {
+                    matchesCategory = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
+                } else if (currentFilter === 'wage') {
+                    matchesCategory = (dataType === 'wage' || dataType === 'കൂലി');
+                } else if (currentFilter === 'expense') {
+                    matchesCategory = (dataType !== 'income' && dataType !== 'varavu' && dataType !== 'വരവ്' && dataType !== 'wage' && dataType !== 'കൂലി');
+                }
+
+                let searchString = ((item.site || '') + ' ' + (item.name || '')).toLowerCase();
+                let matchesSearch = searchString.includes(queryVal);
+                return matchesCategory && matchesSearch;
+            });
+
+            displayHistory(filtered);
+        }
+
+        function displayHistory(dataList) {
+            const container = document.getElementById('historyListContainer');
+            if (!container) return;
+
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+
+            if (dataList.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs font-bold lang" data-key="noAccounts">കണക്കുകൾ ഒന്നും ലഭ്യമല്ല</div>`;
+                window.switchLanguage(currentLang);
                 return;
             }
 
-            const daysLabel = getTxt('days_label', 'പണി:');
-            const dayUnit = getTxt('day_unit', 'ദിവസം');
+            container.innerHTML = dataList.map(item => {
+                let dataType = String(item.type || '').toLowerCase();
+                let isIncome = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
+                let badgeColor = isIncome ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400/50' : 'bg-red-500/20 text-red-300 border-red-400/50';
 
-            filtered.forEach(item => {
-                list.innerHTML += `
-                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
-                        <div class="space-y-1">
-                            <h4 class="font-black text-sm text-white">${item.workerName}</h4>
-                            <p class="text-xs text-slate-400 font-bold">📅 ${item.date} | 📍 <span class="text-cyan-300">${item.site}</span></p>
+                return `
+                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-2">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeColor} uppercase">${item.type || 'ചെലവ്'}</span>
+                                <h3 class="text-sm font-black text-white mt-1.5">${item.site || 'സൈറ്റ് പേരില്ല'}</h3>
+                            </div>
+                            <span class="text-xs font-bold text-slate-400">${item.date || ''}</span>
                         </div>
-                        <div class="text-right">
-                            <span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-black">${daysLabel} ${item.days} ${dayUnit}</span>
-                            <p class="font-black text-sm text-emerald-400 mt-1 shadow-sm">₹${item.amount}</p>
+                        <div class="flex justify-between items-center border-t border-slate-800/80 pt-2 text-xs">
+                            <span class="font-bold text-slate-300"><span class="lang" data-key="nameLabel">പേര്</span>: <strong class="text-white">${item.name || '-'}</strong></span>
+                            <span class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-amber-400'}">₹ ${item.amount || 0}</span>
+                        </div>
+                        <div class="flex gap-2 pt-1">
+                            <button type="button" onclick="openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold transition lang" data-key="editBtn">എഡിറ്റ്</button>
+                            <button type="button" onclick="deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition lang" data-key="deleteBtn">ഡിലീറ്റ്</button>
                         </div>
                     </div>
                 `;
-            });
+            }).join('');
+
+            window.switchLanguage(currentLang);
+        }
+
+        window.openEditModal = function(id, name, site, amount, date) {
+            document.getElementById('editDocId').value = id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editSite').value = site;
+            document.getElementById('editAmount').value = amount;
+            document.getElementById('editDate').value = date;
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        window.closeEditModal = function() {
+            document.getElementById('editModal').classList.add('hidden');
+        }
+
+        window.updateAccountData = async function() {
+            const id = document.getElementById('editDocId').value;
+            const name = document.getElementById('editName').value.trim();
+            const site = document.getElementById('editSite').value.trim();
+            const amount = parseFloat(document.getElementById('editAmount').value) || 0;
+            const date = document.getElementById('editDate').value;
+
+            if (!id) return;
+
+            try {
+                const docRef = doc(db, "accounts", id);
+                await updateDoc(docRef, { name, site, amount, date });
+                window.showToast("കണക്ക് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!", true);
+                closeEditModal();
+                fetchHistory();
+            } catch (error) {
+                window.showToast("കണക്ക് അപ്ഡേറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", false);
+            }
+        }
+
+        window.deleteAccount = async function(id) {
+            if (confirm("ഈ കണക്ക് തീർച്ചയായും ഡിലീറ്റ് ചെയ്യ வேண்டுമോ?")) {
+                try {
+                    await deleteDoc(doc(db, "accounts", id));
+                    window.showToast("കണക്ക് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!", true);
+                    fetchHistory();
+                } catch (error) {
+                    window.showToast("കണക്ക് ഡിലീറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", false);
+                }
+            }
         }
     </script>
+
+    <style>
+        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
+    </style>
+</head>
+<body class="text-white min-h-screen pb-12 p-4 font-sans">
+
+    <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
+
+    <!-- ഔട്ടർ ബോർഡർ മഞ്ഞ കളറിൽ തിളങ്ങുന്ന രീതിയിൽ -->
+    <div class="max-w-md mx-auto space-y-4 p-2 rounded-3xl border-2 border-amber-500 shadow-[0_0_25px_rgba(245,158,11,0.3)] bg-[#050B18]">
+        
+        <!-- ഹെഡർ കണ്ടെയ്നർ -->
+        <div id="appHeader" class="w-full"></div>
+
+        <!-- പേരിന്റെ ബോക്സും ഹോം ബട്ടണും (മഞ്ഞ ഗ്രേഡിയന്റ് തീം) -->
+        <div class="bg-gradient-to-r from-amber-950/80 via-slate-900 to-amber-950/80 border-2 border-amber-500/80 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 tracking-wide lang" data-key="historyEditTitle">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</h1>
+            
+            <!-- ഹോം ബട്ടൺ മഞ്ഞ കളറിൽ -->
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-amber-300/40">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home</span>
+            </a>
+        </div>
+
+        <!-- ടോട്ടൽ സമ്മറി കാർഡ് -->
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-slate-900/90 border border-cyan-500/30 p-3.5 rounded-2xl shadow-xl flex flex-col justify-between">
+                <span class="text-[11px] font-bold text-cyan-400 lang" data-key="totalIncome">ആകെ വരവ് (Income)</span>
+                <span id="totalIncomeText" class="text-base font-black text-white mt-1">₹ 0</span>
+            </div>
+            <div class="bg-slate-900/90 border border-red-500/30 p-3.5 rounded-2xl shadow-xl flex flex-col justify-between">
+                <span class="text-[11px] font-bold text-red-400 lang" data-key="totalExpense">ആകെ ചെലവ്/കൂലി</span>
+                <span id="totalExpenseText" class="text-base font-black text-white mt-1">₹ 0</span>
+            </div>
+        </div>
+
+        <!-- സെർച്ചും ഫിൽട്ടർ ടാബുകളും -->
+        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-3">
+            <input type="text" id="searchHistory" placeholder="🔍 സൈറ്റിന്റെ പേരിലോ വിവരത്തിലോ തിരയുക..." oninput="filterAndDisplay()" class="lang-placeholder w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" data-key="searchPlaceholder">
+            
+            <div class="grid grid-cols-4 gap-1.5 pt-1">
+                <button type="button" id="tab-all" onclick="setCategoryFilter('all')" class="filter-tab bg-amber-500 text-slate-950 border border-amber-400 py-2 rounded-xl text-[11px] font-black transition lang" data-key="all">എല്ലാം</button>
+                <button type="button" id="tab-income" onclick="setCategoryFilter('income')" class="filter-tab bg-slate-800 text-white border border-slate-700 py-2 rounded-xl text-[11px] font-bold transition lang" data-key="income">വരവ്</button>
+                <button type="button" id="tab-wage" onclick="setCategoryFilter('wage')" class="filter-tab bg-slate-800 text-white border border-slate-700 py-2 rounded-xl text-[11px] font-bold transition lang" data-key="wage">കൂലി</button>
+                <button type="button" id="tab-expense" onclick="setCategoryFilter('expense')" class="filter-tab bg-slate-800 text-white border border-slate-700 py-2 rounded-xl text-[11px] font-bold transition lang" data-key="expense">ചെലവ്</button>
+            </div>
+        </div>
+
+        <!-- കണക്കുകൾ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
+        <div id="historyListContainer" class="space-y-3">
+            <div class="text-center text-slate-400 py-8 text-sm lang" data-key="loading">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</div>
+        </div>
+
+    </div>
+
+    <!-- മോഡൽ -->
+    <div id="editModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-amber-500/50 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl">
+            <h3 class="text-base font-black text-amber-400 lang" data-key="editAccount">കണക്ക് തിരുത്തുക (Edit)</h3>
+            <input type="hidden" id="editDocId">
+            
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1 lang" data-key="descName">വിവരം / പേര്:</label>
+                <input type="text" id="editName" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1 lang" data-key="siteName">സൈറ്റ് പേര്:</label>
+                <input type="text" id="editSite" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1 lang" data-key="amountPlaceholder">തുക (₹):</label>
+                <input type="number" id="editAmount" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-slate-400 mb-1 lang" data-key="selectDateLabel">തീയതി:</label>
+                <input type="date" id="editDate" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="closeEditModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl font-black text-xs transition lang" data-key="cancel">വേണ്ട</button>
+                <button type="button" onclick="updateAccountData()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-3 rounded-xl font-black text-xs transition lang" data-key="update">അപ്ഡേറ്റ് ചെയ്യുക</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
