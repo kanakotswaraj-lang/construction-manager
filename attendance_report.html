@@ -27,13 +27,10 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
-        let allHistoryData = [];
-        let currentFilter = 'all';
+         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
         window.switchLanguage = function(lang) {
             if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
-            localStorage.setItem('selectedLang', lang);
             
             document.querySelectorAll('.lang').forEach(el => {
                 const key = el.getAttribute('data-key');
@@ -48,69 +45,42 @@
                     el.placeholder = words[key][lang];
                 }
             });
-            filterAndDisplay();
         };
 
         document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader', true, currentMeshtri);
+            try {
+                if (typeof setupHeader === 'function') { 
+                    setupHeader('appHeader', true, currentMeshtri); 
+                } else { 
+                    document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
+                }
+            } catch (e) { 
+                document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
             }
-            fetchHistory();
-            
+
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            window.switchLanguage(savedLang);
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
         });
 
         window.addEventListener('languageChanged', (e) => {
             const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
-            window.switchLanguage(newLang);
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
+            }
         });
 
         window.addEventListener('storage', (e) => {
             if (e.key === 'selectedLang') {
                 const newLang = e.newValue || 'ml';
-                window.switchLanguage(newLang);
+                if (typeof window.switchLanguage === 'function') {
+                    window.switchLanguage(newLang);
+                }
             }
         });
 
-        window.showToast = function(message, isSuccess = true) {
-            const container = document.getElementById('toastContainer');
-            if (!container) return;
-            const toast = document.createElement('div');
-            toast.className = `pointer-events-auto px-6 py-4 rounded-2xl text-white font-bold text-base shadow-2xl border backdrop-blur-md flex items-center gap-3 ${
-                isSuccess ? 'bg-amber-950/95 border-amber-500 text-amber-200' : 'bg-red-950 border-red-500 text-white'
-            }`;
-            toast.innerText = message;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transition = 'opacity 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        };
-
-        async function fetchHistory() {
-            const container = document.getElementById('historyListContainer');
-            try {
-                const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
-                const querySnapshot = await getDocs(q);
-                allHistoryData = [];
-                
-                querySnapshot.forEach((document) => {
-                    allHistoryData.push({ id: document.id, ...document.data() });
-                });
-
-                allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-                updateSummary(allHistoryData);
-                filterAndDisplay();
-            } catch (error) {
-                console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
-                if(container) {
-                    container.innerHTML = `<div class="text-center text-red-400 py-8 text-xs font-bold lang" data-key="loadError">കണക്കുകൾ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്!</div>`;
-                    window.switchLanguage(localStorage.getItem('selectedLang') || 'ml');
-                }
-            }
-        }
+        
 
         function updateSummary(data) {
             let totalIncome = 0;
