@@ -27,7 +27,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        let allHistoryData = [];
+        let currentFilter = 'all';
 
         window.switchLanguage = function(lang) {
             if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
@@ -45,6 +47,7 @@
                     el.placeholder = words[key][lang];
                 }
             });
+            filterAndDisplay();
         };
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -57,6 +60,8 @@
             } catch (e) { 
                 document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
             }
+
+            fetchHistory(); // ഡാറ്റ ലോഡ് ചെയ്യാൻ ഈ ഫങ്ഷൻ കോൾ ചെയ്യുന്നു
 
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
@@ -80,7 +85,30 @@
             }
         });
 
-        
+        // ഫയർബേസിൽ നിന്ന് കണക്കുകൾ എടുക്കുന്ന ഫങ്ഷൻ തിരികെ ചേർത്തു
+        async function fetchHistory() {
+            const container = document.getElementById('historyListContainer');
+            try {
+                const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+                const querySnapshot = await getDocs(q);
+                allHistoryData = [];
+                
+                querySnapshot.forEach((document) => {
+                    allHistoryData.push({ id: document.id, ...document.data() });
+                });
+
+                allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                updateSummary(allHistoryData);
+                filterAndDisplay();
+            } catch (error) {
+                console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
+                if(container) {
+                    container.innerHTML = `<div class="text-center text-red-400 py-8 text-xs font-bold lang" data-key="loadError">കണക്കുകൾ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്!</div>`;
+                    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+                    window.switchLanguage(currentLang);
+                }
+            }
+        }
 
         function updateSummary(data) {
             let totalIncome = 0;
