@@ -103,7 +103,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, where, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         import { setupHeader } from './header.js';
 
         const firebaseConfig = {
@@ -120,7 +120,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        let currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         let allHistoryData = [];
         let currentFilter = 'all';
 
@@ -134,7 +134,6 @@
             }, 2500);
         };
 
-        // ഭാഷ പൂർണ്ണമായി മാറ്റുന്ന ഫങ്ഷൻ
         window.switchLanguage = function(lang) {
             if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
             
@@ -158,6 +157,8 @@
         };
 
         document.addEventListener("DOMContentLoaded", () => {
+            currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+            
             try {
                 if (typeof setupHeader === 'function') { 
                     setupHeader('appHeader', true, currentMeshtri); 
@@ -170,6 +171,9 @@
 
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             window.switchLanguage(savedLang);
+
+            // ഡാറ്റ ലോഡ് ചെയ്യുന്ന ഫങ്ഷൻ ഇവിടെ കോൾ ചെയ്യുന്നു
+            initDataListener();
         });
 
         window.addEventListener('languageChanged', (e) => {
@@ -181,20 +185,34 @@
             if (e.key === 'selectedLang') {
                 window.switchLanguage(e.newValue || 'ml');
             }
+            if (e.key === 'userName') {
+                currentMeshtri = e.newValue || "പൊതുമേസ്തിരി";
+                initDataListener();
+            }
         });
 
-        // ഫയർബേസിൽ നിന്ന് തത്സമയം ഡാറ്റ എടുക്കാൻ
-        onSnapshot(query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri)), (querySnapshot) => {
-            allHistoryData = [];
-            
-            querySnapshot.forEach((document) => {
-                allHistoryData.push({ id: document.id, ...document.data() });
+        function initDataListener() {
+            onSnapshot(collection(db, "accounts"), (querySnapshot) => {
+                allHistoryData = [];
+                
+                querySnapshot.forEach((document) => {
+                    const data = document.data();
+                    const owner = String(data.meshtriOwner || '').trim().toLowerCase();
+                    const activeUser = String(currentMeshtri).trim().toLowerCase();
+
+                    // യൂസർ നെയിം മാച്ച് ആവുകയോ അല്ലെങ്കിൽ ഓണർ ഫീൽഡ് ഇല്ലാതിരിക്കുകയോ ചെയ്താൽ കാണിക്കുക
+                    if (owner === activeUser || owner === "" || !data.meshtriOwner) {
+                        allHistoryData.push({ id: document.id, ...data });
+                    }
+                });
+
+                allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                updateSummary(allHistoryData);
+                window.filterAndDisplay();
+            }, (error) => {
+                console.error("Firebase Error:", error);
             });
-
-            allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-            updateSummary(allHistoryData);
-            window.filterAndDisplay();
-        });
+        }
 
         function updateSummary(data) {
             let totalIncome = 0;
