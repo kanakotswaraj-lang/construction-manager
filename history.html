@@ -1,17 +1,109 @@
-
 <!DOCTYPE html>
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title class="lang" data-key="historyEditTitle">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ് - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="language.js"></script>
+    <script src="language.js?v=3.0"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
-    
+    <title class="lang" data-key="accounts_history_title">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</title>
+    <style>
+        body { font-family: 'Manjari', sans-serif; background-color: #050B18; color: white; }
+        input, select, textarea {
+            border: 2px solid rgba(51, 65, 85, 1);
+            transition: all 0.3s ease;
+            background-color: #1e293b !important;
+            color: white !important;
+        }
+        input:focus, select:focus {
+            border-color: #22d3ee !important;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12 p-4">
+    <div class="max-w-md mx-auto space-y-4 border-2 border-blue-500/60 p-4 rounded-3xl shadow-[0_0_25px_rgba(37,99,235,0.25)] bg-[#050B18]/95">
+        
+        <!-- ഹെഡർ -->
+        <div id="appHeader" class="w-full flex justify-center"></div>
+
+        <!-- ടൈറ്റിലും ഹോം ബട്ടണും -->
+        <div class="bg-slate-900 border-2 border-blue-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-blue-950/50 my-4">
+            <h1 class="text-sm font-black">
+                <span class="lang bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-500 bg-clip-text text-transparent" data-key="accounts_history_edit">Accounts History & Edit</span>
+            </h1>
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-xs font-black shadow-lg flex items-center gap-2 border border-white/40">
+                <span>🏠</span> <span class="lang" data-key="homeBtn">Home</span>
+            </a>
+        </div>
+
+        <!-- ആകെ വരവും ചെലവും കാണിക്കുന്ന ബോക്സ് -->
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-slate-900 border border-slate-700 p-4 rounded-3xl shadow-lg text-center">
+                <p class="text-[10px] uppercase font-black text-slate-400 lang" data-key="totalIncome">Total Income</p>
+                <h2 id="totalIncomeText" class="text-lg font-black text-emerald-400 mt-1">₹ 0</h2>
+            </div>
+            <div class="bg-slate-900 border border-slate-700 p-4 rounded-3xl shadow-lg text-center">
+                <p class="text-[10px] uppercase font-black text-slate-400 lang" data-key="totalExpenseWage">Total Expense/Wage</p>
+                <h2 id="totalExpenseText" class="text-lg font-black text-amber-400 mt-1">₹ 0</h2>
+            </div>
+        </div>
+
+        <!-- തിരയുന്ന സെക്ഷനും ഫിൽട്ടറുകളും -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
+            <div class="relative">
+                <input type="text" id="searchHistory" placeholder="🔍 Search by site name or details..." oninput="window.filterAndDisplay()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="search_placeholder">
+            </div>
+            
+            <div class="grid grid-cols-4 gap-1.5 pt-1">
+                <button onclick="window.setCategoryFilter('all')" id="tab-all" class="filter-tab py-2.5 rounded-xl text-[11px] font-black bg-amber-500 text-slate-950 border border-amber-400 transition lang" data-key="all">All</button>
+                <button onclick="window.setCategoryFilter('income')" id="tab-income" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="income">Income</button>
+                <button onclick="window.setCategoryFilter('wage')" id="tab-wage" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="wage">Wage</button>
+                <button onclick="window.setCategoryFilter('expense')" id="tab-expense" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="expense">Expense</button>
+            </div>
+        </div>
+
+        <!-- കണക്കുകൾ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
+        <div id="historyListContainer" class="space-y-3">
+            <div class="text-center text-slate-500 py-8 text-xs font-bold lang" data-key="noAccounts">No accounts found</div>
+        </div>
+    </div>
+
+    <!-- എഡിറ്റ് മോഡൽ -->
+    <div id="editModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3 shadow-2xl">
+            <h3 class="font-black text-white text-sm mb-2 lang" data-key="editAccountTitle">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
+            <input type="hidden" id="editDocId">
+            <div>
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="nameLabel">പേര്</label>
+                <input type="text" id="editName" class="w-full p-3 bg-slate-800 rounded-xl text-xs">
+            </div>
+            <div>
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="siteLabel">സൈറ്റ്</label>
+                <input type="text" id="editSite" class="w-full p-3 bg-slate-800 rounded-xl text-xs">
+            </div>
+            <div>
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="amountLabel">തുക</label>
+                <input type="number" id="editAmount" class="w-full p-3 bg-slate-800 rounded-xl text-xs">
+            </div>
+            <div>
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="date">തീയതി</label>
+                <input type="date" id="editDate" class="w-full p-3 bg-slate-800 rounded-xl text-xs">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="window.closeEditModal()" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-xl text-xs font-bold lang" data-key="cancelEditBtn">ഇല്ല</button>
+                <button onclick="window.updateAccountData()" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl text-xs font-black lang" data-key="updateBtn">അപ്ഡേറ്റ്</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ടോസ്റ്റ് നോട്ടിഫിക്കേഷൻ -->
+    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 opacity-0 pointer-events-none text-center"></div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         import { setupHeader } from './header.js';
 
         const firebaseConfig = {
@@ -28,13 +120,22 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+        let currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
         let allHistoryData = [];
         let currentFilter = 'all';
 
+        window.showToast = (message, isSuccess = true) => {
+            const toast = document.getElementById('customToast');
+            if(!toast) return;
+            toast.innerText = message;
+            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-emerald-900 border-2 border-emerald-400 text-emerald-200' : 'bg-red-900 border-2 border-rose-400 text-rose-200'} opacity-100`;
+            setTimeout(() => {
+                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 opacity-0 pointer-events-none text-center";
+            }, 2500);
+        };
+
         window.switchLanguage = function(lang) {
             if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
-            localStorage.setItem('selectedLang', lang);
             
             document.querySelectorAll('.lang').forEach(el => {
                 const key = el.getAttribute('data-key');
@@ -49,17 +150,30 @@
                     el.placeholder = words[key][lang];
                 }
             });
-            filterAndDisplay();
+            
+            if (typeof window.filterAndDisplay === 'function') {
+                window.filterAndDisplay();
+            }
         };
 
         document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader', true, currentMeshtri);
-            }
-            fetchHistory();
+            currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
             
+            try {
+                if (typeof setupHeader === 'function') { 
+                    setupHeader('appHeader', true, currentMeshtri); 
+                } else { 
+                    document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
+                }
+            } catch (e) { 
+                document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
+            }
+
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             window.switchLanguage(savedLang);
+
+            // ഡാറ്റ ലോഡ് ചെയ്യുന്ന ഫങ്ഷൻ ഇവിടെ കോൾ ചെയ്യുന്നു
+            initDataListener();
         });
 
         window.addEventListener('languageChanged', (e) => {
@@ -69,45 +183,35 @@
 
         window.addEventListener('storage', (e) => {
             if (e.key === 'selectedLang') {
-                const newLang = e.newValue || 'ml';
-                window.switchLanguage(newLang);
+                window.switchLanguage(e.newValue || 'ml');
+            }
+            if (e.key === 'userName') {
+                currentMeshtri = e.newValue || "പൊതുമേസ്തിരി";
+                initDataListener();
             }
         });
 
-        window.showToast = function(message, isSuccess = true) {
-            const container = document.getElementById('toastContainer');
-            if (!container) return;
-            const toast = document.createElement('div');
-            toast.className = `pointer-events-auto px-6 py-4 rounded-2xl text-white font-bold text-base shadow-2xl border backdrop-blur-md flex items-center gap-3 ${
-                isSuccess ? 'bg-amber-950/95 border-amber-500 text-amber-200' : 'bg-red-950 border-red-500 text-white'
-            }`;
-            toast.innerText = message;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transition = 'opacity 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        };
-
-        async function fetchHistory() {
-            const container = document.getElementById('historyListContainer');
-            try {
-                const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
-                const querySnapshot = await getDocs(q);
+        function initDataListener() {
+            onSnapshot(collection(db, "accounts"), (querySnapshot) => {
                 allHistoryData = [];
                 
                 querySnapshot.forEach((document) => {
-                    allHistoryData.push({ id: document.id, ...document.data() });
+                    const data = document.data();
+                    const owner = String(data.meshtriOwner || '').trim().toLowerCase();
+                    const activeUser = String(currentMeshtri).trim().toLowerCase();
+
+                    // യൂസർ നെയിം മാച്ച് ആവുകയോ അല്ലെങ്കിൽ ഓണർ ഫീൽഡ് ഇല്ലാതിരിക്കുകയോ ചെയ്താൽ കാണിക്കുക
+                    if (owner === activeUser || owner === "" || !data.meshtriOwner) {
+                        allHistoryData.push({ id: document.id, ...data });
+                    }
                 });
 
                 allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
                 updateSummary(allHistoryData);
-                filterAndDisplay();
-            } catch (error) {
-                console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
-                if(container) container.innerHTML = `<div class="text-center text-red-400 py-8 text-xs font-bold">കണക്കുകൾ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്!</div>`;
-            }
+                window.filterAndDisplay();
+            }, (error) => {
+                console.error("Firebase Error:", error);
+            });
         }
 
         function updateSummary(data) {
@@ -126,8 +230,10 @@
                 }
             });
 
-            document.getElementById('totalIncomeText').innerText = `₹ ${totalIncome}`;
-            document.getElementById('totalExpenseText').innerText = `₹ ${totalExpense}`;
+            const incEl = document.getElementById('totalIncomeText');
+            const expEl = document.getElementById('totalExpenseText');
+            if(incEl) incEl.innerText = `₹ ${totalIncome}`;
+            if(expEl) expEl.innerText = `₹ ${totalExpense}`;
         }
 
         window.setCategoryFilter = function(type) {
@@ -141,7 +247,7 @@
                 activeTab.classList.remove('bg-slate-800', 'text-white', 'border-slate-700', 'font-bold');
                 activeTab.classList.add('bg-amber-500', 'text-slate-950', 'border-amber-400', 'font-black');
             }
-            filterAndDisplay();
+            window.filterAndDisplay();
         }
 
         window.filterAndDisplay = function() {
@@ -174,7 +280,7 @@
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
 
             if (dataList.length === 0) {
-                container.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs font-bold lang" data-key="noAccounts">കണക്കുകൾ ഒന്നും ലഭ്യമല്ല</div>`;
+                container.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs font-bold lang" data-key="noAccounts">No accounts found</div>`;
                 window.switchLanguage(currentLang);
                 return;
             }
@@ -188,18 +294,18 @@
                     <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-2">
                         <div class="flex justify-between items-start">
                             <div>
-                                <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeColor} uppercase">${item.type || 'ചെലവ്'}</span>
+                                <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${badgeColor} uppercase">${item.type || 'Expense'}</span>
                                 <h3 class="text-sm font-black text-white mt-1.5">${item.site || 'സൈറ്റ് പേരില്ല'}</h3>
                             </div>
                             <span class="text-xs font-bold text-slate-400">${item.date || ''}</span>
                         </div>
                         <div class="flex justify-between items-center border-t border-slate-800/80 pt-2 text-xs">
-                            <span class="font-bold text-slate-300"><span class="lang" data-key="nameLabel">പേര്</span>: <strong class="text-white">${item.name || '-'}</strong></span>
+                            <span class="font-bold text-slate-300"><span class="lang" data-key="nameLabel">Name</span>: <strong class="text-white">${item.name || '-'}</strong></span>
                             <span class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-amber-400'}">₹ ${item.amount || 0}</span>
                         </div>
                         <div class="flex gap-2 pt-1">
-                            <button type="button" onclick="openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold transition lang" data-key="editBtn">എഡിറ്റ്</button>
-                            <button type="button" onclick="deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition lang" data-key="deleteBtn">ഡിലീറ്റ്</button>
+                            <button type="button" onclick="window.openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold transition lang" data-key="editBtn">Edit</button>
+                            <button type="button" onclick="window.deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition lang" data-key="deleteBtn">Delete</button>
                         </div>
                     </div>
                 `;
@@ -234,8 +340,7 @@
                 const docRef = doc(db, "accounts", id);
                 await updateDoc(docRef, { name, site, amount, date });
                 window.showToast("കണക്ക് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു!", true);
-                closeEditModal();
-                fetchHistory();
+                window.closeEditModal();
             } catch (error) {
                 window.showToast("കണക്ക് അപ്ഡേറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", false);
             }
@@ -246,105 +351,11 @@
                 try {
                     await deleteDoc(doc(db, "accounts", id));
                     window.showToast("കണക്ക് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!", true);
-                    fetchHistory();
                 } catch (error) {
                     window.showToast("കണക്ക് ഡിലീറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", false);
                 }
             }
         }
     </script>
-
-    <style>
-        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
-    </style>
-</head>
-<body class="text-white min-h-screen pb-12 p-4 font-sans">
-
-    <div id="toastContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
-
-    <!-- ഔട്ടർ ബോർഡർ മഞ്ഞ കളറിൽ തിളങ്ങുന്ന രീതിയിൽ -->
-    <div class="max-w-md mx-auto space-y-4 p-2 rounded-3xl border-2 border-amber-500 shadow-[0_0_25px_rgba(245,158,11,0.3)] bg-[#050B18]">
-        
-        <!-- ഹെഡർ കണ്ടെയ്നർ -->
-        <div id="appHeader" class="w-full"></div>
-
-        <!-- പേരിന്റെ ബോക്സും ഹോം ബട്ടണും (മഞ്ഞ ഗ്രേഡിയന്റ് തീം) -->
-        <div class="bg-gradient-to-r from-amber-950/80 via-slate-900 to-amber-950/80 border-2 border-amber-500/80 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 tracking-wide lang" data-key="historyEditTitle">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</h1>
-            
-            <!-- ഹോം ബട്ടൺ മഞ്ഞ കളറിൽ -->
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-amber-300/40">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                <span>Home</span>
-            </a>
-        </div>
-
-        <!-- ടോട്ടൽ സമ്മറി കാർഡ് -->
-        <div class="grid grid-cols-2 gap-3">
-            <div class="bg-slate-900/90 border border-cyan-500/30 p-3.5 rounded-2xl shadow-xl flex flex-col justify-between">
-                <span class="text-[11px] font-bold text-cyan-400 lang" data-key="totalIncome">ആകെ വരവ് (Income)</span>
-                <span id="totalIncomeText" class="text-base font-black text-white mt-1">₹ 0</span>
-            </div>
-            <div class="bg-slate-900/90 border border-red-500/30 p-3.5 rounded-2xl shadow-xl flex flex-col justify-between">
-                <span class="text-[11px] font-bold text-red-400 lang" data-key="totalExpense">ആകെ ചെലവ്/കൂലി</span>
-                <span id="totalExpenseText" class="text-base font-black text-white mt-1">₹ 0</span>
-            </div>
-        </div>
-
-        <!-- സെർച്ചും ഫിൽട്ടർ ടാബുകളും -->
-        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl space-y-3">
-            <input type="text" id="searchHistory" placeholder="🔍 സൈറ്റിന്റെ പേരിലോ വിവരത്തിലോ തിരയുക..." oninput="filterAndDisplay()" class="lang-placeholder w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" data-key="searchPlaceholder">
-            
-            <div class="grid grid-cols-4 gap-1.5 pt-1">
-                <button type="button" id="tab-all" onclick="setCategoryFilter('all')" class="filter-tab bg-amber-500 text-slate-950 border border-amber-400 py-2 rounded-xl text-[11px] font-black transition lang" data-key="all">എല്ലാം</button>
-                <button type="button" id="tab-income" onclick="setCategoryFilter('income')" class="filter-tab bg-slate-800 text-white border border-slate-700 py-2 rounded-xl text-[11px] font-bold transition lang" data-key="income">വരവ്</button>
-                <button type="button" id="tab-wage" onclick="setCategoryFilter('wage')" class="filter-tab bg-slate-800 text-white border border-slate-700 py-2 rounded-xl text-[11px] font-bold transition lang" data-key="wage">കൂലി</button>
-                <button type="button" id="tab-expense" onclick="setCategoryFilter('expense')" class="filter-tab bg-slate-800 text-white border border-slate-700 py-2 rounded-xl text-[11px] font-bold transition lang" data-key="expense">ചെലവ്</button>
-            </div>
-        </div>
-
-        <!-- കണക്കുകൾ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
-        <div id="historyListContainer" class="space-y-3">
-            <div class="text-center text-slate-400 py-8 text-sm lang" data-key="loading">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</div>
-        </div>
-
-    </div>
-
-    <!-- മോഡൽ -->
-    <div id="editModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-amber-500/50 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl">
-            <h3 class="text-base font-black text-amber-400 lang" data-key="editAccount">കണക്ക് തിരുത്തുക (Edit)</h3>
-            <input type="hidden" id="editDocId">
-            
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1 lang" data-key="descName">വിവരം / പേര്:</label>
-                <input type="text" id="editName" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-            </div>
-
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1 lang" data-key="siteName">സൈറ്റ് പേര്:</label>
-                <input type="text" id="editSite" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-            </div>
-
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1 lang" data-key="amountPlaceholder">തുക (₹):</label>
-                <input type="number" id="editAmount" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-            </div>
-
-            <div>
-                <label class="block text-xs font-black text-slate-400 mb-1 lang" data-key="selectDateLabel">തീയതി:</label>
-                <input type="date" id="editDate" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-            </div>
-
-            <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeEditModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl font-black text-xs transition lang" data-key="cancel">വേണ്ട</button>
-                <button type="button" onclick="updateAccountData()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 p-3 rounded-xl font-black text-xs transition lang" data-key="update">അപ്ഡേറ്റ് ചെയ്യുക</button>
-            </div>
-        </div>
-    </div>
-
 </body>
 </html>
