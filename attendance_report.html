@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <script src="language.js"></script>
     <style>
-    body { font-family: 'Manjari', sans-serif; }
+    body { font-family: 'Manjari', sans-serif; background-color: #050B18; color: white; }
     
     input, select {
         border: 2px solid rgba(51, 65, 85, 1);
@@ -17,9 +17,9 @@
     }
 
     input:focus, select:focus {
-        border-color: #10b981 !important; 
+        border-color: #06b6d4 !important; 
         outline: none;
-        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2); 
+        box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.2); 
     }
 
     input:-webkit-autofill,
@@ -32,18 +32,18 @@
     <title class="lang" data-key="report_title">ഹാജർ & പണി റിപ്പോർട്ട്</title>
 </head>
 <body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
-    <!-- ഔട്ടർ ബോർഡർ തിളക്കമുള്ള പച്ച കളറിലേക്ക് മാറ്റിയിരിക്കുന്നു -->
-    <div class="max-w-md mx-auto space-y-4 p-2 rounded-3xl border-2 border-emerald-500 shadow-[0_0_25px_rgba(16,185,129,0.3)] bg-[#050B18]">
+    <!-- ഔട്ടർ ബോർഡർ സയാൻ/നീല തിളക്കമുള്ള കളറിലേക്ക് മാറ്റിയിരിക്കുന്നു -->
+    <div class="max-w-md mx-auto space-y-4 p-4 rounded-3xl border-2 border-cyan-500/60 shadow-[0_0_25px_rgba(6,182,212,0.25)] bg-[#050B18]/95">
         
         <!-- ഹെഡർ ഭാഗം -->
-        <div id="appHeader" class="w-full"></div>
+        <div id="appHeader" class="w-full flex justify-center"></div>
 
-        <!-- ടൈറ്റിലും ഹോം ബട്ടണും (പച്ച ഗ്രേഡിയന്റ് തീം) -->
-        <div class="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-emerald-950/80 border-2 border-emerald-500/80 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
-            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 tracking-wide lang" data-key="report_title">ഹാജർ & പണി റിപ്പോർട്ട്</h1>
+        <!-- ടൈറ്റിലും ഹോം ബട്ടണും (സയാൻ തീം) -->
+        <div class="bg-slate-900 border-2 border-cyan-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-cyan-950/50">
+            <h1 class="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-sky-400 tracking-wide lang" data-key="report_title">ഹാജർ & പണി റിപ്പോർട്ട്</h1>
 
-            <!-- ഹോം ബട്ടൺ പച്ച കളറിലേക്ക് മാറ്റിയിരിക്കുന്നു -->
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-900/40 transition flex items-center gap-2 border border-emerald-400/40 lang" data-key="home">
+            <!-- ഹോം ബട്ടൺ സയാൻ കളറിലേക്ക് മാറ്റിയിരിക്കുന്നു -->
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-xl text-xs font-black shadow-lg flex items-center gap-2 border border-white/40 lang" data-key="home">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -71,13 +71,13 @@
             <div class="grid grid-cols-2 gap-2">
                 <div>
                     <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="worker">തൊഴിലാളി</label>
-                    <select id="filterWorker" onchange="loadAttendanceData()" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-emerald-400 focus:outline-none">
+                    <select id="filterWorker" onchange="loadAttendanceData()" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-cyan-400 focus:outline-none">
                         <option value="" class="lang" data-key="all_workers">എല്ലാ തൊഴിലാളികളും</option>
                     </select>
                 </div>
                 <div>
                     <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="site">സൈറ്റ്</label>
-                    <select id="filterSite" onchange="loadAttendanceData()" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-emerald-400 focus:outline-none">
+                    <select id="filterSite" onchange="loadAttendanceData()" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-cyan-400 focus:outline-none">
                         <option value="" class="lang" data-key="all_sites">എല്ലാ സൈറ്റുകളും</option>
                     </select>
                 </div>
@@ -95,7 +95,7 @@
     </div>
 
     <!-- മോഡലുകൾ (ടോസ്റ്റ് & കൺഫർമേഷൻ) -->
-    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-emerald-400 text-emerald-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
+    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-cyan-400 text-cyan-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
 
     <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഷാ മാറ്റത്തിനുള്ള കോഡ് -->
     <script>
@@ -138,17 +138,17 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         
-        const currentMeshtri = localStorage.getItem('userName') || localStorage.getItem('meshtriName') || "മേസ്തിരി";
+        const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
         document.addEventListener("DOMContentLoaded", () => {
             try {
                 if (typeof setupHeader === 'function') {
                     setupHeader('appHeader', true, currentMeshtri);
                 } else {
-                    document.getElementById('appHeader').innerHTML = `<h2 class="text-emerald-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
+                    document.getElementById('appHeader').innerHTML = `<h2 class="text-cyan-400 font-black text-sm">${currentMeshtri}</h2>`;
                 }
             } catch (e) {
-                document.getElementById('appHeader').innerHTML = `<h2 class="text-emerald-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
+                document.getElementById('appHeader').innerHTML = `<h2 class="text-cyan-400 font-black text-sm">${currentMeshtri}</h2>`;
             }
             loadAttendanceData();
         });
@@ -170,9 +170,9 @@
         window.showToast = (message, isSuccess = true) => {
             const toast = document.getElementById('customToast');
             toast.innerText = message;
-            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-emerald-950 border-2 border-emerald-500 text-emerald-200' : 'bg-red-950 border-2 border-red-500 text-red-200'} opacity-100 scale-105`;
+            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-slate-900 border-2 border-cyan-400 text-cyan-200' : 'bg-red-950 border-2 border-red-500 text-red-200'} opacity-100 scale-105`;
             setTimeout(() => {
-                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-emerald-400 text-emerald-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
+                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-cyan-400 text-cyan-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
             }, 2500);
         };
 
@@ -305,7 +305,7 @@
                 const msg = `${msgPrefix} ${selectedWorker},%0A${waAtt}:%0A- ${waTDays}: ${totalDays}%0A- ${waTWage}: ₹${totalWage}`;
                 
                 waContainer.innerHTML = `
-                    <a href="https://wa.me/${phone}?text=${msg}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
+                    <a href="https://wa.me/${phone}?text=${msg}" target="_blank" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
                         💬 ${selectedWorker} - ${waBtnTitle}
                     </a>
                 `;
@@ -333,7 +333,7 @@
                             <p class="text-xs text-slate-400 font-bold">📅 ${item.date} | 📍 <span class="text-cyan-300">${item.site}</span></p>
                         </div>
                         <div class="text-right">
-                            <span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-black">${daysLabel} ${item.days} ${dayUnit}</span>
+                            <span class="px-2.5 py-1 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-xl text-xs font-black">${daysLabel} ${item.days} ${dayUnit}</span>
                             <p class="font-black text-sm text-emerald-400 mt-1 shadow-sm">₹${item.amount}</p>
                         </div>
                     </div>
