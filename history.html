@@ -23,17 +23,17 @@
     </style>
 </head>
 <body class="min-h-screen pb-12 p-4">
-    <div class="max-w-md mx-auto space-y-4 border-2 border-blue-500/60 p-4 rounded-3xl shadow-[0_0_25px_rgba(37,99,235,0.25)] bg-[#050B18]/95">
+    <div class="max-w-md mx-auto space-y-4 border-2 border-cyan-500/60 p-4 rounded-3xl shadow-[0_0_25px_rgba(6,182,212,0.25)] bg-[#050B18]/95">
         
         <!-- ഹെഡർ -->
         <div id="appHeader" class="w-full flex justify-center"></div>
 
         <!-- ടൈറ്റിലും ഹോം ബട്ടണും -->
-        <div class="bg-slate-900 border-2 border-blue-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-blue-950/50 my-4">
+        <div class="bg-slate-900 border-2 border-cyan-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-cyan-950/50 my-4">
             <h1 class="text-sm font-black">
-                <span class="lang bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-500 bg-clip-text text-transparent" data-key="accounts_history_edit">Accounts History & Edit</span>
+                <span class="lang bg-gradient-to-r from-cyan-400 via-teal-300 to-sky-400 bg-clip-text text-transparent" data-key="accounts_history_edit">Accounts History & Edit</span>
             </h1>
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-xs font-black shadow-lg flex items-center gap-2 border border-white/40">
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-xl text-xs font-black shadow-lg flex items-center gap-2 border border-white/40">
                 <span>🏠</span> <span class="lang" data-key="homeBtn">Home</span>
             </a>
         </div>
@@ -53,11 +53,11 @@
         <!-- തിരയുന്ന സെക്ഷനും ഫിൽട്ടറുകളും -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
             <div class="relative">
-                <input type="text" id="searchHistory" placeholder="🔍 Search by site name or details..." oninput="window.filterAndDisplay()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key="search_placeholder">
+                <input type="text" id="searchHistory" placeholder="🔍 Search by site name or details..." oninput="window.filterAndDisplay()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder text-white" data-key="search_placeholder">
             </div>
             
             <div class="grid grid-cols-4 gap-1.5 pt-1">
-                <button onclick="window.setCategoryFilter('all')" id="tab-all" class="filter-tab py-2.5 rounded-xl text-[11px] font-black bg-amber-500 text-slate-950 border border-amber-400 transition lang" data-key="all">All</button>
+                <button onclick="window.setCategoryFilter('all')" id="tab-all" class="filter-tab py-2.5 rounded-xl text-[11px] font-black bg-cyan-500 text-slate-950 border border-cyan-400 transition lang" data-key="all">All</button>
                 <button onclick="window.setCategoryFilter('income')" id="tab-income" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="income">Income</button>
                 <button onclick="window.setCategoryFilter('wage')" id="tab-wage" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="wage">Wage</button>
                 <button onclick="window.setCategoryFilter('expense')" id="tab-expense" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="expense">Expense</button>
@@ -93,13 +93,13 @@
             </div>
             <div class="flex gap-2 pt-2">
                 <button onclick="window.closeEditModal()" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-xl text-xs font-bold lang" data-key="cancelEditBtn">ഇല്ല</button>
-                <button onclick="window.updateAccountData()" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl text-xs font-black lang" data-key="updateBtn">അപ്ഡേറ്റ്</button>
+                <button onclick="window.updateAccountData()" class="flex-1 bg-cyan-600 text-white py-3 rounded-xl text-xs font-black lang" data-key="updateBtn">അപ്ഡേറ്റ്</button>
             </div>
         </div>
     </div>
 
     <!-- ടോസ്റ്റ് നോട്ടിഫിക്കേഷൻ -->
-    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 opacity-0 pointer-events-none text-center"></div>
+    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-cyan-400 text-cyan-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 opacity-0 pointer-events-none text-center"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -128,9 +128,9 @@
             const toast = document.getElementById('customToast');
             if(!toast) return;
             toast.innerText = message;
-            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-emerald-900 border-2 border-emerald-400 text-emerald-200' : 'bg-red-900 border-2 border-rose-400 text-rose-200'} opacity-100`;
+            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-cyan-900 border-2 border-cyan-400 text-cyan-200' : 'bg-red-900 border-2 border-rose-400 text-rose-200'} opacity-100`;
             setTimeout(() => {
-                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 opacity-0 pointer-events-none text-center";
+                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-cyan-400 text-cyan-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 opacity-0 pointer-events-none text-center";
             }, 2500);
         };
 
@@ -163,16 +163,15 @@
                 if (typeof setupHeader === 'function') { 
                     setupHeader('appHeader', true, currentMeshtri); 
                 } else { 
-                    document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
+                    document.getElementById('appHeader').innerHTML = `<h2 class="text-cyan-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
                 }
             } catch (e) { 
-                document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
+                document.getElementById('appHeader').innerHTML = `<h2 class="text-cyan-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
             }
 
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             window.switchLanguage(savedLang);
 
-            // ഡാറ്റ ലോഡ് ചെയ്യുന്ന ഫങ്ഷൻ ഇവിടെ കോൾ ചെയ്യുന്നു
             initDataListener();
         });
 
@@ -200,7 +199,6 @@
                     const owner = String(data.meshtriOwner || '').trim().toLowerCase();
                     const activeUser = String(currentMeshtri).trim().toLowerCase();
 
-                    // യൂസർ നെയിം മാച്ച് ആവുകയോ അല്ലെങ്കിൽ ഓണർ ഫീൽഡ് ഇല്ലാതിരിക്കുകയോ ചെയ്താൽ കാണിക്കുക
                     if (owner === activeUser || owner === "" || !data.meshtriOwner) {
                         allHistoryData.push({ id: document.id, ...data });
                     }
@@ -239,13 +237,13 @@
         window.setCategoryFilter = function(type) {
             currentFilter = type;
             document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('bg-amber-500', 'text-slate-950', 'border-amber-400', 'font-black');
+                tab.classList.remove('bg-cyan-500', 'text-slate-950', 'border-cyan-400', 'font-black');
                 tab.classList.add('bg-slate-800', 'text-white', 'border-slate-700', 'font-bold');
             });
             const activeTab = document.getElementById(`tab-${type}`);
             if(activeTab) {
                 activeTab.classList.remove('bg-slate-800', 'text-white', 'border-slate-700', 'font-bold');
-                activeTab.classList.add('bg-amber-500', 'text-slate-950', 'border-amber-400', 'font-black');
+                activeTab.classList.add('bg-cyan-500', 'text-slate-950', 'border-cyan-400', 'font-black');
             }
             window.filterAndDisplay();
         }
@@ -304,7 +302,7 @@
                             <span class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-amber-400'}">₹ ${item.amount || 0}</span>
                         </div>
                         <div class="flex gap-2 pt-1">
-                            <button type="button" onclick="window.openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold transition lang" data-key="editBtn">Edit</button>
+                            <button type="button" onclick="window.openEditModal('${item.id}', '${item.name || ''}', '${item.site || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-cyan-600/80 hover:bg-cyan-600 text-white py-2 rounded-xl text-xs font-bold transition lang" data-key="editBtn">Edit</button>
                             <button type="button" onclick="window.deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition lang" data-key="deleteBtn">Delete</button>
                         </div>
                     </div>
@@ -317,7 +315,7 @@
         window.openEditModal = function(id, name, site, amount, date) {
             document.getElementById('editDocId').value = id;
             document.getElementById('editName').value = name;
-            document.getElementById('editSite').value = site;
+            document.getElementById('editSite').value, site;
             document.getElementById('editAmount').value = amount;
             document.getElementById('editDate').value = date;
             document.getElementById('editModal').classList.remove('hidden');
