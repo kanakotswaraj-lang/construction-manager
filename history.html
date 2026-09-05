@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        <!-- കണക്കുകൾ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
+        <!-- കണക്കുകൾ മുഴുവൻ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
         <div id="historyListContainer" class="space-y-3">
             <div class="text-center text-slate-500 py-8 text-xs font-bold lang" data-key="noAccounts">No accounts found</div>
         </div>
@@ -315,7 +315,7 @@
         window.openEditModal = function(id, name, site, amount, date) {
             document.getElementById('editDocId').value = id;
             document.getElementById('editName').value = name;
-            document.getElementById('editSite').value, site;
+            document.getElementById('editSite').value = site;
             document.getElementById('editAmount').value = amount;
             document.getElementById('editDate').value = date;
             document.getElementById('editModal').classList.remove('hidden');
