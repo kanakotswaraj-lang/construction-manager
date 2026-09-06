@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മേസ്തിരി പ്രോ - തൊഴിലാളികളുടെ കണക്കുകൾ</title>
+    <title data-i18n="staff_accounts">മേസ്തിരി പ്രോ - തൊഴിലാളികളുടെ കണക്കുകൾ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -11,6 +11,15 @@
         @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .toast-animate { animation: slideIn 0.3s ease-out forwards; }
         #customAlert { transition: opacity 0.3s ease; }
+
+        /* വാക്കുകൾ കള്ളിക്കുള്ളിൽ തന്നെ നിൽക്കാൻ */
+        .glass-card, div[class*="rounded"] {
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        h1, h2, h3, p, span {
+            max-width: 100%;
+        }
     </style>
 </head>
 <body class="bg-[#050B18] text-white min-h-screen pb-12 p-4 font-sans">
@@ -27,7 +36,7 @@
         
         <!-- ഹെഡറിന് താഴെയുള്ള ടോപ്പ് ബാർ -->
         <div class="bg-slate-900/90 border-2 border-indigo-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
-            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-300 to-purple-400 tracking-wide">തൊഴിലാളികളുടെ കണക്കുകൾ</h1>
+            <h1 data-i18n="staff_accounts" class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-300 to-purple-400 tracking-wide">തൊഴിലാളികളുടെ കണക്കുകൾ</h1>
             <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -39,31 +48,31 @@
 
 
         <div class="mb-4">
-            <input type="text" id="searchInput" placeholder="🔍 തൊഴിലാളിയെ തിരയുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold text-white placeholder-slate-500 focus:outline-none">
+            <input type="text" id="searchInput" data-i18n-placeholder="search_staff" placeholder="🔍 തൊഴിലാളിയെ തിരയുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold text-white placeholder-slate-500 focus:outline-none">
         </div>
 
-        <button onclick="document.getElementById('addStaffModal').classList.remove('hidden')" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl text-sm font-black shadow-lg shadow-amber-500/20 transition mb-4">
+        <button onclick="document.getElementById('addStaffModal').classList.remove('hidden')" data-i18n="add_new_staff" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl text-sm font-black shadow-lg shadow-amber-500/20 transition mb-4">
             ➕ പുതിയ തൊഴിലാളിയെ ചേർക്കുക
         </button>
 
         <div id="staffList" class="space-y-4">
-            <p class="text-center text-xs text-slate-400 font-bold py-4">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
+            <p data-i18n="loading_accounts" class="text-center text-xs text-slate-400 font-bold py-4">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
         </div>
     </div>
 
     <!-- മോഡലുകൾ (Modals) -->
     <div id="addStaffModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
-            <h3 class="font-black text-amber-400 text-base mb-2">പുതിയ തൊഴിലാളി</h3>
-            <input type="text" id="staffName" placeholder="പേര്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="siteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="number" id="dailyWage" placeholder="ഒരു ദിവസത്തെ കൂലി (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="phoneNumber" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="jobType" placeholder="ജോലി (ഉദാ: മേസ്തിരി, പണിക്കാരൻ)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="bankDetails" placeholder="GPay / ബാങ്ക് വിവരങ്ങൾ" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <h3 data-i18n="new_staff_title" class="font-black text-amber-400 text-base mb-2">പുതിയ തൊഴിലാളി</h3>
+            <input type="text" id="staffName" data-i18n-placeholder="name_placeholder" placeholder="പേര്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="text" id="siteName" data-i18n-placeholder="site_name_placeholder" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="number" id="dailyWage" data-i18n-placeholder="daily_wage_placeholder" placeholder="ഒരു ദിവസത്തെ കൂലി (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="text" id="phoneNumber" data-i18n-placeholder="phone_placeholder" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="text" id="jobType" data-i18n-placeholder="job_type_placeholder" placeholder="ജോലി (ഉദാ: മേസ്തിരി, പണിക്കാരൻ)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="text" id="bankDetails" data-i18n-placeholder="bank_details_placeholder" placeholder="GPay / ബാങ്ക് വിവരങ്ങൾ" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             <div class="flex gap-2 pt-2">
-                <button id="saveStaffBtn" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
-                <button onclick="document.getElementById('addStaffModal').classList.add('hidden')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+                <button id="saveStaffBtn" data-i18n="save_btn" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
+                <button onclick="document.getElementById('addStaffModal').classList.add('hidden')" data-i18n="cancel_btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
@@ -76,22 +85,22 @@
             <input type="hidden" id="modalDefaultWage">
             <p id="displayTodayText" class="text-xs text-slate-400 font-bold"></p>
             <div>
-                <label class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">സൈറ്റ് പേര്</label>
+                <label data-i18n="site_name_placeholder" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">സൈറ്റ് പേര്</label>
                 <input type="text" id="modalSiteName" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">പണി ദിവസം</label>
+                    <label data-i18n="work_day_label" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">പണി ദിവസം</label>
                     <input type="number" id="modalDayAmount" step="0.5" value="1" oninput="updateModalWage()" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white text-center focus:outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">ആകെ കൂലി (₹)</label>
+                    <label data-i18n="total_wage_label" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">ആകെ കൂലി (₹)</label>
                     <input type="number" id="modalWageAmount" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-black text-amber-400 text-center focus:outline-none">
                 </div>
             </div>
             <div class="flex gap-2 pt-2">
-                <button id="confirmWageBtn" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black transition">കണക്ക് ചേർക്കുക</button>
-                <button onclick="closeWageModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+                <button id="confirmWageBtn" data-i18n="add_today_wage" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black transition">കണക്ക് ചേർക്കുക</button>
+                <button onclick="closeWageModal()" data-i18n="cancel_btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
@@ -104,35 +113,35 @@
                 <label class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
                 <input type="date" id="advDate" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
-            <input type="number" id="advAmount" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="advNote" placeholder="കുറിപ്പ് (ഉദാ: Cash / GPay)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="number" id="advAmount" data-i18n-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="text" id="advNote" data-i18n-placeholder="note_placeholder" placeholder="കുറിപ്പ് (ഉദാ: Cash / GPay)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             <div class="flex gap-2 pt-2">
-                <button id="confirmAdvBtn" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
-                <button onclick="closeAdvModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+                <button id="confirmAdvBtn" data-i18n="save_btn" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
+                <button onclick="closeAdvModal()" data-i18n="cancel_btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
 
     <div id="extraModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
-            <h3 id="extraModalTitle" class="font-black text-rose-300 text-base">അധികത്തുക ചേർക്കുക</h3>
+            <h3 id="extraModalTitle" data-i18n="extra_amount_title" class="font-black text-rose-300 text-base">അധികത്തുക ചേർക്കുക</h3>
             <input type="hidden" id="extraModalStaffId">
             <div>
                 <label class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
                 <input type="date" id="extraDate" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
-            <input type="number" id="extraAmount" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="extraNote" placeholder="കുറിപ്പ്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="number" id="extraAmount" data-i18n-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="text" id="extraNote" data-i18n-placeholder="note_placeholder" placeholder="കുറിപ്പ്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             <div class="flex gap-2 pt-2">
-                <button id="confirmExtraBtn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
-                <button onclick="closeExtraModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+                <button id="confirmExtraBtn" data-i18n="save_btn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
+                <button onclick="closeExtraModal()" data-i18n="cancel_btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
 
     <div id="editLogModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
-            <h3 id="editModalTitle" class="font-black text-blue-400 text-base">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
+            <h3 id="editModalTitle" data-i18n="edit_log_title" class="font-black text-blue-400 text-base">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
             <input type="hidden" id="editLogId">
             <div>
                 <label class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
@@ -143,17 +152,17 @@
                 <input type="text" id="editLogSite" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
             <div>
-                <label class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">തുക (₹)</label>
+                <label data-i18n="amount_placeholder" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">തുക (₹)</label>
                 <input type="number" id="editLogAmount" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
             <div class="flex gap-2 pt-2">
-                <button id="saveEditLogBtn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-2xl text-xs font-black transition">അപ്ഡേറ്റ് ചെയ്യുക</button>
-                <button onclick="closeEditLogModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+                <button id="saveEditLogBtn" data-i18n="update_btn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-2xl text-xs font-black transition">അപ്ഡേറ്റ് ചെയ്യുക</button>
+                <button onclick="closeEditLogModal()" data-i18n="cancel_btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
 
-    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ (യഥാർത്ഥ ലോജിക് ഒട്ടും മാറ്റാതെ) -->
+    <!-- ഫയർബേസ് & ലാംഗ്വേജ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -187,29 +196,27 @@
             loggedElement.innerText = "സ്വാഗതം, " + currentMeshtri;
         }
 
- window.showAlert = function(message, type = 'success') {
-    const alertBox = document.getElementById('customAlert');
-    if (!alertBox) {
-        alert(message);
-        return;
-    }
-    alertBox.innerText = message;
-    alertBox.classList.remove('hidden');
-    
-    // fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 നൽകിയാൽ കൃത്യം സെന്ററിൽ വരും
-    const baseClass = "toast-animate fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-4 rounded-2xl z-50 font-bold text-center shadow-2xl border-2 backdrop-blur-md ";
-    
-    if (type === 'success') {
-        alertBox.className = baseClass + "bg-emerald-900/95 border-emerald-500 text-emerald-200 shadow-emerald-500/20";
-    } else {
-        alertBox.className = baseClass + "bg-red-900/95 border-red-500 text-red-200 shadow-red-500/20";
-    }
+        window.showAlert = function(message, type = 'success') {
+            const alertBox = document.getElementById('customAlert');
+            if (!alertBox) {
+                alert(message);
+                return;
+            }
+            alertBox.innerText = message;
+            alertBox.classList.remove('hidden');
+            
+            const baseClass = "toast-animate fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-4 rounded-2xl z-50 font-bold text-center shadow-2xl border-2 backdrop-blur-md ";
+            
+            if (type === 'success') {
+                alertBox.className = baseClass + "bg-emerald-900/95 border-emerald-500 text-emerald-200 shadow-emerald-500/20";
+            } else {
+                alertBox.className = baseClass + "bg-red-900/95 border-red-500 text-red-200 shadow-red-500/20";
+            }
 
-    setTimeout(() => {
-        alertBox.classList.add('hidden');
-    }, 2500);
-};
-
+            setTimeout(() => {
+                alertBox.classList.add('hidden');
+            }, 2500);
+        };
 
         const getTodayDate = () => {
             const d = new Date();
