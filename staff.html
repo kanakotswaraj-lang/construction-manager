@@ -298,15 +298,23 @@
                     const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
                     const today = getTodayDate();
 
-                    const staffLogs = allAccounts.filter(acc => {
-                        if (acc.staffId === staffId) return true;
-                        if (!acc.staffId && acc.name && s.name) {
-                            const accNameClean = acc.name.split('(')[0].trim().toLowerCase();
-                            const staffNameClean = s.name.trim().toLowerCase();
-                            return accNameClean === staffNameClean;
-                        }
-                        return false;
-                    });
+                  const staffLogs = allAccounts.filter(acc => {
+    // 1. ഡിലീറ്റ് ചെയ്തതോ സെറ്റിൽ ചെയ്തതോ ആണെങ്കിൽ ഒഴിവാക്കുക
+    if (acc.isDeleted === true || acc.isSettled === true) return false;
+
+    // 2. നിലവിലുള്ള staffId മാച്ച് ചെയ്യുന്നുണ്ടോ എന്ന് നോക്കുക
+    if (acc.staffId === staffId) return true;
+
+    // 3. staffId ഇല്ലെങ്കിൽ പേര് വെച്ച് മാച്ച് ചെയ്യുന്നത് പരിശോധിക്കുക
+    if (!acc.staffId && acc.name && s.name) {
+        const accNameClean = acc.name.split('(')[0].trim().toLowerCase();
+        const staffNameClean = s.name.trim().toLowerCase();
+        return accNameClean === staffNameClean;
+    }
+
+    return false;
+});
+  
                     
                     let totalEarned = 0;
                     let totalWorkedDays = 0;
@@ -574,13 +582,17 @@
             document.getElementById('extraModal').classList.add('hidden');
         }
 
-        window.deleteLog = async function(logId) {
-            if (confirm("ഈ എൻട്രി ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
-                await deleteDoc(doc(db, 'accounts', logId));
-                showAlert("എൻട്രി ഡിലീറ്റ് ചെയ്തു! 🗑️", "error");
-                loadStaffAndAccounts();
-            }
-        }
+        // ഡിലീറ്റ് ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യാതെ ഹൈഡ് ചെയ്യാൻ:
+async function deleteLogEntry(logId) {
+    if (confirm("ഈ എൻട്രി ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
+        await updateDoc(doc(db, 'accounts', logId), {
+            isDeleted: true // ഫയർബേസിൽ നിന്ന് കളയുന്നില്ല, പകരം ഹൈഡ് ചെയ്യുന്നു
+        });
+        showAlert("എൻട്രി വിജയകരമായി ഒഴിവാക്കി! 🗑️", "success");
+        loadStaffAndAccounts();
+    }
+}
+
 
         document.getElementById('saveEditLogBtn').onclick = async () => {
             const logId = document.getElementById('editLogId').value;
