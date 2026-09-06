@@ -486,26 +486,36 @@
                     };
 
                     document.getElementById(`settleBtn-${staffId}`).onclick = async () => {
-                        if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള കണക്ക് തീർക്കണോ?\n(ബാക്കി നിൽക്കുന്ന തുക ഉണ്ടെങ്കിൽ അത് അടുത്ത സൈക്ലിലേക്ക് മുൻപത്തെ ബാലൻസ് ആയി മാറും)`)) {
-                            if (rawBalance > 0) {
-                                await addDoc(collection(db, "accounts"), {
-                                    meshtriOwner: currentMeshtri,
-                                    staffId: staffId,
-                                    type: "advance",
-                                    amount: rawBalance,
-                                    date: today,
-                                    note: "മുൻപത്തെ ബാക്കി ബാലൻസ്"
-                                });
-                            }
+    if (confirm(`തീർച്ചയായും ${s.name}-നുള്ള കണക്ക് തീർക്കണോ?\n(ഹാജർ കണക്കുകൾ റിപ്പോർട്ട് പേജിൽ നഷ്ടപ്പെടാതെ സേവ് ചെയ്യപ്പെടും)`)) {
+        
+        if (rawBalance > 0) {
+            await addDoc(collection(db, "accounts"), {
+                meshtriOwner: currentMeshtri,
+                staffId: staffId,
+                type: "advance",
+                amount: rawBalance,
+                date: today,
+                note: "മുൻപത്തെ ബാക്കി ബാലൻസ്",
+                isSettled: false
+            });
+        }
 
-                            await updateDoc(doc(db, 'staffs', staffId), {
-                                lastSettledDate: today
-                            });
+        // പഴയ എൻട്രികൾ ഡിലീറ്റ് ചെയ്യാതെ 'isSettled: true' ആക്കി മാറ്റുന്നു (റിപ്പോർട്ട് പേജിനായി ഇത് നിലനിൽക്കും)
+        for (const log of staffLogs) {
+            if (!log.isSettled) {
+                await updateDoc(doc(db, 'accounts', log.id), { isSettled: true });
+            }
+        }
 
-                            showAlert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി! ✅", "success");
-                            loadStaffAndAccounts();
-                        }
-                    };
+        await updateDoc(doc(db, 'staffs', staffId), {
+            lastSettledDate: today
+        });
+
+        showAlert("സെറ്റിൽമെന്റ് വിജയകരമായി പൂർത്തിയായി! ✅", "success");
+        loadStaffAndAccounts();
+    }
+};
+
 
                     document.getElementById(`del-${staffId}`).onclick = () => {
                         if(confirm("ഈ തൊഴിലാളിയെ ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
@@ -613,17 +623,19 @@
 
             if (addedMoney <= 0) return showAlert("ദയവായി ശരിയായ തുക നൽകുക!", "error");
 
-            await addDoc(collection(db, "accounts"), {
-                meshtriOwner: currentMeshtri,
-                staffId: staffId,
-                name: staffName + ` (കൂലി - ${addedDays} ദിവസം)`,
-                site: siteName,
-                type: "wage",
-                days: addedDays,
-                payment: "cash",
-                amount: addedMoney,
-                date: selectedDate
-            });
+       await addDoc(collection(db, "accounts"), {
+    meshtriOwner: currentMeshtri,
+    staffId: staffId,
+    name: staffName + ` (കൂലി - ${addedDays} ദിവസം)`,
+    site: siteName,
+    type: "wage",
+    days: addedDays,
+    payment: "cash",
+    amount: addedMoney,
+    date: selectedDate,
+    isSettled: false // ഇത് വളരെ പ്രധാനം
+});
+     
 
             showAlert("കൂലി കണക്ക് വിജയകരമായി ചേർത്തു! ✅", "success");
             closeWageModal();
