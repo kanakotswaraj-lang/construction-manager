@@ -155,7 +155,6 @@
             // കണക്കുകൾ ഫെച്ച് ചെയ്യാൻ
             fetchDashboardData(db, userName);
         });
-
         function updateDateAndCalendar() {
             const today = new Date();
             const dayIndex = today.getDay();
@@ -165,15 +164,24 @@
 
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
 
-            let dayName = (typeof words !== 'undefined' && words.days && words.days[currentLang]) ? words.days[currentLang][dayIndex] : '';
-            let monthName = (typeof words !== 'undefined' && words.months && words.months[currentLang]) ? words.months[currentLang][monthIndex] : '';
+            let dayName = "";
+            if (typeof words !== 'undefined' && words.days && words.days[currentLang] && words.days[currentLang][dayIndex]) {
+                dayName = words.days[currentLang][dayIndex] + ", ";
+            }
+
+            let monthName = "";
+            if (typeof words !== 'undefined' && words.months && words.months[currentLang] && words.months[currentLang][monthIndex]) {
+                monthName = words.months[currentLang][monthIndex];
+            }
+
             let todayText = (typeof words !== 'undefined' && words.today_label && words.today_label[currentLang]) ? words.today_label[currentLang] : 'ഇന്ന്';
 
             const dateElement = document.getElementById('currentDashboardDate');
             if(dateElement) {
-                dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
+                dateElement.innerText = `${todayText}: ${dayName}${dayNum} ${monthName}, ${year}`;
             }
         }
+
 
         function setFallbackProfile(userName) {
             const savedPhoto = localStorage.getItem('profilePhoto');
