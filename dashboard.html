@@ -29,7 +29,7 @@
 
     <!-- ലാംഗ്വേജ് മാറ്റുന്നതിനുള്ള കോഡ് -->
     <script>
-        window.switchLanguage = function(langCode) {
+                window.switchLanguage = function(langCode) {
             if (!langCode) {
                 langCode = localStorage.getItem('selectedLang') || 'ml';
             }
@@ -65,9 +65,12 @@
             if (dropdown && !dropdown.classList.contains('hidden')) {
                 dropdown.classList.add('hidden');
             }
-        };
 
-        window.changeLanguage = window.switchLanguage;
+            // ലാംഗ്വേജ് മാറ്റുമ്പോൾ ഡേറ്റ് ഉടനടി റീഫ്രഷ് ഇല്ലാതെ മാറാൻ ഇത് സഹായിക്കും
+            if (typeof updateDateAndCalendar === 'function') {
+                updateDateAndCalendar();
+            }
+        };
 
         window.toggleLangMenu = function(e) {
             if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
@@ -155,32 +158,38 @@
             // കണക്കുകൾ ഫെച്ച് ചെയ്യാൻ
             fetchDashboardData(db, userName);
         });
-        function updateDateAndCalendar() {
+                function updateDateAndCalendar() {
             const today = new Date();
-            const dayIndex = today.getDay();
-            const monthIndex = today.getMonth();
             const year = today.getFullYear();
             const dayNum = today.getDate();
-
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
 
-            let dayName = "";
-            if (typeof words !== 'undefined' && words.days && words.days[currentLang] && words.days[currentLang][dayIndex]) {
-                dayName = words.days[currentLang][dayIndex] + ", ";
-            }
+            const localeMap = {
+                'ml': 'ml-IN',
+                'en': 'en-IN',
+                'ta': 'ta-IN',
+                'hi': 'hi-IN',
+                'kn': 'kn-IN',
+                'as': 'as-IN',
+                'bn': 'bn-IN'
+            };
 
-            let monthName = "";
-            if (typeof words !== 'undefined' && words.months && words.months[currentLang] && words.months[currentLang][monthIndex]) {
-                monthName = words.months[currentLang][monthIndex];
-            }
+            const locale = localeMap[currentLang] || 'ml-IN';
 
-            let todayText = (typeof words !== 'undefined' && words.today_label && words.today_label[currentLang]) ? words.today_label[currentLang] : 'ഇന്ന്';
+            // സിസ്റ്റം വഴി ദിവസത്തിന്റെയും മാസത്തിന്റെയും പേര് കൃത്യമായി എടുക്കുന്നു
+            const dayName = today.toLocaleDateString(locale, { weekday: 'long' });
+            const monthName = today.toLocaleDateString(locale, { month: 'long' });
+
+            let todayText = (typeof words !== 'undefined' && words.today_label && words.today_label[currentLang]) 
+                            ? words.today_label[currentLang] 
+                            : 'ഇന്ന്';
 
             const dateElement = document.getElementById('currentDashboardDate');
             if(dateElement) {
-                dateElement.innerText = `${todayText}: ${dayName}${dayNum} ${monthName}, ${year}`;
+                dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
             }
         }
+
 
 
         function setFallbackProfile(userName) {
