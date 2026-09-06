@@ -161,7 +161,8 @@
             // കണക്കുകൾ ഫെച്ച് ചെയ്യാൻ
             fetchDashboardData(db, userName);
         });
-                function updateDateAndCalendar() {
+                
+        function updateDateAndCalendar() {
             const today = new Date();
             const year = today.getFullYear();
             const dayNum = today.getDate();
@@ -173,13 +174,12 @@
                 'ta': 'ta-IN',
                 'hi': 'hi-IN',
                 'kn': 'kn-IN',
-                'as': 'as-IN',
+                'as': 'as-IN', // അസാമീസ് ഭാഷയ്ക്കുള്ള കോഡ് ഇവിടെ ചേർത്തിട്ടുണ്ട്
                 'bn': 'bn-IN'
             };
 
             const locale = localeMap[currentLang] || 'ml-IN';
 
-            // സിസ്റ്റം വഴി ദിവസത്തിന്റെയും മാസത്തിന്റെയും പേര് കൃത്യമായി എടുക്കുന്നു
             const dayName = today.toLocaleDateString(locale, { weekday: 'long' });
             const monthName = today.toLocaleDateString(locale, { month: 'long' });
 
