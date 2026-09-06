@@ -29,18 +29,19 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
                 </div>
             </div>
 
-            <div class="relative flex items-center gap-1.5 bg-amber-500/20 px-2 py-1.5 rounded-2xl border border-amber-400/60 shadow-inner">
+                        <div class="relative flex items-center gap-1.5 bg-amber-500/20 px-2 py-1.5 rounded-2xl border border-amber-400/60 shadow-inner">
                 <span class="text-sm">🌐</span>
-                <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 px-2 py-1 rounded-lg text-xs font-extrabold shadow-md shadow-amber-950/50 transition cursor-pointer outline-none border border-white w-auto truncate">
-                    <option value="ml" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
-                    <option value="en" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'en' ? 'selected' : ''}>English</option>
-                    <option value="hi" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
-                    <option value="ta" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'ta' ? 'selected' : ''}>தமிழ்</option>
-                    <option value="kn" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'kn' ? 'selected' : ''}>ಕನ್ನಡ</option>
-                    <option value="bn" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'bn' ? 'selected' : ''}>বাংলা</option>
-                    <option value="as" class="bg-amber-100 text-slate-950 font-bold py-1" ${currentLang === 'as' ? 'selected' : ''}>অসমীয়া</option>
+                <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black shadow-md shadow-amber-950/50 transition cursor-pointer outline-none border-2 border-slate-950 w-auto truncate">
+                    <option value="ml" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
+                    <option value="en" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'en' ? 'selected' : ''}>English</option>
+                    <option value="hi" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
+                    <option value="ta" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'ta' ? 'selected' : ''}>தமிழ்</option>
+                    <option value="kn" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'kn' ? 'selected' : ''}>ಕನ್ನಡ</option>
+                    <option value="bn" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'bn' ? 'selected' : ''}>বাংলা</option>
+                    <option value="as" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'as' ? 'selected' : ''}>অসমীয়া</option>
                 </select>
             </div>
+
 
         </div>
 
