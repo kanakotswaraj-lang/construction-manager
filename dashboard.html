@@ -29,7 +29,7 @@
 
     <!-- ലാംഗ്വേജ് മാറ്റുന്നതിനുള്ള കോഡ് -->
     <script>
-                window.switchLanguage = function(langCode) {
+                        window.switchLanguage = function(langCode) {
             if (!langCode) {
                 langCode = localStorage.getItem('selectedLang') || 'ml';
             }
@@ -66,11 +66,14 @@
                 dropdown.classList.add('hidden');
             }
 
-            // ലാംഗ്വേജ് മാറ്റുമ്പോൾ ഡേറ്റ് ഉടനടി റീഫ്രഷ് ഇല്ലാതെ മാറാൻ ഇത് സഹായിക്കും
+            // ലാംഗ്വേജ് മാറ്റുമ്പോൾ റീഫ്രഷ് ഇല്ലാതെ ഡേറ്റ് മാറാൻ
             if (typeof updateDateAndCalendar === 'function') {
                 updateDateAndCalendar();
             }
         };
+
+        window.changeLanguage = window.switchLanguage;
+
 
         window.toggleLangMenu = function(e) {
             if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
