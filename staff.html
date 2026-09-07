@@ -34,7 +34,7 @@
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                <span data-key="home">Home</span>
+                <span data-key="home">ഹോം</span>
             </a>
         </div>
 
@@ -285,7 +285,7 @@
                 list.innerHTML = '';
 
                 if (staffsSnapshot.empty) {
-                    list.innerHTML = '<p class="text-center text-xs text-slate-400 font-bold py-4">തൊഴിലാളികൾ ആരും ഇല്ല. പുതിയൊരാളെ ചേർക്കുക.</p>';
+                    list.innerHTML = '<p class="text-center text-xs text-slate-400 font-bold py-4" data-key="no_workers">തൊഴിലാളികൾ ആരും ഇല്ല. പുതിയൊരാളെ ചേർക്കുക.</p>';
                     return;
                 }
 
@@ -333,10 +333,10 @@
 
                             logsHtml += `
                                 <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-blue-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
+                                    <span class="font-bold text-slate-200">📅 ${displayDateStr} | <span data-key="site">സൈറ്റ്</span>: ${log.site || 'സൈറ്റ്'} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
                                     <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', 'wage', '${log.site || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">Edit</button>
-                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">Del</button>
+                                        <button onclick="openEditLog('${log.id}', 'wage', '${log.site || ''}', '${log.amount}', '${log.date || ''}')" data-key="edit" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">എഡിറ്റ്</button>
+                                        <button onclick="deleteLogEntry('${log.id}')" data-key="delete" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">ഡിലീറ്റ്</button>
                                     </div>
                                 </div>
                             `;
@@ -344,10 +344,10 @@
                             totalAdvance += parseFloat(log.amount) || 0;
                             advLogsHtml += `
                                 <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-purple-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | അഡ്വാൻസ്: <span class="text-purple-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
+                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | <span data-key="advance">അഡ്വാൻസ്</span>: <span class="text-purple-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
                                     <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', 'advance', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">Edit</button>
-                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">Del</button>
+                                        <button onclick="openEditLog('${log.id}', 'advance', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" data-key="edit" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">എഡിറ്റ്</button>
+                                        <button onclick="deleteLogEntry('${log.id}')" data-key="delete" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">ഡിലീറ്റ്</button>
                                     </div>
                                 </div>
                             `;
@@ -355,10 +355,10 @@
                             totalExtra += parseFloat(log.amount) || 0;
                             extraLogsHtml += `
                                 <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-rose-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | അധികത്തുക: <span class="text-rose-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
+                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | <span data-key="extra_payment">അധികത്തുക</span>: <span class="text-rose-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
                                     <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', 'extra', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">Edit</button>
-                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">Del</button>
+                                        <button onclick="openEditLog('${log.id}', 'extra', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" data-key="edit" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">എഡിറ്റ്</button>
+                                        <button onclick="deleteLogEntry('${log.id}')" data-key="delete" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">ഡിലീറ്റ്</button>
                                     </div>
                                 </div>
                             `;
@@ -375,13 +375,13 @@
                         <div class="flex justify-between items-center mb-3">
                             <div>
                                 <h3 class="font-black text-base text-amber-400">${s.name} <span class="text-xs font-normal text-slate-400">(${s.job || 'പണിക്കാരൻ'})</span></h3>
-                                <p class="text-xs text-slate-400 font-bold mt-1">പ്രാഥമിക സൈറ്റ്: <span class="text-cyan-300">${s.site || 'പ്രധാന സൈറ്റ്'}</span> | <span class="text-amber-400 text-sm font-black">കൂലി: ₹${s.wage || 0}</span></p>
-                                <p class="text-[11px] text-blue-300 font-bold mt-1">📍 പണിയെടുത്ത സൈറ്റുകൾ: ${workedSitesList}</p>
+                                <p class="text-xs text-slate-400 font-bold mt-1"><span data-key="primary_site">പ്രാഥമിക സൈറ്റ്</span>: <span class="text-cyan-300">${s.site || 'പ്രധാന സൈറ്റ്'}</span> | <span class="text-amber-400 text-sm font-black"><span data-key="daily_wage_label">കൂലി</span>: ₹${s.wage || 0}</span></p>
+                                <p class="text-[11px] text-blue-300 font-bold mt-1">📍 <span data-key="worked_sites">പണിയെടുത്ത സൈറ്റുകൾ</span>: ${workedSitesList}</p>
                                 ${s.phone ? `<p class="text-[11px] text-emerald-300 mt-1">Ph: ${s.phone}</p>` : ''}
                                 ${s.bank ? `<p class="text-[11px] text-slate-400 mt-1">GPay/Bank: ${s.bank}</p>` : ''}
                             </div>
                             <div class="flex gap-1.5">
-                                <button id="del-${staffId}" class="text-red-400 text-xs font-bold px-3 py-2 bg-red-950/60 border border-red-800/50 rounded-xl transition hover:bg-red-900/60">Delete</button>
+                                <button id="del-${staffId}" data-key="delete" class="text-red-400 text-xs font-bold px-3 py-2 bg-red-950/60 border border-red-800/50 rounded-xl transition hover:bg-red-900/60">ഡിലീറ്റ്</button>
                             </div>
                         </div>
 
@@ -392,7 +392,7 @@
                         <div class="bg-slate-800/50 border border-blue-500/30 p-3.5 rounded-2xl mb-3">
                             <p data-key="work_days_cycle" class="text-xs font-black text-amber-400 mb-2">📋 ഈ സൈക്ലിലെ പണി ദിവസങ്ങൾ:</p>
                             <div class="max-h-32 overflow-y-auto space-y-1">
-                                ${logsHtml || '<p class="text-xs text-slate-400 text-center py-2">കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>'}
+                                ${logsHtml || '<p class="text-xs text-slate-400 text-center py-2" data-key="no_records">കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>'}
                             </div>
                         </div>
 
@@ -402,7 +402,7 @@
                                 <button id="openAdvModalBtn-${staffId}" data-key="advance" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition">+ അഡ്വാൻസ്</button>
                             </div>
                             <div class="max-h-28 overflow-y-auto space-y-1">
-                                ${advLogsHtml || '<p class="text-xs text-slate-400 text-center py-1">അഡ്വാൻസ് വിവരങ്ങൾ ഇല്ല</p>'}
+                                ${advLogsHtml || '<p class="text-xs text-slate-400 text-center py-1" data-key="no_advance">അഡ്വാൻസ് വിവരങ്ങൾ ഇല്ല</p>'}
                             </div>
                         </div>
 
@@ -412,7 +412,7 @@
                                 <button id="openExtraModalBtn-${staffId}" data-key="extra" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition">+ അധികത്തുക</button>
                             </div>
                             <div class="max-h-28 overflow-y-auto space-y-1">
-                                ${extraLogsHtml || '<p class="text-xs text-slate-400 text-center py-1">അധികത്തുക വിവരങ്ങൾ ഇല്ല</p>'}
+                                ${extraLogsHtml || '<p class="text-xs text-slate-400 text-center py-1" data-key="no_extra">അധികത്തുക വിവരങ്ങൾ ഇല്ല</p>'}
                             </div>
                         </div>
 
