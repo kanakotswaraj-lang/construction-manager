@@ -155,7 +155,7 @@
         </div>
     </div>
 
-    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ (യഥാർത്ഥ ലോജിക് ഒട്ടും മാറ്റാതെ) -->
+    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ (പൂർണ്ണമായി പരിഹരിച്ചത്) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -192,6 +192,15 @@
         const loggedElement = document.getElementById('loggedInMeshtri');
         if (loggedElement) {
             loggedElement.innerText = "സ്വാഗതം, " + currentMeshtri;
+        }
+
+        // Helper function to get translation safely
+        function getWord(key, fallback) {
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof words !== 'undefined' && words[key] && words[key][currentLang]) {
+                return words[key][currentLang];
+            }
+            return fallback;
         }
 
         window.showAlert = function(message, type = 'success') {
@@ -273,8 +282,7 @@
 
         async function loadStaffAndAccounts() {
             const list = document.getElementById('staffList');
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const loadingText = (typeof words !== 'undefined' && words.loading_accounts && words.loading_accounts[currentLang]) ? words.loading_accounts[currentLang] : "കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...";
+            const loadingText = getWord('loading_accounts', 'കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...');
             list.innerHTML = `<p class="text-center text-xs text-slate-400 font-bold py-4">${loadingText}</p>`;
 
             try {
@@ -293,10 +301,36 @@
                 list.innerHTML = '';
 
                 if (staffsSnapshot.empty) {
-                    const noStaffText = (typeof words !== 'undefined' && words.no_staff && words.no_staff[currentLang]) ? words.no_staff[currentLang] : "തൊഴിലാളികൾ ആരും ഇല്ല. പുതിയൊരാളെ ചേർക്കുക.";
+                    const noStaffText = getWord('no_staff', 'തൊഴിലാളികൾ ആരും ഇല്ല. പുതിയൊരാളെ ചേർക്കുക.');
                     list.innerHTML = `<p class="text-center text-xs text-slate-400 font-bold py-4">${noStaffText}</p>`;
                     return;
                 }
+
+                // Translated UI Labels
+                const siteLabelStr = getWord('site', 'സൈറ്റ്');
+                const primarySiteStr = getWord('primary_site', 'പ്രാഥമിക സൈറ്റ്');
+                const wageStr = getWord('total_wage', 'കൂലി');
+                const workedSitesStr = getWord('worked_sites', 'പണിയെടുത്ത സൈറ്റുകൾ');
+                const workDaysCycleStr = getWord('work_days_cycle', 'ഈ സൈക്ലിലെ പണി ദിവസങ്ങൾ:');
+                const noEntriesStr = getWord('no_entries', 'കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല');
+                const advanceGivenStr = getWord('advance_given', 'അഡ്വാൻസ് കൊടുത്ത വിവരങ്ങൾ:');
+                const noAdvanceStr = getWord('no_advance', 'അഡ്വാൻസ് വിവരങ്ങൾ ഇല്ല');
+                const extraPaymentStr = getWord('extra_payment', 'അധികത്തുക (Extra Payment):');
+                const noExtraStr = getWord('no_extra', 'അധികത്തുക വിവരങ്ങൾ ഇല്ല');
+                const workDayLabelStr = getWord('work_day_label', 'പണി ദിവസം');
+                const totalGivenLabelStr = getWord('total_given', 'ആകെ കൊടുത്തത്');
+                const extraLabelStr = getWord('extra_label', 'അധികത്തുക');
+                const totalWageLabelStr = getWord('total_wage_label', 'ആകെ കൂലി:');
+                const balanceLabelStr = getWord('balance_label', 'നൽകാനുള്ള ബാക്കി:');
+                const settleBtnText = getWord('settle_btn_text', '💸 പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്ലിൽ തുടങ്ങുക)');
+                const whatsappBtnText = getWord('whatsapp_btn', 'WhatsApp അയക്കുക');
+                const deleteBtnText = getWord('delete_btn', 'Delete');
+                const addAdvBtnText = getWord('add_advance_btn', '+ അഡ്വാൻസ്');
+                const addExtraBtnText = getWord('add_extra_btn', '+ അധികത്തുക');
+                const editBtnText = getWord('edit_btn', 'Edit');
+                const delBtnText = getWord('del_btn', 'Del');
+                const defaultJobStr = getWord('worker', 'പണിക്കാരൻ');
+                const defaultSiteStr = getWord('main_site', 'പ്രധാന സൈറ്റ്');
 
                 staffsSnapshot.forEach((d) => {
                     const s = d.data();
@@ -342,10 +376,10 @@
 
                             logsHtml += `
                                 <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-blue-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || 'സൈറ്റ്'} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
+                                    <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || siteLabelStr} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
                                     <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', 'wage', '${log.site || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">Edit</button>
-                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">Del</button>
+                                        <button onclick="openEditLog('${log.id}', 'wage', '${log.site || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">${editBtnText}</button>
+                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">${delBtnText}</button>
                                     </div>
                                 </div>
                             `;
@@ -353,10 +387,10 @@
                             totalAdvance += parseFloat(log.amount) || 0;
                             advLogsHtml += `
                                 <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-purple-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | അഡ്വാൻസ്: <span class="text-purple-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
+                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | ${getWord('advance', 'അഡ്വാൻസ്')}: <span class="text-purple-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
                                     <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', 'advance', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">Edit</button>
-                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">Del</button>
+                                        <button onclick="openEditLog('${log.id}', 'advance', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">${editBtnText}</button>
+                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">${delBtnText}</button>
                                     </div>
                                 </div>
                             `;
@@ -364,17 +398,17 @@
                             totalExtra += parseFloat(log.amount) || 0;
                             extraLogsHtml += `
                                 <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-rose-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | അധികത്തുക: <span class="text-rose-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
+                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | ${getWord('extra', 'അധികത്തുക')}: <span class="text-rose-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
                                     <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', 'extra', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">Edit</button>
-                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">Del</button>
+                                        <button onclick="openEditLog('${log.id}', 'extra', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">${editBtnText}</button>
+                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">${delBtnText}</button>
                                     </div>
                                 </div>
                             `;
                         }
                     });
 
-                    const workedSitesList = workedSitesSet.size > 0 ? Array.from(workedSitesSet).join(', ') : (s.site || 'പ്രധാന സൈറ്റ്');
+                    const workedSitesList = workedSitesSet.size > 0 ? Array.from(workedSitesSet).join(', ') : (s.site || defaultSiteStr);
                     let rawBalance = (totalEarned + totalExtra) - totalAdvance;
                     if (rawBalance < 0) rawBalance = 0;
 
@@ -383,83 +417,83 @@
                     div.innerHTML = `
                         <div class="flex justify-between items-center mb-3">
                             <div>
-                                <h3 class="font-black text-base text-amber-400">${s.name} <span class="text-xs font-normal text-slate-400">(${s.job || 'പണിക്കാരൻ'})</span></h3>
-                                <p class="text-xs text-slate-400 font-bold mt-1">പ്രാഥമിക സൈറ്റ്: <span class="text-cyan-300">${s.site || 'പ്രധാന സൈറ്റ്'}</span> | <span class="text-amber-400 text-sm font-black">കൂലി: ₹${s.wage || 0}</span></p>
-                                <p class="text-[11px] text-blue-300 font-bold mt-1">📍 പണിയെടുത്ത സൈറ്റുകൾ: ${workedSitesList}</p>
+                                <h3 class="font-black text-base text-amber-400">${s.name} <span class="text-xs font-normal text-slate-400">(${s.job || defaultJobStr})</span></h3>
+                                <p class="text-xs text-slate-400 font-bold mt-1">${primarySiteStr}: <span class="text-cyan-300">${s.site || defaultSiteStr}</span> | <span class="text-amber-400 text-sm font-black">${wageStr}: ₹${s.wage || 0}</span></p>
+                                <p class="text-[11px] text-blue-300 font-bold mt-1">📍 ${workedSitesStr}: ${workedSitesList}</p>
                                 ${s.phone ? `<p class="text-[11px] text-emerald-300 mt-1">Ph: ${s.phone}</p>` : ''}
                                 ${s.bank ? `<p class="text-[11px] text-slate-400 mt-1">GPay/Bank: ${s.bank}</p>` : ''}
                             </div>
                             <div class="flex gap-1.5">
-                                <button id="del-${staffId}" class="text-red-400 text-xs font-bold px-3 py-2 bg-red-950/60 border border-red-800/50 rounded-xl transition hover:bg-red-900/60">Delete</button>
+                                <button id="del-${staffId}" class="text-red-400 text-xs font-bold px-3 py-2 bg-red-950/60 border border-red-800/50 rounded-xl transition hover:bg-red-900/60">${deleteBtnText}</button>
                             </div>
                         </div>
 
-                        <button id="openModalBtn-${staffId}" data-key="add_today_wage" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black shadow-lg shadow-amber-500/10 transition mb-3">
-                            ➕ ഇന്നത്തെ കൂലി ചേർക്കുക
+                        <button id="openModalBtn-${staffId}" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black shadow-lg shadow-amber-500/10 transition mb-3">
+                            ➕ ${getWord('add_today_wage', 'ഇന്നത്തെ കൂലി ചേർക്കുക')}
                         </button>
 
                         <div class="bg-slate-800/50 border border-blue-500/30 p-3.5 rounded-2xl mb-3">
-                            <p class="text-xs font-black text-amber-400 mb-2">📋 ഈ സൈക്ലിലെ പണി ദിവസങ്ങൾ:</p>
+                            <p class="text-xs font-black text-amber-400 mb-2">📋 ${workDaysCycleStr}</p>
                             <div class="max-h-32 overflow-y-auto space-y-1">
-                                ${logsHtml || '<p class="text-xs text-slate-400 text-center py-2">കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല</p>'}
+                                ${logsHtml || `<p class="text-xs text-slate-400 text-center py-2">${noEntriesStr}</p>`}
                             </div>
                         </div>
 
                         <div class="bg-slate-800/50 border border-purple-500/30 p-3.5 rounded-2xl mb-3">
                             <div class="flex justify-between items-center mb-2">
-                                <p class="text-xs font-black text-purple-300">💸 അഡ്വാൻസ് കൊടുത്ത വിവരങ്ങൾ:</p>
-                                <button id="openAdvModalBtn-${staffId}" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition">+ അഡ്വാൻസ്</button>
+                                <p class="text-xs font-black text-purple-300">💸 ${advanceGivenStr}</p>
+                                <button id="openAdvModalBtn-${staffId}" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition">${addAdvBtnText}</button>
                             </div>
                             <div class="max-h-28 overflow-y-auto space-y-1">
-                                ${advLogsHtml || '<p class="text-xs text-slate-400 text-center py-1">അഡ്വാൻസ് വിവരങ്ങൾ ഇല്ല</p>'}
+                                ${advLogsHtml || `<p class="text-xs text-slate-400 text-center py-1">${noAdvanceStr}</p>`}
                             </div>
                         </div>
 
                         <div class="bg-slate-800/50 border border-rose-500/30 p-3.5 rounded-2xl mb-3">
                             <div class="flex justify-between items-center mb-2">
-                                <p class="text-xs font-black text-rose-300">⚡ അധികത്തുക (Extra Payment):</p>
-                                <button id="openExtraModalBtn-${staffId}" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition">+ അധികത്തുക</button>
+                                <p class="text-xs font-black text-rose-300">⚡ ${extraPaymentStr}</p>
+                                <button id="openExtraModalBtn-${staffId}" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition">${addExtraBtnText}</button>
                             </div>
                             <div class="max-h-28 overflow-y-auto space-y-1">
-                                ${extraLogsHtml || '<p class="text-xs text-slate-400 text-center py-1">അധികത്തുക വിവരങ്ങൾ ഇല്ല</p>'}
+                                ${extraLogsHtml || `<p class="text-xs text-slate-400 text-center py-1">${noExtraStr}</p>`}
                             </div>
                         </div>
 
                         <div class="p-4 bg-slate-800/60 rounded-2xl mb-3 space-y-3 border border-slate-700/60">
                             <div class="grid grid-cols-3 gap-2">
                                 <div>
-                                    <label data-key="work_day_label" class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">പണി ദിവസം</label>
+                                    <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">${workDayLabelStr}</label>
                                     <input type="text" readonly value="${totalWorkedDays}" class="w-full p-2.5 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-cyan-300 text-center">
                                 </div>
                                 <div>
-                                    <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">ആകെ കൊടുത്തത്</label>
+                                    <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">${totalGivenLabelStr}</label>
                                     <input type="text" readonly value="₹${totalAdvance}" class="w-full p-2.5 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-purple-300 text-center">
                                 </div>
                                 <div>
-                                    <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">അധികത്തുക</label>
+                                    <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">${extraLabelStr}</label>
                                     <input type="text" readonly value="₹${totalExtra}" class="w-full p-2.5 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-rose-300 text-center">
                                 </div>
                             </div>
                             
                             <div class="bg-gradient-to-r from-slate-950 via-blue-950/60 to-slate-950 border-2 border-amber-400/50 p-4 rounded-2xl flex justify-between items-center shadow-xl">
                                 <div class="text-white font-black text-xs">
-                                    ആകെ കൂലി:<br>
+                                    ${totalWageLabelStr}<br>
                                     <span class="text-amber-400 text-base">₹${totalEarned + totalExtra}</span>
                                 </div>
                                 <div class="h-10 w-[1px] bg-amber-400/30"></div>
                                 <div class="text-white font-black text-xs text-right">
-                                    നൽകാനുള്ള ബാക്കി:<br>
+                                    ${balanceLabelStr}<br>
                                     <span class="text-emerald-400 text-lg font-black">₹${rawBalance}</span>
                                 </div>
                             </div>
          
-                            <button id="settleBtn-${staffId}" data-key="settle_btn_text" class="w-full bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-200 p-3 rounded-2xl text-xs font-black shadow-md transition">
-                                💸 പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്ലിൽ തുടങ്ങുക)
+                            <button id="settleBtn-${staffId}" class="w-full bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-200 p-3 rounded-2xl text-xs font-black shadow-md transition">
+                                ${settleBtnText}
                             </button>
                         </div>
 
                         <div class="flex flex-col gap-2">
-                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned + totalExtra}%0A- ആകെ നൽകിയത്: ₹${totalAdvance}%0A- നൽകാനുള്ള ബാക്കി തുക: ₹${finalBalanceForWa}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" data-key="whatsapp_btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 text-center rounded-2xl text-xs font-black shadow-lg shadow-emerald-600/20 transition">WhatsApp അയക്കുക</a>
+                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned + totalExtra}%0A- ആകെ നൽകിയത്: ₹${totalAdvance}%0A- നൽകാനുള്ള ബാക്കി തുക: ₹${finalBalanceForWa}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 text-center rounded-2xl text-xs font-black shadow-lg shadow-emerald-600/20 transition">${whatsappBtnText}</a>
                         </div>
                     `;
                     list.appendChild(div);
@@ -495,6 +529,7 @@
                     };
 
                     document.getElementById(`settleBtn-${staffId}`).onclick = async () => {
+                        const currentLang = localStorage.getItem('selectedLang') || 'ml';
                         const confirmMsg = (typeof words !== 'undefined' && words.settlement_confirm && words.settlement_confirm[currentLang]) ? words.settlement_confirm[currentLang] : `തീർച്ചയായും ${s.name}-നുള്ള കണക്ക് തീർക്കണോ?\n(ഹാജർ കണക്കുകൾ റിപ്പോർട്ട് പേജിൽ നഷ്ടപ്പെടാതെ സേവ് ചെയ്യപ്പെടും)`;
                         if (confirm(confirmMsg)) {
                             
