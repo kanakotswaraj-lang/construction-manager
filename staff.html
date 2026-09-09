@@ -233,21 +233,31 @@
             return `${year}-${month}-${day}`;
         };
 
-
 function getTranslatedDay(dateString) {
-    if (!dateString) return "";
-    const d = new Date(dateString);
-    const dayIndex = d.getDay(); // 0: Sunday, 1: Monday, etc.
-    const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-    const currentKey = dayKeys[dayIndex];
-    
-    const currentLang = localStorage.getItem('selectedLang') || 'ml';
-    
-    // words ഒബ്ജക്റ്റിൽ നിന്ന് കറന്റ് ലാംഗ്വേജ് എടുത്തു നൽകുക
-    if (typeof words !== 'undefined' && words[currentKey] && words[currentKey][currentLang]) {
-        return words[currentKey][currentLang];
+    try {
+        if (!dateString) return "";
+        const d = new Date(dateString);
+        if (isNaN(d.getTime())) return ""; // തീയതി തെറ്റാണെങ്കിൽ ഒഴിഞ്ഞുകിടക്കും
+        
+        const dayIndex = d.getDay(); 
+        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const currentKey = dayKeys[dayIndex];
+        
+        const currentLang = localStorage.getItem('selectedLang') || 'ml';
+        
+        if (typeof words !== 'undefined' && words[currentKey] && words[currentKey][currentLang]) {
+            return words[currentKey][currentLang];
+        }
+        
+        const malayalamDays = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"];
+        return malayalamDays[dayIndex] || "";
+    } catch (e) {
+        console.error("Day translation error:", e);
+        return "";
     }
-    
+}
+
+
     // ഫാൾബാക്ക് ആയി മലയാളം ദിവസങ്ങൾ നൽകുക
     const malayalamDays = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"];
     return malayalamDays[dayIndex] || "";
