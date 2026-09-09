@@ -233,7 +233,20 @@
             return `${year}-${month}-${day}`;
         };
 
+   const getTodayDate = () => {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
 
+        function getMalayalamDay(dateString) {
+            if (!dateString) return "";
+            const days = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"];
+            const d = new Date(dateString);
+            return days[d.getDay()] || "";
+        }
 
     // ഫാൾബാക്ക് ആയി മലയാളം ദിവസങ്ങൾ നൽകുക
     const malayalamDays = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"];
