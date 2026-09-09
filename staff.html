@@ -233,21 +233,25 @@
             return `${year}-${month}-${day}`;
         };
 
-        function getTranslatedDay(dateString) {
+
+function getTranslatedDay(dateString) {
     if (!dateString) return "";
     const d = new Date(dateString);
     const dayIndex = d.getDay(); // 0: Sunday, 1: Monday, etc.
     const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
     const currentKey = dayKeys[dayIndex];
     
-    // language.js-ൽ നിന്ന് കറന്റ് ലാംഗ്വേജ് എടുത്തു നൽകുക
     const currentLang = localStorage.getItem('selectedLang') || 'ml';
-    if (typeof daysWords !== 'undefined' && daysWords[currentKey] && daysWords[currentKey][currentLang]) {
-        return daysWords[currentKey][currentLang];
+    
+    // words ഒബ്ജക്റ്റിൽ നിന്ന് കറന്റ് ലാംഗ്വേജ് എടുത്തു നൽകുക
+    if (typeof words !== 'undefined' && words[currentKey] && words[currentKey][currentLang]) {
+        return words[currentKey][currentLang];
     }
-    return "";
+    
+    // ഫാൾബാക്ക് ആയി മലയാളം ദിവസങ്ങൾ നൽകുക
+    const malayalamDays = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"];
+    return malayalamDays[dayIndex] || "";
 }
-
 
         document.getElementById('saveStaffBtn').addEventListener('click', async () => {
             const name = document.getElementById('staffName').value.trim();
