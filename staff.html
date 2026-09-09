@@ -233,7 +233,7 @@
             return `${year}-${month}-${day}`;
         };
 
-   function getTranslatedDay(dateString) {
+   function getMalayalamDay(dateString) {
     try {
         if (!dateString) return "";
         const d = new Date(dateString);
@@ -256,6 +256,7 @@
         return "";
     }
 }
+
 
 
         document.getElementById('saveStaffBtn').addEventListener('click', async () => {
