@@ -201,8 +201,8 @@
                 initDataListener();
             }
         });
-
-                    function initDataListener() {
+        
+        function initDataListener() {
             // ഫിൽട്ടർ ഒഴിവാക്കി ഫയർസ്റ്റോറിലെ മുഴുവൻ അക്കൗണ്ട്സും എടുക്കാൻ
             onSnapshot(collection(db, "accounts"), (querySnapshot) => {
                 allHistoryData = [];
@@ -219,8 +219,8 @@
                 console.error("Firebase Error:", error);
             });
         }
-    
 
+                    
         function updateSummary(data) {
             let totalIncome = 0;
             let totalExpense = 0;
