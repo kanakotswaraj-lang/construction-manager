@@ -202,26 +202,25 @@
             }
         });
         
-                function initDataListener() {
-            // currentMeshtri ഉപയോഗിച്ച് ഫിൽട്ടർ ചെയ്യുക
+                        function initDataListener() {
             const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
             
             onSnapshot(q, (querySnapshot) => {
+                // മൊബൈൽ സ്ക്രീനിൽ ഡാറ്റ കിട്ടിയോ എന്ന് അറിയാൻ ഒരു അലർട്ട് ബോക്സ്
+                alert("ആകെ കിട്ടിയ കണക്കുകൾ: " + querySnapshot.size + " | പേര്: " + currentMeshtri);
+                
                 allHistoryData = [];
                 
                 querySnapshot.forEach((document) => {
                     const data = document.data();
-                    // ഒന്നിനുകൂടി ഉറപ്പുവരുത്താൻ
-                    if (data.meshtriOwner === currentMeshtri) {
-                        allHistoryData.push({ id: document.id, ...data });
-                    }
+                    allHistoryData.push({ id: document.id, ...data });
                 });
 
                 allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
                 updateSummary(allHistoryData);
                 window.filterAndDisplay();
             }, (error) => {
-                console.error("Firebase Error:", error);
+                alert("Firebase Error: " + error.message);
             });
         }
 
