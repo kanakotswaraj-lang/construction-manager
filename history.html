@@ -115,7 +115,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         import { setupHeader } from './header.js';
 
         const firebaseConfig = {
@@ -170,6 +170,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+            alert("പേജ് ലോഡ് ആയി. യൂസർ: " + currentMeshtri); // ഇത് വർക്ക് ആകുന്നുണ്ടോ എന്ന് നോക്കാൻ
             
             try {
                 if (typeof setupHeader === 'function') { 
@@ -187,28 +188,12 @@
             initDataListener();
         });
 
-        window.addEventListener('languageChanged', (e) => {
-            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
-            window.switchLanguage(newLang);
-        });
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'selectedLang') {
-                window.switchLanguage(e.newValue || 'ml');
-            }
-            if (e.key === 'userName') {
-                currentMeshtri = e.newValue || "പൊതുമേസ്തിരി";
-                initDataListener();
-            }
-        });
-        
-                        function initDataListener() {
+        function initDataListener() {
+            alert("ഡാറ്റ ഫെച്ച് ചെയ്യാൻ തുടങ്ങുന്നു...");
             const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
             
             onSnapshot(q, (querySnapshot) => {
-                // മൊബൈൽ സ്ക്രീനിൽ ഡാറ്റ കിട്ടിയോ എന്ന് അറിയാൻ ഒരു അലർട്ട് ബോക്സ്
-                alert("ആകെ കിട്ടിയ കണക്കുകൾ: " + querySnapshot.size + " | പേര്: " + currentMeshtri);
-                
+                alert("കിട്ടിയ കണക്കുകളുടെ എണ്ണം: " + querySnapshot.size);
                 allHistoryData = [];
                 
                 querySnapshot.forEach((document) => {
@@ -224,7 +209,6 @@
             });
         }
 
-                    
         function updateSummary(data) {
             let totalIncome = 0;
             let totalExpense = 0;
@@ -368,5 +352,7 @@
             }
         }
     </script>
+
+        
 </body>
 </html>
