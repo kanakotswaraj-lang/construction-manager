@@ -202,14 +202,19 @@
             }
         });
         
-        function initDataListener() {
-            // ഫിൽട്ടർ ഒഴിവാക്കി ഫയർസ്റ്റോറിലെ മുഴുവൻ അക്കൗണ്ട്സും എടുക്കാൻ
-            onSnapshot(collection(db, "accounts"), (querySnapshot) => {
+                function initDataListener() {
+            // currentMeshtri ഉപയോഗിച്ച് ഫിൽട്ടർ ചെയ്യുക
+            const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+            
+            onSnapshot(q, (querySnapshot) => {
                 allHistoryData = [];
                 
                 querySnapshot.forEach((document) => {
                     const data = document.data();
-                    allHistoryData.push({ id: document.id, ...data });
+                    // ഒന്നിനുകൂടി ഉറപ്പുവരുത്താൻ
+                    if (data.meshtriOwner === currentMeshtri) {
+                        allHistoryData.push({ id: document.id, ...data });
+                    }
                 });
 
                 allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
