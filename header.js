@@ -62,3 +62,21 @@ window.changeLanguageFromDropdown = function(selectedLang) {
     window.dispatchEvent(new CustomEvent('languageChanged', { detail: selectedLang }));
     location.reload();
 };
+
+// ആപ്പിന്റെ ഏത് പേജിലും data-key ഉള്ള വാക്കുകൾ ഓട്ടോമാറ്റിക്കായി മാറ്റുന്ന കോഡ്:
+document.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem('selectedLang') || 'ml';
+    
+    if (typeof words !== 'undefined') {
+        document.querySelectorAll('[data-key]').forEach(element => {
+            const key = element.getAttribute('data-key');
+            if (words[key] && words[key][savedLang]) {
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    element.placeholder = words[key][savedLang];
+                } else {
+                    element.innerText = words[key][savedLang];
+                }
+            }
+        });
+    }
+});
