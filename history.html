@@ -202,11 +202,9 @@
             }
         });
 
-                function initDataListener() {
-            // മറ്റ് പേജുകളിലേതുപോലെ meshtriOwner വെച്ച് ക്വറി ചെയ്യുക
-            const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
-            
-            onSnapshot(q, (querySnapshot) => {
+                    function initDataListener() {
+            // ഫിൽട്ടർ ഒഴിവാക്കി ഫയർസ്റ്റോറിലെ മുഴുവൻ അക്കൗണ്ട്സും എടുക്കാൻ
+            onSnapshot(collection(db, "accounts"), (querySnapshot) => {
                 allHistoryData = [];
                 
                 querySnapshot.forEach((document) => {
@@ -221,7 +219,7 @@
                 console.error("Firebase Error:", error);
             });
         }
-
+    
 
         function updateSummary(data) {
             let totalIncome = 0;
