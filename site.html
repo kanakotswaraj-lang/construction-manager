@@ -36,8 +36,30 @@
             if(nameSpan) nameSpan.innerText = `സ്വാഗതം, ${currentMeshtri}`;
             
             document.getElementById('entryDate').valueAsDate = new Date();
+            
+            // പേജ് ലോഡ് ചെയ്യുമ്പോൾ നിലവിലുള്ള ഭാഷ സെറ്റ് ചെയ്യുക
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            changePageLanguage(savedLang);
+
             fetchData();
         });
+
+        // ഭാഷ മാറ്റുമ്പോൾ പേജിലെ വാക്കുകൾ മാറുന്ന ഫങ്ഷൻ
+        window.changePageLanguage = function(lang) {
+            localStorage.setItem('selectedLang', lang);
+            if (typeof words === 'undefined') return;
+
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (words[key] && words[key][lang]) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = words[key][lang];
+                    } else {
+                        element.innerText = words[key][lang];
+                    }
+                }
+            });
+        }
 
         // കസ്റ്റം അലേർട്ട് ഫംഗ്ഷൻ
         function showCustomAlert(message, title = "ശ്രദ്ധിക്കുക", isConfirm = false, onConfirm = null) {
@@ -98,7 +120,10 @@
 
                 const siteDropdown = document.getElementById('siteSelectDropdown');
                 if(siteDropdown) {
-                    siteDropdown.innerHTML = `<option value="" data-key="newSiteType">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>`;
+                    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+                    const defaultText = (typeof words !== 'undefined' && words['newSiteType'] && words['newSiteType'][currentLang]) ? words['newSiteType'][currentLang] : "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക";
+                    
+                    siteDropdown.innerHTML = `<option value="" data-key="newSiteType">${defaultText}</option>`;
                     siteSet.forEach(s => {
                         siteDropdown.innerHTML += `<option value="${s}">${s}</option>`;
                     });
@@ -126,9 +151,12 @@
         }
 
         function updateAllDropdowns() {
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            const defaultWorkerText = (typeof words !== 'undefined' && words['workerSelectDefault'] && words['workerSelectDefault'][currentLang]) ? words['workerSelectDefault'][currentLang] : "തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക";
+
             document.querySelectorAll('.worker-select').forEach(select => {
                 let currentValue = select.value;
-                select.innerHTML = `<option value="">തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക</option>` + 
+                select.innerHTML = `<option value="">${defaultWorkerText}</option>` + 
                     registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
                 select.value = currentValue;
             });
@@ -137,10 +165,14 @@
         window.addExpenseRow = function() {
             const container = document.getElementById('expenseListContainer');
             const expId = Date.now();
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            const ph = (currentLang === 'en') ? "Description (e.g., Vehicle, Material)" : "വിവരം (ഉദാ: വാഹനം, മെറ്റീരിയൽ)";
+            const amtPh = (currentLang === 'en') ? "Amount" : "തുക";
+
             container.insertAdjacentHTML('beforeend', `
                 <div class="flex gap-2 items-center" id="exp-${expId}">
-                    <input type="text" placeholder="വിവരം (ഉദാ: വാഹനം, മെറ്റീരിയൽ)" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-                    <input type="number" placeholder="തുക" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()">
+                    <input type="text" placeholder="${ph}" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+                    <input type="number" placeholder="${amtPh}" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()">
                     <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3 py-3 rounded-xl font-bold text-xs">X</button>
                 </div>
             `);
@@ -149,17 +181,22 @@
         window.addWorkerRow = function() {
             const container = document.getElementById('workerListContainer');
             const rowId = Date.now();
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            const defaultWorkerText = (typeof words !== 'undefined' && words['workerSelectDefault'] && words['workerSelectDefault'][currentLang]) ? words['workerSelectDefault'][currentLang] : "തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക";
+            const jobPh = (currentLang === 'en') ? "Job (e.g., Mason)" : "പണി (ഉദാ: മേസ്തിരി പണി)";
+            const wagePh = (currentLang === 'en') ? "Wage (₹)" : "കൂലി (₹)";
+
             const optionsHTML = registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
 
             container.insertAdjacentHTML('beforeend', `
                 <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2 worker-row" id="row-${rowId}" data-worker="">
                     <select class="worker-select w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" onchange="updateRowData(this, '${rowId}')" required>
-                        <option value="">തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക</option>
+                        <option value="">${defaultWorkerText}</option>
                         ${optionsHTML}
                     </select>
                     <div class="flex gap-2">
-                        <input type="text" placeholder="പണി (ഉദാ: മേസ്തിരി പണി)" class="worker-job w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="updateRowData(this, '${rowId}')" required>
-                        <input type="number" placeholder="കൂലി (₹)" class="worker-wage w-32 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()" required>
+                        <input type="text" placeholder="${jobPh}" class="worker-job w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="updateRowData(this, '${rowId}')" required>
+                        <input type="number" placeholder="${wagePh}" class="worker-wage w-32 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()" required>
                         <button type="button" onclick="document.getElementById('row-${rowId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3.5 py-3 rounded-xl font-bold text-xs">X</button>
                     </div>
                 </div>
