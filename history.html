@@ -112,10 +112,9 @@
 
     <!-- ടോസ്റ്റ് നോട്ടിഫിക്കേഷൻ -->
     <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-yellow-400 text-yellow-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 opacity-0 pointer-events-none text-center"></div>
-
-        <script type="module">
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         import { setupHeader } from './header.js';
 
         const firebaseConfig = {
@@ -162,18 +161,11 @@
                     el.placeholder = words[key][lang];
                 }
             });
-            
-            if (typeof window.filterAndDisplay === 'function') {
-                window.filterAndDisplay();
-            }
         };
 
-        // പേജ് ലോഡ് ആകുമ്പോൾ നേരിട്ട് ഡാറ്റ എടുക്കുന്ന കോഡ്
-        
-                document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", () => {
             try {
                 currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
-                alert("സ്റ്റെപ് 1: യൂസർ കിട്ടി -> " + currentMeshtri);
                 
                 if (typeof setupHeader === 'function') { 
                     setupHeader('appHeader', true, currentMeshtri); 
@@ -184,11 +176,9 @@
                 const savedLang = localStorage.getItem('selectedLang') || 'ml';
                 window.switchLanguage(savedLang);
 
-                alert("സ്റ്റെപ് 2: ഡാറ്റാബേസ് കണക്ഷൻ തുടങ്ങുന്നു...");
                 const q = collection(db, "accounts");
                 
                 onSnapshot(q, (querySnapshot) => {
-                    alert("സ്റ്റെപ് 3: ഡാറ്റ കിട്ടി! എണ്ണം: " + querySnapshot.size);
                     allHistoryData = [];
                     
                     querySnapshot.forEach((document) => {
@@ -198,7 +188,6 @@
                         }
                     });
 
-                    alert("ഫിൽട്ടർ ചെയ്ത ആകെ കണക്കുകൾ: " + allHistoryData.length);
                     allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
                     updateSummary(allHistoryData);
                     window.filterAndDisplay();
@@ -274,11 +263,8 @@
             const container = document.getElementById('historyListContainer');
             if (!container) return;
 
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-
             if (dataList.length === 0) {
-                container.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs font-bold lang" data-key="noAccounts">No accounts found</div>`;
-                window.switchLanguage(currentLang);
+                container.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs font-bold">No accounts found</div>`;
                 return;
             }
 
@@ -297,18 +283,16 @@
                             <span class="text-xs font-bold text-slate-400">${item.date || ''}</span>
                         </div>
                         <div class="flex justify-between items-center border-t border-slate-800/80 pt-2 text-xs">
-                            <span class="font-bold text-slate-300"><span class="lang" data-key="nameLabel">Name</span>: <strong class="text-white">${item.name || item.worker || '-'}</strong></span>
+                            <span class="font-bold text-slate-300">Name: <strong class="text-white">${item.name || item.worker || '-'}</strong></span>
                             <span class="font-black text-base ${isIncome ? 'text-emerald-400' : 'text-amber-400'}">₹ ${item.amount || 0}</span>
                         </div>
                         <div class="flex gap-2 pt-1">
-                            <button type="button" onclick="window.openEditModal('${item.id}', '${item.name || item.worker || ''}', '${item.site || item.title || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-yellow-600 hover:bg-yellow-500 text-slate-950 font-black py-2 rounded-xl text-xs transition lang" data-key="editBtn">Edit</button>
-                            <button type="button" onclick="window.deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition lang" data-key="deleteBtn">Delete</button>
+                            <button type="button" onclick="window.openEditModal('${item.id}', '${item.name || item.worker || ''}', '${item.site || item.title || ''}', '${item.amount || 0}', '${item.date || ''}')" class="w-full bg-yellow-600 hover:bg-yellow-500 text-slate-950 font-black py-2 rounded-xl text-xs transition">Edit</button>
+                            <button type="button" onclick="window.deleteAccount('${item.id}')" class="w-full bg-red-600/80 hover:bg-red-600 text-white py-2 rounded-xl text-xs font-bold transition">Delete</button>
                         </div>
                     </div>
                 `;
             }).join('');
-
-            window.switchLanguage(currentLang);
         }
 
         window.openEditModal = function(id, name, site, amount, date) {
@@ -354,6 +338,8 @@
             }
         }
     </script>
+
+        
 </body>
 </html>
 
