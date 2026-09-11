@@ -93,6 +93,12 @@
                     </select>
                 </div>
             </div>
+                        <!-- ഡേറ്റ് ഫിൽട്ടർ കോഡ് -->
+            <div class="mt-2">
+                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="date">തീയതി</label>
+                <input type="date" id="filterDate" onchange="loadAttendanceData()" class="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2.5 text-xs font-bold focus:outline-none focus:border-yellow-400">
+            </div>
+
 
             <!-- വാട്സാപ്പ് ഷെയർ ബട്ടൺ കണ്ടെയ്നർ -->
             <div id="waBtnContainer" class="hidden pt-1"></div>
@@ -212,6 +218,32 @@
                             allWorkers.set(s.name.trim(), cleanPhone);
                         }
                     });
+                    
+Window.loadAttendanceData = async function() {
+    // ... നിങ്ങളുടെ നിലവിലുള്ള കോഡ് ഇവിടെ മുഴുവൻ ഉണ്ടാകും ...
+    // ... ഡാറ്റ ഫെച്ച് ചെയ്യുന്ന ഭാഗങ്ങൾ ...
+} // loadAttendanceData ഇവിടെ അവസാനിക്കുന്നു
+
+// ഇതിന്റെ അടിയിലാണ് ഫിൽട്ടർ ഫങ്ഷൻ നൽകേണ്ടത്:
+Window.filterAttendanceReport = function() {
+    let queryVal = (document.getElementById('searchAttendance')?.value || '').toLowerCase();
+    let selectedWorker = document.getElementById('workerFilter')?.value || 'all';
+    let selectedSite = document.getElementById('siteFilter')?.value || 'all';
+    let selectedDate = document.getElementById('filterDate')?.value || '';
+
+    let filtered = allAttendanceData.filter(item => {
+        let matchesWorker = (selectedWorker === 'all' || item.name === selectedWorker);
+        let matchesSite = (selectedSite === 'all' || item.site === selectedSite);
+        let matchesDate = (!selectedDate || item.date === selectedDate);
+
+        let searchString = ((item.site || '') + ' ' + (item.name || '') + ' ' + (item.details || '')).toLowerCase();
+        let matchesSearch = searchString.includes(queryVal);
+
+        return matchesWorker && matchesSite && matchesDate && matchesSearch;
+    });
+
+    displayAttendanceReport(filtered);
+}
 
                     const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri), where("type", "==", "wage"));
                     const querySnapshot = await getDocs(q);
