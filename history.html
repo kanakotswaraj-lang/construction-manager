@@ -113,7 +113,7 @@
     <!-- ടോസ്റ്റ് നോട്ടിഫിക്കേഷൻ -->
     <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-yellow-400 text-yellow-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 opacity-0 pointer-events-none text-center"></div>
 
-    <script type="module">
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         import { setupHeader } from './header.js';
@@ -168,9 +168,9 @@
             }
         };
 
+        // പേജ് ലോഡ് ആകുമ്പോൾ നേരിട്ട് ഡാറ്റ എടുക്കുന്ന കോഡ്
         document.addEventListener("DOMContentLoaded", () => {
             currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
-            alert("പേജ് ലോഡ് ആയി. യൂസർ: " + currentMeshtri); // ഇത് വർക്ക് ആകുന്നുണ്ടോ എന്ന് നോക്കാൻ
             
             try {
                 if (typeof setupHeader === 'function') { 
@@ -185,35 +185,24 @@
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             window.switchLanguage(savedLang);
 
-            initDataListener();
-        });
-        function initDataListener() {
-            try {
-                alert("ഡാറ്റ ഫെച്ച് ചെയ്യാൻ തുടങ്ങുന്നു...");
+            // ഫയർസ്റ്റോറിൽ നിന്ന് ഡാറ്റ എടുക്കാനുള്ള മെയിൻ കോഡ് ഇവിടെ നേരിട്ട് നൽകിയിരിക്കുന്നു
+            const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+            
+            onSnapshot(q, (querySnapshot) => {
+                allHistoryData = [];
                 
-                const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
-                
-                onSnapshot(q, (querySnapshot) => {
-                    alert("കിട്ടിയ കണക്കുകളുടെ എണ്ണം: " + querySnapshot.size);
-                    allHistoryData = [];
-                    
-                    querySnapshot.forEach((document) => {
-                        const data = document.data();
-                        allHistoryData.push({ id: document.id, ...data });
-                    });
-
-                    allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-                    updateSummary(allHistoryData);
-                    window.filterAndDisplay();
-                }, (error) => {
-                    alert("Firebase Snapshot Error: " + error.message);
+                querySnapshot.forEach((document) => {
+                    const data = document.data();
+                    allHistoryData.push({ id: document.id, ...data });
                 });
 
-            } catch (err) {
-                alert("Catch Error: " + err.message);
-            }
-        }
-
+                allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                updateSummary(allHistoryData);
+                window.filterAndDisplay();
+            }, (error) => {
+                alert("Firebase Error: " + error.message);
+            });
+        });
 
         function updateSummary(data) {
             let totalIncome = 0;
@@ -358,7 +347,9 @@
             }
         }
     </script>
-
-        
 </body>
 </html>
+
+
+
+
