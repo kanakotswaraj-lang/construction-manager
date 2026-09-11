@@ -169,8 +169,10 @@
         };
 
         // പേജ് ലോഡ് ആകുമ്പോൾ നേരിട്ട് ഡാറ്റ എടുക്കുന്ന കോഡ്
+        
         document.addEventListener("DOMContentLoaded", () => {
             currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+            alert("കണക്കുകൾ ലോഡ് ചെയ്യാൻ തുടങ്ങുന്നു. യൂസർ: " + currentMeshtri);
             
             try {
                 if (typeof setupHeader === 'function') { 
@@ -185,16 +187,21 @@
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             window.switchLanguage(savedLang);
 
-            // ഫയർസ്റ്റോറിൽ നിന്ന് ഡാറ്റ എടുക്കാനുള്ള മെയിൻ കോഡ് ഇവിടെ നേരിട്ട് നൽകിയിരിക്കുന്നു
-            const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+            // താൽക്കാലികമായി where ഒഴിവാക്കി മുഴുവൻ കണക്കുകളും ഫെച്ച് ചെയ്ത് നോക്കാം (ഡാറ്റ വരുന്നുണ്ടോ എന്നറിയാൻ)
+            const q = collection(db, "accounts");
             
             onSnapshot(q, (querySnapshot) => {
                 allHistoryData = [];
                 
                 querySnapshot.forEach((document) => {
                     const data = document.data();
-                    allHistoryData.push({ id: document.id, ...data });
+                    // ഇവിടെ meshtriOwner മാച്ച് ചെയ്യുന്നുണ്ടോ എന്ന് പരിശോധിക്കാം
+                    if (!data.meshtriOwner || data.meshtriOwner === currentMeshtri) {
+                        allHistoryData.push({ id: document.id, ...data });
+                    }
                 });
+
+                alert("കിട്ടിയ ആകെ കണക്കുകൾ: " + allHistoryData.length);
 
                 allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
                 updateSummary(allHistoryData);
