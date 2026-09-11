@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>മേസ്തിരി പ്രോ - സെറ്റിങ്സ് & ബാക്ക്അപ്പ്</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="language.js"></script>
+    <style>
+        body {
+            background-color: #0d1117 !important;
+            color: #f3f4f6 !important;
+            font-family: 'Manjari', sans-serif;
+        }
+        .max-w-md {
+            border: 3px solid #10b981;
+            border-radius: 2.5rem;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+            overflow: hidden;
+            background-color: #0d1117;
+        }
+    </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+            authDomain: "mesthri-app.firebaseapp.com",
+            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
+            projectId: "mesthri-app",
+            storageBucket: "mesthri-app.firebasestorage.app",
+            messagingSenderId: "1060617901864",
+            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+            measurementId: "G-J9Y5TW9D7T"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener("DOMContentLoaded", () => {
+            let userName = localStorage.getItem('userName');
+            if (!userName) {
+                window.location.href = "login.html";
+                return;
+            }
+            document.getElementById('backupMeshtriName').innerText = userName;
+        });
+
+        window.downloadBackup = async function() {
+            let userName = localStorage.getItem('userName');
+            if (!userName) return;
+
+            const statusEl = document.getElementById('backupStatus');
+            statusEl.innerText = "ഡാറ്റ ഡൗൺലോഡ് ചെയ്യുന്നു, ദയവായി കാത്തിരിക്കൂ...";
+            statusEl.className = "text-amber-400 text-xs font-bold text-center mt-3";
+
+            try {
+                let backupData = {
+                    meshtri: userName,
+                    backupDate: new Date().toISOString(),
+                    accounts: [],
+                    attendance: [],
+                    sites: [],
+                    staff: [],
+                    materials: []
+                };
+
+                // അക്കൗണ്ട്സ് ഡാറ്റ ഫെച്ച് ചെയ്യാൻ
+                const accQuery = query(collection(db, "accounts"), where("meshtriOwner", "==", userName));
+                const accSnap = await getDocs(accQuery);
+                accSnap.forEach(doc => backupData.accounts.push({ id: doc.id, ...doc.data() }));
+
+                // ഹാജർ ഡാറ്റ ഫെച്ച് ചെയ്യാൻ
+                const attQuery = query(collection(db, "attendance"), where("meshtriOwner", "==", userName));
+                const attSnap = await getDocs(attQuery);
+                attSnap.forEach(doc => backupData.attendance.push({ id: doc.id, ...doc.data() }));
+
+                // സൈറ്റ് ഡാറ്റ ഫെച്ച് ചെയ്യാൻ
+                const siteQuery = query(collection(db, "sites"), where("meshtriOwner", "==", userName));
+                const siteSnap = await getDocs(siteQuery);
+                siteSnap.forEach(doc => backupData.sites.push({ id: doc.id, ...doc.data() }));
+
+                // ഫയൽ ആയി കൺവേർട്ട് ചെയ്ത് ഡൗൺലോഡ് ചെയ്യാൻ
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `MesthriPro_Backup_${userName}_${new Date().toISOString().slice(0,10)}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+
+                statusEl.innerText = "ബാക്ക്അപ്പ് വിജയകരമായി ഡൗൺലോഡ് ചെയ്തു!";
+                statusEl.className = "text-emerald-400 text-xs font-bold text-center mt-3";
+
+            } catch (error) {
+                console.error("Backup error:", error);
+                statusEl.innerText = "ബാക്ക്അപ്പ് എടുക്കുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.";
+                statusEl.className = "text-rose-400 text-xs font-bold text-center mt-3";
+            }
+        };
+    </script>
+</head>
+<body class="text-white min-h-screen p-4 font-sans pb-16">
+    <div class="max-w-md mx-auto space-y-6">
+
+        <!-- ഹെഡർ ഭാഗം -->
+        <div class="flex items-center justify-between bg-slate-900/90 border border-white/10 p-4 rounded-3xl shadow-xl">
+            <a href="dashboard.html" class="w-10 h-10 rounded-2xl bg-slate-800 flex items-center justify-center text-amber-400 font-bold hover:bg-slate-700 transition">
+                ←
+            </a>
+            <h1 class="text-lg font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                സെറ്റിങ്സ് & ബാക്ക്അപ്പ്
+            </h1>
+            <div class="w-10"></div>
+        </div>
+
+        <!-- പ്രൊഫൈൽ വിവരം -->
+        <div class="bg-slate-900/90 border border-white/10 p-5 rounded-3xl shadow-xl space-y-2">
+            <p class="text-xs text-gray-400 font-bold">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
+            <p id="backupMeshtriName" class="text-xl font-black text-amber-400">-</p>
+        </div>
+
+        <!-- ബാക്ക്അപ്പ് കാർഡ് -->
+        <div class="bg-slate-900/90 border border-purple-500/40 p-5 rounded-3xl shadow-xl space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-2xl">☁️</div>
+                <div>
+                    <h2 class="text-base font-black text-white">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
+                    <p class="text-xs text-gray-400">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
+                </div>
+            </div>
+
+            <button onclick="downloadBackup()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-95 text-white p-3.5 rounded-2xl font-black text-sm shadow-lg transition flex items-center justify-center gap-2 border border-purple-400/30">
+                📥 ബാക്ക്അപ്പ് ഫയൽ ഡൗൺലോഡ് ചെയ്യുക (JSON)
+            </button>
+
+            <div id="backupStatus" class="text-center text-xs text-gray-400"></div>
+        </div>
+
+    </div>
+</body>
+</html>
