@@ -187,27 +187,33 @@
 
             initDataListener();
         });
-
         function initDataListener() {
-            alert("ഡാറ്റ ഫെച്ച് ചെയ്യാൻ തുടങ്ങുന്നു...");
-            const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
-            
-            onSnapshot(q, (querySnapshot) => {
-                alert("കിട്ടിയ കണക്കുകളുടെ എണ്ണം: " + querySnapshot.size);
-                allHistoryData = [];
+            try {
+                alert("ഡാറ്റ ഫെച്ച് ചെയ്യാൻ തുടങ്ങുന്നു...");
                 
-                querySnapshot.forEach((document) => {
-                    const data = document.data();
-                    allHistoryData.push({ id: document.id, ...data });
+                const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+                
+                onSnapshot(q, (querySnapshot) => {
+                    alert("കിട്ടിയ കണക്കുകളുടെ എണ്ണം: " + querySnapshot.size);
+                    allHistoryData = [];
+                    
+                    querySnapshot.forEach((document) => {
+                        const data = document.data();
+                        allHistoryData.push({ id: document.id, ...data });
+                    });
+
+                    allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                    updateSummary(allHistoryData);
+                    window.filterAndDisplay();
+                }, (error) => {
+                    alert("Firebase Snapshot Error: " + error.message);
                 });
 
-                allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-                updateSummary(allHistoryData);
-                window.filterAndDisplay();
-            }, (error) => {
-                alert("Firebase Error: " + error.message);
-            });
+            } catch (err) {
+                alert("Catch Error: " + err.message);
+            }
         }
+
 
         function updateSummary(data) {
             let totalIncome = 0;
