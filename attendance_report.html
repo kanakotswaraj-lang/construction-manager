@@ -198,7 +198,7 @@
         let allSites = new Set();
         let isDataLoaded = false;
 
-        window.loadAttendanceData = async function() {
+                window.loadAttendanceData = async function() {
             const list = document.getElementById('reportList');
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             const getTxt = (key, defaultTxt) => (typeof words !== 'undefined' && words[key] && words[key][currentLang]) ? words[key][currentLang] : defaultTxt;
@@ -218,6 +218,58 @@
                             allWorkers.set(s.name.trim(), cleanPhone);
                         }
                     });
+
+                    const siteQuery = query(collection(db, "sites"), where("meshtriOwner", "==", currentMeshtri));
+                    const siteSnapshot = await getDocs(siteQuery);
+                    siteSnapshot.forEach(docSnap => {
+                        const s = docSnap.data();
+                        if (s.siteName) allSites.add(s.siteName.trim());
+                    });
+
+                    const attQuery = query(collection(db, "attendance"), where("meshtriOwner", "==", currentMeshtri));
+                    const attSnapshot = await getDocs(attQuery);
+                    allAttendanceData = [];
+                    attSnapshot.forEach(docSnap => {
+                        allAttendanceData.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+
+                    isDataLoaded = true;
+                    populateDropdowns();
+                }
+
+                window.filterAttendanceReport();
+
+            } catch (error) {
+                console.error("Error loading attendance data:", error);
+                list.innerHTML = `<p class="text-center text-xs text-red-400 font-bold py-8">ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ് സംഭവിച്ചു.</p>`;
+            }
+        };
+
+        // ഫിൽട്ടർ ചെയ്യാനുള്ള ഫങ്ഷൻ ഇതിന്റെ താഴെ നൽകുക
+        window.filterAttendanceReport = function() {
+            let queryVal = (document.getElementById('searchAttendance')?.value || '').toLowerCase();
+            let selectedWorker = document.getElementById('workerFilter')?.value || 'all';
+            let selectedSite = document.getElementById('siteFilter')?.value || 'all';
+            let rawDate = document.getElementById('filterDate')?.value || '';
+
+            let filtered = allAttendanceData.filter(item => {
+                let matchesWorker = (selectedWorker === 'all' || selectedWorker === '' || item.name === selectedWorker);
+                let matchesSite = (selectedSite === 'all' || selectedSite === '' || item.site === selectedSite);
+                
+                let matchesDate = true;
+                if (rawDate) {
+                    matchesDate = (item.date === rawDate);
+                }
+
+                let searchString = ((item.site || '') + ' ' + (item.name || '') + ' ' + (item.details || '')).toLowerCase();
+                let matchesSearch = searchString.includes(queryVal);
+
+                return matchesWorker && matchesSite && matchesDate && matchesSearch;
+            });
+
+            displayAttendanceReport(filtered);
+        };
+
                     
 Window.loadAttendanceData = async function() {
     // ... നിങ്ങളുടെ നിലവിലുള്ള കോഡ് ഇവിടെ മുഴുവൻ ഉണ്ടാകും ...
