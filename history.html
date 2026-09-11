@@ -170,45 +170,45 @@
 
         // പേജ് ലോഡ് ആകുമ്പോൾ നേരിട്ട് ഡാറ്റ എടുക്കുന്ന കോഡ്
         
-        document.addEventListener("DOMContentLoaded", () => {
-            currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
-            alert("കണക്കുകൾ ലോഡ് ചെയ്യാൻ തുടങ്ങുന്നു. യൂസർ: " + currentMeshtri);
-            
+                document.addEventListener("DOMContentLoaded", () => {
             try {
+                currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
+                alert("സ്റ്റെപ് 1: യൂസർ കിട്ടി -> " + currentMeshtri);
+                
                 if (typeof setupHeader === 'function') { 
                     setupHeader('appHeader', true, currentMeshtri); 
                 } else { 
                     document.getElementById('appHeader').innerHTML = `<h2 class="text-yellow-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
                 }
-            } catch (e) { 
-                document.getElementById('appHeader').innerHTML = `<h2 class="text-yellow-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; 
-            }
 
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            window.switchLanguage(savedLang);
+                const savedLang = localStorage.getItem('selectedLang') || 'ml';
+                window.switchLanguage(savedLang);
 
-            // താൽക്കാലികമായി where ഒഴിവാക്കി മുഴുവൻ കണക്കുകളും ഫെച്ച് ചെയ്ത് നോക്കാം (ഡാറ്റ വരുന്നുണ്ടോ എന്നറിയാൻ)
-            const q = collection(db, "accounts");
-            
-            onSnapshot(q, (querySnapshot) => {
-                allHistoryData = [];
+                alert("സ്റ്റെപ് 2: ഡാറ്റാബേസ് കണക്ഷൻ തുടങ്ങുന്നു...");
+                const q = collection(db, "accounts");
                 
-                querySnapshot.forEach((document) => {
-                    const data = document.data();
-                    // ഇവിടെ meshtriOwner മാച്ച് ചെയ്യുന്നുണ്ടോ എന്ന് പരിശോധിക്കാം
-                    if (!data.meshtriOwner || data.meshtriOwner === currentMeshtri) {
-                        allHistoryData.push({ id: document.id, ...data });
-                    }
+                onSnapshot(q, (querySnapshot) => {
+                    alert("സ്റ്റെപ് 3: ഡാറ്റ കിട്ടി! എണ്ണം: " + querySnapshot.size);
+                    allHistoryData = [];
+                    
+                    querySnapshot.forEach((document) => {
+                        const data = document.data();
+                        if (!data.meshtriOwner || data.meshtriOwner === currentMeshtri) {
+                            allHistoryData.push({ id: document.id, ...data });
+                        }
+                    });
+
+                    alert("ഫിൽട്ടർ ചെയ്ത ആകെ കണക്കുകൾ: " + allHistoryData.length);
+                    allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                    updateSummary(allHistoryData);
+                    window.filterAndDisplay();
+                }, (error) => {
+                    alert("Firebase Snapshot Error: " + error.message);
                 });
 
-                alert("കിട്ടിയ ആകെ കണക്കുകൾ: " + allHistoryData.length);
-
-                allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-                updateSummary(allHistoryData);
-                window.filterAndDisplay();
-            }, (error) => {
-                alert("Firebase Error: " + error.message);
-            });
+            } catch (err) {
+                alert("Main Catch Error: " + err.message);
+            }
         });
 
         function updateSummary(data) {
