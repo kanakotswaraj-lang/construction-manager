@@ -96,8 +96,8 @@
                 <input type="date" id="filterDate" onchange="loadAttendanceData()" class="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2.5 text-xs font-bold focus:outline-none focus:border-yellow-400">
             </div>
 
-            <!-- വാട്സാപ്പ് ഷെയർ ബട്ടൺ കണ്ടെയ്നർ -->
-            <div id="waBtnContainer" class="hidden pt-1"></div>
+            <!-- വാട്സാപ്പ് ഷെയർ ബട്ടൺ കണ്ടെയ്നർ (വ്യക്തിഗതവും ദിവസേനെയുള്ളതുമായ ഷെയറിനായി) -->
+            <div id="waBtnContainer" class="hidden pt-1 space-y-2"></div>
         </div>
 
         <!-- ഹാജർ വിവരങ്ങൾ ലിസ്റ്റ് ചെയ്യുവാൻ -->
@@ -309,6 +309,10 @@
             document.getElementById('statTotalWage').innerText = "₹" + totalWage;
 
             const waContainer = document.getElementById('waBtnContainer');
+            waContainer.innerHTML = '';
+            let hasBtn = false;
+
+            // 1. ഒരു പ്രത്യേക തൊഴിലാളിയെ മാത്രം തിരഞ്ഞെടുത്തിട്ടുണ്ടെങ്കിൽ
             if (selectedWorker) {
                 const phone = allWorkers.get(selectedWorker) || '';
                 const msgPrefix = getTxt('wa_msg_prefix', 'നമസ്കാരം');
@@ -319,11 +323,33 @@
 
                 const msg = `${msgPrefix} ${selectedWorker},%0A${waAtt}:%0A- ${waTDays}: ${totalDays}%0A- ${waTWage}: ₹${totalWage}`;
                 
-                waContainer.innerHTML = `
+                waContainer.innerHTML += `
                     <a href="https://wa.me/${phone}?text=${msg}" target="_blank" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
                         💬 ${selectedWorker} - ${waBtnTitle}
                     </a>
                 `;
+                hasBtn = true;
+            }
+
+            // 2. ഒരു പ്രത്യേക തീയതി (Date) മാത്രം തിരഞ്ഞെടുത്തിട്ടുണ്ടെങ്കിൽ അന്ന് ജോലി ചെയ്ത മുഴുവൻ പേരുടെയും റിപ്പോർട്ട് അയക്കാൻ
+            if (selectedDate) {
+                let dailyReportText = `🏗️ *മേസ്തിരി പ്രോ - ദിവസേനയുള്ള ഹാജർ റിപ്പോർട്ട്*%0A📅 തീയതി: ${selectedDate}%0A----------------------------------%0A`;
+                
+                filtered.forEach((item, index) => {
+                    dailyReportText += `${index + 1}. *${item.workerName}* - ${item.site} (${item.days} ദിവസം) - ₹${item.amount}%0A`;
+                });
+
+                dailyReportText += `----------------------------------%0A💰 *ആകെ തൊഴിലാളികൾ:* ${filtered.length}%0A💸 *ആകെ നൽകിയ കൂലി:* ₹${totalWage}`;
+
+                waContainer.innerHTML += `
+                    <a href="https://wa.me/?text=${dailyReportText}" target="_blank" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
+                        💬 ${selectedDate} ലെ മുഴുവൻ ഹാജർ റിപ്പോർട്ടും WhatsApp ചെയ്യുക
+                    </a>
+                `;
+                hasBtn = true;
+            }
+
+            if (hasBtn) {
                 waContainer.classList.remove('hidden');
             } else {
                 waContainer.classList.add('hidden');
