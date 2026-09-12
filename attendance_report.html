@@ -331,23 +331,28 @@
                 hasBtn = true;
             }
 
-            // 2. ഒരു പ്രത്യേക തീയതി (Date) മാത്രം തിരഞ്ഞെടുത്തിട്ടുണ്ടെങ്കിൽ അന്ന് ജോലി ചെയ്ത മുഴുവൻ പേരുടെയും റിപ്പോർട്ട് അയക്കാൻ
+                        // 2. ഒരു പ്രത്യേക തീയതി (Date) മാത്രം തിരഞ്ഞെടുത്തിട്ടുണ്ടെങ്കിൽ അന്ന് ജോലി ചെയ്ത മുഴുവൻ പേരുടെയും റിപ്പോർട്ട് അയക്കാൻ
             if (selectedDate) {
-                let dailyReportText = `🏗️ *മേസ്തിരി പ്രോ - ദിവസേനയുള്ള ഹാജർ റിപ്പോർട്ട്*%0A📅 തീയതി: ${selectedDate}%0A----------------------------------%0A`;
+                // തീയതി YYYY-MM-DD രീതിയിൽ നിന്നും DD-MM-YYYY രീതിയിലേക്ക് മാറ്റുന്നു
+                let parts = selectedDate.split('-');
+                let formattedDate = parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : selectedDate;
+
+                let dailyReportText = `🏗️ *മേസ്തിരി പ്രോ - ദിവസേനയുള്ള ഹാജർ റിപ്പോർട്ട്*%0A📅 തീയതി: ${formattedDate}%0A----------------------------------%0A`;
                 
                 filtered.forEach((item, index) => {
                     dailyReportText += `${index + 1}. *${item.workerName}* - ${item.site} (${item.days} ദിവസം) - ₹${item.amount}%0A`;
                 });
 
-                dailyReportText += `----------------------------------%0A💰 *ആകെ തൊഴിലാളികൾ:* ${filtered.length}%0A💸 *ആകെ നൽകിയ കൂലി:* ₹${totalWage}`;
+                dailyReportText += `----------------------------------%0A💰 *ആകെ തൊഴിലാളികൾ:* ${filtered.length}%0A💸 *ആകെ കൂലി:* ₹${totalWage}`;
 
                 waContainer.innerHTML += `
                     <a href="https://wa.me/?text=${dailyReportText}" target="_blank" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
-                        💬 ${selectedDate} ലെ മുഴുവൻ ഹാജർ റിപ്പോർട്ടും WhatsApp ചെയ്യുക
+                        💬 ${formattedDate} ലെ മുഴുവൻ ഹാജർ റിപ്പോർട്ടും WhatsApp ചെയ്യുക
                     </a>
                 `;
                 hasBtn = true;
             }
+
 
             if (hasBtn) {
                 waContainer.classList.remove('hidden');
