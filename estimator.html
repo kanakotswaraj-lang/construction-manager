@@ -80,7 +80,7 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ഭാഗം (ഇതിൽ ഹെഡറും ലാംഗ്വേജ് ബട്ടണും കൺട്രോൾ ചെയ്യപ്പെടും) -->
+        <!-- ഹെഡർ ഭാഗം -->
         <div id="appHeader" class="w-full pt-2 px-2"></div>
 
         <!-- ടോപ്പ് ബാർ -->
@@ -124,13 +124,16 @@
                     <option value="6" data-key="thick_6">6 ഇഞ്ച്</option>
                 </select>
             </div>
-            <!-- കമ്പി തമ്മിലുള്ള അകലം -->
+            
+            <!-- കമ്പി തമ്മിലുള്ള അകലം (സ്ലാബിനും ബീമിനും ലിന്റലിനും ഉപയോഗിക്കാം) -->
             <div id="spacingBox">
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="spacing_label">കമ്പി തമ്മിലുള്ള അകലം (Spacing)</label>
+                <label id="spacingLabel" class="block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="spacing_label">കമ്പി തമ്മിലുള്ള അകലം (Spacing)</label>
                 <select id="barSpacing" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
-                    <option value="6" selected data-key="spacing_opt1">6 ഇഞ്ച് (സാധാരണ വീടുകൾക്ക്)</option>
-                    <option value="7" data-key="spacing_opt2">7 ഇഞ്ച്</option>
-                    <option value="8" data-key="spacing_opt3">8 ഇഞ്ച്</option>
+                    <option value="5">5 ഇഞ്ച്</option>
+                    <option value="6" selected>6 ഇഞ്ച് (സാധാരണ)</option>
+                    <option value="7">7 ഇഞ്ച്</option>
+                    <option value="8">8 ഇഞ്ച്</option>
+                    <option value="9">9 ഇഞ്ച്</option>
                 </select>
             </div>
 
@@ -143,19 +146,19 @@
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-slate-800/90 border border-blue-500/40 p-4 rounded-2xl text-center shadow-md">
-                    <p id="labelItem1" class="text-[10px] text-slate-400 font-black uppercase" data-key="main_steel">മെയിൻ കമ്പി</p>
+                    <p id="labelItem1" class="text-[10px] text-slate-400 font-black uppercase">-</p>
                     <p id="resItem1" class="text-base font-black text-amber-400 mt-1">-</p>
                 </div>
                 <div class="bg-slate-800/90 border border-blue-500/40 p-4 rounded-2xl text-center shadow-md">
-                    <p id="labelItem2" class="text-[10px] text-slate-400 font-black uppercase" data-key="ring_steel">റിങ് കമ്പി</p>
+                    <p id="labelItem2" class="text-[10px] text-slate-400 font-black uppercase">-</p>
                     <p id="resItem2" class="text-base font-black text-amber-400 mt-1">-</p>
                 </div>
                 <div class="bg-slate-800/90 border border-blue-500/40 p-4 rounded-2xl text-center shadow-md">
-                    <p id="labelItem3" class="text-[10px] text-slate-400 font-black uppercase" data-key="binding_wire">കെട്ടുകമ്പി</p>
+                    <p id="labelItem3" class="text-[10px] text-slate-400 font-black uppercase">-</p>
                     <p id="resItem3" class="text-base font-black text-amber-400 mt-1">-</p>
                 </div>
                 <div class="bg-slate-800/90 border border-blue-500/40 p-4 rounded-2xl text-center shadow-md">
-                    <p id="labelItem4" class="text-[10px] text-slate-400 font-black uppercase" data-key="total_length">ആകെ നീളം</p>
+                    <p id="labelItem4" class="text-[10px] text-slate-400 font-black uppercase">-</p>
                     <p id="resItem4" class="text-base font-black text-amber-400 mt-1">-</p>
                 </div>
             </div>
@@ -212,27 +215,31 @@
             const inputLabel = document.getElementById('inputLabel');
             const slabThicknessBox = document.getElementById('slabThicknessBox');
             const spacingBox = document.getElementById('spacingBox');
+            const spacingLabel = document.getElementById('spacingLabel');
 
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
 
             if (category === 'slab') {
-                inputLabel.innerText = words.input_area_label ? words.input_area_label[currentLang] : "പണിയേണ്ട ഏരിയ (Square Feet)";
+                inputLabel.innerText = "പണിയേണ്ട ഏരിയ (Square Feet)";
+                spacingLabel.innerText = "കമ്പി തമ്മിലുള്ള അകലം (Spacing)";
                 slabThicknessBox.style.display = 'block';
                 spacingBox.style.display = 'block';
             } else if (category === 'beam' || category === 'lintel') {
-                inputLabel.innerText = words.input_length_label ? words.input_length_label[currentLang] : "ബീമിന്റെ ആകെ നീളം (Running Feet)";
+                inputLabel.innerText = "ബീമിന്റെ ആകെ നീളം (Running Feet)";
+                spacingLabel.innerText = "റിങ് തമ്മിലുള്ള അകലം (Ring Spacing in Inches)";
                 slabThicknessBox.style.display = 'none';
-                spacingBox.style.display = 'none';
+                spacingBox.style.display = 'block';
             } else if (category === 'stone') {
-                inputLabel.innerText = words.input_area_label ? words.input_area_label[currentLang] : "പണിയേണ്ട ഏരിയ (Square Feet)";
+                inputLabel.innerText = "പണിയേണ്ട ഏരിയ (Square Feet)";
                 slabThicknessBox.style.display = 'none';
                 spacingBox.style.display = 'none';
             } else if (category === 'plaster') {
-                inputLabel.innerText = words.input_area_label ? words.input_area_label[currentLang] : "പണിയേണ്ട ഏരിയ (Square Feet)";
+                inputLabel.innerText = "പണിയേണ്ട ഏരിയ (Square Feet)";
                 slabThicknessBox.style.display = 'none';
                 spacingBox.style.display = 'none';
             }
         };
+
         window.calculateEstimation = function() {
             const val = parseFloat(document.getElementById('mainInput').value);
             const category = document.getElementById('workCategory').value;
@@ -241,11 +248,11 @@
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
 
             if (!val || val <= 0) {
-                window.showToast('msg_valid_measurement', false);
+                window.showToast('ശരിയായ അളവ് നൽകുക', false);
                 return;
             }
 
-            let i1 = "", i2 = "", i3 = "", i4 = "", detailsKey = "";
+            let i1 = "", i2 = "", i3 = "", i4 = "";
 
             if (category === 'slab') {
                 let totalCft = val * (thickness / 12);
@@ -254,134 +261,110 @@
                 let sandCft = (dryVolume / 6) * 2;
                 let metalCft = (dryVolume / 6) * 3;
 
-                let spacingMultiplier = 6 / spacing; 
-                let steel8mm = Math.round(val * 0.22 * spacingMultiplier);  
-                let steelMain = Math.round(val * 0.50 * spacingMultiplier); 
+                let totalSteelKg = val * 0.75; 
+                let steel10mm = Math.round(totalSteelKg * 0.40); // 40% (10mm - Straight)
+                let steel8mm  = Math.round(totalSteelKg * 0.60); // 60% (8mm - Crank & Distribution)
 
-                document.getElementById('labelItem1').setAttribute('data-key', 'cement_bag');
-                document.getElementById('labelItem2').setAttribute('data-key', 'spacing');
-                document.getElementById('labelItem3').setAttribute('data-key', 'ring_steel');
-                document.getElementById('labelItem4').setAttribute('data-key', 'main_steel');
+                document.getElementById('labelItem1').innerText = "സിമന്റ്";
+                document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
+                document.getElementById('labelItem3').innerText = "മെറ്റൽ (Metal)";
+                document.getElementById('labelItem4').innerText = "കമ്പി കണക്ക് (Steel)";
 
-                i1 = Math.round(cementBags) + " " + (words.cement_bag ? words.cement_bag[currentLang] : "ചാക്ക്");
+                i1 = Math.round(cementBags) + " ചാക്ക്";
                 i2 = Math.round(sandCft) + " Cft";
                 i3 = Math.round(metalCft) + " Cft";
-                i4 = (steel8mm + steelMain) + " " + (words.kilo ? words.kilo[currentLang] : "കിലോ");
+                i4 = `10mm: ${steel10mm} kg | 8mm: ${steel8mm} kg`;
 
-                let slabWord = words.slab ? words.slab[currentLang] : "സ്ലാബ്";
-                let thickWord = words.thickness ? words.thickness[currentLang] : "കനം";
-                let spaceWord = words.spacing ? words.spacing[currentLang] : "അകലം";
-                let masonWord = words.required_masons ? words.required_masons[currentLang] : "ആവശ്യമായ മേസ്തിരിമാർ";
-                let workerWord = words.workers ? words.workers[currentLang] : "തൊഴിലാളികൾ";
-
-                document.getElementById('resDetails').innerText = `${slabWord} ${thickWord}: ${thickness} ${words.inch ? words.inch[currentLang] : "ഇഞ്ച്"}, ${spaceWord}: ${spacing} ${words.inch ? words.inch[currentLang] : "ഇഞ്ച്"}. ${masonWord}: ${Math.ceil(val/150)}, ${workerWord}: ${Math.ceil(val/100)}.`;
+                document.getElementById('resDetails').innerText = `സ്ലാബ് കനം: ${thickness} ഇഞ്ച്, അകലം: ${spacing} ഇഞ്ച്. ആവശ്യമായ മേസ്തിരിമാർ: ${Math.ceil(val/150)}, തൊഴിലാളികൾ: ${Math.ceil(val/100)}.`;
             } 
             else if (category === 'beam') {
-                let mainSteel = Math.round(val * 0.65); 
-                let ringSteel = Math.round(val * 0.30); 
-                let bindingWire = 5;
+                // ബീം കണക്കുകൂട്ടൽ (Running Feet & Spacing അനുസരിച്ച്)
+                let length = val;
+                let totalCft = length * 0.75; // ഏകദേശ വോള്യൂം
+                let dryVolume = totalCft * 1.54;
+                let cementBags = (dryVolume / 6) / 1.25;
+                let sandCft = (dryVolume / 6) * 2;
+                let metalCft = (dryVolume / 6) * 3;
 
-                document.getElementById('labelItem1').setAttribute('data-key', 'main_steel');
-                document.getElementById('labelItem2').setAttribute('data-key', 'ring_steel');
-                document.getElementById('labelItem3').setAttribute('data-key', 'binding_wire');
-                document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
+                let mainSteel16mm = Math.round(length * 0.45); // 16mm മെയിൻ കമ്പി
+                let mainSteel12mm = Math.round(length * 0.30); // 12mm മെയിൻ കമ്പി
+                
+                // റിങ് അകലം അനുസരിച്ച് എണ്ണം കണക്കാക്കുന്നു (Standard spacing factor 12/spacing)
+                let ringCount = Math.round((length * 12) / spacing);
+                let ringSteel8mm = Math.round(ringCount * 0.85); // 8mm റിങ് കമ്പി കിലോ
+                let bindingWire = Math.round(length * 0.010);
 
-                let kiloWord = words.kilo ? words.kilo[currentLang] : "കിലോ";
-                i1 = mainSteel + " " + kiloWord;
-                i2 = ringSteel + " " + kiloWord;
-                i3 = bindingWire + " " + kiloWord;
-                i4 = val + " R.Ft";
+                document.getElementById('labelItem1').innerText = "സിമന്റ് & മണൽ";
+                document.getElementById('labelItem2').innerText = "മെയിൻ കമ്പി (16mm & 12mm)";
+                document.getElementById('labelItem3').innerText = "റിങ് (8mm & Count)";
+                document.getElementById('labelItem4').innerText = "കെട്ടുകമ്പി";
 
-                detailsKey = 'beam_steel_calc';
-            }
-                        else if (category === 'beam') {
-                let length = val; // Running Feet
-                // സ്റ്റാൻഡേർഡ് കണക്ക് പ്രകാരം (1000 R.Ft ബീമിന് വരുന്ന കണക്കുകൾ)
-                let mainSteel16mm = Math.round(length * 0.45); // 16mm കമ്പി
-                let mainSteel12mm = Math.round(length * 0.30); // 12mm കമ്പി
-                let ringSteel8mm  = Math.round(length * 0.35); // 8mm റിങ് കമ്പി
-                let bindingWire   = Math.round(length * 0.008); // കെട്ടുകമ്പി
+                i1 = `${Math.ceil(cementBags)} ചാക്ക് | ${Math.round(sandCft)} Cft മണൽ`;
+                i2 = `${mainSteel16mm + mainSteel12mm} കിലോ`;
+                i3 = `${ringCount} എണ്ണം (${ringSteel8mm} കിലോ)`;
+                i4 = `${bindingWire} കിലോ`;
 
-                // മെറ്റീരിയൽ കണക്കുകൾ (ക്യുബിക് ഫീറ്റും ചാക്കും)
-                let totalCft = length * (1.0); // ഏകദേശ വോള്യൂം കണക്ക്
-                let cementBags = Math.ceil(length * 0.12);
-                let sandCft    = Math.round(length * 0.35);
-                let metalCft   = Math.round(length * 0.55);
-
-                document.getElementById('labelItem1').setAttribute('data-key', 'cement_bag');
-                document.getElementById('labelItem2').setAttribute('data-key', 'main_steel');
-                document.getElementById('labelItem3').setAttribute('data-key', 'ring_steel');
-                document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
-
-                let kiloWord = words.kilo ? words.kilo[currentLang] : "കിലോ";
-                let bagWord = words.cement_bag ? words.cement_bag[currentLang] : "ചാക്ക്";
-
-                i1 = cementBags + " " + bagWord;
-                i2 = (mainSteel16mm + mainSteel12mm) + " " + kiloWord + " (16mm & 12mm)";
-                i3 = ringSteel8mm + " " + kiloWord + " (8mm Ring)";
-                i4 = length + " R.Ft";
-
-                document.getElementById('resDetails').innerText = `റണ്ണിങ് ഫീറ്റ് ബീം പണിക്ക്: സിമന്റ് ${cementBags} ചാക്ക്, മണൽ ${sandCft} Cft, മെറ്റൽ ${metalCft} Cft, കെട്ടുകമ്പി ${bindingWire} കിലോ ആവശ്യമാണ്.`;
+                document.getElementById('resDetails').innerText = `റണ്ണിങ് ഫീറ്റ് ബീം (${length} R.Ft), റിങ് അകലം: ${spacing} ഇഞ്ച്. മെറ്റൽ: ${Math.round(metalCft)} Cft ആവശ്യമാണ്.`;
             }
             else if (category === 'lintel') {
+                // ലിന്റൽ കണക്കുകൂട്ടൽ
                 let length = val;
-                let mainSteel = Math.round(length * 0.35);
-                let ringSteel = Math.round(length * 0.18);
-                let bindingWire = Math.round(length * 0.005);
+                let totalCft = length * 0.40;
+                let dryVolume = totalCft * 1.54;
+                let cementBags = (dryVolume / 6) / 1.25;
+                let sandCft = (dryVolume / 6) * 2;
+                let metalCft = (dryVolume / 6) * 3;
 
-                let cementBags = Math.ceil(length * 0.08);
-                let sandCft    = Math.round(length * 0.22);
-                let metalCft   = Math.round(length * 0.35);
+                let mainSteel10mm = Math.round(length * 0.35); // 10mm/12mm മെയിൻ കമ്പി
+                let ringCount = Math.round((length * 12) / spacing);
+                let ringSteel8mm = Math.round(ringCount * 0.60); // 8mm റിങ് കമ്പി
+                let bindingWire = Math.round(length * 0.008);
 
-                document.getElementById('labelItem1').setAttribute('data-key', 'cement_bag');
-                document.getElementById('labelItem2').setAttribute('data-key', 'main_steel');
-                document.getElementById('labelItem3').setAttribute('data-key', 'ring_steel');
-                document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
+                document.getElementById('labelItem1').innerText = "സിമന്റ് & മണൽ";
+                document.getElementById('labelItem2').innerText = "മെയിൻ കമ്പി (10mm)";
+                document.getElementById('labelItem3').innerText = "റിങ് (8mm & Count)";
+                document.getElementById('labelItem4').innerText = "കെട്ടുകമ്പി";
 
-                let kiloWord = words.kilo ? words.kilo[currentLang] : "കിലോ";
-                let bagWord = words.cement_bag ? words.cement_bag[currentLang] : "ചാക്ക്";
+                i1 = `${Math.ceil(cementBags)} ചാക്ക് | ${Math.round(sandCft)} Cft മണൽ`;
+                i2 = `${mainSteel10mm} കിലോ`;
+                i3 = `${ringCount} എണ്ണം (${ringSteel8mm} കിലോ)`;
+                i4 = `${bindingWire} കിലോ`;
 
-                i1 = cementBags + " " + bagWord;
-                i2 = mainSteel + " " + kiloWord;
-                i3 = ringSteel + " " + kiloWord;
-                i4 = length + " R.Ft";
-
-                document.getElementById('resDetails').innerText = `ലിന്റൽ പണിക്ക്: സിമന്റ് ${cementBags} ചാക്ക്, മണൽ ${sandCft} Cft, മെറ്റൽ ${metalCft} Cft, കെട്ടുകമ്പി ${bindingWire} കിലോ ആവശ്യമാണ്.`;
+                document.getElementById('resDetails').innerText = `ലിന്റൽ പണി (${length} R.Ft), അകലം: ${spacing} ഇഞ്ച്. മെറ്റൽ: ${Math.round(metalCft)} Cft ആവശ്യമാണ്.`;
             }
-
             else if (category === 'stone') {
                 let baseBricks = val * 1.15;
                 let totalBricks = Math.ceil(baseBricks);
                 let cementBags = Math.ceil(totalBricks / 100);
                 let sandCft = Math.round(cementBags * 3);
 
-                document.getElementById('labelItem1').setAttribute('data-key', 'cement_bag');
-                document.getElementById('labelItem2').setAttribute('data-key', 'spacing');
-                document.getElementById('labelItem3').setAttribute('data-key', 'slab');
-                document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
+                document.getElementById('labelItem1').innerText = "സിമന്റ്";
+                document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
+                document.getElementById('labelItem3').innerText = "കല്ലുകളുടെ എണ്ണം";
+                document.getElementById('labelItem4').innerText = "ആകെ ഏരിയ";
 
-                i1 = cementBags + " " + (words.cement_bag ? words.cement_bag[currentLang] : "ചാക്ക്");
+                i1 = cementBags + " ചാക്ക്";
                 i2 = sandCft + " Cft";
                 i3 = totalBricks + " എണ്ണം";
                 i4 = val + " Sq.Ft";
 
-                detailsKey = 'stone_material_estimate';
+                document.getElementById('resDetails').innerText = `വെട്ടുകല്ല് കെട്ടൽ എസ്റ്റിമേറ്റ് (${val} Sq.Ft).`;
             }
             else if (category === 'plaster') {
                 let cementBags = Math.round((val / 1000) * 25);
                 let sandCft = Math.round((val / 1000) * 150);
 
-                document.getElementById('labelItem1').setAttribute('data-key', 'cement_bag');
-                document.getElementById('labelItem2').setAttribute('data-key', 'spacing');
-                document.getElementById('labelItem3').setAttribute('data-key', 'binding_wire');
-                document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
+                document.getElementById('labelItem1').innerText = "സിമന്റ്";
+                document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
+                document.getElementById('labelItem3').innerText = "കെട്ടുകമ്പി";
+                document.getElementById('labelItem4').innerText = "ആകെ ഏരിയ";
 
-                i1 = cementBags + " " + (words.cement_bag ? words.cement_bag[currentLang] : "ചാക്ക്");
+                i1 = cementBags + " ചാക്ക്";
                 i2 = sandCft + " Cft";
                 i3 = "ബാധകമല്ല";
-                i4 = "ബാധകമല്ല";
+                i4 = val + " Sq.Ft";
 
-                detailsKey = 'plastering_calc';
+                document.getElementById('resDetails').innerText = `പ്ലാസ്റ്റിംഗ് എസ്റ്റിമേറ്റ് (${val} Sq.Ft).`;
             }
 
             document.getElementById('resItem1').innerText = i1;
@@ -389,22 +372,9 @@
             document.getElementById('resItem3').innerText = i3;
             document.getElementById('resItem4').innerText = i4;
 
-            if (category !== 'slab' && detailsKey) {
-                const detailsElement = document.getElementById('resDetails');
-                detailsElement.setAttribute('data-key', detailsKey);
-                if (typeof words !== 'undefined' && words[detailsKey] && words[detailsKey][currentLang]) {
-                    detailsElement.innerText = words[detailsKey][currentLang];
-                }
-            }
-
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(currentLang);
-            }
-
             document.getElementById('resultBox').classList.remove('hidden');
-            window.showToast("msg_estimated_success", true);
+            window.showToast("കണക്കുകൂട്ടൽ വിജയകരമായി പൂർത്തിയായി!", true);
         };
-
     </script>
 </body>
 </html>
