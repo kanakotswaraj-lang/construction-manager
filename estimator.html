@@ -271,7 +271,6 @@
             const spacing = parseFloat(document.getElementById('barSpacing').value);
             const steelSelection = document.getElementById('barSizeSelection').value;
             
-            // മാനുവൽ ആയി നൽകിയ മേസ്തിരിമാരുടെ എണ്ണം എടുക്കുന്നു (ഇല്ലെങ്കിൽ ഓട്ടോമാറ്റിക് കണക്കാക്കും)
             const manualMasonInput = document.getElementById('masonCountInput').value;
 
             if (!val || val <= 0) {
@@ -309,35 +308,34 @@
             } 
             else if (category === 'beam' || category === 'lintel') {
                 let length = val;
-                let cftPerFoot = (category === 'beam') ? 0.75 : 0.40;
-                let totalCft = length * cftPerFoot;
-                let cementBags = Math.round(totalCft * 0.85); 
+                
+                // പ്രാക്ടിക്കൽ മേസ്തിരി കണക്ക്: ലിന്റലിനും ബീമിനും വരുന്ന കൃത്യമായ മെറ്റീരിയൽ അനുപാതം
+                let cementBags = Math.round(length * (category === 'beam' ? 0.35 : 0.22)); 
                 let sandCft = Math.round(cementBags * 2.5);
                 let metalCft = Math.round(cementBags * 4.5); 
 
-                // മെയിൻ കമ്പി സൈസ് അനുസരിച്ച് ഭാരം മാറുന്നതിനുള്ള കൃത്യമായ കണക്ക്
                 let mainSteelMultiplier = 0.50;
-                let ringWeightMultiplier = 0.65;
+                let ringWeightMultiplier = 0.60;
                 let mainBarNames = "";
 
                 if (steelSelection === '16_12') {
-                    mainSteelMultiplier = 0.95; // ഹെവി ബീം
-                    ringWeightMultiplier = 0.95;
+                    mainSteelMultiplier = 0.85; 
+                    ringWeightMultiplier = 0.90;
                     mainBarNames = "16mm & 12mm (ഹെവി)";
                 } else if (steelSelection === '12_10') {
-                    mainSteelMultiplier = 0.70; // സ്റ്റാൻഡേർഡ്
-                    ringWeightMultiplier = 0.80;
+                    mainSteelMultiplier = 0.65; 
+                    ringWeightMultiplier = 0.75;
                     mainBarNames = "12mm & 10mm (സ്റ്റാൻഡേർഡ്)";
                 } else {
-                    mainSteelMultiplier = 0.45; // ലൈറ്റ്/ലിന്റൽ
+                    mainSteelMultiplier = 0.45; 
                     ringWeightMultiplier = 0.60;
                     mainBarNames = "10mm & 8mm (ലിന്റൽ)";
                 }
 
                 let mainSteelKg = Math.round(length * mainSteelMultiplier);
                 let ringCount = Math.round((length * 12) / spacing);
-                let ringSteelKg = Math.round(ringCount * ringWeightMultiplier);
-                let bindingWire = Math.round((mainSteelKg + ringSteelKg) * 0.03);
+                let ringSteelKg = Math.round(ringCount * 0.60);
+                let bindingWire = Math.round((mainSteelKg + ringSteelKg) * 0.04);
                 let masons = manualMasonInput !== "" ? parseInt(manualMasonInput) : Math.ceil(length / 200);
 
                 document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
