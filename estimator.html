@@ -80,8 +80,13 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ഭാഗം -->
-        <div id="appHeader" class="w-full pt-2 px-2"></div>
+        <!-- ഹെഡർ ഭാഗം (ഫെയിൽ ആയാൽ ഡിസ്പ്ലേ ചെയ്യാൻ ഫാൾബാക്ക് ചേർത്തു) -->
+        <div id="appHeader" class="w-full pt-2 px-2">
+            <div class="flex justify-between items-center bg-slate-900 border border-amber-500/50 p-3 rounded-2xl">
+                <span class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</span>
+                <a href="dashboard.html" class="bg-amber-500 text-slate-950 px-3 py-1 rounded-xl text-xs font-bold">ഹോം</a>
+            </div>
+        </div>
 
         <!-- ടോപ്പ് ബാർ -->
         <div class="mx-4 bg-slate-900/90 border-2 border-amber-500 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
@@ -147,10 +152,10 @@
                 </select>
             </div>
 
-            <button onclick="calculateEstimation()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition" data-key="calculate_btn">കണക്കുകൂട്ടുക (Calculate)</button>
+            <button onclick="calculateEstimation()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition cursor-pointer" data-key="calculate_btn">കണക്കുകൂട്ടുക (Calculate)</button>
         </div>
 
-        <!-- ഫലം കാണിക്കുന്ന ഭാഗം (5 ബോക്സുകൾ - സിമന്റ്, മണൽ, മെറ്റൽ, മെയിൻ കമ്പി, റിങ് & കെട്ടുകമ്പി) -->
+        <!-- ഫലം കാണിക്കുന്ന ഭാഗം -->
         <div id="resultBox" class="hidden mx-4 bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 backdrop-blur-sm space-y-4">
             <h2 class="text-base font-black text-emerald-400 mb-2 border-b border-slate-800 pb-2" data-key="result_heading">📊 കണക്കാക്കിയ അളവുകൾ (വെവ്വേറെ)</h2>
             
@@ -191,15 +196,16 @@
         document.addEventListener("DOMContentLoaded", () => {
             try {
                 if (typeof setupHeader === 'function') { setupHeader('appHeader'); }
-                else { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
-            } catch (e) { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
+            } catch (e) { console.log(e); }
 
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
             }
         });
+    </script>
 
+    <script>
         window.showToast = function(messageKey, isSuccess = true) {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             let message = messageKey;
@@ -266,12 +272,12 @@
 
             let i1 = "", i2 = "", i3 = "", i4 = "", i5 = "";
 
-                        if (category === 'slab') {
+            if (category === 'slab') {
                 let totalCft = val * (thickness / 12);
                 let dryVolume = totalCft * 1.54;
                 let cementBags = (dryVolume / 6) / 1.25;
-                let sandCft = Math.round(cementBags * 2.5); // ഒരു ചാക്കിന് ഏകദേശം 2.5 അടി മണൽ
-                let metalCft = Math.round(cementBags * 4.5); // ഒരു ചാക്ക് സിമന്റിന് 4.5 അടി മെറ്റൽ
+                let sandCft = Math.round(cementBags * 2.5);
+                let metalCft = Math.round(cementBags * 4.5); // മെറ്റൽ 4.5 അടി കണക്ക്
 
                 let totalSteelKg = val * 0.75; 
                 let steel10mm = Math.round(totalSteelKg * 0.40); 
@@ -298,7 +304,7 @@
                 let dryVolume = totalCft * 1.54;
                 let cementBags = (dryVolume / 6) / 1.25;
                 let sandCft = Math.round(cementBags * 2.5);
-                let metalCft = Math.round(cementBags * 4.5); // ഇവിടെയും ഒരു ചാക്കിന് 4.5 അടി മെറ്റൽ
+                let metalCft = Math.round(cementBags * 4.5); // മെറ്റൽ 4.5 അടി കണക്ക്
 
                 let mainSteelKg = Math.round(length * (category === 'beam' ? 0.75 : 0.45));
                 let ringCount = Math.round((length * 12) / spacing);
@@ -316,21 +322,6 @@
                 i1 = Math.ceil(cementBags) + " ചാക്ക്";
                 i2 = sandCft + " Cft";
                 i3 = metalCft + " Cft";
-                i4 = `${mainSteelKg} കിലോ`;
-                i5 = `${ringCount} എണ്ണം (${ringSteelKg} കി.ഗ്രാം) | കെട്ടുകമ്പി: ${bindingWire} കിലോ`;
-
-                document.getElementById('resDetails').innerText = `${category === 'beam' ? 'ബീം' : 'ലിന്റൽ'} പണി (${length} R.Ft), അകലം: ${spacing} ഇഞ്ച്.`;
-            }
-
-                document.getElementById('labelItem1').innerText = "സിമന്റ്";
-                document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
-                document.getElementById('labelItem3').innerText = "മെറ്റൽ (Metal)";
-                document.getElementById('labelItem4').innerText = `മെയിൻ കമ്പി (${mainBarNames})`;
-                document.getElementById('labelItem5').innerText = "റിങ് (8mm) & കെട്ടുകമ്പി";
-
-                i1 = Math.ceil(cementBags) + " ചാക്ക്";
-                i2 = Math.round(sandCft) + " Cft";
-                i3 = Math.round(metalCft) + " Cft";
                 i4 = `${mainSteelKg} കിലോ`;
                 i5 = `${ringCount} എണ്ണം (${ringSteelKg} കി.ഗ്രാം) | കെട്ടുകമ്പി: ${bindingWire} കിലോ`;
 
