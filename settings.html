@@ -23,7 +23,6 @@
     </style>
 
     <script>
-        // നിങ്ങൾ തന്ന ഹെഡർ ഫങ്ഷൻ ഇവിടെ നൽകിയിരിക്കുന്നു
         function setupHeader(containerId, showWelcome = false, userName = "") {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             const name = userName || localStorage.getItem('userName') || '';
@@ -89,7 +88,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where, setDoc, doc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -113,10 +112,9 @@
             }
             document.getElementById('backupMeshtriName').innerText = userName;
 
-            // ഇവിടെയാണ് ഹെഡർ പേജിലേക്ക് ലോഡ് ചെയ്യുന്നത്
             setupHeader('header-container', true, userName);
 
-            // ഡാറ്റാ കീ വാക്കുകൾ ലാംഗ്വേജ് അനുസരിച്ച് മാറ്റാൻ
+            // data-key ഉള്ള വാക്കുകൾ ലാംഗ്വേജ് അനുസരിച്ച് മാറ്റാൻ
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof words !== 'undefined') {
                 document.querySelectorAll('[data-key]').forEach(element => {
@@ -128,14 +126,14 @@
             }
         });
 
-                window.downloadBackup = async function() {
+        // ബാക്ക്അപ്പ് ഡൗൺലോഡ് ഫങ്ഷൻ
+        window.downloadBackup = async function() {
             let userName = localStorage.getItem('userName');
             if (!userName) return;
 
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             const statusEl = document.getElementById('backupStatus');
             
-            // ഇവിടെയാണ് ഓരോ ഭാഷയ്ക്കുമുള്ള വാക്കുകൾ സെറ്റ് ചെയ്തിരിക്കുന്നത്
             const messages = {
                 ml: { downloading: "ഡാറ്റ ഡൗൺലോഡ് ചെയ്യുന്നു, ദയവായി കാത്തിരിക്കൂ...", success: "ബാക്ക്അപ്പ് വിജയകരമായി ഡൗൺലോഡ് ചെയ്തു!", fail: "ബാക്ക്അപ്പ് എടുക്കുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക." },
                 en: { downloading: "Downloading data, please wait...", success: "Backup downloaded successfully!", fail: "Failed to take backup. Please try again." },
@@ -192,12 +190,91 @@
             }
         };
 
+        // റെസ്റ്റോർ ഫങ്ഷൻ
+        window.restoreBackup = async function() {
+            let userName = localStorage.getItem('userName');
+            if (!userName) return;
+
+            const fileInput = document.getElementById('restoreFile');
+            const statusEl = document.getElementById('restoreStatus');
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+
+            if (fileInput.files.length === 0) {
+                const msgs = {
+                    ml: "ദയവായി ആദ്യം ഒരു ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കൂ!",
+                    en: "Please select a backup file first!",
+                    hi: "कृपया पहले एक बैकअप फ़ाइल चुनें!",
+                    ta: "தயவுசெய்து முதலில் காப்புப்பிரதி கோப்பைத் தேர்ந்தெடுக்கவும்!",
+                    kn: "ದಯವಿಟ್ಟು ಮೊದಲು ಬ್ಯಾಕಪ್ ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ!",
+                    bn: "অনুগ্রহ করে প্রথমে একটি ব্যাকআপ ফাইল নির্বাচন করুন!",
+                    as: "অনুগ্ৰহ কৰি প্ৰথমতে এটা বেকআপ ফাইল নিৰ্বাচন কৰক!"
+                };
+                statusEl.innerText = msgs[currentLang] || msgs['ml'];
+                statusEl.className = "text-rose-400 text-xs font-bold text-center mt-3";
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            const statusMsgs = {
+                ml: { restoring: "ഡാറ്റ റെസ്റ്റോർ ചെയ്യുന്നു, ദയവായി കാത്തിരിക്കൂ...", success: "ഡാറ്റ വിജയകരമായി റെസ്റ്റോർ ചെയ്തു!", fail: "ഡാറ്റ റെസ്റ്റോർ ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ഫയൽ പരിശോധിക്കുക." },
+                en: { restoring: "Restoring data, please wait...", success: "Data restored successfully!", fail: "Failed to restore data. Please check the file." },
+                hi: { restoring: "डेटा पुनर्स्थापित किया जा रहा है...", success: "डेटा सफलतापूर्वक पुनर्स्थापित हो गया!", fail: "डाटा पुनर्स्थापित करने में विफल।" },
+                ta: { restoring: "தரவு மீட்டமைக்கப்படுகிறது...", success: "தரவு வெற்றிகரமாக மீட்டமைக்கப்பட்டது!", fail: "தரவை மீட்டமைக்க முடியவில்லை." },
+                kn: { restoring: "ಡೇಟಾ ಮರುಸ್ಥಾಪಿಸಲಾಗುತ್ತಿದೆ...", success: "ಡೇಟಾ ಯಶಸ್ವಾಗಿ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ!", fail: "ಡೇಟಾ ಮರುಸ್ಥಾಪಿಸಲು ವಿಫಲವಾಗಿದೆ." },
+                bn: { restoring: "ডেটা রিস্টোর করা হচ্ছে...", success: "ডেটা সফলভাবে রিস্টোর করা হয়েছে!", fail: "ডেটা রিস্টোর করতে ব্যর্থ হয়েছে।" },
+                as: { restoring: "ডাটা ৰিষ্ট’ৰ কৰা হৈ আছে...", success: "ডাটা সফলভাৱে ৰিষ্ট’ৰ কৰা হ'ল!", fail: "ডাটা ৰিষ্ট’ৰ কৰাত ব্যৰ্থ হ'ল।" }
+            };
+
+            const langMsg = statusMsgs[currentLang] || statusMsgs['ml'];
+
+            statusEl.innerText = langMsg.restoring;
+            statusEl.className = "text-amber-400 text-xs font-bold text-center mt-3";
+
+            reader.onload = async function(event) {
+                try {
+                    const backupData = JSON.parse(event.target.result);
+
+                    if (backupData.accounts && Array.isArray(backupData.accounts)) {
+                        for (let item of backupData.accounts) {
+                            let docId = item.id || doc(collection(db, "accounts")).id;
+                            await setDoc(doc(db, "accounts", docId), item);
+                        }
+                    }
+
+                    if (backupData.attendance && Array.isArray(backupData.attendance)) {
+                        for (let item of backupData.attendance) {
+                            let docId = item.id || doc(collection(db, "attendance")).id;
+                            await setDoc(doc(db, "attendance", docId), item);
+                        }
+                    }
+
+                    if (backupData.sites && Array.isArray(backupData.sites)) {
+                        for (let item of backupData.sites) {
+                            let docId = item.id || doc(collection(db, "sites")).id;
+                            await setDoc(doc(db, "sites", docId), item);
+                        }
+                    }
+
+                    statusEl.innerText = langMsg.success;
+                    statusEl.className = "text-emerald-400 text-xs font-bold text-center mt-3";
+
+                } catch (error) {
+                    console.error("Restore error:", error);
+                    statusEl.innerText = langMsg.fail;
+                    statusEl.className = "text-rose-400 text-xs font-bold text-center mt-3";
+                }
+            };
+
+            reader.readAsText(file);
+        };
     </script>
 </head>
 <body class="text-white min-h-screen p-4 font-sans pb-16">
     <div class="max-w-md mx-auto space-y-4">
 
-        <!-- 1. ഹെഡർ വരാനുള്ള കണ്ടെയ്നർ ഇവിടെയാണ് നൽകിയിരിക്കുന്നത് -->
+        <!-- ഹെഡർ കണ്ടെയ്നർ -->
         <div id="header-container"></div>
 
         <!-- പ്രൊഫൈൽ വിവരം -->
@@ -206,7 +283,7 @@
             <p id="backupMeshtriName" class="text-xl font-black text-amber-400">-</p>
         </div>
 
-        <!-- ബാക്ക്അപ്പ് കാർഡ് -->
+        <!-- ബാക്ക്അപ്പ് ഡൗൺലോഡ് കാർഡ് -->
         <div class="bg-slate-900/90 border border-purple-500/40 p-5 rounded-3xl shadow-xl space-y-4">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-2xl">☁️</div>
@@ -221,6 +298,28 @@
             </button>
 
             <div id="backupStatus" class="text-center text-xs text-gray-400"></div>
+        </div>
+
+        <!-- റെസ്റ്റോർ ബാക്ക്അപ്പ് കാർഡ് -->
+        <div class="bg-slate-900/90 border border-cyan-500/40 p-5 rounded-3xl shadow-xl space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-2xl">📥</div>
+                <div>
+                    <h2 class="text-base font-black text-white lang" data-key="cloud_data_restore">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
+                    <p class="text-xs text-gray-400 lang" data-key="restore_desc">മുമ്പ് ഡൗൺലോഡ് ചെയ്ത ബാക്ക്അപ്പ് ഫയൽ (JSON) തിരഞ്ഞെടുത്ത് ഡാറ്റ തിരികെ കൊണ്ടുവരാം.</p>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-gray-300 lang" data-key="select_json_file">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</label>
+                <input type="file" id="restoreFile" accept=".json" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30 cursor-pointer bg-slate-950/50 p-2 rounded-2xl border border-white/10">
+            </div>
+
+            <button onclick="restoreBackup()" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:opacity-95 text-white p-3.5 rounded-2xl font-black text-sm shadow-lg transition flex items-center justify-center gap-2 border border-cyan-400/30">
+                <span class="lang" data-key="restore_button">📤 ഡാറ്റ റെസ്റ്റോർ ചെയ്യുക</span>
+            </button>
+
+            <div id="restoreStatus" class="text-center text-xs text-gray-400"></div>
         </div>
 
     </div>
