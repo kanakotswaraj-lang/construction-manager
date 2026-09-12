@@ -294,24 +294,61 @@
 
                 detailsKey = 'beam_steel_calc';
             }
-            else if (category === 'lintel') {
-                let mainSteel = Math.round(val * 0.35);
-                let ringSteel = Math.round(val * 0.18);
-                let bindingWire = 3;
+                        else if (category === 'beam') {
+                let length = val; // Running Feet
+                // സ്റ്റാൻഡേർഡ് കണക്ക് പ്രകാരം (1000 R.Ft ബീമിന് വരുന്ന കണക്കുകൾ)
+                let mainSteel16mm = Math.round(length * 0.45); // 16mm കമ്പി
+                let mainSteel12mm = Math.round(length * 0.30); // 12mm കമ്പി
+                let ringSteel8mm  = Math.round(length * 0.35); // 8mm റിങ് കമ്പി
+                let bindingWire   = Math.round(length * 0.008); // കെട്ടുകമ്പി
 
-                document.getElementById('labelItem1').setAttribute('data-key', 'main_steel');
-                document.getElementById('labelItem2').setAttribute('data-key', 'ring_steel');
-                document.getElementById('labelItem3').setAttribute('data-key', 'binding_wire');
+                // മെറ്റീരിയൽ കണക്കുകൾ (ക്യുബിക് ഫീറ്റും ചാക്കും)
+                let totalCft = length * (1.0); // ഏകദേശ വോള്യൂം കണക്ക്
+                let cementBags = Math.ceil(length * 0.12);
+                let sandCft    = Math.round(length * 0.35);
+                let metalCft   = Math.round(length * 0.55);
+
+                document.getElementById('labelItem1').setAttribute('data-key', 'cement_bag');
+                document.getElementById('labelItem2').setAttribute('data-key', 'main_steel');
+                document.getElementById('labelItem3').setAttribute('data-key', 'ring_steel');
                 document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
 
                 let kiloWord = words.kilo ? words.kilo[currentLang] : "കിലോ";
-                i1 = mainSteel + " " + kiloWord;
-                i2 = ringSteel + " " + kiloWord;
-                i3 = bindingWire + " " + kiloWord;
-                i4 = val + " R.Ft";
+                let bagWord = words.cement_bag ? words.cement_bag[currentLang] : "ചാക്ക്";
 
-                detailsKey = 'lintel_steel_calc';
+                i1 = cementBags + " " + bagWord;
+                i2 = (mainSteel16mm + mainSteel12mm) + " " + kiloWord + " (16mm & 12mm)";
+                i3 = ringSteel8mm + " " + kiloWord + " (8mm Ring)";
+                i4 = length + " R.Ft";
+
+                document.getElementById('resDetails').innerText = `റണ്ണിങ് ഫീറ്റ് ബീം പണിക്ക്: സിമന്റ് ${cementBags} ചാക്ക്, മണൽ ${sandCft} Cft, മെറ്റൽ ${metalCft} Cft, കെട്ടുകമ്പി ${bindingWire} കിലോ ആവശ്യമാണ്.`;
             }
+            else if (category === 'lintel') {
+                let length = val;
+                let mainSteel = Math.round(length * 0.35);
+                let ringSteel = Math.round(length * 0.18);
+                let bindingWire = Math.round(length * 0.005);
+
+                let cementBags = Math.ceil(length * 0.08);
+                let sandCft    = Math.round(length * 0.22);
+                let metalCft   = Math.round(length * 0.35);
+
+                document.getElementById('labelItem1').setAttribute('data-key', 'cement_bag');
+                document.getElementById('labelItem2').setAttribute('data-key', 'main_steel');
+                document.getElementById('labelItem3').setAttribute('data-key', 'ring_steel');
+                document.getElementById('labelItem4').setAttribute('data-key', 'total_length');
+
+                let kiloWord = words.kilo ? words.kilo[currentLang] : "കിലോ";
+                let bagWord = words.cement_bag ? words.cement_bag[currentLang] : "ചാക്ക്";
+
+                i1 = cementBags + " " + bagWord;
+                i2 = mainSteel + " " + kiloWord;
+                i3 = ringSteel + " " + kiloWord;
+                i4 = length + " R.Ft";
+
+                document.getElementById('resDetails').innerText = `ലിന്റൽ പണിക്ക്: സിമന്റ് ${cementBags} ചാക്ക്, മണൽ ${sandCft} Cft, മെറ്റൽ ${metalCft} Cft, കെട്ടുകമ്പി ${bindingWire} കിലോ ആവശ്യമാണ്.`;
+            }
+
             else if (category === 'stone') {
                 let baseBricks = val * 1.15;
                 let totalBricks = Math.ceil(baseBricks);
