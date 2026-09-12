@@ -128,12 +128,27 @@
             }
         });
 
-        window.downloadBackup = async function() {
+                window.downloadBackup = async function() {
             let userName = localStorage.getItem('userName');
             if (!userName) return;
 
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
             const statusEl = document.getElementById('backupStatus');
-            statusEl.innerText = "ഡാറ്റ ഡൗൺലോഡ് ചെയ്യുന്നു, ദയവായി കാത്തിരിക്കൂ...";
+            
+            // ഇവിടെയാണ് ഓരോ ഭാഷയ്ക്കുമുള്ള വാക്കുകൾ സെറ്റ് ചെയ്തിരിക്കുന്നത്
+            const messages = {
+                ml: { downloading: "ഡാറ്റ ഡൗൺലോഡ് ചെയ്യുന്നു, ദയവായി കാത്തിരിക്കൂ...", success: "ബാക്ക്അപ്പ് വിജയകരമായി ഡൗൺലോഡ് ചെയ്തു!", fail: "ബാക്ക്അപ്പ് എടുക്കുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക." },
+                en: { downloading: "Downloading data, please wait...", success: "Backup downloaded successfully!", fail: "Failed to take backup. Please try again." },
+                hi: { downloading: "डाटा डाउनलोड हो रहा है, कृपया प्रतीक्षा करें...", success: "बैकअप सफलतापूर्वक डाउनलोड हो गया!", fail: "बैकअप लेने में विफल। कृपया पुनः प्रयास करें।" },
+                ta: { downloading: "தரவு பதிவிறக்கம் செய்யப்படுகிறது...", success: "காப்புப்பிரதி வெற்றிகரமாக பதிவிறக்கப்பட்டது!", fail: "காப்புப்பிரதியை எடுக்க முடியவில்லை." },
+                kn: { downloading: "ಡೇಟಾ ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ...", success: "ಬ್ಯಾಕಪ್ ಯಶಸ್ವಾಗಿ ಡೌನ್‌ಲೋಡ್ ಆಗಿದೆ!", fail: "ಬ್ಯಾಕಪ್ ತೆಗೆದುಕೊಳ್ಳಲು ವಿಫಲವಾಗಿದೆ." },
+                bn: { downloading: "ডেটা ডাউনলোড হচ্ছে...", success: "ব্যাকআপ সফলভাবে ডাউনলোড হয়েছে!", fail: "ব্যাকআপ নিতে ব্যর্থ হয়েছে।" },
+                as: { downloading: "ডাটা ডাউনলোড হৈ আছে...", success: "বেকআপ সফলভাৱে ডাউনলোড কৰা হ'ল!", fail: "বেকআপ লোৱাত ব্যৰ্থ হ'ল।" }
+            };
+
+            const langMsg = messages[currentLang] || messages['ml'];
+
+            statusEl.innerText = langMsg.downloading;
             statusEl.className = "text-amber-400 text-xs font-bold text-center mt-3";
 
             try {
@@ -167,15 +182,16 @@
                 downloadAnchor.click();
                 downloadAnchor.remove();
 
-                statusEl.innerText = "ബാക്ക്അപ്പ് വിജയകരമായി ഡൗൺലോഡ് ചെയ്തു!";
+                statusEl.innerText = langMsg.success;
                 statusEl.className = "text-emerald-400 text-xs font-bold text-center mt-3";
 
             } catch (error) {
                 console.error("Backup error:", error);
-                statusEl.innerText = "ബാക്ക്അപ്പ് എടുക്കുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.";
+                statusEl.innerText = langMsg.fail;
                 statusEl.className = "text-rose-400 text-xs font-bold text-center mt-3";
             }
         };
+
     </script>
 </head>
 <body class="text-white min-h-screen p-4 font-sans pb-16">
