@@ -22,6 +22,71 @@
         }
     </style>
 
+    <script>
+        // നിങ്ങൾ തന്ന ഹെഡർ ഫങ്ഷൻ ഇവിടെ നൽകിയിരിക്കുന്നു
+        function setupHeader(containerId, showWelcome = false, userName = "") {
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            const name = userName || localStorage.getItem('userName') || '';
+
+            const translations = {
+                ml: { title: "മേസ്തിരി പ്രോ", subtitle: "Smart Site Manager", welcome: "സ്വാഗതം" },
+                en: { title: "Mestiri Pro", subtitle: "Smart Site Manager", welcome: "Welcome" },
+                hi: { title: "मेस्त्री प्रो", subtitle: "स्मार्ट साइट मैनेजर", welcome: "स्वागत है" },
+                ta: { title: "மேஸ்திரி ப்ரோ", subtitle: "ஸ்மார்ட் தள மேலாளர்", welcome: "வரவேற்கிறோம்" },
+                kn: { title: "ಮೇಸ್ತ್ರಿ ಪ್ರೋ", subtitle: "ಸ್ಮಾರ್ಟ್ ಸೈಟ್ ಮ್ಯಾನೇಜರ್", welcome: "ಸ್ವಾಗತ" },
+                bn: { title: "মেস্ত্রি প্রো", subtitle: "স্মার্ট সাইট ম্যানেজার", welcome: "স্বাগত" },
+                as: { title: "মিস্ত্ৰী প্ৰ' ", subtitle: "স্মাৰ্ট চাইট মেনেজাৰ", welcome: "স্বাগতম" }
+            };
+
+            const t = translations[currentLang] || translations['ml'];
+
+            const headerHTML = `
+            <div class="flex flex-col gap-2 w-full mb-3">
+                 <div class="flex items-center justify-between bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-4 py-3.5 rounded-full border-2 border-amber-400 shadow-[0_0_30px_rgba(251,191,36,0.5)] w-full relative">
+           
+                    <div class="flex items-center gap-3.5">
+                        <a href="dashboard.html" class="flex-shrink-0">
+                            <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-md" style="width: 48px; height: 48px;">
+                        </a>
+                        <div class="text-left">
+                            <span class="text-lg font-black text-amber-300 tracking-wide block leading-tight">${t.title}</span>
+                            <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase">${t.subtitle}</span>
+                        </div>
+                    </div>
+
+                    <div class="relative flex items-center gap-1.5 bg-amber-500/20 px-2 py-1.5 rounded-2xl border border-amber-400/60 shadow-inner">
+                        <span class="text-sm">🌐</span>
+                        <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black shadow-md transition cursor-pointer outline-none border-2 border-slate-950 w-auto truncate">
+                            <option value="ml" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
+                            <option value="en" ${currentLang === 'en' ? 'selected' : ''}>English</option>
+                            <option value="hi" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
+                            <option value="ta" ${currentLang === 'ta' ? 'selected' : ''}>தமிழ்</option>
+                            <option value="kn" ${currentLang === 'kn' ? 'selected' : ''}>ಕನ್ನಡ</option>
+                            <option value="bn" ${currentLang === 'bn' ? 'selected' : ''}>বাংলা</option>
+                            <option value="as" ${currentLang === 'as' ? 'selected' : ''}>অসমীয়া</option>
+                        </select>
+                    </div>
+                </div>
+
+                ${showWelcome ? `
+                <div class="flex items-center justify-center bg-gradient-to-r from-blue-900 via-sky-800 to-blue-900 text-cyan-200 px-6 py-3 rounded-full border-2 border-cyan-400 shadow-[0_0_25px_rgba(56,189,248,0.4)] w-full text-center font-bold text-base">
+                    ${t.welcome}, ${userName}
+                </div>` : ''}
+            </div>`;
+
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = headerHTML;
+            }
+        }
+
+        window.changeLanguageFromDropdown = function(selectedLang) {
+            localStorage.setItem('selectedLang', selectedLang);
+            window.dispatchEvent(new CustomEvent('languageChanged', { detail: selectedLang }));
+            location.reload();
+        };
+    </script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -47,6 +112,20 @@
                 return;
             }
             document.getElementById('backupMeshtriName').innerText = userName;
+
+            // ഇവിടെയാണ് ഹെഡർ പേജിലേക്ക് ലോഡ് ചെയ്യുന്നത്
+            setupHeader('header-container', true, userName);
+
+            // ഡാറ്റാ കീ വാക്കുകൾ ലാംഗ്വേജ് അനുസരിച്ച് മാറ്റാൻ
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof words !== 'undefined') {
+                document.querySelectorAll('[data-key]').forEach(element => {
+                    const key = element.getAttribute('data-key');
+                    if (words[key] && words[key][savedLang]) {
+                        element.innerText = words[key][savedLang];
+                    }
+                });
+            }
         });
 
         window.downloadBackup = async function() {
@@ -68,22 +147,18 @@
                     materials: []
                 };
 
-                // അക്കൗണ്ട്സ് ഡാറ്റ ഫെച്ച് ചെയ്യാൻ
                 const accQuery = query(collection(db, "accounts"), where("meshtriOwner", "==", userName));
                 const accSnap = await getDocs(accQuery);
                 accSnap.forEach(doc => backupData.accounts.push({ id: doc.id, ...doc.data() }));
 
-                // ഹാജർ ഡാറ്റ ഫെച്ച് ചെയ്യാൻ
                 const attQuery = query(collection(db, "attendance"), where("meshtriOwner", "==", userName));
                 const attSnap = await getDocs(attQuery);
                 attSnap.forEach(doc => backupData.attendance.push({ id: doc.id, ...doc.data() }));
 
-                // സൈറ്റ് ഡാറ്റ ഫെച്ച് ചെയ്യാൻ
                 const siteQuery = query(collection(db, "sites"), where("meshtriOwner", "==", userName));
                 const siteSnap = await getDocs(siteQuery);
                 siteSnap.forEach(doc => backupData.sites.push({ id: doc.id, ...doc.data() }));
 
-                // ഫയൽ ആയി കൺവേർട്ട് ചെയ്ത് ഡൗൺലോഡ് ചെയ്യാൻ
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
                 const downloadAnchor = document.createElement('a');
                 downloadAnchor.setAttribute("href", dataStr);
@@ -104,22 +179,14 @@
     </script>
 </head>
 <body class="text-white min-h-screen p-4 font-sans pb-16">
-    <div class="max-w-md mx-auto space-y-6">
+    <div class="max-w-md mx-auto space-y-4">
 
-        <!-- ഹെഡർ ഭാഗം -->
-        <div class="flex items-center justify-between bg-slate-900/90 border border-white/10 p-4 rounded-3xl shadow-xl">
-            <a href="dashboard.html" class="w-10 h-10 rounded-2xl bg-slate-800 flex items-center justify-center text-amber-400 font-bold hover:bg-slate-700 transition">
-                ←
-            </a>
-            <h1 class="text-lg font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                സെറ്റിങ്സ് & ബാക്ക്അപ്പ്
-            </h1>
-            <div class="w-10"></div>
-        </div>
+        <!-- 1. ഹെഡർ വരാനുള്ള കണ്ടെയ്നർ ഇവിടെയാണ് നൽകിയിരിക്കുന്നത് -->
+        <div id="header-container"></div>
 
         <!-- പ്രൊഫൈൽ വിവരം -->
         <div class="bg-slate-900/90 border border-white/10 p-5 rounded-3xl shadow-xl space-y-2">
-            <p class="text-xs text-gray-400 font-bold">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
+            <p class="text-xs text-gray-400 font-bold lang" data-key="logged_in_user">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
             <p id="backupMeshtriName" class="text-xl font-black text-amber-400">-</p>
         </div>
 
@@ -128,13 +195,13 @@
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-2xl">☁️</div>
                 <div>
-                    <h2 class="text-base font-black text-white">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
-                    <p class="text-xs text-gray-400">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
+                    <h2 class="text-base font-black text-white lang" data-key="cloud_data_backup">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
+                    <p class="text-xs text-gray-400 lang" data-key="backup_desc">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
                 </div>
             </div>
 
             <button onclick="downloadBackup()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-95 text-white p-3.5 rounded-2xl font-black text-sm shadow-lg transition flex items-center justify-center gap-2 border border-purple-400/30">
-                📥 ബാക്ക്അപ്പ് ഫയൽ ഡൗൺലോഡ് ചെയ്യുക (JSON)
+                <span class="lang" data-key="download_json">📥 ബാക്ക്അപ്പ് ഫയൽ ഡൗൺലോഡ് ചെയ്യുക (JSON)</span>
             </button>
 
             <div id="backupStatus" class="text-center text-xs text-gray-400"></div>
