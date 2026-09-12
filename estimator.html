@@ -80,7 +80,7 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ഭാഗം (ഫെയിൽ ആയാൽ ഡിസ്പ്ലേ ചെയ്യാൻ ഫാൾബാക്ക് ചേർത്തു) -->
+        <!-- ഹെഡർ ഭാഗം -->
         <div id="appHeader" class="w-full pt-2 px-2">
             <div class="flex justify-between items-center bg-slate-900 border border-amber-500/50 p-3 rounded-2xl">
                 <span class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</span>
@@ -157,7 +157,7 @@
 
         <!-- ഫലം കാണിക്കുന്ന ഭാഗം -->
         <div id="resultBox" class="hidden mx-4 bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 backdrop-blur-sm space-y-4">
-            <h2 class="text-base font-black text-emerald-400 mb-2 border-b border-slate-800 pb-2" data-key="result_heading">📊 കണക്കാക്കിയ അളവുകൾ (വെവ്വേറെ)</h2>
+            <h2 class="text-base font-black text-emerald-400 mb-2 border-b border-slate-800 pb-2" data-key="result_heading">📊 മേസ്തിരി അനുഭവക്കണക്ക് ഫലം</h2>
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-slate-800/90 border border-blue-500/40 p-4 rounded-2xl text-center shadow-md">
@@ -273,66 +273,68 @@
             let i1 = "", i2 = "", i3 = "", i4 = "", i5 = "";
 
             if (category === 'slab') {
-                let totalCft = val * (thickness / 12);
-                let dryVolume = totalCft * 1.54;
-                let cementBags = (dryVolume / 6) / 1.25;
-                let sandCft = Math.round(cementBags * 2.5);
-                let metalCft = Math.round(cementBags * 4.5); // മെറ്റൽ 4.5 അടി കണക്ക്
+                // മേസ്തിരി മാതൃക: 100 Sq.Ft സ്ലാബിന് ഏകദേശം 7-8 ചാക്ക് സിമന്റ് (കനത്തിനനുസരിച്ച്)
+                let factor = thickness / 5; // 5 ഇഞ്ചിനെ അടിസ്ഥാനമാക്കി
+                let cementBags = Math.round((val / 100) * 7.5 * factor);
+                let sandCft = Math.round(cementBags * 2.5); // ഒരു ചാക്കിന് 2.5 അടി മണൽ
+                let metalCft = Math.round(cementBags * 4.5); // ഒരു ചാക്കിന് കൃത്യം 4.5 അടി മെറ്റൽ
 
-                let totalSteelKg = val * 0.75; 
-                let steel10mm = Math.round(totalSteelKg * 0.40); 
-                let steel8mm  = Math.round(totalSteelKg * 0.60); 
+                // മേസ്തിരി കണക്ക് കമ്പി: 1 Sq.Ft-ന് ഏകദേശം 0.75 Kg മുതൽ 0.8 Kg കമ്പി
+                let totalSteelKg = val * 0.78; 
+                let steel10mm = Math.round(totalSteelKg * 0.45); 
+                let steel8mm  = Math.round(totalSteelKg * 0.55); 
 
-                document.getElementById('labelItem1').innerText = "സിമന്റ്";
+                document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
                 document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
-                document.getElementById('labelItem3').innerText = "മെറ്റൽ (Metal)";
+                document.getElementById('labelItem3').innerText = "മെറ്റൽ (Metal - 4.5 Cft)";
                 document.getElementById('labelItem4').innerText = "കമ്പി കണക്ക് (Steel)";
-                document.getElementById('labelItem5').innerText = "കെട്ടുകമ്പി & മറ്റ് വിവരങ്ങൾ";
+                document.getElementById('labelItem5').innerText = "കെട്ടുകമ്പി & മേസ്തിരി ടീം";
 
-                i1 = Math.round(cementBags) + " ചാക്ക്";
+                i1 = cementBags + " ചാക്ക്";
                 i2 = sandCft + " Cft";
                 i3 = metalCft + " Cft";
                 i4 = `10mm: ${steel10mm} kg | 8mm: ${steel8mm} kg`;
-                i5 = `ആവശ്യമായ മേസ്തിരിമാർ: ${Math.ceil(val/150)}, തൊഴിലാളികൾ: ${Math.ceil(val/100)}`;
+                i5 = `കെട്ടുകമ്പി: ${Math.round(totalSteelKg * 0.02)} kg | മേസ്തിരിമാർ: ${Math.ceil(val/150)}`;
 
-                document.getElementById('resDetails').innerText = `സ്ലാബ് കനം: ${thickness} ഇഞ്ച്, അകലം: ${spacing} ഇഞ്ച്.`;
+                document.getElementById('resDetails').innerText = `സ്ലാബ് ഏരിയ: ${val} Sq.Ft, കനം: ${thickness} ഇഞ്ച്, അകലം: ${spacing} ഇഞ്ച്. (മേസ്തിരി പ്രാക്ടിക്കൽ കണക്ക് പ്രകാരം)`;
             } 
             else if (category === 'beam' || category === 'lintel') {
+                // മേസ്തിരി മാതൃക: ബീമിന് നീളത്തിന്റെ അടിസ്ഥാനത്തിൽ സിമന്റ് & മെറ്റൽ
                 let length = val;
-                let crossSectionFactor = (category === 'beam') ? 0.75 : 0.40;
-                let totalCft = length * crossSectionFactor;
-                let dryVolume = totalCft * 1.54;
-                let cementBags = (dryVolume / 6) / 1.25;
+                let cftPerFoot = (category === 'beam') ? 0.75 : 0.40;
+                let totalCft = length * cftPerFoot;
+                let cementBags = Math.round(totalCft * 0.85); // മേസ്തിരി അനുഭവക്കണക്ക്
                 let sandCft = Math.round(cementBags * 2.5);
-                let metalCft = Math.round(cementBags * 4.5); // മെറ്റൽ 4.5 അടി കണക്ക്
+                let metalCft = Math.round(cementBags * 4.5); // ഒരു ചാക്കിന് 4.5 അടി മെറ്റൽ
 
-                let mainSteelKg = Math.round(length * (category === 'beam' ? 0.75 : 0.45));
+                let mainSteelKg = Math.round(length * (category === 'beam' ? 0.80 : 0.50));
                 let ringCount = Math.round((length * 12) / spacing);
-                let ringSteelKg = Math.round(ringCount * (category === 'beam' ? 0.85 : 0.60));
-                let bindingWire = Math.round(length * 0.010);
+                let ringSteelKg = Math.round(ringCount * (category === 'beam' ? 0.90 : 0.65));
+                let bindingWire = Math.round((mainSteelKg + ringSteelKg) * 0.025);
 
                 let mainBarNames = (steelSelection === '16_12') ? "16mm & 12mm" : (steelSelection === '12_10' ? "12mm & 10mm" : "10mm & 8mm");
 
-                document.getElementById('labelItem1').innerText = "സിമന്റ്";
+                document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
                 document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
-                document.getElementById('labelItem3').innerText = "മെറ്റൽ (Metal)";
+                document.getElementById('labelItem3').innerText = "മെറ്റൽ (Metal - 4.5 Cft)";
                 document.getElementById('labelItem4').innerText = `മെയിൻ കമ്പി (${mainBarNames})`;
                 document.getElementById('labelItem5').innerText = "റിങ് (8mm) & കെട്ടുകമ്പി";
 
-                i1 = Math.ceil(cementBags) + " ചാക്ക്";
+                i1 = cementBags + " ചാക്ക്";
                 i2 = sandCft + " Cft";
                 i3 = metalCft + " Cft";
                 i4 = `${mainSteelKg} കിലോ`;
                 i5 = `${ringCount} എണ്ണം (${ringSteelKg} കി.ഗ്രാം) | കെട്ടുകമ്പി: ${bindingWire} കിലോ`;
 
-                document.getElementById('resDetails').innerText = `${category === 'beam' ? 'ബീം' : 'ലിന്റൽ'} പണി (${length} R.Ft), അകലം: ${spacing} ഇഞ്ച്.`;
+                document.getElementById('resDetails').innerText = `${category === 'beam' ? 'ബീം' : 'ലിന്റൽ'} നീളം: ${length} R.Ft, അകലം: ${spacing} ഇഞ്ച്. (മേസ്തിരി പ്രാക്ടിക്കൽ കണക്ക്)`;
             }
             else if (category === 'stone') {
+                // വെട്ടുകല്ല് കെട്ടൽ മേസ്തിരി കണക്ക്: 1 Sq.Ft-ന് 1.15 കല്ല് + ജോയിന്റിന് സിമന്റ്
                 let totalBricks = Math.ceil(val * 1.15);
-                let cementBags = Math.ceil(totalBricks / 100);
+                let cementBags = Math.ceil(totalBricks / 90); // 90 കല്ലിന് 1 ചാക്ക് സിമന്റ്
                 let sandCft = Math.round(cementBags * 3);
 
-                document.getElementById('labelItem1').innerText = "സിമന്റ്";
+                document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
                 document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
                 document.getElementById('labelItem3').innerText = "മെറ്റൽ / കല്ല്";
                 document.getElementById('labelItem4').innerText = "കല്ലുകളുടെ എണ്ണം";
@@ -344,13 +346,14 @@
                 i4 = totalBricks + " എണ്ണം";
                 i5 = val + " Sq.Ft";
 
-                document.getElementById('resDetails').innerText = `വെട്ടുകല്ല് കെട്ടൽ എസ്റ്റിമേറ്റ് (${val} Sq.Ft).`;
+                document.getElementById('resDetails').innerText = `വെട്ടുകല്ല് കെട്ടൽ (${val} Sq.Ft). മേസ്തിരി അനുഭവക്കണക്ക് പ്രകാരം.`;
             }
             else if (category === 'plaster') {
-                let cementBags = Math.round((val / 1000) * 25);
-                let sandCft = Math.round((val / 1000) * 150);
+                // പ്ലാസ്റ്റിംഗ് മേസ്തിരി കണക്ക്: 1000 Sq.Ft-ന് 22 ചാക്ക് സിമന്റ്
+                let cementBags = Math.round((val / 1000) * 22);
+                let sandCft = Math.round((val / 1000) * 140);
 
-                document.getElementById('labelItem1').innerText = "സിമന്റ്";
+                document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
                 document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
                 document.getElementById('labelItem3').innerText = "മെറ്റൽ";
                 document.getElementById('labelItem4').innerText = "കെട്ടുകമ്പി";
@@ -362,7 +365,7 @@
                 i4 = "ബാധകമല്ല";
                 i5 = val + " Sq.Ft";
 
-                document.getElementById('resDetails').innerText = `പ്ലാസ്റ്റിംഗ് എസ്റ്റിമേറ്റ് (${val} Sq.Ft).`;
+                document.getElementById('resDetails').innerText = `പ്ലാസ്റ്റിംഗ് എസ്റ്റിമേറ്റ് (${val} Sq.Ft). മേസ്തിരി അനുഭവക്കണക്ക് പ്രകാരം.`;
             }
 
             document.getElementById('resItem1').innerText = i1;
