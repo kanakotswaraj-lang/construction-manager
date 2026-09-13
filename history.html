@@ -75,6 +75,37 @@
                 <button onclick="window.setCategoryFilter('expense')" id="tab-expense" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="expense">Expense</button>
             </div>
         </div>
+        
+        <!-- തിരയുന്ന സെക്ഷനും ഫിൽട്ടറുകളും -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
+            <div class="relative">
+                <input type="text" id="searchHistory" placeholder="🔍 Search by site name or details..." oninput="window.filterAndDisplay()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder text-white" data-key="search_placeholder">
+            </div>
+            
+            <div class="grid grid-cols-4 gap-1.5 pt-1">
+                <button onclick="window.setCategoryFilter('all')" id="tab-all" class="filter-tab py-2.5 rounded-xl text-[11px] font-black bg-yellow-500 text-slate-950 border border-yellow-400 transition lang" data-key="all">All</button>
+                <button onclick="window.setCategoryFilter('income')" id="tab-income" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="income">Income</button>
+                <button onclick="window.setCategoryFilter('wage')" id="tab-wage" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="wage">Wage</button>
+                <button onclick="window.setCategoryFilter('expense')" id="tab-expense" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="expense">Expense</button>
+            </div>
+        </div>
+
+        <!-- 👇 ഇവിടെ പുതിയ വാട്സാപ്പ് ഷെയർ & ഡേറ്റ് ഫിൽട്ടർ സെക്ഷൻ ചേർക്കുക -->
+        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1">മുതൽ (From Date)</label>
+                    <input type="date" id="historyFromDate" class="w-full p-2.5 bg-slate-800 rounded-xl text-xs">
+                </div>
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1">വരെ (To Date)</label>
+                    <input type="date" id="historyToDate" class="w-full p-2.5 bg-slate-800 rounded-xl text-xs">
+                </div>
+            </div>
+            <button onclick="window.sendCurrentHistoryToWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black py-3 rounded-2xl text-xs shadow-lg transition flex items-center justify-center gap-2">
+                <span>📱</span> <span>ഈ കണക്കുകൾ WhatsApp അയക്കുക</span>
+            </button>
+        </div>
 
         <!-- കണക്കുകൾ മുഴുവൻ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
         <div id="historyListContainer" class="space-y-3">
@@ -325,7 +356,65 @@
             } catch (error) {
                 window.showToast("കണക്ക് അപ്ഡേറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", false);
             }
-        }
+              }
+         window.sendCurrentHistoryToWhatsApp = function() {
+            let fromDate = document.getElementById('historyFromDate').value;
+            let toDate = document.getElementById('historyToDate').value;
+            let searchQuery = (document.getElementById('searchHistory')?.value || '').toLowerCase();
+
+            let targetList = allHistoryData.filter(item => {
+                let dataType = String(item.type || '').toLowerCase();
+                let matchesCategory = true;
+
+                if (currentFilter === 'income') {
+                    matchesCategory = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
+                } else if (currentFilter === 'wage') {
+                    matchesCategory = (dataType === 'wage' || dataType === 'കൂലി');
+                } else if (currentFilter === 'expense') {
+                    matchesCategory = (dataType !== 'income' && dataType !== 'varavu' && dataType !== 'വരവ്' && dataType !== 'wage' && dataType !== 'കൂലി');
+                }
+
+                let searchString = ((item.site || '') + ' ' + (item.name || '') + ' ' + (item.details || '')).toLowerCase();
+                let matchesSearch = searchString.includes(searchQuery);
+
+                let matchesDate = true;
+                if (item.date) {
+                    if (fromDate && item.date < fromDate) matchesDate = false;
+                    if (toDate && item.date > toDate) matchesDate = false;
+                }
+
+                return matchesCategory && matchesSearch && matchesDate;
+            });
+
+            if (targetList.length === 0) {
+                window.showToast("ഷെയർ ചെയ്യാൻ തക്കതായ കണക്കുകൾ ഒന്നും ലഭ്യമല്ല!", false);
+                return;
+            }
+
+            let msg = `📊 *മേസ്തിരി പ്രോ - കണക്ക് റിപ്പോർട്ട്*\n`;
+            msg += `👤 മേസ്തിരി: *${currentMeshtri}*\n`;
+            if(fromDate || toDate) {
+                msg += `📅 കാലയളവ്: ${fromDate || 'തുടക്കം'} മുതൽ ${toDate || 'ഇന്ന്'} വരെ\n`;
+            }
+            msg += `📂 വിഭാഗം: *${currentFilter.toUpperCase()}*\n`;
+            msg += `--------------------------------\n`;
+
+            let subTotal = 0;
+            targetList.forEach((it, index) => {
+                let amt = parseFloat(it.amount) || 0;
+                subTotal += amt;
+                msg += `${index + 1}. *${it.site || 'Site'}* (${it.date || ''})\n`;
+                msg += `   പേര്: ${it.name || '-'}\n`;
+                msg += `   ഇനം: ${it.type || 'Expense'} | തുക: ₹${amt}\n`;
+                msg += `--------------------------------\n`;
+            });
+
+            msg += `💰 *ആകെ തുക: ₹${subTotal}*\n`;
+
+            const encoded = encodeURIComponent(msg);
+            window.open(`https://wa.me/?text=${encoded}`, '_blank');
+        };
+     
 
         window.deleteAccount = async function(id) {
             if (confirm("ഈ കണക്ക് തീർച്ചയായും ഡിലീറ്റ് ചെയ്യ வேண்டுമോ?")) {
