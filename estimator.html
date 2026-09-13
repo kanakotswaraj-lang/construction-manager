@@ -114,14 +114,14 @@
                 </select>
             </div>
 
-            <!-- നീളം നൽകാൻ -->
+            <!-- അളവ് നൽകാൻ (നീളം അല്ലെങ്കിൽ ഏരിയ) -->
             <div>
-                <label id="inputLabel" class="block text-xs font-black text-slate-400 mb-1.5 uppercase">ആകെ നീളം (Running Feet - R.Ft)</label>
-                <input type="number" id="mainInput" placeholder="ഉദാ: 100" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none">
+                <label id="inputLabel" class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)</label>
+                <input type="number" id="mainInput" placeholder="ഉദാ: 500" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none">
             </div>
 
             <!-- ബീം/ലിന്റലിന് വീതിയും കനവും (Dimensions) നൽകാനുള്ള ഫീൽഡുകൾ -->
-            <div id="dimensionBox" class="grid grid-cols-2 gap-3">
+            <div id="dimensionBox" class="hidden grid grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">വീതി (Width - Inches)</label>
                     <input type="number" id="beamWidth" value="6" class="w-full p-3 bg-slate-800/80 rounded-xl border border-blue-500 text-sm font-bold focus:outline-none">
@@ -133,8 +133,8 @@
             </div>
 
             <!-- സ്ലാബിന്റെ കനം (സ്ലാബിന് മാത്രം കാണിക്കാൻ) -->
-            <div id="slabThicknessBox" class="hidden">
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">വാർപ്പിന്റെ കനം (Thickness)</label>
+            <div id="slabThicknessBox" class="space-y-3">
+                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">വാർപ്പിന്റെ കനം (Slab Thickness)</label>
                 <select id="slabThickness" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
                     <option value="4.5">4.5 ഇഞ്ച്</option>
                     <option value="5" selected>5 ഇഞ്ച് - സ്റ്റാൻഡേർഡ്</option>
@@ -142,9 +142,9 @@
                 </select>
             </div>
             
-            <!-- മേസ്തിരി പറയുന്ന മെയിൻ കമ്പി സൈസും എണ്ണവും തിരഞ്ഞെടുക്കാൻ -->
-            <div id="steelSelectionBox" class="space-y-3 bg-slate-800/40 p-4 rounded-2xl border border-slate-700">
-                <label class="block text-xs font-black text-amber-300 uppercase">🛠️ മേസ്തിരി നിർദ്ദേശിക്കുന്ന കമ്പി കണക്കുകൾ</label>
+            <!-- മേസ്തിരി പറയുന്ന മെയിൻ കമ്പി സൈസും എണ്ണവും തിരഞ്ഞെടുക്കാൻ (Beam / Lintel) -->
+            <div id="steelSelectionBox" class="hidden space-y-3 bg-slate-800/40 p-4 rounded-2xl border border-slate-700">
+                <label class="block text-xs font-black text-amber-300 uppercase">🛠️ മേസ്തിരി നിർദ്ദേശിക്കുന്ന ബീം കമ്പി കണക്കുകൾ</label>
                 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -178,10 +178,32 @@
                 </div>
             </div>
 
+            <!-- മേസ്തിരി നിർദ്ദേശിക്കുന്ന സ്ലാബ് കമ്പി കണക്കുകൾ (Slab) -->
+            <div id="slabSteelSelectionBox" class="space-y-3 bg-slate-800/40 p-4 rounded-2xl border border-slate-700">
+                <label class="block text-xs font-black text-amber-300 uppercase">🛠️ മേസ്തിരി നിർദ്ദേശിക്കുന്ന സ്ലാബ് കമ്പി കണക്കുകൾ</label>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1">മെയിൻ കമ്പി സൈസ് (Main Bar)</label>
+                        <select id="slabMainBarSize" class="w-full p-3 bg-slate-800 rounded-xl border border-blue-500 text-xs font-bold focus:outline-none">
+                            <option value="12" selected>12 mm</option>
+                            <option value="10">10 mm</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1">ഡിസ്ട്രിബ്യൂഷൻ കമ്പി (Dist. Bar)</label>
+                        <select id="slabDistBarSize" class="w-full p-3 bg-slate-800 rounded-xl border border-blue-500 text-xs font-bold focus:outline-none">
+                            <option value="10">10 mm</option>
+                            <option value="8" selected>8 mm</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <!-- മാനുവൽ മേസ്തിരിമാരുടെ എണ്ണം -->
             <div>
                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">മേസ്തിരിമാരുടെ എണ്ണം (Manual Mason Count)</label>
-                <input type="number" id="masonCountInput" placeholder="ഉദാ: 3" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none">
+                <input type="number" id="masonCountInput" placeholder="ഉദാ: 3 (ഓപ്ഷണൽ)" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none">
             </div>
 
             <button onclick="calculateEstimation()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition cursor-pointer">കണക്കുകൂട്ടുക (Calculate)</button>
@@ -259,28 +281,30 @@
             const slabThicknessBox = document.getElementById('slabThicknessBox');
             const dimensionBox = document.getElementById('dimensionBox');
             const steelSelectionBox = document.getElementById('steelSelectionBox');
+            const slabSteelSelectionBox = document.getElementById('slabSteelSelectionBox');
 
             if (category === 'slab') {
-                inputLabel.innerText = "പണിയേണ്ട ഏരിയ (Square Feet)";
+                inputLabel.innerText = "പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)";
                 slabThicknessBox.style.display = 'block';
                 dimensionBox.style.display = 'none';
                 steelSelectionBox.style.display = 'none';
+                slabSteelSelectionBox.style.display = 'block';
             } else if (category === 'beam' || category === 'lintel') {
                 inputLabel.innerText = "ആകെ നീളം (Running Feet - R.Ft)";
                 slabThicknessBox.style.display = 'none';
                 dimensionBox.style.display = 'grid';
                 steelSelectionBox.style.display = 'block';
+                slabSteelSelectionBox.style.display = 'none';
             } else {
-                inputLabel.innerText = "പണിയേണ്ട ഏരിയ (Square Feet)";
+                inputLabel.innerText = "പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)";
                 slabThicknessBox.style.display = 'none';
                 dimensionBox.style.display = 'none';
                 steelSelectionBox.style.display = 'none';
+                slabSteelSelectionBox.style.display = 'none';
             }
         };
 
-        // കമ്പി വെയ്റ്റ് കണക്കാക്കാൻ (kg per meter / ft)
         function getSteelWeightPerFt(mm) {
-            // Formula: (D^2 / 162) kg per meter -> convert to per feet (divide by 3.28084)
             let kgPerMeter = (mm * mm) / 162;
             return kgPerMeter / 3.28084;
         }
@@ -288,7 +312,7 @@
         window.calculateEstimation = function() {
             const val = parseFloat(document.getElementById('mainInput').value);
             const category = document.getElementById('workCategory').value;
-            const manualMasonInput = document.getElementById('masonCountInput').value;
+            let manualMasonInput = document.getElementById('masonCountInput').value;
 
             if (!val || val <= 0) {
                 window.showToast('ശരിയായ അളവ് നൽകുക', false);
@@ -296,38 +320,36 @@
             }
 
             let i1 = "", i2 = "", i3 = "", i4 = "", i5 = "";
+            let masonCount = manualMasonInput !== "" ? parseInt(manualMasonInput) : 0;
 
             if (category === 'beam' || category === 'lintel') {
                 let length = val;
                 let width = parseFloat(document.getElementById('beamWidth').value) || 6;
                 let depth = parseFloat(document.getElementById('beamDepth').value) || 6;
                 
-                // കോൺക്രീറ്റ് വോളിയം (Cft-ൽ കാണാൻ: (Width * Depth / 144) * Length)
                 let totalCft = (width * depth / 144) * length;
-                let cementBags = Math.round(totalCft * 0.40); // 1 Cft-ന് ഏകദേശം 0.4 ചാക്ക് സിമന്റ് കണക്ക്
+                let cementBags = Math.round(totalCft * 0.40);
                 let sandCft = Math.round(totalCft * 0.45);
                 let metalCft = Math.round(totalCft * 0.75);
 
-                // മേസ്തിരി പറഞ്ഞ മെയിൻ കമ്പി കണക്ക് കൂട്ടൽ
                 let mainBarSize = parseFloat(document.getElementById('mainBarSize').value);
                 let mainBarCount = parseInt(document.getElementById('mainBarCount').value) || 4;
                 let weightPerFt = getSteelWeightPerFt(mainBarSize);
-                
-                // ലാപ്പിംഗും വേസ്റ്റും ചേർത്ത് 10% അധികം കൂട്ടുന്നു
                 let mainSteelKg = Math.round(length * mainBarCount * weightPerFt * 1.10);
 
-                // റിങ് കണക്കുകൾ
                 let ringBarSize = parseFloat(document.getElementById('ringBarSize').value);
                 let ringSpacing = parseFloat(document.getElementById('ringSpacing').value);
                 let ringCount = Math.round((length * 12) / ringSpacing);
                 
-                // ഒരു റിങ്ങിന്റെ ചുറ്റളവ് (ഉദാഹരണത്തിന് വീതിയും കനവും അനുസരിച്ച് - 2*(W+D) + ഹുക്ക് ലെങ്ത്)
-                let ringPerimeterFt = (2 * (width + depth) + 4) / 12; // inches to feet
+                let ringPerimeterFt = (2 * (width + depth) + 4) / 12;
                 let ringWeightPerFt = getSteelWeightPerFt(ringBarSize);
                 let ringTotalKg = Math.round(ringCount * ringPerimeterFt * ringWeightPerFt);
 
                 let bindingWire = Math.round((mainSteelKg + ringTotalKg) * 0.04);
-                let masons = manualMasonInput !== "" ? parseInt(manualMasonInput) : Math.ceil(length / 150);
+                
+                if (masonCount === 0) {
+                    masonCount = Math.max(1, Math.round(length / 100)); // പ്രാക്ടിക്കൽ മേസ്തിരി കണക്ക്
+                }
 
                 document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
                 document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
@@ -341,36 +363,50 @@
                 i4 = mainSteelKg + " കിലോ";
                 i5 = `${ringCount} എണ്ണം (${ringTotalKg} കി.ഗ്രാം) | കെട്ടുകമ്പി: ${bindingWire} കി.ഗ്രാം`;
 
-                document.getElementById('resDetails').innerText = `${category === 'beam' ? 'ബീം' : 'ലിന്റൽ'} നീളം: ${length} R.Ft, സൈസ്: ${width}" x ${depth}", അകലം: ${ringSpacing}"`;
+                document.getElementById('resDetails').innerText = `${category === 'beam' ? 'ബീം' : 'ലിന്റൽ'} നീളം: ${length} R.Ft, സൈസ്: ${width}" x ${depth}", മേസ്തിരിമാർ: ${masonCount} പേർ`;
             } 
             else if (category === 'slab') {
+                let sqFt = val;
                 let thickness = parseFloat(document.getElementById('slabThickness').value) || 5;
                 let factor = thickness / 5; 
-                let cementBags = Math.round((val / 100) * 7.5 * factor);
+                
+                let cementBags = Math.round((sqFt / 100) * 7.5 * factor);
                 let sandCft = Math.round(cementBags * 2.5); 
                 let metalCft = Math.round(cementBags * 4.5); 
-                let totalSteelKg = Math.round(val * 0.78); 
-                let masons = manualMasonInput !== "" ? parseInt(manualMasonInput) : Math.ceil(val / 150);
+
+                // മേസ്തിരി പറഞ്ഞ സ്ലാബ് കമ്പി കണക്കുകൾ
+                let slabMainSize = parseFloat(document.getElementById('slabMainBarSize').value);
+                let slabDistSize = parseFloat(document.getElementById('slabDistBarSize').value);
+
+                // സ്ക്വയർ ഫീറ്റിന് അനുസരിച്ചുള്ള സ്റ്റാൻഡേർഡ് കമ്പി ഭാരം (approx 0.75 - 0.85 kg per sq ft depending on bar size)
+                let mainSteelKg = Math.round(sqFt * 0.45 * (slabMainSize / 12));
+                let distSteelKg = Math.round(sqFt * 0.35 * (slabDistSize / 8));
+                let totalSteelKg = mainSteelKg + distSteelKg;
+                let bindingWire = Math.round(totalSteelKg * 0.025);
+
+                if (masonCount === 0) {
+                    masonCount = Math.max(2, Math.round(sqFt / 250)); // സ്ലാബ് പണിക്ക് ആവശ്യമായ മേസ്തിരിമാർ
+                }
 
                 document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
                 document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
                 document.getElementById('labelItem3').innerText = "മെറ്റൽ (Metal)";
-                document.getElementById('labelItem4').innerText = "കമ്പി കണക്ക് (Steel)";
+                document.getElementById('labelItem4').innerText = `കമ്പി കണക്ക് (${slabMainSize}mm & ${slabDistSize}mm)`;
                 document.getElementById('labelItem5').innerText = "കെട്ടുകമ്പി & മേസ്തിരിമാർ";
 
                 i1 = cementBags + " ചാക്ക്";
                 i2 = sandCft + " Cft";
                 i3 = metalCft + " Cft";
                 i4 = totalSteelKg + " കിലോ";
-                i5 = `കെട്ടുകമ്പി: ${Math.round(totalSteelKg * 0.02)} kg | മേസ്തിരിമാർ: ${masons}`;
+                i5 = `കെട്ടുകമ്പി: ${bindingWire} kg | മേസ്തിരിമാർ: ${masonCount} പേർ`;
 
-                document.getElementById('resDetails').innerText = `സ്ലാബ് ഏരിയ: ${val} Sq.Ft, കനം: ${thickness} ഇഞ്ച്.`;
+                document.getElementById('resDetails').innerText = `സ്ലാബ് ഏരിയ: ${sqFt} Sq.Ft, കനം: ${thickness} ഇഞ്ച്, മേസ്തിരിമാർ: ${masonCount} പേർ`;
             }
             else if (category === 'stone') {
                 let totalBricks = Math.ceil(val * 1.15);
                 let cementBags = Math.ceil(totalBricks / 90); 
                 let sandCft = Math.round(cementBags * 3);
-                let masons = manualMasonInput !== "" ? parseInt(manualMasonInput) : Math.ceil(val / 100);
+                if (masonCount === 0) { masonCount = Math.max(1, Math.round(val / 100)); }
 
                 document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
                 document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
@@ -382,17 +418,16 @@
                 i2 = sandCft + " Cft";
                 i3 = "ബാധകമല്ല";
                 i4 = totalBricks + " എണ്ണം";
-                i5 = `മേസ്തിരിമാർ: ${masons}`;
+                i5 = `മേസ്തിരിമാർ: ${masonCount} പേർ`;
 
-                document.getElementById('resDetails').innerText = `വെട്ടുകല്ല് കെട്ടൽ (${val} Sq.Ft).`;
+                document.getElementById('resDetails').innerText = `വെട്ടുകല്ല് കെട്ടൽ (${val} Sq.Ft), മേസ്തിരിമാർ: ${masonCount} പേർ`;
             }
             else if (category === 'plaster') {
                 let cementBags = Math.round((val / 1000) * 22);
                 let sandCft = Math.round((val / 1000) * 140);
-                let masons = manualMasonInput !== "" ? parseInt(manualMasonInput) : Math.ceil(val / 250);
+                if (masonCount === 0) { masonCount = Math.max(1, Math.round(val / 250)); }
 
                 document.getElementById('labelItem1').innerText = "സിമന്റ് (Cement)";
-                document.getElementById('labelItem2').innerText, "മണൽ (Sand)";
                 document.getElementById('labelItem2').innerText = "മണൽ (Sand)";
                 document.getElementById('labelItem3').innerText = "മെറ്റൽ";
                 document.getElementById('labelItem4').innerText = "കെട്ടുകമ്പി";
@@ -402,9 +437,9 @@
                 i2 = sandCft + " Cft";
                 i3 = "ബാധകമല്ല";
                 i4 = "ബാധകമല്ല";
-                i5 = `മേസ്തിരിമാർ: ${masons}`;
+                i5 = `മേസ്തിരിമാർ: ${masonCount} പേർ`;
 
-                document.getElementById('resDetails').innerText = `പ്ലാസ്റ്റിംഗ് എസ്റ്റിമേറ്റ് (${val} Sq.Ft).`;
+                document.getElementById('resDetails').innerText = `പ്ലാസ്റ്റിംഗ് എസ്റ്റിമേറ്റ് (${val} Sq.Ft), മേസ്തിരിമാർ: ${masonCount} പേർ`;
             }
 
             document.getElementById('resItem1').innerText = i1;
