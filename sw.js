@@ -1,9 +1,5 @@
 const CACHE_NAME = 'mesthri-cache-v1';
 const urlsToCache = [
-  'dashboard.html',
-  'manifest.json'
-];const CACHE_NAME = 'mesthri-cache-v1';
-const urlsToCache = [
   '/',
   'index.html',
   'login.html',
@@ -19,10 +15,12 @@ const urlsToCache = [
   'site.html',
   'estimator.html',
   'history.html',
+  'settings.html',     // സെറ്റിംഗ്സ് / ബാക്ക്അപ്പ് പേജ് ഇവിടെ ചേർത്തിരിക്കുന്നു
   'manifest.json',
   'icon.png'
 ];
 
+// Install Service Worker
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -30,21 +28,22 @@ self.addEventListener('install', event => {
   );
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-  );
-});
-
-
-self.addEventListener('install', event => {
+// Activate Service Worker & Clean Old Caches
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
 });
 
+// Fetch Requests
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
