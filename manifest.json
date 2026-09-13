@@ -1,17 +1,14 @@
+
 {
-  "name": "Mesthri Pro",
-  "short_name": "MesthriPro",
-  "start_url": "index.html",
-  "display": "standalone",
   "background_color": "#f8fafc",
+  "description": "മേസ്തിരി പ്രോ Smart Site Manager. നിർമ്മാണ മാനേജർ, പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ. Construction site management app for tracking worker wages and daily accounts.",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Mesthri Pro",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "MesthriPro",
+  "start_url": "/",
   "theme_color": "#0f172a",
-  "orientation": "portrait-primary",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "id": "/?source=pwa"
 }
