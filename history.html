@@ -357,10 +357,24 @@
                 window.showToast("കണക്ക് അപ്ഡേറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", false);
             }
               }
-         window.sendCurrentHistoryToWhatsApp = function() {
-            let fromDate = document.getElementById('historyFromDate').value;
-            let toDate = document.getElementById('historyToDate').value;
+         
+             window.sendCurrentHistoryToWhatsApp = function() {
+            let fromDateVal = document.getElementById('historyFromDate').value;
+            let toDateVal = document.getElementById('historyToDate').value;
             let searchQuery = (document.getElementById('searchHistory')?.value || '').toLowerCase();
+
+            // തീയതി DD-MM-YYYY ഫോർമാറ്റിലേക്ക് മാറ്റാനുള്ള ചെറിയ ഫങ്ഷൻ
+            function formatDate(dateStr) {
+                if (!dateStr) return '';
+                let parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    return `${parts[2]}-${parts[1]}-${parts[0]}`; // ദിവസം-മാസം-വർഷം
+                }
+                return dateStr;
+            }
+
+            let fromDateFormatted = formatDate(fromDateVal);
+            let toDateFormatted = formatDate(toDateVal);
 
             let targetList = allHistoryData.filter(item => {
                 let dataType = String(item.type || '').toLowerCase();
@@ -379,8 +393,8 @@
 
                 let matchesDate = true;
                 if (item.date) {
-                    if (fromDate && item.date < fromDate) matchesDate = false;
-                    if (toDate && item.date > toDate) matchesDate = false;
+                    if (fromDateVal && item.date < fromDateVal) matchesDate = false;
+                    if (toDateVal && item.date > toDateVal) matchesDate = false;
                 }
 
                 return matchesCategory && matchesSearch && matchesDate;
@@ -393,8 +407,8 @@
 
             let msg = `📊 *മേസ്തിരി പ്രോ - കണക്ക് റിപ്പോർട്ട്*\n`;
             msg += `👤 മേസ്തിരി: *${currentMeshtri}*\n`;
-            if(fromDate || toDate) {
-                msg += `📅 കാലയളവ്: ${fromDate || 'തുടക്കം'} മുതൽ ${toDate || 'ഇന്ന്'} വരെ\n`;
+            if(fromDateVal || toDateVal) {
+                msg += `📅 കാലയളവ്: ${fromDateFormatted || 'തുടക്കം'} മുതൽ ${toDateFormatted || 'ഇന്ന്'} വരെ\n`;
             }
             msg += `📂 വിഭാഗം: *${currentFilter.toUpperCase()}*\n`;
             msg += `--------------------------------\n`;
@@ -403,7 +417,8 @@
             targetList.forEach((it, index) => {
                 let amt = parseFloat(it.amount) || 0;
                 subTotal += amt;
-                msg += `${index + 1}. *${it.site || 'Site'}* (${it.date || ''})\n`;
+                let itemDateFormatted = formatDate(it.date);
+                msg += `${index + 1}. *${it.site || 'Site'}* (${itemDateFormatted})\n`;
                 msg += `   പേര്: ${it.name || '-'}\n`;
                 msg += `   ഇനം: ${it.type || 'Expense'} | തുക: ₹${amt}\n`;
                 msg += `--------------------------------\n`;
@@ -414,7 +429,7 @@
             const encoded = encodeURIComponent(msg);
             window.open(`https://wa.me/?text=${encoded}`, '_blank');
         };
-     
+
 
         window.deleteAccount = async function(id) {
             if (confirm("ഈ കണക്ക് തീർച്ചയായും ഡിലീറ്റ് ചെയ്യ வேண்டுമോ?")) {
