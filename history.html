@@ -62,19 +62,7 @@
             </div>
         </div>
 
-        <!-- തിരയുന്ന സെക്ഷനും ഫിൽട്ടറുകളും -->
-        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
-            <div class="relative">
-                <input type="text" id="searchHistory" placeholder="🔍 Search by site name or details..." oninput="window.filterAndDisplay()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder text-white" data-key="search_placeholder">
-            </div>
-            
-            <div class="grid grid-cols-4 gap-1.5 pt-1">
-                <button onclick="window.setCategoryFilter('all')" id="tab-all" class="filter-tab py-2.5 rounded-xl text-[11px] font-black bg-yellow-500 text-slate-950 border border-yellow-400 transition lang" data-key="all">All</button>
-                <button onclick="window.setCategoryFilter('income')" id="tab-income" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="income">Income</button>
-                <button onclick="window.setCategoryFilter('wage')" id="tab-wage" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="wage">Wage</button>
-                <button onclick="window.setCategoryFilter('expense')" id="tab-expense" class="filter-tab py-2.5 rounded-xl text-[11px] font-bold bg-slate-800 text-white border border-slate-700 transition lang" data-key="expense">Expense</button>
-            </div>
-        </div>
+
         
         <!-- തിരയുന്ന സെക്ഷനും ഫിൽട്ടറുകളും -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
@@ -358,17 +346,16 @@
             }
               }
          
-             window.sendCurrentHistoryToWhatsApp = function() {
+        window.sendCurrentHistoryToWhatsApp = function() {
             let fromDateVal = document.getElementById('historyFromDate').value;
             let toDateVal = document.getElementById('historyToDate').value;
             let searchQuery = (document.getElementById('searchHistory')?.value || '').toLowerCase();
 
-            // തീയതി DD-MM-YYYY ഫോർമാറ്റിലേക്ക് മാറ്റാനുള്ള ചെറിയ ഫങ്ഷൻ
             function formatDate(dateStr) {
                 if (!dateStr) return '';
                 let parts = dateStr.split('-');
                 if (parts.length === 3) {
-                    return `${parts[2]}-${parts[1]}-${parts[0]}`; // ദിവസം-മാസം-വർഷം
+                    return `${parts[2]}-${parts[1]}-${parts[0]}`;
                 }
                 return dateStr;
             }
@@ -420,7 +407,7 @@
                 let itemDateFormatted = formatDate(it.date);
                 msg += `${index + 1}. *${it.site || 'Site'}* (${itemDateFormatted})\n`;
                 msg += `   പേര്: ${it.name || '-'}\n`;
-                msg += `   ഇനം: ${it.type || 'Expense'} | തുക: ₹${amt}\n`;
+                msg += `   തുക: ₹${amt}\n`; // 'ഇനം' എന്ന ഭാഗം ഒഴിവാക്കി കൂടുതൽ വ്യക്തത നൽകി
                 msg += `--------------------------------\n`;
             });
 
