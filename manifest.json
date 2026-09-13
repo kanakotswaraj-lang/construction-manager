@@ -1,13 +1,12 @@
 {
   "name": "Mesthri Pro",
   "short_name": "MesthriPro",
-  "start_url": "dashboard.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#0f172a",
   "orientation": "portrait-primary",
-  
-    "icons": [
+  "icons": [
     {
       "src": "icon.png",
       "sizes": "512x512",
@@ -15,3 +14,4 @@
       "purpose": "any maskable"
     }
   ]
+}
