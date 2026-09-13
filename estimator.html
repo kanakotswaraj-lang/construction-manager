@@ -107,13 +107,13 @@
                 </select>
             </div>
 
-            <!-- അളവ് നൽകാൻ (നീളം അല്ലെങ്കിൽ ഏരിയ) -->
+            <!-- അളവ് നൽകാൻ -->
             <div>
                 <label id="inputLabel" class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)</label>
                 <input type="number" id="mainInput" placeholder="ഉദാ: 500" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none">
             </div>
 
-            <!-- ബീം/ലിന്റലിന് വീതിയും കനവും (Dimensions) നൽകാനുള്ള ഫീൽഡുകൾ -->
+            <!-- ബീം/ലിന്റലിന് വീതിയും കനവും -->
             <div id="dimensionBox" class="hidden grid grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">വീതി (Width - Inches)</label>
@@ -293,7 +293,6 @@
             }
         };
 
-        // കൃത്യമായ സ്റ്റാന്റേർഡ് കമ്പി ഭാരം (kg per foot) കണക്കാക്കാനുള്ള ഫോർമുല (D^2 / 162 per meter converted to ft)
         function getSteelWeightPerFt(mm) {
             let kgPerMeter = (mm * mm) / 162;
             return kgPerMeter / 3.28084;
@@ -318,7 +317,9 @@
                 let depth = parseFloat(document.getElementById('beamDepth').value) || 6;
                 
                 let totalCft = (width * depth / 144) * length;
-                let cementBags = Math.round(totalCft * 0.40);
+                
+                // തിരുത്തിയ സിമന്റ് കണക്ക് (1 Cft കോൺക്രീറ്റിന് ഏകദേശം 0.22 ചാക്ക് സിമന്റ് / അല്ലെങ്കിൽ 100 Cft-ന് ~22 ചാക്ക്)
+                let cementBags = Math.round(totalCft * 0.22);
                 let sandCft = Math.round(totalCft * 0.45);
                 let metalCft = Math.round(totalCft * 0.75);
 
@@ -353,7 +354,7 @@
                 i4 = mainSteelKg + " കിലോ";
                 i5 = `${ringCount} എണ്ണം (${ringTotalKg} കി.ഗ്രാം) | കെട്ടുകമ്പി: ${bindingWire} കി.ഗ്രാം`;
 
-                document.getElementById('resDetails').innerText = `${category === 'beam' ? 'ബീം' : 'ലിന്റൽ'} നീളം: ${length} R.Ft, സൈസ്: ${width}" x ${depth}" (ആകെ വോളിയം:ത്വ ${Math.round(totalCft)} Cft), അകലം: ${ringSpacing}", മേസ്തിരിമാർ: ${masonCount} പേർ`;
+                document.getElementById('resDetails').innerText = `${category === 'beam' ? 'ബീം' : 'ലിന്റൽ'} നീളം: ${length} R.Ft, സൈസ്: ${width}" x ${depth}" (ആകെ വോളിയം: ${Math.round(totalCft)} Cft), അകലം: ${ringSpacing}", മേസ്തിരിമാർ: ${masonCount} പേർ`;
             } 
             else if (category === 'slab') {
                 let sqFt = val;
