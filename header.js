@@ -13,26 +13,27 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
         as: { title: "মিস্ত্ৰী প্ৰ' ", subtitle: "স্মাৰ্ট চাইট মেনেজাৰ", welcome: "স্বাগতম" }
     };
 
-    // നിലവിലുള്ള ഭാഷ തിരഞ്ഞെടുക്കുന്നു (ഇല്ലെങ്കിൽ മലയാളം എടുക്കും)
+    // നിലവിലുള്ള ഭാഷ തിരഞ്ഞെടുക്കുന്നു
     const t = translations[currentLang] || translations['ml'];
 
     const headerHTML = `
-    <div class="flex flex-col gap-2 w-full mb-3">
-         <div class="flex flex-wrap items-center justify-between bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-3.5 py-3 rounded-2xl border-2 border-amber-400 shadow-[0_0_30px_rgba(251,191,36,0.5)] w-full relative gap-y-3">
+    <div class="flex flex-col gap-2.5 w-full mb-4">
+         <!-- മുകളിലെ മെയിൻ ഹെഡിംഗ് ബോക്സ് (പഴയതുപോലെ പെർഫെക്റ്റ് ഓവൽ ഷേപ്പും ഗ്ലോയും) -->
+         <div class="flex flex-col items-center justify-center bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-4 py-4 rounded-3xl border-2 border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.6)] w-full relative gap-3">
    
-            <!-- ലോഗോയും പേരും (സ്ഥലം കൃത്യമായി ലഭിക്കാൻ max-w നൽകിയിരിക്കുന്നു) -->
-            <div class="flex items-center gap-2.5 max-w-[62%] overflow-hidden">
-                <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-md flex-shrink-0" style="width: 42px; height: 42px;">
-                <div class="text-left overflow-hidden">
-                    <span class="text-sm sm:text-base font-black text-amber-300 tracking-wide block leading-tight truncate">${t.title}</span>
-                    <span class="text-[9px] sm:text-[10px] font-bold text-amber-400 tracking-wider uppercase block truncate">${t.subtitle}</span>
+            <!-- ലോഗോയും ആപ്പിന്റെ പേരും (സെന്റർ അലൈൻമെന്റ്) -->
+            <div class="flex items-center justify-center gap-3 w-full">
+                <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)] flex-shrink-0" style="width: 48px; height: 48px;">
+                <div class="text-left">
+                    <span class="text-base sm:text-lg font-black text-amber-300 tracking-wide block leading-tight truncate">${t.title}</span>
+                    <span class="text-[10px] sm:text-[11px] font-bold text-amber-400 tracking-wider uppercase block truncate">${t.subtitle}</span>
                 </div>
             </div>
 
-            <!-- ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ ബോക്സ് -->
-            <div class="relative flex items-center gap-1 bg-amber-500/20 px-2 py-1 rounded-xl border border-amber-400/60 shadow-inner">
+            <!-- ഭാഷ മാറ്റുന്ന ഡ്രോപ്പ്ഡൗൺ ബോക്സ് കൃത്യം സെന്ററിൽ -->
+            <div class="relative flex items-center justify-center gap-1.5 bg-amber-500/20 px-3 py-1.5 rounded-2xl border border-amber-400/70 shadow-[0_0_15px_rgba(251,191,36,0.3)] w-auto max-w-[200px]">
                 <span class="text-xs">🌐</span>
-                <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 px-2 py-1 rounded-lg text-[11px] font-black shadow-md transition cursor-pointer outline-none border border-slate-950 truncate">
+                <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 px-3 py-1 rounded-xl text-xs font-black shadow-md transition cursor-pointer outline-none border-2 border-slate-950 truncate">
                     <option value="ml" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
                     <option value="en" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'en' ? 'selected' : ''}>English</option>
                     <option value="hi" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
@@ -45,7 +46,8 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
 
         </div>
 
-        <div class="flex items-center justify-center bg-gradient-to-r from-blue-900 via-sky-800 to-blue-900 text-cyan-200 px-4 py-2.5 rounded-full border-2 border-cyan-400 shadow-[0_0_25px_rgba(56,189,248,0.4)] w-full text-center font-bold text-xs sm:text-sm truncate">
+        <!-- സ്വാഗത ബോക്സ് (നിയോൺ ബ്ലൂ ഗ്ലോയോടുകൂടി) -->
+        <div class="flex items-center justify-center bg-gradient-to-r from-blue-900 via-sky-800 to-blue-900 text-cyan-200 px-6 py-3 rounded-full border-2 border-cyan-400 shadow-[0_0_30px_rgba(56,189,248,0.5)] w-full text-center font-bold text-sm sm:text-base truncate">
             ${t.welcome}, ${name}
         </div>
     </div>`;
