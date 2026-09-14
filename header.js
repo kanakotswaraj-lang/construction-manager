@@ -7,7 +7,7 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
         en: { title: "Mestiri Pro", subtitle: "Smart Site Manager", welcome: "Welcome" },
         hi: { title: "मेस्त्री प्रो", subtitle: "स्मार्ट साइट मैनेजर", welcome: "स्वागत है" },
         ta: { title: "மேஸ்திரி ப்ரோ", subtitle: "ஸ்மார்ட் தள மேலாளர்", welcome: "வரவேற்கிறோம்" },
-        kn: { title: "ಮೇಸ್ತ್ರಿ ಪ್ರೋ", subtitle: "ಸ್ಮಾರ್ತ್ ಸೈಟ್ ಮ್ಯಾನೇಜർ", welcome: "ಸ್ವಾಗತ" },
+        kn: { title: "ಮೇಸ್ತ್ರಿ ಪ್ರೋ", subtitle: "ಸ್ಮಾರ್ತ್ ಸೈಟ್ ಮ್ಯಾನೇಜರ್", welcome: "ಸ್ವಾಗತ" },
         bn: { title: "মেস্ত্রি প্রো", subtitle: "স্মার্ট সাইট ম্যানেজার", welcome: "স্বাগত" },
         as: { title: "মিস্ত্ৰী প্ৰ' ", subtitle: "স্মাৰ্ট চাইট মেনেজাৰ", welcome: "স্বাগতম" }
     };
@@ -16,17 +16,17 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
 
     const headerHTML = `
     <div class="flex flex-col gap-2.5 w-full mb-4">
-         <!-- പെർഫെക്റ്റ് ഓവൽ ഷേപ്പും കൂടിയ അക്ഷര വലിപ്പവുമുള്ള ഹെഡർ -->
+         <!-- ഹെഡർ ബോക്സ് -->
          <div class="flex items-center justify-center bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-6 py-4 rounded-full border-2 border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.6)] w-full relative">
    
-            <!-- ലോഗോയും കുറച്ചുകൂടി വലിയ അക്ഷരങ്ങളിലുള്ള ടൈറ്റും ഡ്രോപ്പ്ഡൗണും -->
-            <div class="flex items-center gap-4 w-full max-w-[310px] justify-center">
-                <!-- 1. ലോഗോ -->
+            <!-- ലോഗോയും ടെക്സ്റ്റും -->
+            <div class="flex items-center gap-4 w-full max-w-[320px] justify-center">
+                <!-- 1. വലുപ്പം കൂട്ടിയ ലോഗോ (64px) -->
                 <div class="flex items-center flex-shrink-0">
-                    <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]" style="width: 54px; height: 54px;">
+                    <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]" style="width: 64px; height: 64px;">
                 </div>
 
-                <!-- 2. പേരും താഴെ ഡ്രോപ്പ്ഡൗൺ ബട്ടണും (വലിയ അക്ഷരങ്ങളിൽ) -->
+                <!-- 2. പേരും ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗണും -->
                 <div class="flex flex-col items-start overflow-hidden">
                     <div class="w-full overflow-hidden text-left">
                         <span class="text-base sm:text-lg font-black text-amber-300 tracking-wide block leading-tight truncate">${t.title}</span>
