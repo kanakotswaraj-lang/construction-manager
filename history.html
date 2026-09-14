@@ -20,7 +20,6 @@
             outline: none;
             box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.2);
         }
-                /* ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ ബോക്സിനുള്ള പ്രത്യേക സ്റ്റൈൽ */
         #langSelectDropdown {
             background: linear-gradient(to right, #fbbf24, #fde047, #facc15) !important;
             color: #030712 !important;
@@ -30,17 +29,15 @@
             color: #030712 !important;
             font-weight: 900 !important;
         }
-
     </style>
 </head>
 <body class="min-h-screen pb-12 p-4">
-    <!-- ഔട്ടർ ബോർഡർ മഞ്ഞ തിളക്കമുള്ള ഗ്രേഡിയന്റിലേക്ക് മാറ്റിയിരിക്കുന്നു -->
     <div class="max-w-md mx-auto space-y-4 border-2 border-yellow-500/60 p-4 rounded-3xl shadow-[0_0_25px_rgba(234,179,8,0.25)] bg-[#050B18]/95">
         
         <!-- ഹെഡർ -->
         <div id="appHeader" class="w-full flex justify-center"></div>
 
-        <!-- ടൈറ്റിലും ഹോം ബട്ടണും (മഞ്ഞ ഗ്രേഡിയന്റ് കളർ) -->
+        <!-- ടൈറ്റിലും ഹോം ബട്ടണും -->
         <div class="bg-slate-900 border-2 border-yellow-500 p-4 rounded-2xl flex justify-between items-center shadow-xl shadow-yellow-950/50 my-4">
             <h1 class="text-sm font-black">
                 <span class="lang bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent" data-key="history_edit">കണക്ക് ഹിസ്റ്ററി & എഡിറ്റ്</span>
@@ -62,12 +59,10 @@
             </div>
         </div>
 
-
-        
         <!-- തിരയുന്ന സെക്ഷനും ഫിൽട്ടറുകളും -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
             <div class="relative">
-                <input type="text" id="searchHistory" placeholder="🔍 Search by site name or details..." oninput="window.filterAndDisplay()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder text-white" data-key="search_placeholder">
+                <input type="text" id="searchHistory" placeholder="🔍 Search..." oninput="window.filterAndDisplay()" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder text-white" data-key="search_placeholder">
             </div>
             
             <div class="grid grid-cols-4 gap-1.5 pt-1">
@@ -78,20 +73,20 @@
             </div>
         </div>
 
-        <!-- 👇 ഇവിടെ പുതിയ വാട്സാപ്പ് ഷെയർ & ഡേറ്റ് ഫിൽട്ടർ സെക്ഷൻ ചേർക്കുക -->
+        <!-- വാട്സാപ്പ് ഷെയർ & ഡേറ്റ് ഫിൽട്ടർ സെക്ഷൻ -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold block mb-1">മുതൽ (From Date)</label>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="fromDateLabel">മുതൽ (From Date)</label>
                     <input type="date" id="historyFromDate" class="w-full p-2.5 bg-slate-800 rounded-xl text-xs">
                 </div>
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold block mb-1">വരെ (To Date)</label>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="toDateLabel">വരെ (To Date)</label>
                     <input type="date" id="historyToDate" class="w-full p-2.5 bg-slate-800 rounded-xl text-xs">
                 </div>
             </div>
             <button onclick="window.sendCurrentHistoryToWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black py-3 rounded-2xl text-xs shadow-lg transition flex items-center justify-center gap-2">
-                <span>📱</span> <span>ഈ കണക്കുകൾ WhatsApp അയക്കുക</span>
+                <span>📱</span> <span class="lang" data-key="sendWhatsAppBtn">ഈ കണക്കുകൾ WhatsApp അയക്കുക</span>
             </button>
         </div>
 
@@ -131,6 +126,7 @@
 
     <!-- ടോസ്റ്റ് നോട്ടിഫിക്കേഷൻ -->
     <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-yellow-400 text-yellow-300 px-6 py-3 rounded-2xl shadow-2xl font-black text-xs z-50 transition-all duration-300 opacity-0 pointer-events-none text-center"></div>
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -196,10 +192,8 @@
                 window.switchLanguage(savedLang);
 
                 const q = collection(db, "accounts");
-                
                 onSnapshot(q, (querySnapshot) => {
                     allHistoryData = [];
-                    
                     querySnapshot.forEach((document) => {
                         const data = document.data();
                         if (!data.meshtriOwner || data.meshtriOwner === currentMeshtri) {
@@ -210,12 +204,9 @@
                     allHistoryData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
                     updateSummary(allHistoryData);
                     window.filterAndDisplay();
-                }, (error) => {
-                    alert("Firebase Snapshot Error: " + error.message);
                 });
-
             } catch (err) {
-                alert("Main Catch Error: " + err.message);
+                console.error(err);
             }
         });
 
@@ -228,11 +219,8 @@
                 let dataType = String(item.type || '').toLowerCase();
                 let isIncome = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
 
-                if (isIncome) {
-                    totalIncome += amt;
-                } else {
-                    totalExpense += amt;
-                }
+                if (isIncome) totalIncome += amt;
+                else totalExpense += amt;
             });
 
             const incEl = document.getElementById('totalIncomeText');
@@ -344,7 +332,7 @@
             } catch (error) {
                 window.showToast("കണക്ക് അപ്ഡേറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", false);
             }
-              }
+        }
          
         window.sendCurrentHistoryToWhatsApp = function() {
             let fromDateVal = document.getElementById('historyFromDate').value;
@@ -354,9 +342,7 @@
             function formatDate(dateStr) {
                 if (!dateStr) return '';
                 let parts = dateStr.split('-');
-                if (parts.length === 3) {
-                    return `${parts[2]}-${parts[1]}-${parts[0]}`;
-                }
+                if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
                 return dateStr;
             }
 
@@ -407,7 +393,7 @@
                 let itemDateFormatted = formatDate(it.date);
                 msg += `${index + 1}. *${it.site || 'Site'}* (${itemDateFormatted})\n`;
                 msg += `   പേര്: ${it.name || '-'}\n`;
-                msg += `   തുക: ₹${amt}\n`; // 'ഇനം' എന്ന ഭാഗം ഒഴിവാക്കി കൂടുതൽ വ്യക്തത നൽകി
+                msg += `   തുക: ₹${amt}\n`;
                 msg += `--------------------------------\n`;
             });
 
@@ -416,7 +402,6 @@
             const encoded = encodeURIComponent(msg);
             window.open(`https://wa.me/?text=${encoded}`, '_blank');
         };
-
 
         window.deleteAccount = async function(id) {
             if (confirm("ഈ കണക്ക് തീർച്ചയായും ഡിലീറ്റ് ചെയ്യ வேண்டுമോ?")) {
@@ -429,11 +414,5 @@
             }
         }
     </script>
-
-        
 </body>
 </html>
-
-
-
-
