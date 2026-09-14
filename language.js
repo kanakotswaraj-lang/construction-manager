@@ -3212,10 +3212,42 @@ backup_fail: {
         kn: "ಡೇಟಾ ಮರುಸ್ಥಾಪಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಫೈಲ್ ಪರಿಶೀಲಿಸಿ.",
         bn: "ডেটা রিস্টোর করতে ব্যর্থ হয়েছে। ফাইলটি চেক করুন।",
         as: "ডাটা ৰিষ্ট’ৰ কৰাত ব্যৰ্থ হ'ল। ফাইলটো পৰীক্ষা কৰক।"
+    },
+    
+
+    // ... (മുൻപുള്ള കോഡുകൾ ഇവിടെ ഉണ്ടാകും) ...
+
+    "fromDateLabel": {
+        "ml": "മുതൽ (From Date)",
+        "hi": "से (From Date)",
+        "en": "From Date",
+        "ta": "முதல் (From Date)",
+        "kn": "ಇಂದ (From Date)",
+        "bn": "হতে (From Date)",
+        "as": "পৰা (From Date)"
+    },
+    "toDateLabel": {
+        "ml": "വരെ (To Date)",
+        "hi": "तक (To Date)",
+        "en": "To Date",
+        "ta": "வரை (To Date)",
+        "kn": "ವರೆಗೆ (To Date)",
+        "bn": "পর্যন্ত (To Date)",
+        "as": "লৈকে (To Date)"
+    },
+    "sendWhatsAppBtn": {
+        "ml": "ഈ കണക്കുകൾ WhatsApp അയക്കുക",
+        "hi": "यह हिसाब WhatsApp पर भेजें",
+        "en": "Send Accounts to WhatsApp",
+        "ta": "இந்த கணக்கை WhatsApp-ൽ அனுப்பவும்",
+        "kn": "ಈ ಲೆಕ್ಕವನ್ನು WhatsApp ಗೆ ಕಳುಹಿಸಿ",
+        "bn": "এই হিসাব WhatsApp এ পাঠান",
+        "as": "এই হিচাপ WhatsApp লৈ পঠিয়াওক"
     }
-
-
 };
+
+
+
 
 
 
