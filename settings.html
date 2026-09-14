@@ -3,329 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മേസ്തിരി പ്രോ - സെറ്റിങ്സ് & ബാക്ക്അപ്പ്</title>
+    <title>ബാക്ക്പ്പ് & റെസ്റ്റോർ - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="language.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            background-color: #0d1117 !important;
-            color: #f3f4f6 !important;
-            font-family: 'Manjari', sans-serif;
-        }
-        .max-w-md {
-            border: 3px solid #10b981;
-            border-radius: 2.5rem;
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
-            overflow: hidden;
-            background-color: #0d1117;
-        }
+        body { font-family: 'Manjari', sans-serif; }
     </style>
-
-    <script>
-        function setupHeader(containerId, showWelcome = false, userName = "") {
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const name = userName || localStorage.getItem('userName') || '';
-
-            const translations = {
-                ml: { title: "മേസ്തിരി പ്രോ", subtitle: "Smart Site Manager", welcome: "സ്വാഗതം" },
-                en: { title: "Mestiri Pro", subtitle: "Smart Site Manager", welcome: "Welcome" },
-                hi: { title: "मेस्त्री प्रो", subtitle: "स्मार्ट साइट मैनेजर", welcome: "स्वागत है" },
-                ta: { title: "மேஸ்திரி ப்ரோ", subtitle: "ஸ்மார்ட் தள மேலாளர்", welcome: "வரவேற்கிறோம்" },
-                kn: { title: "ಮೇಸ್ತ್ರಿ ಪ್ರೋ", subtitle: "ಸ್ಮಾರ್ಟ್ ಸೈಟ್ ಮ್ಯಾನೇಜರ್", welcome: "ಸ್ವಾಗತ" },
-                bn: { title: "মেস্ত্রি প্রো", subtitle: "স্মার্ট সাইট ম্যানেজার", welcome: "স্বাগত" },
-                as: { title: "মিস্ত্ৰী প্ৰ' ", subtitle: "স্মাৰ্ট চাইট মেনেজাৰ", welcome: "স্বাগতম" }
-            };
-
-            const t = translations[currentLang] || translations['ml'];
-
-            const headerHTML = `
-            <div class="flex flex-col gap-2 w-full mb-3">
-                 <div class="flex items-center justify-between bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-4 py-3.5 rounded-full border-2 border-amber-400 shadow-[0_0_30px_rgba(251,191,36,0.5)] w-full relative">
-           
-                    <div class="flex items-center gap-3.5">
-                        <a href="dashboard.html" class="flex-shrink-0">
-                            <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-md" style="width: 48px; height: 48px;">
-                        </a>
-                        <div class="text-left">
-                            <span class="text-lg font-black text-amber-300 tracking-wide block leading-tight">${t.title}</span>
-                            <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase">${t.subtitle}</span>
-                        </div>
-                    </div>
-
-                    <div class="relative flex items-center gap-1.5 bg-amber-500/20 px-2 py-1.5 rounded-2xl border border-amber-400/60 shadow-inner">
-                        <span class="text-sm">🌐</span>
-                        <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black shadow-md transition cursor-pointer outline-none border-2 border-slate-950 w-auto truncate">
-                            <option value="ml" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
-                            <option value="en" ${currentLang === 'en' ? 'selected' : ''}>English</option>
-                            <option value="hi" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
-                            <option value="ta" ${currentLang === 'ta' ? 'selected' : ''}>தமிழ்</option>
-                            <option value="kn" ${currentLang === 'kn' ? 'selected' : ''}>ಕನ್ನಡ</option>
-                            <option value="bn" ${currentLang === 'bn' ? 'selected' : ''}>বাংলা</option>
-                            <option value="as" ${currentLang === 'as' ? 'selected' : ''}>অসমীয়া</option>
-                        </select>
-                    </div>
-                </div>
-
-                ${showWelcome ? `
-                <div class="flex items-center justify-center bg-gradient-to-r from-blue-900 via-sky-800 to-blue-900 text-cyan-200 px-6 py-3 rounded-full border-2 border-cyan-400 shadow-[0_0_25px_rgba(56,189,248,0.4)] w-full text-center font-bold text-base">
-                    ${t.welcome}, ${userName}
-                </div>` : ''}
-            </div>`;
-
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = headerHTML;
-            }
-        }
-
-        window.changeLanguageFromDropdown = function(selectedLang) {
-            localStorage.setItem('selectedLang', selectedLang);
-            window.dispatchEvent(new CustomEvent('languageChanged', { detail: selectedLang }));
-            location.reload();
-        };
-    </script>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where, setDoc, doc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-            authDomain: "mesthri-app.firebaseapp.com",
-            databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
-            projectId: "mesthri-app",
-            storageBucket: "mesthri-app.firebasestorage.app",
-            messagingSenderId: "1060617901864",
-            appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-            measurementId: "G-J9Y5TW9D7T"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        document.addEventListener("DOMContentLoaded", () => {
-            let userName = localStorage.getItem('userName');
-            if (!userName) {
-                window.location.href = "login.html";
-                return;
-            }
-            document.getElementById('backupMeshtriName').innerText = userName;
-
-            setupHeader('header-container', true, userName);
-
-            // data-key ഉള്ള വാക്കുകൾ ലാംഗ്വേജ് അനുസരിച്ച് മാറ്റാൻ
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof words !== 'undefined') {
-                document.querySelectorAll('[data-key]').forEach(element => {
-                    const key = element.getAttribute('data-key');
-                    if (words[key] && words[key][savedLang]) {
-                        element.innerText = words[key][savedLang];
-                    }
-                });
-            }
-        });
-
-        // ബാക്ക്അപ്പ് ഡൗൺലോഡ് ഫങ്ഷൻ
-        window.downloadBackup = async function() {
-            let userName = localStorage.getItem('userName');
-            if (!userName) return;
-
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const statusEl = document.getElementById('backupStatus');
-            
-            const messages = {
-                ml: { downloading: "ഡാറ്റ ഡൗൺലോഡ് ചെയ്യുന്നു, ദയവായി കാത്തിരിക്കൂ...", success: "ബാക്ക്അപ്പ് വിജയകരമായി ഡൗൺലോഡ് ചെയ്തു!", fail: "ബാക്ക്അപ്പ് എടുക്കുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക." },
-                en: { downloading: "Downloading data, please wait...", success: "Backup downloaded successfully!", fail: "Failed to take backup. Please try again." },
-                hi: { downloading: "डाटा डाउनलोड हो रहा है, कृपया प्रतीक्षा करें...", success: "बैकअप सफलतापूर्वक डाउनलोड हो गया!", fail: "बैकअप लेने में विफल। कृपया पुनः प्रयास करें।" },
-                ta: { downloading: "தரவு பதிவிறக்கம் செய்யப்படுகிறது...", success: "காப்புப்பிரதி வெற்றிகரமாக பதிவிறக்கப்பட்டது!", fail: "காப்புப்பிரதியை எடுக்க முடியவில்லை." },
-                kn: { downloading: "ಡೇಟಾ ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ...", success: "ಬ್ಯಾಕಪ್ ಯಶಸ್ವಾಗಿ ಡೌನ್‌ಲೋಡ್ ಆಗಿದೆ!", fail: "ಬ್ಯಾಕಪ್ ತೆಗೆದುಕೊಳ್ಳಲು ವಿಫಲವಾಗಿದೆ." },
-                bn: { downloading: "ডেটা ডাউনলোড হচ্ছে...", success: "ব্যাকআপ সফলভাবে ডাউনলোড হয়েছে!", fail: "ব্যাকআপ নিতে ব্যর্থ হয়েছে।" },
-                as: { downloading: "ডাটা ডাউনলোড হৈ আছে...", success: "বেকআপ সফলভাৱে ডাউনলোড কৰা হ'ল!", fail: "বেকআপ লোৱাত ব্যৰ্থ হ'ল।" }
-            };
-
-            const langMsg = messages[currentLang] || messages['ml'];
-
-            statusEl.innerText = langMsg.downloading;
-            statusEl.className = "text-amber-400 text-xs font-bold text-center mt-3";
-
-            try {
-                let backupData = {
-                    meshtri: userName,
-                    backupDate: new Date().toISOString(),
-                    accounts: [],
-                    attendance: [],
-                    sites: [],
-                    staff: [],
-                    materials: []
-                };
-
-                const accQuery = query(collection(db, "accounts"), where("meshtriOwner", "==", userName));
-                const accSnap = await getDocs(accQuery);
-                accSnap.forEach(doc => backupData.accounts.push({ id: doc.id, ...doc.data() }));
-
-                const attQuery = query(collection(db, "attendance"), where("meshtriOwner", "==", userName));
-                const attSnap = await getDocs(attQuery);
-                attSnap.forEach(doc => backupData.attendance.push({ id: doc.id, ...doc.data() }));
-
-                const siteQuery = query(collection(db, "sites"), where("meshtriOwner", "==", userName));
-                const siteSnap = await getDocs(siteQuery);
-                siteSnap.forEach(doc => backupData.sites.push({ id: doc.id, ...doc.data() }));
-
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
-                const downloadAnchor = document.createElement('a');
-                downloadAnchor.setAttribute("href", dataStr);
-                downloadAnchor.setAttribute("download", `MesthriPro_Backup_${userName}_${new Date().toISOString().slice(0,10)}.json`);
-                document.body.appendChild(downloadAnchor);
-                downloadAnchor.click();
-                downloadAnchor.remove();
-
-                statusEl.innerText = langMsg.success;
-                statusEl.className = "text-emerald-400 text-xs font-bold text-center mt-3";
-
-            } catch (error) {
-                console.error("Backup error:", error);
-                statusEl.innerText = langMsg.fail;
-                statusEl.className = "text-rose-400 text-xs font-bold text-center mt-3";
-            }
-        };
-
-        // റെസ്റ്റോർ ഫങ്ഷൻ
-        window.restoreBackup = async function() {
-            let userName = localStorage.getItem('userName');
-            if (!userName) return;
-
-            const fileInput = document.getElementById('restoreFile');
-            const statusEl = document.getElementById('restoreStatus');
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-
-            if (fileInput.files.length === 0) {
-                const msgs = {
-                    ml: "ദയവായി ആദ്യം ഒരു ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കൂ!",
-                    en: "Please select a backup file first!",
-                    hi: "कृपया पहले एक बैकअप फ़ाइल चुनें!",
-                    ta: "தயவுசெய்து முதலில் காப்புப்பிரதி கோப்பைத் தேர்ந்தெடுக்கவும்!",
-                    kn: "ದಯವಿಟ್ಟು ಮೊದಲು ಬ್ಯಾಕಪ್ ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ!",
-                    bn: "অনুগ্রহ করে প্রথমে একটি ব্যাকআপ ফাইল নির্বাচন করুন!",
-                    as: "অনুগ্ৰহ কৰি প্ৰথমতে এটা বেকআপ ফাইল নিৰ্বাচন কৰক!"
-                };
-                statusEl.innerText = msgs[currentLang] || msgs['ml'];
-                statusEl.className = "text-rose-400 text-xs font-bold text-center mt-3";
-                return;
-            }
-
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-
-            const statusMsgs = {
-                ml: { restoring: "ഡാറ്റ റെസ്റ്റോർ ചെയ്യുന്നു, ദയവായി കാത്തിരിക്കൂ...", success: "ഡാറ്റ വിജയകരമായി റെസ്റ്റോർ ചെയ്തു!", fail: "ഡാറ്റ റെസ്റ്റോർ ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ഫയൽ പരിശോധിക്കുക." },
-                en: { restoring: "Restoring data, please wait...", success: "Data restored successfully!", fail: "Failed to restore data. Please check the file." },
-                hi: { restoring: "डेटा पुनर्स्थापित किया जा रहा है...", success: "डेटा सफलतापूर्वक पुनर्स्थापित हो गया!", fail: "डाटा पुनर्स्थापित करने में विफल।" },
-                ta: { restoring: "தரவு மீட்டமைக்கப்படுகிறது...", success: "தரவு வெற்றிகரமாக மீட்டமைக்கப்பட்டது!", fail: "தரவை மீட்டமைக்க முடியவில்லை." },
-                kn: { restoring: "ಡೇಟಾ ಮರುಸ್ಥಾಪಿಸಲಾಗುತ್ತಿದೆ...", success: "ಡೇಟಾ ಯಶಸ್ವಾಗಿ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ!", fail: "ಡೇಟಾ ಮರುಸ್ಥಾಪಿಸಲು ವಿಫಲವಾಗಿದೆ." },
-                bn: { restoring: "ডেটা রিস্টোর করা হচ্ছে...", success: "ডেটা সফলভাবে রিস্টোর করা হয়েছে!", fail: "ডেটা রিস্টোর করতে ব্যর্থ হয়েছে।" },
-                as: { restoring: "ডাটা ৰিষ্ট’ৰ কৰা হৈ আছে...", success: "ডাটা সফলভাৱে ৰিষ্ট’ৰ কৰা হ'ল!", fail: "ডাটা ৰিষ্ট’ৰ কৰাত ব্যৰ্থ হ'ল।" }
-            };
-
-            const langMsg = statusMsgs[currentLang] || statusMsgs['ml'];
-
-            statusEl.innerText = langMsg.restoring;
-            statusEl.className = "text-amber-400 text-xs font-bold text-center mt-3";
-
-            reader.onload = async function(event) {
-                try {
-                    const backupData = JSON.parse(event.target.result);
-
-                    if (backupData.accounts && Array.isArray(backupData.accounts)) {
-                        for (let item of backupData.accounts) {
-                            let docId = item.id || doc(collection(db, "accounts")).id;
-                            await setDoc(doc(db, "accounts", docId), item);
-                        }
-                    }
-
-                    if (backupData.attendance && Array.isArray(backupData.attendance)) {
-                        for (let item of backupData.attendance) {
-                            let docId = item.id || doc(collection(db, "attendance")).id;
-                            await setDoc(doc(db, "attendance", docId), item);
-                        }
-                    }
-
-                    if (backupData.sites && Array.isArray(backupData.sites)) {
-                        for (let item of backupData.sites) {
-                            let docId = item.id || doc(collection(db, "sites")).id;
-                            await setDoc(doc(db, "sites", docId), item);
-                        }
-                    }
-
-                    statusEl.innerText = langMsg.success;
-                    statusEl.className = "text-emerald-400 text-xs font-bold text-center mt-3";
-                    
-statusEl.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ${langMsg.restoring}`;
-
-                } catch (error) {
-                    console.error("Restore error:", error);
-                    statusEl.innerText = langMsg.fail;
-                    statusEl.className = "text-rose-400 text-xs font-bold text-center mt-3";
-                }
-            };
-
-            reader.readAsText(file);
-        };
-    </script>
 </head>
-<body class="text-white min-h-screen p-4 font-sans pb-16">
-    <div class="max-w-md mx-auto space-y-4">
+<body class="bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 min-h-screen flex items-center justify-center p-4">
 
-        <!-- ഹെഡർ കണ്ടെയ്നർ -->
-        <div id="header-container"></div>
-
-        <!-- പ്രൊഫൈൽ വിവരം -->
-        <div class="bg-slate-900/90 border border-white/10 p-5 rounded-3xl shadow-xl space-y-2">
-            <p class="text-xs text-gray-400 font-bold lang" data-key="logged_in_user">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
-            <p id="backupMeshtriName" class="text-xl font-black text-amber-400">-</p>
-        </div>
-
-        <!-- ബാക്ക്അപ്പ് ഡൗൺലോഡ് കാർഡ് -->
-        <div class="bg-slate-900/90 border border-purple-500/40 p-5 rounded-3xl shadow-xl space-y-4">
+    <!-- 1. വയലറ്റ്/ഇൻഡിഗോ ഔട്ടർ ലൈനും ഗ്ലോയും ഉള്ള മെയിൻ ബോക്സ് -->
+    <div class="bg-slate-900/90 p-5 rounded-3xl shadow-[0_0_35px_rgba(147,51,234,0.4)] w-full max-w-sm border-2 border-purple-500 text-white">
+        
+        <!-- 2. ഹെഡർ (ലോഗോയും താഴെ പേരും സൈഡിൽ ലാംഗ്വേജും വരുന്ന ഒറിജിനൽ മോഡൽ) -->
+        <div class="flex items-center justify-between bg-slate-950 px-4 py-3 rounded-2xl border border-purple-500/50 shadow-md w-full mb-4">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-2xl">☁️</div>
-                <div>
-                    <h2 class="text-base font-black text-white lang" data-key="cloud_data_backup">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
-                    <p class="text-xs text-gray-400 lang" data-key="backup_desc">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
+                <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-purple-400" style="width: 45px; height: 45px;">
+                <div class="flex flex-col">
+                    <span class="text-base font-black text-purple-300">മേസ്തിരി പ്രോ</span>
+                    <span class="text-[10px] font-bold text-purple-400 tracking-wider">SMART SITE MANAGER</span>
                 </div>
             </div>
-
-            <button onclick="downloadBackup()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-95 text-white p-3.5 rounded-2xl font-black text-sm shadow-lg transition flex items-center justify-center gap-2 border border-purple-400/30">
-                <span class="lang" data-key="download_json">📥 ബാക്ക്അപ്പ് ഫയൽ ഡൗൺലോഡ് ചെയ്യുക (JSON)</span>
-            </button>
-
-            <div id="backupStatus" class="text-center text-xs text-gray-400"></div>
+            <!-- ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ -->
+            <div>
+                <select id="langSelectDropdown" class="bg-purple-950 text-purple-200 px-2 py-1 rounded-lg text-xs font-bold border border-purple-400/60 outline-none cursor-pointer">
+                    <option value="ml">മലയാളം</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
         </div>
 
-        <!-- റെസ്റ്റോർ ബാക്ക്അപ്പ് കാർഡ് -->
-        <div class="bg-slate-900/90 border border-cyan-500/40 p-5 rounded-3xl shadow-xl space-y-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-2xl">📥</div>
-                <div>
-                    <h2 class="text-base font-black text-white lang" data-key="cloud_data_restore">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
-                    <p class="text-xs text-gray-400 lang" data-key="restore_desc">മുമ്പ് ഡൗൺലോഡ് ചെയ്ത ബാക്ക്അപ്പ് ഫയൽ (JSON) തിരഞ്ഞെടുത്ത് ഡാറ്റ തിരികെ കൊണ്ടുവരാം.</p>
-                </div>
-            </div>
+        <!-- സ്വാഗത ബോക്സ് -->
+        <div class="flex items-center justify-center bg-gradient-to-r from-blue-900 via-sky-800 to-blue-900 text-cyan-200 px-6 py-2.5 rounded-full border-2 border-cyan-400 shadow-[0_0_20px_rgba(56,189,248,0.4)] w-full text-center font-bold text-sm mb-4">
+            സ്വാഗതം, swaraj
+        </div>
 
-            <div class="space-y-2">
-                <label class="block text-xs font-bold text-gray-300 lang" data-key="select_json_file">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</label>
-                <input type="file" id="restoreFile" accept=".json" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30 cursor-pointer bg-slate-950/50 p-2 rounded-2xl border border-white/10">
-            </div>
+        <!-- ലോഗിൻ ചെയ്ത യൂസർ വിവരം -->
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30 mb-4">
+            <p class="text-xs text-purple-300/80 font-bold mb-1">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
+            <p class="text-lg font-black text-purple-300">swaraj</p>
+        </div>
 
-            <button onclick="restoreBackup()" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:opacity-95 text-white p-3.5 rounded-2xl font-black text-sm shadow-lg transition flex items-center justify-center gap-2 border border-cyan-400/30">
-                <span class="lang" data-key="restore_button">📤 ഡാറ്റ റെസ്റ്റോർ ചെയ്യുക</span>
+        <!-- ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ് സെക്ഷൻ -->
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30 mb-4">
+            <h2 class="text-base font-black text-purple-300 mb-1">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
+            <p class="text-xs text-purple-200/70 mb-3">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
+            <button class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-3 rounded-xl font-bold text-sm shadow-md hover:brightness-110 transition">
+                ബാക്ക്അപ്പ് ഫയൽ ഡൗൺലോഡ് ചെയ്യുക (JSON)
             </button>
-            <div id="restoreStatus" class="flex items-center justify-center gap-2 text-center text-xs text-gray-400 mt-3"></div>
+        </div>
 
+        <!-- ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ സെക്ഷൻ -->
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30">
+            <h2 class="text-base font-black text-purple-300 mb-1">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
+            <p class="text-xs text-purple-200/70 mb-3">മുമ്പ് ഡൗൺലോഡ് ചെയ്ത ബാക്ക്അപ്പ് ഫയൽ (JSON) തിരഞ്ഞെടുത്ത് ഡാറ്റ തിരികെ കൊണ്ടുവരാം.</p>
+            <p class="text-xs font-bold text-purple-300 mb-2">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</p>
+            
+            <div class="flex items-center bg-slate-900 p-2.5 rounded-xl border border-purple-500/40 mb-3">
+                <input type="file" class="text-xs text-purple-200 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-purple-600 file:text-white cursor-pointer">
+            </div>
 
-            <div id="restoreStatus" class="text-center text-xs text-gray-400"></div>
+            <button class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-3 rounded-xl font-black text-sm shadow-md hover:brightness-110 transition">
+                ഡാറ്റ റെസ്റ്റോർ ചെയ്യുക
+            </button>
         </div>
 
     </div>
+
 </body>
 </html>
