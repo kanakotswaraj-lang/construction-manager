@@ -13,35 +13,36 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
         as: { title: "মিস্ত্ৰী প্ৰ' ", subtitle: "স্মাৰ্ট চাইট মেনেজাৰ", welcome: "স্বাগতম" }
     };
 
-    // നിലവിലുള്ള ഭാഷ തിരഞ്ഞെടുക്കുന്നു
     const t = translations[currentLang] || translations['ml'];
 
     const headerHTML = `
     <div class="flex flex-col gap-2.5 w-full mb-4">
-         <!-- മുകളിലെ മെയിൻ ഹെഡിംഗ് ബോക്സ് (പഴയതുപോലെ പെർഫെക്റ്റ് ഓവൽ ഷേപ്പും ഗ്ലോയും) -->
-         <div class="flex flex-col items-center justify-center bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-4 py-4 rounded-3xl border-2 border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.6)] w-full relative gap-3">
+         <!-- മുകളിലെ മെയിൻ ഹെഡിംഗ് ബോക്സ് -->
+         <div class="flex items-center justify-between bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-3.5 py-3.5 rounded-3xl border-2 border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.6)] w-full relative">
    
-            <!-- ലോഗോയും ആപ്പിന്റെ പേരും (സെന്റർ അലൈൻമെന്റ്) -->
-            <div class="flex items-center justify-center gap-3 w-full">
-                <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)] flex-shrink-0" style="width: 48px; height: 48px;">
-                <div class="text-left">
-                    <span class="text-base sm:text-lg font-black text-amber-300 tracking-wide block leading-tight truncate">${t.title}</span>
-                    <span class="text-[10px] sm:text-[11px] font-bold text-amber-400 tracking-wider uppercase block truncate">${t.subtitle}</span>
-                </div>
+            <!-- ഇടതുവശത്ത് ലോഗോ മാത്രം -->
+            <div class="flex items-center flex-shrink-0">
+                <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]" style="width: 48px; height: 48px;">
             </div>
 
-            <!-- ഭാഷ മാറ്റുന്ന ഡ്രോപ്പ്ഡൗൺ ബോക്സ് കൃത്യം സെന്ററിൽ -->
-            <div class="relative flex items-center justify-center gap-1.5 bg-amber-500/20 px-3 py-1.5 rounded-2xl border border-amber-400/70 shadow-[0_0_15px_rgba(251,191,36,0.3)] w-auto max-w-[200px]">
-                <span class="text-xs">🌐</span>
-                <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 px-3 py-1 rounded-xl text-xs font-black shadow-md transition cursor-pointer outline-none border-2 border-slate-950 truncate">
-                    <option value="ml" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
-                    <option value="en" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'en' ? 'selected' : ''}>English</option>
-                    <option value="hi" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
-                    <option value="ta" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'ta' ? 'selected' : ''}>தமிழ்</option>
-                    <option value="kn" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'kn' ? 'selected' : ''}>ಕನ್ನಡ</option>
-                    <option value="bn" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'bn' ? 'selected' : ''}>বাংলা</option>
-                    <option value="as" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'as' ? 'selected' : ''}>অসমীয়া</option>
-                </select>
+            <!-- വലതുവശത്ത് പേരും സബ്‌ടൈറ്റിലും ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ ബട്ടണും -->
+            <div class="flex items-center gap-2.5">
+                <div class="text-right">
+                    <span class="text-sm sm:text-base font-black text-amber-300 tracking-wide block leading-tight truncate">${t.title}</span>
+                    <span class="text-[9px] sm:text-[10px] font-bold text-amber-400 tracking-wider uppercase block truncate">${t.subtitle}</span>
+                </div>
+
+                <div class="relative flex items-center bg-amber-500/20 px-2 py-1 rounded-xl border border-amber-400/70 shadow-[0_0_15px_rgba(251,191,36,0.3)]">
+                    <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 px-2 py-1 rounded-lg text-xs font-black shadow-md transition cursor-pointer outline-none border border-slate-950 truncate">
+                        <option value="ml" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
+                        <option value="en" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'en' ? 'selected' : ''}>English</option>
+                        <option value="hi" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
+                        <option value="ta" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'ta' ? 'selected' : ''}>தமிழ்</option>
+                        <option value="kn" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'kn' ? 'selected' : ''}>ಕನ್ನಡ</option>
+                        <option value="bn" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'bn' ? 'selected' : ''}>বাংলা</option>
+                        <option value="as" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'as' ? 'selected' : ''}>অসমীয়া</option>
+                    </select>
+                </div>
             </div>
 
         </div>
