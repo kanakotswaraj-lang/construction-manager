@@ -17,23 +17,24 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
 
     const headerHTML = `
     <div class="flex flex-col gap-2.5 w-full mb-4">
-         <!-- മുകളിലെ മെയിൻ ഹെഡിംഗ് ബോക്സ് -->
-         <div class="flex items-center justify-between bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-3.5 py-3.5 rounded-3xl border-2 border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.6)] w-full relative">
+         <!-- നിങ്ങൾ വരച്ചു കാണിച്ചതുപോലെ ഒരൊറ്റ ഓവൽ ബോക്സിനുള്ളിൽ ലോഗോയും വലതുവശത്ത് പേരും ഡ്രോപ്പ്ഡൗണും -->
+         <div class="flex items-center bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-4 py-3.5 rounded-full border-2 border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.6)] w-full relative gap-3.5">
    
-            <!-- ഇടതുവശത്ത് ലോഗോ മാത്രം -->
+            <!-- 1. ഇടതുവശത്ത് ലോഗോ മാത്രം -->
             <div class="flex items-center flex-shrink-0">
                 <img src="icon.png" alt="Logo" class="rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]" style="width: 48px; height: 48px;">
             </div>
 
-            <!-- വലതുവശത്ത് പേരും സബ്‌ടൈറ്റിലും ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ ബട്ടണും -->
-            <div class="flex items-center gap-2.5">
-                <div class="text-right">
+            <!-- 2. വലതുവശത്ത് മുകളിൽ പേരും, തൊട്ടു താഴെ ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗണും -->
+            <div class="flex flex-col gap-1.5 flex-grow overflow-hidden">
+                <div class="text-left overflow-hidden w-full">
                     <span class="text-sm sm:text-base font-black text-amber-300 tracking-wide block leading-tight truncate">${t.title}</span>
                     <span class="text-[9px] sm:text-[10px] font-bold text-amber-400 tracking-wider uppercase block truncate">${t.subtitle}</span>
                 </div>
 
-                <div class="relative flex items-center bg-amber-500/20 px-2 py-1 rounded-xl border border-amber-400/70 shadow-[0_0_15px_rgba(251,191,36,0.3)]">
-                    <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 px-2 py-1 rounded-lg text-xs font-black shadow-md transition cursor-pointer outline-none border border-slate-950 truncate">
+                <div class="relative flex items-center bg-amber-500/20 px-2 py-1 rounded-xl border border-amber-400/70 shadow-[0_0_15px_rgba(251,191,36,0.3)] w-fit">
+                    <span class="text-xs mr-1">🌐</span>
+                    <select id="langSelectDropdown" onchange="window.changeLanguageFromDropdown(this.value)" class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 px-2 py-0.5 rounded-lg text-xs font-black shadow-md transition cursor-pointer outline-none border border-slate-950 truncate">
                         <option value="ml" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'ml' ? 'selected' : ''}>മലയാളം</option>
                         <option value="en" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'en' ? 'selected' : ''}>English</option>
                         <option value="hi" class="bg-white text-slate-950 font-black py-1" ${currentLang === 'hi' ? 'selected' : ''}>हिंदी</option>
