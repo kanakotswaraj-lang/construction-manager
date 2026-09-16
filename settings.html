@@ -75,20 +75,8 @@
     </div>
 
     <!-- ജാവസ്ക്രിപ്റ്റ് ലോജിക് -->
-    <script type="module">
+        <script type="module">
         import { setupHeader } from './header.js';
-
-        // മറ്റ് പേജുകളിൽ ഉള്ളതുപോലെ കൃത്യമായി ലാംഗ്വേജ് മാറ്റുന്ന ഫങ്ഷൻ
-        window.switchLanguage = function(lang) {
-            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
-            
-            document.querySelectorAll('.lang').forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                    element.innerText = words[key][lang];
-                }
-            });
-        };
 
         document.addEventListener("DOMContentLoaded", () => {
             const currentMeshtri = localStorage.getItem('userName') || "swaraj";
@@ -100,26 +88,34 @@
                 setupHeader('appHeader', true, currentMeshtri);
             }
 
-            // നിലവിലെ ഭാഷ ലോഡ് ചെയ്ത് സെറ്റ് ചെയ്യുന്നു
+            // നിലവിലെ ഭാഷ എടുക്കുന്നു
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             
-            setTimeout(() => {
-                const langDropdown = document.getElementById('langSelectDropdown');
-                if (langDropdown) {
-                    langDropdown.value = savedLang;
-                }
-            }, 50);
+            // ഡ്രോപ്പ്ഡൗൺ വാല്യൂ സെറ്റ് ചെയ്യുന്നു
+            const langDropdown = document.getElementById('langSelectDropdown');
+            if (langDropdown) {
+                langDropdown.value = savedLang;
+            }
 
-            window.switchLanguage(savedLang);
+            // മറ്റ് പേജുകളിൽ ഉള്ളതുപോലെ data-key ഉള്ള വാക്കുകൾ മാറ്റുന്നു
+            if (typeof words !== 'undefined') {
+                document.querySelectorAll('.lang').forEach(element => {
+                    const key = element.getAttribute('data-key');
+                    if (words[key] && words[key][savedLang]) {
+                        element.innerText = words[key][savedLang];
+                    }
+                });
+            }
         });
 
-        // ഭാഷ മാറ്റുമ്പോൾ കോൾ ചെയ്യുന്ന ഫങ്ഷൻ
+        // ഭാഷ മാറ്റുമ്പോൾ ഡ്രോപ്പ്ഡൗണിൽ നിന്ന് കോൾ ചെയ്യുന്ന ഫങ്ഷൻ
         window.changeLanguageFromDropdown = function(selectedLang) {
             localStorage.setItem('selectedLang', selectedLang);
-            window.switchLanguage(selectedLang);
             window.dispatchEvent(new CustomEvent('languageChanged', { detail: selectedLang }));
             location.reload();
         };
     </script>
+
+    
 </body>
 </html>
