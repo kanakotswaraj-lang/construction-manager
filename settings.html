@@ -67,13 +67,12 @@
     <script type="module">
         import { setupHeader } from './header.js';
 
-        window.switchLanguage = function(lang) {
-            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
-            
-            document.querySelectorAll('.lang').forEach(el => {
-                const key = el.getAttribute('data-key');
+        // പേജിലെ ടെക്സ്റ്റുകൾ ഭാഷ അനുസരിച്ച് മാറ്റുന്ന ഫങ്ഷൻ
+        window.switchPageLanguage = function(lang) {
+            document.querySelectorAll('.lang').forEach(element => {
+                const key = element.getAttribute('data-key');
                 if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                    el.innerText = words[key][lang];
+                    element.innerText = words[key][lang];
                 }
             });
         };
@@ -83,17 +82,20 @@
             const userEl = document.getElementById('loggedInUserName');
             if (userEl) userEl.innerText = currentMeshtri;
 
-            // താങ്കൾ തന്ന ആ മികച്ച ഹെഡർ ഇവിടെ വിളിക്കുന്നു
+            // ഹെഡർ ലോഡ് ചെയ്യുന്നു
             if (typeof setupHeader === 'function') {
                 setupHeader('appHeader', true, currentMeshtri);
             }
 
+            // നിലവിലെ ഭാഷ സെറ്റ് ചെയ്യുന്നു
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            window.switchLanguage(savedLang);
+            window.switchPageLanguage(savedLang);
         });
 
+        // ഡ്രോപ്പ്ഡൗണിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ വിളിക്കുന്ന ഫങ്ഷൻ
         window.changeLanguageFromDropdown = function(selectedLang) {
             localStorage.setItem('selectedLang', selectedLang);
+            window.switchPageLanguage(selectedLang);
             window.dispatchEvent(new CustomEvent('languageChanged', { detail: selectedLang }));
             location.reload();
         };
