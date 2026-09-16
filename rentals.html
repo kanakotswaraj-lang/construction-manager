@@ -13,7 +13,7 @@
         border: 2px solid rgba(51, 65, 85, 1);
         transition: all 0.3s ease;
         background-color: #1e293b !important;
-        color: white !important;
+        color: #f8fafc !important;
     }
 
     input:focus, select:focus {
@@ -26,41 +26,30 @@
     input:-webkit-autofill:hover, 
     input:-webkit-autofill:focus {
         -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
-        -webkit-text-fill-color: white !important;
+        -webkit-text-fill-color: #f8fafc !important;
     }
-                /* ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ ബോക്സിനുള്ള പ്രത്യേക സ്റ്റൈൽ */
-        #langSelectDropdown {
-            background: linear-gradient(to right, #fbbf24, #fde047, #facc15) !important;
-            color: #030712 !important;
-        }
-        #langSelectDropdown option {
-            background-color: #ffffff !important;
-            color: #030712 !important;
-            font-weight: 900 !important;
-        }
-        /* ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ ബോക്സിനുള്ള പ്രത്യേക സ്റ്റൈൽ */
-        #langSelectDropdown {
-            background: linear-gradient(to right, #fbbf24, #fde047, #facc15) !important;
-            color: #030712 !important;
-        }
-        #langSelectDropdown option {
-            background-color: #ffffff !important;
-            color: #030712 !important;
-            font-weight: 900 !important;
-        }
-
-</style>
+    
+    #langSelectDropdown {
+        background: linear-gradient(to right, #10b981, #34d399, #059669) !important;
+        color: #ffffff !important;
+    }
+    #langSelectDropdown option {
+        background-color: #ffffff !important;
+        color: #030712 !important;
+        font-weight: 900 !important;
+    }
+    </style>
     <title class="lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</title>
 </head>
-<body class="bg-[#050B18] text-white font-sans min-h-screen p-4">
-    <div class="max-w-md mx-auto space-y-4 p-2 rounded-3xl border-2 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] bg-[#050B18]">
+<body class="bg-[#050B18] text-slate-100 font-sans min-h-screen p-4">
+    <div class="max-w-md mx-auto space-y-4 p-2 rounded-3xl border-2 border-emerald-500/60 shadow-[0_0_20px_rgba(16,185,129,0.2)] bg-[#050B18]">
         
         <div id="appHeader" class="w-full"></div>
 
-        <div class="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-emerald-950/80 border-2 border-emerald-500/70 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm shadow-emerald-950/50">
-            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-green-400 tracking-wide lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</h1>
+        <div class="bg-gradient-to-r from-emerald-950/90 via-slate-900 to-emerald-950/90 border-2 border-emerald-500/70 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-green-300 tracking-wide lang" data-key="rentals">വാടക ഉപകരണങ്ങൾ</h1>
 
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-900/40 transition flex items-center gap-2 border border-white/30">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -69,116 +58,116 @@
             </a>
         </div>
 
-        <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
+        <div class="bg-slate-900/95 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
             <div class="grid grid-cols-2 gap-3 text-center">
-                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
-                    <p class="text-[11px] text-slate-400 font-bold lang" data-key="total_rent_label">ആകെ വാടക</p>
-                    <p id="statTotalRent" class="text-base font-black text-amber-400">₹0</p>
+                <div class="bg-slate-800/90 p-3 rounded-2xl border border-slate-700/80 shadow-inner">
+                    <p class="text-[11px] text-slate-300 font-bold lang" data-key="total_rent_label">ആകെ വാടക</p>
+                    <p id="statTotalRent" class="text-base font-black text-emerald-400">₹0</p>
                 </div>
-                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
-                    <p class="text-[11px] text-slate-400 font-bold lang" data-key="balance_amount_label">ബാലൻസ് തുക</p>
-                    <p id="statTotalBal" class="text-base font-black text-red-400">₹0</p>
+                <div class="bg-slate-800/90 p-3 rounded-2xl border border-slate-700/80 shadow-inner">
+                    <p class="text-[11px] text-slate-300 font-bold lang" data-key="balance_amount_label">ബാലൻസ് തുക</p>
+                    <p id="statTotalBal" class="text-base font-black text-rose-400">₹0</p>
                 </div>
             </div>
 
             <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden flex border border-slate-700">
                 <div id="barPaid" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
-                <div id="barBal" class="bg-red-500 h-full transition-all duration-500" style="width: 100%"></div>
+                <div id="barBal" class="bg-rose-500 h-full transition-all duration-500" style="width: 100%"></div>
             </div>
 
-            <div id="reminderBox" class="hidden bg-red-500/10 border border-red-500/40 p-3 rounded-2xl text-red-300 text-xs space-y-1">
+            <div id="reminderBox" class="hidden bg-rose-500/10 border border-rose-500/40 p-3 rounded-2xl text-rose-200 text-xs space-y-1">
                 <p class="font-black lang" data-key="expired_items_title">🚨 കാലാവധി കഴിഞ്ഞ ഉപകരണങ്ങൾ:</p>
                 <div id="reminderList"></div>
             </div>
 
-            <div class="bg-slate-800/50 border border-slate-700 p-3 rounded-2xl space-y-2">
+            <div class="bg-slate-800/60 border border-slate-700/80 p-3 rounded-2xl space-y-2">
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleShopList()">
-                    <p class="text-xs font-black text-amber-400 lang" data-key="shops_list_edit">🏬 കടകളുടെ ലിസ്റ്റ് & എഡിറ്റ്‌ ചെയ്യാം</p>
-                    <span id="shopToggleIcon" class="text-xs text-slate-400 font-bold lang" data-key="view_text">▼ കാണുക</span>
+                    <p class="text-xs font-black text-emerald-400 lang" data-key="shops_list_edit">🏬 കടകളുടെ ലിസ്റ്റ് & എഡിറ്റ്‌ ചെയ്യാം</p>
+                    <span id="shopToggleIcon" class="text-xs text-slate-300 font-bold lang" data-key="view_text">▼ കാണുക</span>
                 </div>
                 <div id="shopDirectoryContainer" class="hidden space-y-2 pt-2 border-t border-slate-700 max-h-48 overflow-y-auto"></div>
             </div>
 
-            <input type="text" id="searchInput" placeholder="🔍 തിരയുക (ഉപകരണം, കട, സൈറ്റ്...)" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="search_placeholder">
+            <input type="text" id="searchInput" placeholder="🔍 തിരയുക (ഉപകരണം, കട, സൈറ്റ്...)" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="search_placeholder">
 
             <div class="flex gap-2 w-full px-1 my-2">
-                <button id="filter_active" onclick="setFilter('active')" class="lang flex-1 py-3 rounded-2xl text-[11px] font-black bg-amber-500 text-slate-950 transition-all" data-key="filter_active">നടന്നുകൊണ്ടിരിക്കുന്നത്</button>
-                <button id="filter_returned" onclick="setFilter('returned')" class="lang flex-1 py-3 rounded-2xl text-[11px] font-black bg-slate-800 text-slate-400 border border-slate-700 transition-all" data-key="filter_returned">തിരികെ നൽകിയത്</button>
+                <button id="filter_active" onclick="setFilter('active')" class="lang flex-1 py-3 rounded-2xl text-[11px] font-black bg-emerald-500 text-white transition-all shadow-md" data-key="filter_active">നടന്നുകൊണ്ടിരിക്കുന്നത്</button>
+                <button id="filter_returned" onclick="setFilter('returned')" class="lang flex-1 py-3 rounded-2xl text-[11px] font-black bg-slate-800 text-slate-300 border border-slate-700 transition-all" data-key="filter_returned">തിരികെ നൽകിയത്</button>
             </div>
         </div>
 
-        <div class="bg-slate-900/90 p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4">
-            <h2 class="font-black text-amber-400 text-sm lang" data-key="add_new_equipment">പുതിയ ഉപകരണം ചേർക്കുക</h2>
+        <div class="bg-slate-900/95 p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4">
+            <h2 class="font-black text-emerald-400 text-sm lang" data-key="add_new_equipment">പുതിയ ഉപകരണം ചേർക്കുക</h2>
             
             <div>
-                <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="item_name_placeholder">
+                <input type="text" id="itemName" placeholder="ഉപകരണത്തിന്റെ പേര്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="item_name_placeholder">
             </div>
 
             <div>
-                <input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ (ഉദാ: റൂം 1 / ഫസ്റ്റ് ഫ്ലോർ)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="bedroom_placeholder">
+                <input type="text" id="bedroomName" placeholder="ബെഡ്റൂം പേര്/നമ്പർ (ഉദാ: റൂം 1 / ഫസ്റ്റ് ഫ്ലോർ)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="bedroom_placeholder">
             </div>
 
             <div>
-                <input type="text" id="siteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="site_name_placeholder">
+                <input type="text" id="siteName" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="site_name_placeholder">
             </div>
 
             <div>
-                <input type="text" id="shopName" list="shopSuggestions" placeholder="കടയുടെ പേര് തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="shop_name_placeholder">
+                <input type="text" id="shopName" list="shopSuggestions" placeholder="കടയുടെ പേര് തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="shop_name_placeholder">
                 <datalist id="shopSuggestions"></datalist>
             </div>
 
             <div>
-                <input type="text" id="clientName" list="clientSuggestions" placeholder="വാങ്ങിയ ആളിന്റെ പേര് തിരഞ്ഞെടുക്കുക" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="client_name_placeholder">
+                <input type="text" id="clientName" list="clientSuggestions" placeholder="വാങ്ങിയ ആളിന്റെ പേര് തിരഞ്ഞെടുക്കുക" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="client_name_placeholder">
                 <datalist id="clientSuggestions"></datalist>
             </div>
 
             <div class="flex gap-2">
-                <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="phone_placeholder">
-                <button type="button" id="pickContactBtn" onclick="pickContact()" class="bg-cyan-700 hover:bg-cyan-600 text-white px-3.5 rounded-2xl text-xs font-black whitespace-nowrap shadow-md lang" data-key="contact">📇 കോൺടാക്റ്റ്</button>
+                <input type="tel" id="shopPhone" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="phone_placeholder">
+                <button type="button" id="pickContactBtn" onclick="pickContact()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3.5 rounded-2xl text-xs font-black whitespace-nowrap shadow-md lang" data-key="contact">📇 കോൺടാക്റ്റ്</button>
             </div>
             
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="start_date">ആരംഭ തീയതി</label>
-                    <input type="date" id="startDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+                    <label class="text-[10px] text-slate-300 font-bold block mb-1 lang" data-key="start_date">ആരംഭ തീയതി</label>
+                    <input type="date" id="startDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100">
                 </div>
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="end_date">അവസാന തീയതി</label>
-                    <input type="date" id="endDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs">
+                    <label class="text-[10px] text-slate-300 font-bold block mb-1 lang" data-key="end_date">അവസാന തീയതി</label>
+                    <input type="date" id="endDate" class="w-full p-3 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100">
                 </div>
             </div>
 
-            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="qty_placeholder">
-            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="unit_rent_placeholder">
-            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="total_rent_placeholder">
-            <input type="number" id="paidRent" placeholder="ഇതുവരെ നൽകിയ മുൻകൂർ തുക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs lang-placeholder" data-key-placeholder="paid_rent_placeholder">
+            <input type="number" id="itemQty" placeholder="എത്ര എണ്ണം?" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="qty_placeholder">
+            <input type="number" id="unitRent" placeholder="ഒരെണ്ണത്തിന്റെ വാടക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="unit_rent_placeholder">
+            <input type="number" id="totalRent" placeholder="ആകെ വാടക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="total_rent_placeholder">
+            <input type="number" id="paidRent" placeholder="ഇതുവരെ നൽകിയ മുൻകൂർ തുക (₹)" class="w-full p-3.5 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100 placeholder-slate-400 lang-placeholder" data-key-placeholder="paid_rent_placeholder">
             
-            <button id="saveRentBtn" class="w-full bg-amber-500 text-slate-950 p-4 rounded-2xl font-black text-xs shadow-lg lang" data-key="add_to_rent">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
+            <button id="saveRentBtn" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white p-4 rounded-2xl font-black text-xs shadow-lg lang transition-all" data-key="add_to_rent">വാടകയ്ക്ക് എടുത്തു ചേർക്കുക</button>
         </div>
 
         <div id="rentList" class="space-y-3"></div>
     </div>
 
     <!-- Modals -->
-    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
+    <div id="customToast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-emerald-500 text-emerald-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100">ഫലം...</div>
 
     <div id="customPromptModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl">
-            <h3 id="promptTitle" class="font-black text-amber-400 text-sm">ടൈറ്റിൽ</h3>
-            <input type="text" id="promptInput" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-white">
+            <h3 id="promptTitle" class="font-black text-emerald-400 text-sm">ടൈറ്റിൽ</h3>
+            <input type="text" id="promptInput" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-xs text-slate-100">
             <div class="flex gap-2">
-                <button id="promptCancelBtn" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black">ക്യാൻസൽ</button>
-                <button id="promptOkBtn" class="flex-1 bg-amber-500 text-slate-950 py-3 rounded-2xl text-xs font-black">ശരി</button>
+                <button id="promptCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-2xl text-xs font-black">ക്യാൻസൽ</button>
+                <button id="promptOkBtn" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-2xl text-xs font-black">ശരി</button>
             </div>
         </div>
     </div>
 
     <div id="customConfirmModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-4 shadow-2xl text-center">
-            <h3 id="confirmTitle" class="font-black text-white text-sm">ഉറപ്പാണോ?</h3>
+            <h3 id="confirmTitle" class="font-black text-slate-100 text-sm">ഉറപ്പാണോ?</h3>
             <div class="flex gap-2">
-                <button id="confirmCancelBtn" class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-2xl text-xs font-black">ഇല്ല</button>
-                <button id="confirmOkBtn" class="flex-1 bg-red-600 text-white py-3 rounded-2xl text-xs font-black">ഉവ്വ്</button>
+                <button id="confirmCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-2xl text-xs font-black">ഇല്ല</button>
+                <button id="confirmOkBtn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white py-3 rounded-2xl text-xs font-black">ഉവ്വ്</button>
             </div>
         </div>
     </div>
@@ -229,10 +218,10 @@
                 if (typeof setupHeader === 'function') {
                     setupHeader('appHeader', true, currentMeshtri);
                 } else {
-                    document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
+                    document.getElementById('appHeader').innerHTML = `<h2 class="text-emerald-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
                 }
             } catch (e) {
-                document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
+                document.getElementById('appHeader').innerHTML = `<h2 class="text-emerald-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`;
             }
         });
 
@@ -253,9 +242,9 @@
         window.showToast = (message, isSuccess = true) => {
             const toast = document.getElementById('customToast');
             toast.innerText = message;
-            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-emerald-950 border-2 border-emerald-500 text-emerald-200' : 'bg-red-950 border-2 border-red-500 text-red-200'} opacity-100 scale-105`;
+            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-emerald-950 border-2 border-emerald-500 text-emerald-200' : 'bg-rose-950 border-2 border-rose-500 text-rose-200'} opacity-100 scale-105`;
             setTimeout(() => {
-                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-amber-400 text-amber-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
+                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-emerald-500 text-emerald-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
             }, 2500);
         };
 
@@ -306,8 +295,8 @@
         let currentFilter = 'active';
         window.setFilter = (filter) => {
             currentFilter = filter;
-            document.getElementById('filter_active').className = `lang flex-1 py-3 rounded-2xl text-[11px] font-black transition-all ${filter === 'active' ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400 border border-slate-700'}`;
-            document.getElementById('filter_returned').className = `lang flex-1 py-3 rounded-2xl text-[11px] font-black transition-all ${filter === 'returned' ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400 border border-slate-700'}`;
+            document.getElementById('filter_active').className = `lang flex-1 py-3 rounded-2xl text-[11px] font-black transition-all shadow-md ${filter === 'active' ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-300 border border-slate-700'}`;
+            document.getElementById('filter_returned').className = `lang flex-1 py-3 rounded-2xl text-[11px] font-black transition-all shadow-md ${filter === 'returned' ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-300 border border-slate-700'}`;
             loadData();
         };
 
@@ -511,7 +500,7 @@
 
             let headerTitle = currentFilter === 'active' ? getTxt('ongoing_equipments', 'നടന്നുകൊണ്ടിരിക്കുന്ന ഉപകരണങ്ങൾ') : getTxt('returned', 'തിരികെ നൽകിയവ');
             
-            list.innerHTML = `<h2 class="font-black text-white mb-2 text-sm">${headerTitle}</h2>`;
+            list.innerHTML = `<h2 class="font-black text-slate-200 mb-2 text-sm px-1">${headerTitle}</h2>`;
             
             let grandTotalRent = 0, grandTotalPaid = 0;
             let reminders = [];
@@ -555,30 +544,30 @@
                         const bal = calculatedTotal - (parseFloat(r.paid) || 0);
 
                         const div = document.createElement('div');
-                        div.className = `bg-slate-900/90 border border-slate-800 p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-red-500' : 'border-green-500'} shadow-xl mb-4 text-white backdrop-blur-sm`;
+                        div.className = `bg-slate-900/95 border border-slate-800 p-5 rounded-2xl border-l-4 ${bal > 0 ? 'border-rose-500' : 'border-emerald-500'} shadow-xl mb-4 text-slate-100 backdrop-blur-sm`;
                         div.innerHTML = `
-                            <div class="flex justify-between items-start mb-1">
+                            <div class="flex justify-between items-start mb-1.5">
                                 <div>
-                                    <p class="font-black text-white text-base">${r.item}</p>
-                                    <p class="text-xs text-slate-400">${getTxt('total', 'ആകെ')}: <strong class="text-white">${totalQty}</strong> | ${getTxt('returned', 'തിരികെ നൽകിയത്')}: <strong class="text-amber-300">${returnedQty}</strong></p>
+                                    <p class="font-black text-slate-100 text-base">${r.item}</p>
+                                    <p class="text-xs text-slate-300">${getTxt('total', 'ആകെ')}: <strong class="text-white">${totalQty}</strong> | ${getTxt('returned', 'തിരികെ നൽകിയത്')}: <strong class="text-emerald-400">${returnedQty}</strong></p>
                                 </div>
                                 <div class="flex gap-1 flex-wrap justify-end">
-                                    <button onclick="updateReturnedQty('${d.id}', ${totalQty}, ${returnedQty})" class="bg-amber-900/60 text-amber-200 border border-amber-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">${getTxt('return_count', 'റിട്ടേൺ എണ്ണം')}</button>
-                                    <button onclick="editItemDetails('${d.id}', '${r.item}', '${totalQty}', '${r.shop}', '${r.client || ''}', '${r.site || ''}', '${r.bedroom || ''}')" class="bg-cyan-900/50 text-cyan-300 border border-cyan-700/50 px-2.5 py-1 rounded-lg text-[10px] font-black">${getTxt('edit', 'എഡിറ്റ്')}</button>
-                                    <button onclick="toggleReturn('${d.id}', ${isRet}, ${totalQty})" class="text-[10px] font-black px-2.5 py-1 rounded-lg border ${isRet ? 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50' : 'bg-slate-800 text-slate-300 border-slate-700'}">
+                                    <button onclick="updateReturnedQty('${d.id}', ${totalQty}, ${returnedQty})" class="bg-emerald-950/80 text-emerald-200 border border-emerald-700/60 px-2.5 py-1 rounded-lg text-[10px] font-black">${getTxt('return_count', 'റിട്ടേൺ എണ്ണം')}</button>
+                                    <button onclick="editItemDetails('${d.id}', '${r.item}', '${totalQty}', '${r.shop}', '${r.client || ''}', '${r.site || ''}', '${r.bedroom || ''}')" class="bg-cyan-950/80 text-cyan-200 border border-cyan-700/60 px-2.5 py-1 rounded-lg text-[10px] font-black">${getTxt('edit', 'എഡിറ്റ്')}</button>
+                                    <button onclick="toggleReturn('${d.id}', ${isRet}, ${totalQty})" class="text-[10px] font-black px-2.5 py-1 rounded-lg border ${isRet ? 'bg-emerald-950/80 text-emerald-200 border-emerald-700/60' : 'bg-slate-800 text-slate-200 border-slate-700'}">
                                         ${isRet ? '✓ ' + getTxt('returned', 'തിരികെ നൽകി') : getTxt('full_return', 'മുഴുവൻ റിട്ടേൺ')}
                                     </button>
                                 </div>
                             </div>
-                            ${r.bedroom ? `<p class="text-xs text-amber-300 font-bold mb-1">🚪 ${getTxt('bedroom', 'ബെഡ്റൂം')}: ${r.bedroom}</p>` : ''}
-                            ${r.site ? `<p class="text-xs text-cyan-400 font-bold mb-1">🏗️ ${getTxt('site', 'സൈറ്റ്')}: ${r.site}</p>` : ''}
-                            <p class="text-xs text-slate-300 font-bold mb-1">${getTxt('shop', 'കട')}: <span class="text-amber-400">${r.shop}</span> ${r.client ? `| ${getTxt('for_whom', 'ആർക്ക്')}: <span class="text-cyan-300">${r.client}</span>` : ''} | 📞 ${r.phone ? r.phone : '<span class="lang" data-key="no_number">നമ്പർ ഇല്ല</span>'}</p>
-                            <p class="text-[11px] text-slate-400 mb-2">${getTxt('date', 'തീയതി')}: ${r.start} ${getTxt('from', 'മുതൽ')} ${r.end} ${getTxt('to', 'വരെ')} | <strong class="text-amber-300">${totalDays} ${getTxt('days', 'ദിവസങ്ങൾ')}</strong></p>
+                            ${r.bedroom ? `<p class="text-xs text-emerald-400 font-bold mb-1">🚪 ${getTxt('bedroom', 'ബെഡ്റൂം')}: ${r.bedroom}</p>` : ''}
+                            ${r.site ? `<p class="text-xs text-cyan-300 font-bold mb-1">🏗️ ${getTxt('site', 'സൈറ്റ്')}: ${r.site}</p>` : ''}
+                            <p class="text-xs text-slate-300 font-bold mb-1">${getTxt('shop', 'കട')}: <span class="text-emerald-400 font-extrabold">${r.shop}</span> ${r.client ? `| ${getTxt('for_whom', 'ആർക്ക്')}: <span class="text-cyan-200 font-extrabold">${r.client}</span>` : ''} | 📞 ${r.phone ? r.phone : '<span class="lang text-slate-400" data-key="no_number">നമ്പർ ഇല്ല</span>'}</p>
+                            <p class="text-[11px] text-slate-300 mb-2.5">${getTxt('date', 'തീയതി')}: ${r.start} ${getTxt('from', 'മുതൽ')} ${r.end} ${getTxt('to', 'വരെ')} | <strong class="text-emerald-400">${totalDays} ${getTxt('days', 'ദിവസങ്ങൾ')}</strong></p>
                             
-                            <div class="border-t border-slate-800 pt-2 flex flex-col gap-2">
+                            <div class="border-t border-slate-800 pt-2.5 flex flex-col gap-2">
                                 <div class="flex justify-between items-center text-xs font-black text-slate-200">
                                     <span>${getTxt('rent_remaining', 'വാടകയ്ക്ക് ബാക്കി')}: ${effectiveQty} | ${getTxt('total', 'ആകെ')}: ₹${calculatedTotal}</span>
-                                    <span class="${bal > 0 ? 'text-red-400' : 'text-emerald-400'}">${getTxt('balance', 'ബാലൻസ്')}: ₹${bal}</span>
+                                    <span class="${bal > 0 ? 'text-rose-400' : 'text-emerald-400'}">${getTxt('balance', 'ബാലൻസ്')}: ₹${bal}</span>
                                 </div>
                                 
                                 <div class="flex items-center justify-between pt-2 gap-1">
@@ -588,8 +577,8 @@
                                     
                                     <div class="flex items-center gap-1">
                                         ${bal > 0 ? `<button onclick="settleFull('${d.id}', ${calculatedTotal})" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black">${getTxt('settle', 'സെറ്റിൽ')}</button>` : ''}
-                                        <button onclick="editRent('${d.id}', ${r.paid})" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1.5 rounded-xl text-[10px] font-black">${getTxt('payment', 'പെയ്മെന്റ്')}</button>
-                                        <button onclick="deleteRent('${d.id}')" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black shadow-md">${getTxt('delete', 'ഡിലീറ്റ്')}</button>
+                                        <button onclick="editRent('${d.id}', ${r.paid})" class="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black">${getTxt('payment', 'പെയ്മെന്റ്')}</button>
+                                        <button onclick="deleteRent('${d.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black shadow-md">${getTxt('delete', 'ഡിലീറ്റ്')}</button>
                                     </div>
                                 </div>
                             </div>
@@ -606,19 +595,19 @@
             if (shopsMap.size > 0) {
                 let shopHtml = '';
                 shopsMap.forEach((phone, shopName) => {
-    shopSuggestions.innerHTML += `<option value="${shopName}">`;
-    shopHtml += `
-        <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl text-xs">
-            <div>
-                <span class="font-bold text-white block">${shopName}</span>
-                ${phone ? `<a href="tel:${phone}" class="text-cyan-400 font-bold text-[11px]">📞 ${phone}</a>` : `<span class="text-slate-400 text-[11px] lang" data-key="no_number">${getTxt('no_number', 'നമ്പർ ഇല്ല')}</span>`}
-            </div>
-            <div class="flex gap-1">
-                <button onclick="editShopNameGlobally('${shopName}')" class="bg-cyan-900/60 text-cyan-200 px-2 py-1 rounded-lg text-[10px] font-black">${getTxt('edit', 'മാറ്റുക')}</button>
-                <button onclick="deleteShopGlobally('${shopName}')" class="bg-red-900/60 text-red-200 px-2 py-1 rounded-lg text-[10px] font-black">${getTxt('delete', 'ഡിലീറ്റ്')}</button>
-            </div>
-        </div>`;
-});
+                    shopSuggestions.innerHTML += `<option value="${shopName}">`;
+                    shopHtml += `
+                        <div class="flex justify-between items-center bg-slate-900/90 p-2.5 rounded-xl text-xs border border-slate-800">
+                            <div>
+                                <span class="font-bold text-slate-100 block">${shopName}</span>
+                                ${phone ? `<a href="tel:${phone}" class="text-cyan-300 font-bold text-[11px]">📞 ${phone}</a>` : `<span class="text-slate-400 text-[11px] lang" data-key="no_number">${getTxt('no_number', 'നമ്പർ ഇല്ല')}</span>`}
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="editShopNameGlobally('${shopName}')" class="bg-cyan-950/80 text-cyan-200 border border-cyan-700/60 px-2 py-1 rounded-lg text-[10px] font-black">${getTxt('edit', 'മാറ്റുക')}</button>
+                                <button onclick="deleteShopGlobally('${shopName}')" class="bg-rose-950/80 text-rose-200 border border-rose-700/60 px-2 py-1 rounded-lg text-[10px] font-black">${getTxt('delete', 'ഡിലീറ്റ്')}</button>
+                            </div>
+                        </div>`;
+                });
 
                 shopContainer.innerHTML = shopHtml;
             } else {
@@ -627,9 +616,6 @@
 
             const clientSuggestions = document.getElementById('clientSuggestions');
             clientSuggestions.innerHTML = '';
-            clientsSet.append ? null : clientsSet.forEach(clientName => {
-                clientSuggestions.innerHTML += `<option value="${clientName}">`;
-            });
             clientsSet.forEach(clientName => {
                 clientSuggestions.innerHTML += `<option value="${clientName}">`;
             });
