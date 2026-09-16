@@ -14,15 +14,15 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; }
         input, select, textarea {
-            border: 2px solid rgba(51, 65, 85, 1);
+            border: 2px solid rgba(139, 92, 246, 0.4);
             transition: all 0.3s ease;
             background-color: #1e293b !important;
             color: white !important;
         }
         input:focus, select:focus {
-            border-color: #eab308 !important;
+            border-color: #a855f7 !important;
             outline: none;
-            box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.2);
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2);
         }
     </style>
 </head>
@@ -33,35 +33,35 @@
         <div id="appHeader" class="w-full"></div>
     </div>
 
-    <!-- മെയിൻ ബോക്സ് -->
-    <div class="w-full max-w-sm bg-slate-900/90 border-2 border-amber-500/50 rounded-2xl p-6 shadow-[0_0_25px_rgba(245,158,11,0.2)] backdrop-blur-md space-y-4">
+    <!-- മെയിൻ ബോക്സ്: പഴയതുപോലെ മനോഹരമായ വയലറ്റ് ഗ്ലോ ഔട്ടർ ലൈൻ -->
+    <div class="w-full max-w-sm bg-slate-900/90 border-2 border-purple-500/50 rounded-2xl p-6 shadow-[0_0_25px_rgba(168,85,247,0.25)] backdrop-blur-md space-y-4">
         
         <!-- ലോഗിൻ ചെയ്ത യൂസർ വിവരം -->
-        <div class="bg-slate-800/80 p-4 rounded-xl border border-amber-500/30">
-            <p data-key="logged_in_user" class="lang text-xs text-amber-300/90 font-semibold mb-1">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
+        <div class="bg-slate-800/80 p-4 rounded-xl border border-purple-500/30">
+            <p data-key="logged_in_user" class="lang text-xs text-purple-300 font-semibold mb-1">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
             <p id="loggedInUserName" class="text-base font-bold text-white">swaraj</p>
         </div>
 
         <!-- ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ് സെക്ഷൻ -->
-        <div class="bg-slate-800/80 p-4 rounded-xl border border-amber-500/30 space-y-3">
-            <h2 data-key="cloud_data_backup" class="lang text-base font-bold text-amber-400">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
+        <div class="bg-slate-800/80 p-4 rounded-xl border border-purple-500/30 space-y-3">
+            <h2 data-key="cloud_data_backup" class="lang text-base font-bold text-purple-300">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
             <p data-key="backup_desc" class="lang text-xs text-slate-300">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
-            <button onclick="window.downloadBackup()" data-key="download_json" class="lang w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition text-xs cursor-pointer">
+            <button onclick="window.downloadBackup()" data-key="download_json" class="lang w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3 rounded-xl shadow-lg hover:from-purple-500 hover:to-indigo-500 transition text-xs cursor-pointer">
                 ബാക്ക്അപ്പ് ഫയൽ ഡൗൺലോഡ് ചെയ്യുക (JSON)
             </button>
         </div>
 
         <!-- ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ സെക്ഷൻ -->
-        <div class="bg-slate-800/80 p-4 rounded-xl border border-amber-500/30 space-y-3">
-            <h2 data-key="cloud_data_restore" class="lang text-base font-bold text-amber-400">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
+        <div class="bg-slate-800/80 p-4 rounded-xl border border-purple-500/30 space-y-3">
+            <h2 data-key="cloud_data_restore" class="lang text-base font-bold text-purple-300">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
             <p data-key="restore_desc" class="lang text-xs text-slate-300">മുമ്പ് ഡൗൺലോഡ് ചെയ്ത ബാക്ക്അപ്പ് ഫയൽ (JSON) തിരഞ്ഞെടുത്ത് ഡാറ്റ തിരികെ കൊണ്ടുവരാം.</p>
-            <p data-key="select_json_file" class="lang text-xs font-semibold text-amber-300/90">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</p>
+            <p data-key="select_json_file" class="lang text-xs font-semibold text-purple-300">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</p>
             
-            <div class="flex items-center bg-slate-900 p-2 rounded-xl border border-slate-700">
-                <input type="file" id="restoreFile" class="text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 cursor-pointer">
+            <div class="flex items-center bg-slate-900 p-2 rounded-xl border border-purple-500/30">
+                <input type="file" id="restoreFile" class="text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-purple-600 file:text-white cursor-pointer">
             </div>
 
-            <button onclick="window.restoreData()" data-key="restore_button" class="lang w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition text-xs cursor-pointer">
+            <button onclick="window.restoreData()" data-key="restore_button" class="lang w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3 rounded-xl shadow-lg hover:from-purple-500 hover:to-indigo-500 transition text-xs cursor-pointer">
                 📤 ഡാറ്റ റെസ്റ്റോർ ചെയ്യുക
             </button>
         </div>
