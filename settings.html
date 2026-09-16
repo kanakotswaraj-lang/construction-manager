@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title class="lang" data-key="backup_restore_title">ബാക്ക്പ്പ് & റെസ്റ്റോർ - മേസ്തിരി പ്രോ</title>
+    <title class="lang" data-key="settings_backup">സെറ്റിംഗ്സ് & ബാക്ക്അപ്പ്</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,35 +34,35 @@
     </div>
 
     <!-- മെയിൻ ബോക്സ് -->
-    <div class="w-full max-w-sm bg-slate-900/90 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md space-y-4">
+    <div class="w-full max-w-sm bg-slate-900/90 border-2 border-amber-500/50 rounded-2xl p-6 shadow-[0_0_25px_rgba(245,158,11,0.2)] backdrop-blur-md space-y-4">
         
         <!-- ലോഗിൻ ചെയ്ത യൂസർ വിവരം -->
-        <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
-            <p data-key="loggedInUserLabel" class="lang text-xs text-amber-300/90 font-semibold mb-1">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
+        <div class="bg-slate-800/80 p-4 rounded-xl border border-amber-500/30">
+            <p data-key="logged_in_user" class="lang text-xs text-amber-300/90 font-semibold mb-1">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
             <p id="loggedInUserName" class="text-base font-bold text-white">swaraj</p>
         </div>
 
         <!-- ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ് സെക്ഷൻ -->
-        <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3">
-            <h2 data-key="backupTitle" class="lang text-base font-bold text-white">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
-            <p data-key="backupDesc" class="lang text-xs text-slate-400">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
-            <button onclick="window.downloadBackup()" data-key="backupBtn" class="lang w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition text-xs cursor-pointer">
+        <div class="bg-slate-800/80 p-4 rounded-xl border border-amber-500/30 space-y-3">
+            <h2 data-key="cloud_data_backup" class="lang text-base font-bold text-amber-400">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
+            <p data-key="backup_desc" class="lang text-xs text-slate-300">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
+            <button onclick="window.downloadBackup()" data-key="download_json" class="lang w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition text-xs cursor-pointer">
                 ബാക്ക്അപ്പ് ഫയൽ ഡൗൺലോഡ് ചെയ്യുക (JSON)
             </button>
         </div>
 
         <!-- ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ സെക്ഷൻ -->
-        <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3">
-            <h2 data-key="restoreTitle" class="lang text-base font-bold text-white">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
-            <p data-key="restoreDesc" class="lang text-xs text-slate-400">മുമ്പ് ഡൗൺലോഡ് ചെയ്ത ബാക്ക്അപ്പ് ഫയൽ (JSON) തിരഞ്ഞെടുത്ത് ഡാറ്റ തിരികെ കൊണ്ടുവരാം.</p>
-            <p data-key="selectFileLabel" class="lang text-xs font-semibold text-amber-300/90">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</p>
+        <div class="bg-slate-800/80 p-4 rounded-xl border border-amber-500/30 space-y-3">
+            <h2 data-key="cloud_data_restore" class="lang text-base font-bold text-amber-400">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
+            <p data-key="restore_desc" class="lang text-xs text-slate-300">മുമ്പ് ഡൗൺലോഡ് ചെയ്ത ബാക്ക്അപ്പ് ഫയൽ (JSON) തിരഞ്ഞെടുത്ത് ഡാറ്റ തിരികെ കൊണ്ടുവരാം.</p>
+            <p data-key="select_json_file" class="lang text-xs font-semibold text-amber-300/90">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</p>
             
             <div class="flex items-center bg-slate-900 p-2 rounded-xl border border-slate-700">
                 <input type="file" id="restoreFile" class="text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 cursor-pointer">
             </div>
 
-            <button onclick="window.restoreData()" data-key="restoreBtn" class="lang w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition text-xs cursor-pointer">
-                ഡാറ്റ റെസ്റ്റോർ ചെയ്യുക
+            <button onclick="window.restoreData()" data-key="restore_button" class="lang w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition text-xs cursor-pointer">
+                📤 ഡാറ്റ റെസ്റ്റോർ ചെയ്യുക
             </button>
         </div>
 
@@ -75,25 +75,26 @@
         // ഹെഡർ ലോഡ് ചെയ്യുന്നു
         setupHeader('appHeader');
 
-        // ലോഗിൻ പേജിലേതുപോലെ ഭാഷ ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്ന കോഡ്
+        // ഭാഷ ഓട്ടോമാറ്റിക്കായി അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
         function applySavedLanguage() {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
             }
         }
-        window.addEventListener('DOMContentLoaded', applySavedLanguage);
+
+        document.addEventListener("DOMContentLoaded", () => {
+            applySavedLanguage();
+            const currentMeshtri = localStorage.getItem('userName') || "swaraj";
+            const userEl = document.getElementById('loggedInUserName');
+            if (userEl) userEl.innerText = currentMeshtri;
+        });
+
         window.addEventListener('languageChanged', (e) => {
             const newLang = (e && e.detail) ? e.detail : localStorage.getItem('selectedLang');
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(newLang);
             }
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const currentMeshtri = localStorage.getItem('userName') || "swaraj";
-            const userEl = document.getElementById('loggedInUserName');
-            if (userEl) userEl.innerText = currentMeshtri;
         });
     </script>
 </body>
