@@ -3,21 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ബാക്ക്പ്പ് & റെസ്റ്റോർ - മേസ്തിരി പ്രോ</title>
+    <title class="lang" data-key="backup_restore_title">ബാക്ക്പ്പ് & റെസ്റ്റോർ - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+    <script src="language.js?v=3.0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Manjari', sans-serif; }
+        body { font-family: 'Manjari', sans-serif; background-color: #050B18; color: white; }
+        input, select, textarea {
+            border: 2px solid rgba(51, 65, 85, 1);
+            transition: all 0.3s ease;
+            background-color: #1e293b !important;
+            color: white !important;
+        }
+        input:focus, select:focus {
+            border-color: #eab308 !important;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.2);
+        }
+        /* ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ ബോക്സിനുള്ള പ്രത്യേക സ്റ്റൈൽ */
+        #langSelectDropdown {
+            background: linear-gradient(to right, #fbbf24, #fde047, #facc15) !important;
+            color: #030712 !important;
+        }
+        #langSelectDropdown option {
+            background-color: #ffffff !important;
+            color: #030712 !important;
+            font-weight: 900 !important;
+        }
     </style>
 </head>
-<body class="bg-slate-950 min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-4">
 
     <!-- മെയിൻ ബോക്സ് (വയലറ്റ് ഔട്ടർ ലൈൻ) -->
-    <div class="bg-slate-900/90 p-5 rounded-3xl shadow-[0_0_35px_rgba(147,51,234,0.4)] w-full max-w-sm border-2 border-purple-500 text-white">
+    <div class="bg-slate-900/90 p-5 rounded-3xl shadow-[0_0_35px_rgba(147,51,234,0.4)] w-full max-w-sm border-2 border-purple-500 text-white space-y-4">
         
-        <!-- ഹെഡർ -->
-        <div class="flex items-center justify-center bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-4 py-3 rounded-full border-2 border-amber-400 shadow-[0_0_25px_rgba(251,191,36,0.5)] w-full relative mb-4">
+        <!-- ഹെഡർ (മറ്റ് പേജുകളിലെ അതേ ഗോൾഡൻ/അംബർ ഓവൽ ഹെഡറും 7 ഭാഷകളും) -->
+        <div class="flex items-center justify-center bg-gradient-to-r from-[#2c1810] via-[#3d2314] to-[#2c1810] text-amber-200 px-4 py-3 rounded-full border-2 border-amber-400 shadow-[0_0_25px_rgba(251,191,36,0.5)] w-full relative">
             <div class="flex items-center gap-3 w-full max-w-[310px] justify-between">
                 <!-- ലോഗോ -->
                 <div class="flex items-center flex-shrink-0">
@@ -26,8 +48,8 @@
 
                 <!-- പേരും സബ്‌ടൈറ്റിലും -->
                 <div class="flex flex-col items-start overflow-hidden flex-grow px-2">
-                    <span class="text-sm sm:text-base font-black text-amber-300 tracking-wide block leading-tight truncate" data-key="appName">മേസ്തിരി പ്രോ</span>
-                    <span class="text-[9px] sm:text-[10px] font-bold text-amber-400 tracking-wider uppercase block truncate" data-key="appSub">Smart Site Manager</span>
+                    <span class="text-sm sm:text-base font-black text-amber-300 tracking-wide block leading-tight truncate lang" data-key="appName">മേസ്തിരി പ്രോ</span>
+                    <span class="text-[9px] sm:text-[10px] font-bold text-amber-400 tracking-wider uppercase block truncate lang" data-key="appSub">Smart Site Manager</span>
                 </div>
 
                 <!-- 7 ഭാഷകളുള്ള ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ -->
@@ -46,41 +68,72 @@
         </div>
 
         <!-- സ്വാഗത ബോക്സ് -->
-        <div class="flex items-center justify-center bg-gradient-to-r from-blue-900 via-sky-800 to-blue-900 text-cyan-200 px-6 py-2.5 rounded-full border-2 border-cyan-400 shadow-[0_0_20px_rgba(56,189,248,0.4)] w-full text-center font-bold text-sm mb-4">
-            <span data-key="welcomeText">സ്വാഗതം, swaraj</span>
+        <div class="flex items-center justify-center bg-gradient-to-r from-blue-900 via-sky-800 to-blue-900 text-cyan-200 px-6 py-2.5 rounded-full border-2 border-cyan-400 shadow-[0_0_20px_rgba(56,189,248,0.4)] w-full text-center font-bold text-sm">
+            <span class="lang" data-key="welcomeText">സ്വാഗതം, swaraj</span>
         </div>
 
         <!-- ലോഗിൻ ചെയ്ത യൂസർ വിവരം -->
-        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30 mb-4">
-            <p class="text-xs text-purple-300/80 font-bold mb-1" data-key="loggedInUserLabel">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
-            <p class="text-lg font-black text-purple-300">swaraj</p>
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30">
+            <p class="text-xs text-purple-300/80 font-bold mb-1 lang" data-key="loggedInUserLabel">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
+            <p id="loggedInUserName" class="text-lg font-black text-purple-300">swaraj</p>
         </div>
 
         <!-- ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ് സെക്ഷൻ -->
-        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30 mb-4">
-            <h2 class="text-base font-black text-purple-300 mb-1" data-key="backupTitle">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
-            <p class="text-xs text-purple-200/70 mb-3" data-key="backupDesc">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
-            <button class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-3 rounded-xl font-bold text-sm shadow-md hover:brightness-110 transition" data-key="backupBtn">
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30 space-y-3">
+            <h2 class="text-base font-black text-purple-300 lang" data-key="backupTitle">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
+            <p class="text-xs text-purple-200/70 lang" data-key="backupDesc">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
+            <button onclick="window.downloadBackup()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-3 rounded-xl font-bold text-sm shadow-md hover:brightness-110 transition lang" data-key="backupBtn">
                 ബാക്ക്അപ്പ് ഫയൽ ഡൗൺലോഡ് ചെയ്യുക (JSON)
             </button>
         </div>
 
         <!-- ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ സെക്ഷൻ -->
-        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30">
-            <h2 class="text-base font-black text-purple-300 mb-1" data-key="restoreTitle">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
-            <p class="text-xs text-purple-200/70 mb-3" data-key="restoreDesc">മുമ്പ് ഡൗൺലോഡ് ചെയ്ത ബാക്ക്അപ്പ് ഫയൽ (JSON) തിരഞ്ഞെടുത്ത് ഡാറ്റ തിരികെ കൊണ്ടുവരാം.</p>
-            <p class="text-xs font-bold text-purple-300 mb-2" data-key="selectFileLabel">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</p>
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30 space-y-3">
+            <h2 class="text-base font-black text-purple-300 lang" data-key="restoreTitle">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
+            <p class="text-xs text-purple-200/70 lang" data-key="restoreDesc">മുമ്പ് ഡൗൺലോഡ് ചെയ്ത ബാക്ക്അപ്പ് ഫയൽ (JSON) തിരഞ്ഞെടുത്ത് ഡാറ്റ തിരികെ കൊണ്ടുവരാം.</p>
+            <p class="text-xs font-bold text-purple-300 lang" data-key="selectFileLabel">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</p>
             
-            <div class="flex items-center bg-slate-900 p-2.5 rounded-xl border border-purple-500/40 mb-3">
-                <input type="file" class="text-xs text-purple-200 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-purple-600 file:text-white cursor-pointer">
+            <div class="flex items-center bg-slate-900 p-2.5 rounded-xl border border-purple-500/40">
+                <input type="file" id="restoreFile" class="text-xs text-purple-200 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-purple-600 file:text-white cursor-pointer">
             </div>
 
-            <button class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-3 rounded-xl font-black text-sm shadow-md hover:brightness-110 transition" data-key="restoreBtn">
+            <button onclick="window.restoreData()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-3 rounded-xl font-black text-sm shadow-md hover:brightness-110 transition lang" data-key="restoreBtn">
                 ഡാറ്റ റെസ്റ്റോർ ചെയ്യുക
             </button>
         </div>
 
     </div>
 
+    <!-- ജാവസ്ക്രിപ്റ്റ് ഭാഗം (ഭാഷ മാറ്റം കൃത്യമായി പ്രവർത്തിക്കാൻ) -->
+    <script>
+        window.switchLanguage = function(lang) {
+            if (!lang) lang = localStorage.getItem('selectedLang') || 'ml';
+            
+            document.querySelectorAll('.lang').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
+                    el.innerText = words[key][lang];
+                }
+            });
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const userName = localStorage.getItem('userName') || "swaraj";
+            const userEl = document.getElementById('loggedInUserName');
+            if (userEl) userEl.innerText = userName;
+
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            const langDropdown = document.getElementById('langSelectDropdown');
+            if (langDropdown) {
+                langDropdown.value = savedLang;
+                langDropdown.addEventListener('change', (e) => {
+                    const selectedLang = e.target.value;
+                    localStorage.setItem('selectedLang', selectedLang);
+                    window.switchLanguage(selectedLang);
+                });
+            }
+            window.switchLanguage(savedLang);
+        });
+    </script>
 </body>
 </html>
