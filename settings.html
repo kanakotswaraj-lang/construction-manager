@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title class="lang" data-key="backup_restore_title">ബാക്ക്പ്പ് & റെസ്റ്റോർ - മേസ്തിരി പ്രോ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="language.js?v=3.0"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- language.js ഉം header.js ഉം ഇവിടെ ലോഡ് ചെയ്യുന്നു -->
+    <script src="language.js"></script>
+
     <style>
-        body { font-family: 'Manjari', sans-serif; background-color: #050B18; color: white; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; }
         input, select, textarea {
             border: 2px solid rgba(51, 65, 85, 1);
             transition: all 0.3s ease;
@@ -21,101 +24,77 @@
             outline: none;
             box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.2);
         }
-        /* ഹെഡറിലെ ലാംഗ്വേജ് ഡ്രോപ്പ്ഡൗൺ വ്യക്തമായി കാണാൻ */
-        #langSelectDropdown {
-            background-color: #facc15 !important;
-            color: #000000 !important;
-            font-weight: 900 !important;
-        }
-        #langSelectDropdown option {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            font-weight: 900 !important;
-        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- മുകളിൽ ഹെഡർ വരാനുള്ള കണ്ടെയ്നർ -->
+    <div class="w-full max-w-sm mx-auto mb-4">
+        <div id="appHeader" class="w-full"></div>
+    </div>
 
     <!-- മെയിൻ ബോക്സ് -->
-    <div class="bg-slate-900/90 p-5 rounded-3xl shadow-[0_0_35px_rgba(147,51,234,0.4)] w-full max-w-sm border-2 border-purple-500 text-white space-y-4">
+    <div class="w-full max-w-sm bg-slate-900/90 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md space-y-4">
         
-        <!-- ഹെഡർ ഇവിടെ ലോഡ് ചെയ്യും -->
-        <div id="appHeader"></div>
-
         <!-- ലോഗിൻ ചെയ്ത യൂസർ വിവരം -->
-        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30">
-            <p class="text-xs text-purple-300/80 font-bold mb-1 lang" data-key="loggedInUserLabel">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
-            <p id="loggedInUserName" class="text-lg font-black text-purple-300">swaraj</p>
+        <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+            <p data-key="loggedInUserLabel" class="lang text-xs text-amber-300/90 font-semibold mb-1">ലോഗിൻ ചെയ്തിരിക്കുന്ന യൂസർ:</p>
+            <p id="loggedInUserName" class="text-base font-bold text-white">swaraj</p>
         </div>
 
         <!-- ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ് സെക്ഷൻ -->
-        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30 space-y-3">
-            <h2 class="text-base font-black text-purple-300 lang" data-key="backupTitle">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
-            <p class="text-xs text-purple-200/70 lang" data-key="backupDesc">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
-            <button onclick="window.downloadBackup()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-3 rounded-xl font-bold text-sm shadow-md hover:brightness-110 transition lang" data-key="backupBtn">
+        <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3">
+            <h2 data-key="backupTitle" class="lang text-base font-bold text-white">ക്ലൗഡ് ഡാറ്റ ബാക്ക്അപ്പ്</h2>
+            <p data-key="backupDesc" class="lang text-xs text-slate-400">നിങ്ങളുടെ മുഴുവൻ ഹാജറും കണക്കുകളും സുരക്ഷിതമായി ഡൗൺലോഡ് ചെയ്യാം.</p>
+            <button onclick="window.downloadBackup()" data-key="backupBtn" class="lang w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition text-xs cursor-pointer">
                 ബാക്ക്അപ്പ് ഫയൽ ഡൗൺലോഡ് ചെയ്യുക (JSON)
             </button>
         </div>
 
         <!-- ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ സെക്ഷൻ -->
-        <div class="bg-slate-950/80 p-4 rounded-2xl border border-purple-500/30 space-y-3">
-            <h2 class="text-base font-black text-purple-300 lang" data-key="restoreTitle">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
-            <p class="text-xs text-purple-200/70 lang" data-key="restoreDesc">മുമ്പ് ഡൗൺലോഡ് ചെയ്ത ബാക്ക്അപ്പ് ഫയൽ (JSON) തിരഞ്ഞെടുത്ത് ഡാറ്റ തിരികെ കൊണ്ടുവരാം.</p>
-            <p class="text-xs font-bold text-purple-300 lang" data-key="selectFileLabel">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</p>
+        <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3">
+            <h2 data-key="restoreTitle" class="lang text-base font-bold text-white">ക്ലൗഡ് ഡാറ്റ റെസ്റ്റോർ</h2>
+            <p data-key="restoreDesc" class="lang text-xs text-slate-400">മുമ്പ് ഡൗൺലോഡ് ചെയ്ത ബാക്ക്അപ്പ് ഫയൽ (JSON) തിരഞ്ഞെടുത്ത് ഡാറ്റ തിരികെ കൊണ്ടുവരാം.</p>
+            <p data-key="selectFileLabel" class="lang text-xs font-semibold text-amber-300/90">ബാക്ക്അപ്പ് ഫയൽ തിരഞ്ഞെടുക്കുക</p>
             
-            <div class="flex items-center bg-slate-900 p-2.5 rounded-xl border border-purple-500/40">
-                <input type="file" id="restoreFile" class="text-xs text-purple-200 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-purple-600 file:text-white cursor-pointer">
+            <div class="flex items-center bg-slate-900 p-2 rounded-xl border border-slate-700">
+                <input type="file" id="restoreFile" class="text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 cursor-pointer">
             </div>
 
-            <button onclick="window.restoreData()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-3 rounded-xl font-black text-sm shadow-md hover:brightness-110 transition lang" data-key="restoreBtn">
+            <button onclick="window.restoreData()" data-key="restoreBtn" class="lang w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition text-xs cursor-pointer">
                 ഡാറ്റ റെസ്റ്റോർ ചെയ്യുക
             </button>
         </div>
 
     </div>
 
-    <!-- ജാവസ്ക്രിപ്റ്റ് ലോജിക് -->
-        <script type="module">
+    <!-- സ്ക്രിപ്റ്റുകൾ -->
+    <script type="module">
         import { setupHeader } from './header.js';
+
+        // ഹെഡർ ലോഡ് ചെയ്യുന്നു
+        setupHeader('appHeader');
+
+        // ലോഗിൻ പേജിലേതുപോലെ ഭാഷ ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്ന കോഡ്
+        function applySavedLanguage() {
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
+        }
+        window.addEventListener('DOMContentLoaded', applySavedLanguage);
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : localStorage.getItem('selectedLang');
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
+            }
+        });
 
         document.addEventListener("DOMContentLoaded", () => {
             const currentMeshtri = localStorage.getItem('userName') || "swaraj";
             const userEl = document.getElementById('loggedInUserName');
             if (userEl) userEl.innerText = currentMeshtri;
-
-            // ഹെഡർ ലോഡ് ചെയ്യുന്നു
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader', true, currentMeshtri);
-            }
-
-            // നിലവിലെ ഭാഷ എടുക്കുന്നു
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            
-            // ഡ്രോപ്പ്ഡൗൺ വാല്യൂ സെറ്റ് ചെയ്യുന്നു
-            const langDropdown = document.getElementById('langSelectDropdown');
-            if (langDropdown) {
-                langDropdown.value = savedLang;
-            }
-
-            // മറ്റ് പേജുകളിൽ ഉള്ളതുപോലെ data-key ഉള്ള വാക്കുകൾ മാറ്റുന്നു
-            if (typeof words !== 'undefined') {
-                document.querySelectorAll('.lang').forEach(element => {
-                    const key = element.getAttribute('data-key');
-                    if (words[key] && words[key][savedLang]) {
-                        element.innerText = words[key][savedLang];
-                    }
-                });
-            }
         });
-
-        // ഭാഷ മാറ്റുമ്പോൾ ഡ്രോപ്പ്ഡൗണിൽ നിന്ന് കോൾ ചെയ്യുന്ന ഫങ്ഷൻ
-        window.changeLanguageFromDropdown = function(selectedLang) {
-            localStorage.setItem('selectedLang', selectedLang);
-            window.dispatchEvent(new CustomEvent('languageChanged', { detail: selectedLang }));
-            location.reload();
-        };
     </script>
-
-    
 </body>
 </html>
