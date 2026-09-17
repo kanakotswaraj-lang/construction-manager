@@ -265,12 +265,20 @@
                 // കാരി-ഫോർവേഡ് കണക്കുകൂട്ടൽ
     let settlementBalance = meshtriAdvance - selfSpent;
     let carryForward = settlementBalance;
+    // മുകളിൽ ടൈപ്പ് ചെയ്യുന്ന തുകകൾ താഴെ ഡിസ്പ്ലേ കാർഡിലേക്ക് വരാൻ
+    let displayMeshtriGiven = document.getElementById('displayMeshtriGiven');
+    if(displayMeshtriGiven) displayMeshtriGiven.innerText = `₹ ${meshtriAdvance}`;
+
+    let displaySelfSpent = document.getElementById('displaySelfSpent');
+    if(displaySelfSpent) displaySelfSpent.innerText = `₹ ${selfSpent}`;
 
     // സ്ക്രീനിൽ കാണിക്കാൻ (ബാലൻസ് ഡിസ്പ്ലേ എലമെന്റിലേക്ക്)
     let balanceDisplay = document.getElementById('settlementBalanceDisplay');
     if(balanceDisplay) {
         balanceDisplay.innerText = `₹ ${carryForward}`;
+        
     }
+            
 
 
             let totalExpense = pastExpense + todayOtherExp + todayWages + selfSpent;
@@ -617,6 +625,13 @@
                     <span id="grandTotal" class="text-amber-400">₹ 0</span>
                 </div>
             </div>
+            
+<!-- വാട്സാപ്പ് ഷെയർ ബട്ടൺ -->
+<div class="pt-1">
+    <button type="button" onclick="shareSettlementWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg transition flex items-center justify-center gap-1.5 border border-emerald-400/30">
+        💬 സെറ്റിൽമെന്റ് കണക്ക് WhatsApp
+    </button>
+</div>
 
             <!-- വാട്സാപ്പ് ഷെയർ ബട്ടണുകൾ -->
             <div class="grid grid-cols-2 gap-3 pt-1">
