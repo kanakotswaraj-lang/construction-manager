@@ -262,6 +262,16 @@
 
             let meshtriAdvance = parseFloat(document.getElementById('meshtriAdvance').value) || 0;
             let selfSpent = parseFloat(document.getElementById('selfSpent').value) || 0;
+                // കാരി-ഫോർവേഡ് കണക്കുകൂട്ടൽ
+    let settlementBalance = meshtriAdvance - selfSpent;
+    let carryForward = settlementBalance;
+
+    // സ്ക്രീനിൽ കാണിക്കാൻ (ബാലൻസ് ഡിസ്പ്ലേ എലമെന്റിലേക്ക്)
+    let balanceDisplay = document.getElementById('settlementBalanceDisplay');
+    if(balanceDisplay) {
+        balanceDisplay.innerText = `₹ ${carryForward}`;
+    }
+
 
             let totalExpense = pastExpense + todayOtherExp + todayWages + selfSpent;
             let finalIncome = totalIncome + meshtriAdvance;
@@ -557,6 +567,22 @@
                     </div>
                 </div>
             </div>
+            
+<!-- സെറ്റിൽമെന്റ് & കാരി ഫോർവേഡ് കാണിക്കുന്ന കള്ളി -->
+<div class="glass-card p-5 rounded-3xl space-y-3 text-sm border border-amber-500/30">
+    <div class="flex justify-between font-bold text-slate-300">
+        <span>മേസ്തിരി തന്നത് / അഡ്വാൻസ്:</span>
+        <span id="displayMeshtriGiven" class="text-cyan-400">₹ 0</span>
+    </div>
+    <div class="flex justify-between font-bold text-slate-300">
+        <span>കയ്യിൽ നിന്ന് മുടക്കിയത്:</span>
+        <span id="displaySelfSpent" class="text-red-400">₹ 0</span>
+    </div>
+    <div class="flex justify-between font-black text-base border-t border-slate-700/60 pt-3">
+        <span>അടുത്ത ദിവസത്തേക്ക് കാരി-ഫോർവേഡ് (Carry Forward):</span>
+        <span id="settlementBalanceDisplay" class="text-amber-400">₹ 0</span>
+    </div>
+</div>
 
             <!-- മറ്റ് ചെലവുകൾ -->
             <div class="glass-card p-5 rounded-3xl space-y-3.5">
