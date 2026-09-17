@@ -145,27 +145,64 @@
             calculateTotal();
         }
 
-        // മുൻ ദിവസത്തെ ബാലൻസ് ഓട്ടോമാറ്റിക്കായി അഡ്വാൻസിലേക്ക് കൊണ്ടുവരാൻ
-        function loadPreviousBalance() {
-            let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
-            if (!currentSite || allAccountsData.length === 0) return;
+        // ==========================================
+// സൈറ്റ് തിരിച്ചും തീയതി തിരിച്ചും മുൻ ദിവസത്തെ ബാലൻസ് ഓട്ടോമാറ്റിക്കായി കൊണ്ടുവരുന്ന കോഡ്
+// ==========================================
 
-            let siteEntries = allAccountsData.filter(d => (d.site || '').toLowerCase() === currentSite);
-            if (siteEntries.length > 0) {
-                let lastEntry = siteEntries[siteEntries.length - 1];
-                let lastBalance = parseFloat(lastEntry.balance) || 0;
-                
-                const advanceInput = document.getElementById('meshtriAdvance');
-                if (advanceInput) {
-                    advanceInput.value = lastBalance > 0 ? lastBalance : 0;
-                }
-                calculateTotal();
-            }
+function loadPreviousBalance() {
+    let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
+    let currentDate = document.getElementById('entryDate').value;
+    
+    if (!currentSite || !currentDate || typeof allAccountsData === 'undefined' || allAccountsData.length === 0) {
+        return;
+    }
+
+    // 1. ആ സൈറ്റിലെ ഡാറ്റ മാത്രം ഫിൽട്ടർ ചെയ്യുന്നു ഒപ്പം ഇന്നത്തെ തീയതിക്ക് മുമ്പുള്ളവ മാത്രം എടുക്കുന്നു
+    let siteEntries = allAccountsData.filter(d => {
+        let dSite = (d.site || '').toLowerCase();
+        return dSite === currentSite && d.date && d.date < currentDate;
+    });
+
+    if (siteEntries.length > 0) {
+        // തീയതി ക്രമത്തിൽ (Date-wise) സോർട്ട് ചെയ്യുന്നു
+        siteEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        // ഏറ്റവും ഒടുവിലത്തെ (തലേദിവസത്തെ) കണക്കിലെ ബാലൻസ് എടുക്കുന്നു
+        let lastEntry = siteEntries[siteEntries.length - 1];
+        let lastBalance = parseFloat(lastEntry.balance) || 0;
+        
+        // 'മേസ്തിരി അഡ്വാൻസ്' ബോക്സിൽ ആ തുക സെറ്റ് ചെയ്യുന്നു
+        const advanceInput = document.getElementById('meshtriAdvance');
+        if (advanceInput) {
+            advanceInput.value = lastBalance > 0 ? lastBalance : 0;
         }
+    } else {
+        // ആ സൈറ്റിൽ മുമ്പ് കണക്കുകൾ ഒന്നും ഇല്ലെങ്കിൽ അഡ്വാൻസ് 0 ആക്കുന്നു
+        const advanceInput = document.getElementById('meshtriAdvance');
+        if (advanceInput) {
+            advanceInput.value = 0;
+        }
+    }
+    
+    if (typeof calculateTotal === 'function') {
+        calculateTotal();
+    }
+}
 
-        document.getElementById('siteName')?.addEventListener('blur', () => {
-            loadPreviousBalance();
-        });
+// ഇവന്റുകൾ കൃത്യമായി പ്രവർത്തിക്കാൻ
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(loadPreviousBalance, 800);
+});
+
+// തീയതി (Date) മാറ്റുമ്പോഴും ഇത് പ്രവർത്തിക്കും
+document.getElementById('entryDate')?.addEventListener('change', loadPreviousBalance);
+
+// സൈറ്റ് ഡ്രോപ്പ്ഡൗൺ മാറ്റുമ്പോഴും ഇത് പ്രവർത്തിക്കും
+document.getElementById('siteSelectDropdown')?.addEventListener('change', () => {
+    setTimeout(loadPreviousBalance, 300);
+});
+
+document.getElementById('siteName')?.addEventListener('blur', loadPreviousBalance);
 
         function updateAllDropdowns() {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
