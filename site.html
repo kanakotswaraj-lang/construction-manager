@@ -279,7 +279,46 @@
         
     }
             
+        window.calculateTotal = function() {
+            let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
+            let pastIncome = 0;
+            let pastExpense = 0;
 
+            if (currentSite) {
+                allAccountsData.forEach(d => {
+                    if ((d.site || '').toLowerCase() === currentSite) {
+                        if (d.type === 'income') pastIncome += parseFloat(d.amount) || 0;
+                        else pastExpense += parseFloat(d.amount) || 0;
+                    }
+                });
+            }
+
+            let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
+            let totalIncome = pastIncome + todayIncome;
+
+            let todayOtherExp = 0;
+            document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
+
+            let todayWages = 0;
+            document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
+
+            let meshtriAdvance = parseFloat(document.getElementById('meshtriAdvance').value) || 0;
+            let selfSpent = parseFloat(document.getElementById('selfSpent').value) || 0;
+
+            // കാരി-ഫോർവേഡ് കണക്കുകൂട്ടൽ
+            let settlementBalance = meshtriAdvance - selfSpent;
+            let carryForward = settlementBalance;
+
+            let balanceDisplay = document.getElementById('settlementBalanceDisplay');
+            if(balanceDisplay) {
+                balanceDisplay.innerText = `₹ ${carryForward}`;
+            }
+
+            let displayMeshtriGiven = document.getElementById('displayMeshtriGiven');
+            if(displayMeshtriGiven) displayMeshtriGiven.innerText = `₹ ${meshtriAdvance}`;
+
+            let displaySelfSpent = document.getElementById('displaySelfSpent');
+            if(displaySelfSpent) displaySelfSpent.innerText = `₹ ${selfSpent}`;
 
             let totalExpense = pastExpense + todayOtherExp + todayWages + selfSpent;
             let finalIncome = totalIncome + meshtriAdvance;
@@ -289,49 +328,28 @@
             document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
             
             let balanceText = document.getElementById('grandTotal');
-            balanceText.innerText = `₹ ${balance}`;
-            balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+            if(balanceText) {
+                balanceText.innerText = `₹ ${balance}`;
+                balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+            }
         }
 
-        window.shareSiteWhatsApp = function() {
+        // സെറ്റിൽമെന്റ് കണക്ക് വാട്സാപ്പ് ഷെയർ ചെയ്യുവാൻ
+        window.shareSettlementWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
             const entryDate = document.getElementById('entryDate').value;
-            const income = parseFloat(document.getElementById('siteIncome').value) || 0;
             const meshtriAdvance = parseFloat(document.getElementById('meshtriAdvance').value) || 0;
             const selfSpent = parseFloat(document.getElementById('selfSpent').value) || 0;
-            
-            let details = "";
-            let otherExpTotal = 0;
-            
-            document.querySelectorAll('#expenseListContainer > div').forEach(row => {
-                let desc = row.querySelector('.expense-desc').value.trim();
-                let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
-                if (desc && amt > 0) {
-                    details += `➖ ${desc}: ₹ ${amt}\n`;
-                    otherExpTotal += amt;
-                }
-            });
+            let carryForward = meshtriAdvance - selfSpent;
 
-            let wagesTotal = 0;
-            document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
-
-            let totalExp = otherExpTotal + wagesTotal + selfSpent;
-            let totalInc = income + meshtriAdvance;
-            let balance = totalInc - totalExp;
-
-            let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
+            let msg = `📊 *മേസ്തിരി പ്രോ - സെറ്റിൽമെന്റ് കണക്ക്* 📊\n`;
             msg += `📅 തീയതി: ${entryDate}\n`;
             msg += `📍 സൈറ്റ്: ${siteName}\n`;
             msg += `--------------------------------\n`;
-            if (income > 0) msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n`;
-            if (meshtriAdvance > 0) msg += `💵 മേസ്തിരി അഡ്വാൻസ്: ₹ ${meshtriAdvance}\n`;
-            if (selfSpent > 0) msg += `🏷️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n`;
-            
-            msg += `\n💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
-            msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
+            msg += `💵 മേസ്തിരി തന്നത് / അഡ്വാൻസ്: ₹ ${meshtriAdvance}\n`;
+            msg += `🏷️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n`;
             msg += `--------------------------------\n`;
-            msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
-            msg += `💰 ബാലൻസ്: ₹ ${balance}\n`;
+            msg += `🔄 കാരി-ഫോർവേഡ് (Carry Forward): ₹ ${carryForward}\n`;
             msg += `--------------------------------\n`;
             msg += `👤 ${currentMeshtri}`;
 
@@ -628,9 +646,10 @@
             
 <!-- വാട്സാപ്പ് ഷെയർ ബട്ടൺ -->
 <div class="pt-1">
-    <button type="button" onclick="shareSettlementWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg transition flex items-center justify-center gap-1.5 border border-emerald-400/30">
-        💬 സെറ്റിൽമെന്റ് കണക്ക് WhatsApp
-    </button>
+    <button onclick="window.shareSettlementWhatsApp()" data-key="settlementWhatsAppBtn" class="lang ...">
+    സെറ്റിൽമെന്റ് കണക്ക് WhatsApp
+</button>
+
 </div>
 
             <!-- വാട്സാപ്പ് ഷെയർ ബട്ടണുകൾ -->
