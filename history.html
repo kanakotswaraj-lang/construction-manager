@@ -243,28 +243,46 @@
             window.filterAndDisplay();
         }
 
-        window.filterAndDisplay = function() {
-            let queryVal = (document.getElementById('searchHistory')?.value || '').toLowerCase();
-            
-            let filtered = allHistoryData.filter(item => {
-                let dataType = String(item.type || '').toLowerCase();
-                let matchesCategory = true;
+window.filterAndDisplay = function() {
+    let queryVal = (document.getElementById('searchHistory')?.value || '').toLowerCase();
+    
+    // 1. ഫ്രം ഡേറ്റും ടൂ ഡേറ്റും എടുക്കുന്നു (ഇതാണ് പുതിയതായി ചേർത്തത്)
+    let fromDateStr = document.getElementById('fromDate')?.value;
+    let toDateStr = document.getElementById('toDate')?.value;
 
-                if (currentFilter === 'income') {
-                    matchesCategory = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
-                } else if (currentFilter === 'wage') {
-                    matchesCategory = (dataType === 'wage' || dataType === 'കൂലി');
-                } else if (currentFilter === 'expense') {
-                    matchesCategory = (dataType !== 'income' && dataType !== 'varavu' && dataType !== 'വരവ്' && dataType !== 'wage' && dataType !== 'കൂലി');
-                }
+    let fromDate = fromDateStr ? new Date(fromDateStr) : null;
+    if (fromDate) fromDate.setHours(0, 0, 0, 0);
 
-                let searchString = ((item.site || '') + ' ' + (item.name || '') + ' ' + (item.details || '')).toLowerCase();
-                let matchesSearch = searchString.includes(queryVal);
-                return matchesCategory && matchesSearch;
-            });
+    let toDate = toDateStr ? new Date(toDateStr) : null;
+    if (toDate) toDate.setHours(23, 59, 59, 999);
 
-            displayHistory(filtered);
+    let filtered = allHistoryData.filter(item => {
+        // 2. തീയതി കൃത്യമാണോ എന്ന് പരിശോധിക്കുന്നു
+        if (item.date) {
+            let itemDate = new Date(item.date);
+            itemDate.setHours(0, 0, 0, 0);
+            if (fromDate && item.date && itemDate < fromDate) return false;
+            if (toDate && item.date && itemDate > toDate) return false;
         }
+
+        let dataType = String(item.type || '').toLowerCase();
+        let matchesCategory = true;
+
+        if (currentFilter === 'income') {
+            matchesCategory = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
+        } else if (currentFilter === 'wage') {
+            matchesCategory = (dataType === 'wage' || dataType === 'കൂലി');
+        } else if (currentFilter === 'expense') {
+            matchesCategory = (dataType !== 'income' && dataType !== 'varavu' && dataType !== 'വരവ്' && dataType !== 'wage' && dataType !== 'കൂലി');
+        }
+
+        let searchString = ((item.site || '') + ' ' + (item.name || '') + ' ' + (item.details || '')).toLowerCase();
+        let matchesSearch = searchString.includes(queryVal);
+        return matchesCategory && matchesSearch;
+    });
+
+    displayHistory(filtered);
+}
 
         function displayHistory(dataList) {
             const container = document.getElementById('historyListContainer');
