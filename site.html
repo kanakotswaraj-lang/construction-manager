@@ -32,9 +32,6 @@
             if (typeof setupHeader === 'function') {
                 setupHeader('appHeader', true, currentMeshtri);
             }
-            const nameSpan = document.getElementById('loggedInMeshtri');
-            if(nameSpan) nameSpan.innerText = `സ്വാഗതം, ${currentMeshtri}`;
-            
             document.getElementById('entryDate').valueAsDate = new Date();
             
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
@@ -167,10 +164,10 @@
             const amtPh = (currentLang === 'en') ? "Amount" : "തുക";
 
             container.insertAdjacentHTML('beforeend', `
-                <div class="flex gap-2 items-center" id="exp-${expId}">
-                    <input type="text" placeholder="${ph}" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-                    <input type="number" placeholder="${amtPh}" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()">
-                    <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3 py-3 rounded-xl font-bold text-xs">X</button>
+                <div class="flex gap-2 items-center bg-slate-800/40 p-2.5 rounded-2xl border border-slate-700/50" id="exp-${expId}">
+                    <input type="text" placeholder="${ph}" class="expense-desc w-full p-3 bg-slate-900/85 text-white rounded-xl border border-slate-700/60 text-xs font-bold focus:outline-none focus:border-amber-400">
+                    <input type="number" placeholder="${amtPh}" class="expense-amount w-28 p-3 bg-slate-900/85 text-white rounded-xl border border-slate-700/60 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()">
+                    <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white px-3.5 py-3 rounded-xl font-bold text-xs transition">✕</button>
                 </div>
             `);
         }
@@ -186,15 +183,15 @@
             const optionsHTML = registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
 
             container.insertAdjacentHTML('beforeend', `
-                <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2 worker-row" id="row-${rowId}" data-worker="">
-                    <select class="worker-select w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" onchange="updateRowData(this, '${rowId}')" required>
+                <div class="p-3.5 bg-slate-800/40 rounded-2xl border border-slate-700/50 space-y-2.5 worker-row" id="row-${rowId}" data-worker="">
+                    <select class="worker-select w-full p-3 bg-slate-900/85 text-white rounded-xl border border-slate-700/60 text-xs font-bold focus:outline-none focus:border-amber-400" onchange="updateRowData(this, '${rowId}')" required>
                         <option value="">${defaultWorkerText}</option>
                         ${optionsHTML}
                     </select>
                     <div class="flex gap-2">
-                        <input type="text" placeholder="${jobPh}" class="worker-job w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="updateRowData(this, '${rowId}')" required>
-                        <input type="number" placeholder="${wagePh}" class="worker-wage w-32 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()" required>
-                        <button type="button" onclick="document.getElementById('row-${rowId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3.5 py-3 rounded-xl font-bold text-xs">X</button>
+                        <input type="text" placeholder="${jobPh}" class="worker-job w-full p-3 bg-slate-900/85 text-white rounded-xl border border-slate-700/60 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="updateRowData(this, '${rowId}')" required>
+                        <input type="number" placeholder="${wagePh}" class="worker-wage w-28 p-3 bg-slate-900/85 text-white rounded-xl border border-slate-700/60 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()" required>
+                        <button type="button" onclick="document.getElementById('row-${rowId}').remove(); calculateTotal();" class="bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white px-3.5 py-3 rounded-xl font-bold text-xs transition">✕</button>
                     </div>
                 </div>
             `);
@@ -240,12 +237,12 @@
             let todayWages = 0;
             document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
 
+            // പുതിയ ഫീൽഡുകൾ: മേസ്തിരി അഡ്വാൻസ് തുകയും കയ്യിൽ നിന്ന് മുടക്കിയ തുകയും
+            let meshtriAdvance = parseFloat(document.getElementById('meshtriAdvance').value) || 0;
+            let selfSpent = parseFloat(document.getElementById('selfSpent').value) || 0;
+
             let totalExpense = pastExpense + todayOtherExp + todayWages;
             let balance = totalIncome - totalExpense;
-
-            let outOfPocket = parseFloat(document.getElementById('outOfPocketExp').value) || 0;
-            let meshtriGiven = parseFloat(document.getElementById('meshtriGivenAmount').value) || 0;
-            let settlementBalance = meshtriGiven - outOfPocket;
 
             document.getElementById('displayIncome').innerText = `₹ ${totalIncome}`;
             document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
@@ -253,18 +250,14 @@
             let balanceText = document.getElementById('grandTotal');
             balanceText.innerText = `₹ ${balance}`;
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-
-            let settleText = document.getElementById('settlementBalanceDisplay');
-            if(settleText) {
-                settleText.innerText = `₹ ${settlementBalance}`;
-                settleText.className = settlementBalance < 0 ? "text-red-400 font-black text-base" : "text-emerald-400 font-black text-base";
-            }
         }
 
         window.shareSiteWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
             const entryDate = document.getElementById('entryDate').value;
             const income = document.getElementById('siteIncome').value || 0;
+            const meshtriAdvance = document.getElementById('meshtriAdvance').value || 0;
+            const selfSpent = document.getElementById('selfSpent').value || 0;
             
             let details = "";
             let otherExpTotal = 0;
@@ -288,8 +281,10 @@
             msg += `📅 തീയതി: ${entryDate}\n`;
             msg += `📍 സൈറ്റ്: ${siteName}\n`;
             msg += `--------------------------------\n`;
-            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
-            msg += `💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
+            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n`;
+            if(meshtriAdvance > 0) msg += `💵 മേസ്തിരി അഡ്വാൻസ്: ₹ ${meshtriAdvance}\n`;
+            if(selfSpent > 0) msg += `🏷️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n`;
+            msg += `\n💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
             msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
             msg += `--------------------------------\n`;
             msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
@@ -340,60 +335,14 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-                window.shareSettlementWhatsApp = function() {
-            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
-            const entryDate = document.getElementById('entryDate').value;
-            const outOfPocket = parseFloat(document.getElementById('outOfPocketExp').value) || 0;
-            const meshtriGiven = parseFloat(document.getElementById('meshtriGivenAmount').value) || 0;
-            
-            // ആദ്യത്തെ സെറ്റിൽമെന്റ് ബാലൻസ് (ഉദാഹരണത്തിന്: 1000 - 320 = 680)
-            const initialBalance = meshtriGiven - outOfPocket;
-
-            // അന്ന് സൈറ്റിൽ വരുന്ന മറ്റ് ചെലവുകൾ കൂട്ടാൻ
-            let otherExpTotal = 0;
-            document.querySelectorAll('#expenseListContainer > div').forEach(row => {
-                let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
-                otherExpTotal += amt;
-            });
-
-            // തൊഴിലാളികളുടെ കൂലി കൂട്ടാൻ
-            let wagesTotal = 0;
-            document.querySelectorAll('.worker-wage').forEach(input => { 
-                wagesTotal += parseFloat(input.value) || 0; 
-            });
-
-            // ആകെ ചെലവുകൾ
-            const totalExp = otherExpTotal + wagesTotal;
-
-            // മൊത്തം ബാക്കി കണക്ക് (680 - 300 = 380)
-            const finalBalance = initialBalance - totalExp;
-
-            let msg = `🤝 *മേസ്തിരി സെറ്റിൽമെന്റ് കണക്ക്* 🤝\n`;
-            msg += `📅 തീയതി: ${entryDate}\n`;
-            msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `--------------------------------\n`;
-            msg += `💵 മേസ്തിരി തന്ന തുക: ₹ ${meshtriGiven}\n`;
-            msg += `🛒 കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${outOfPocket}\n`;
-            msg += `--------------------------------\n`;
-            msg += `📌 മുൻ ബാക്കി / കിട്ടാനുള്ളത്: ₹ ${initialBalance}\n`;
-            if (totalExp > 0) {
-                msg += `➖ ഇന്നത്തെ ചെലവുകൾ: ₹ ${totalExp}\n`;
-            }
-            msg += `--------------------------------\n`;
-            msg += `💰 മൊത്തം കിട്ടാനുള്ള ബാക്കി തുക: ₹ ${finalBalance}\n`;
-            msg += `--------------------------------\n`;
-            msg += `👤 ${currentMeshtri}`;
-
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-
         window.saveSiteData = async function(event) {
             event.preventDefault();
             const siteName = document.getElementById('siteName').value.trim();
             const entryDate = document.getElementById('entryDate').value;
             const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
             const payerInput = document.getElementById('payerName').value.trim();
+            const meshtriAdvance = parseFloat(document.getElementById('meshtriAdvance').value) || 0;
+            const selfSpent = parseFloat(document.getElementById('selfSpent').value) || 0;
 
             if (!siteName) {
                 showCustomAlert("സൈറ്റിന്റെ പേര് നൽകുക!", "ശ്രദ്ധിക്കുക");
@@ -409,6 +358,32 @@
                         type: "income",
                         payment: "cash",
                         amount: siteIncome,
+                        date: entryDate
+                    });
+                }
+
+                // മേസ്തിരി അഡ്വാൻസ് സേവ് ചെയ്യാൻ
+                if (meshtriAdvance > 0) {
+                    await addDoc(collection(db, "accounts"), {
+                        meshtriOwner: currentMeshtri,
+                        name: "മേസ്തിരി അഡ്വാൻസ് തുക",
+                        site: siteName,
+                        type: "income",
+                        payment: "cash",
+                        amount: meshtriAdvance,
+                        date: entryDate
+                    });
+                }
+
+                // കയ്യിൽ നിന്ന് മുടക്കിയ തുക സേവ് ചെയ്യാൻ
+                if (selfSpent > 0) {
+                    await addDoc(collection(db, "accounts"), {
+                        meshtriOwner: currentMeshtri,
+                        name: "കയ്യിൽ നിന്ന് മുടക്കിയ തുക",
+                        site: siteName,
+                        type: "other",
+                        payment: "cash",
+                        amount: selfSpent,
                         date: entryDate
                     });
                 }
@@ -464,22 +439,30 @@
     </script>
 
     <style>
-        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
+        body { font-family: 'Manjari', sans-serif; background: #070d1d !important; }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
+        }
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
-<body class="text-white min-h-screen pb-12 p-4 font-sans">
+<body class="text-white min-h-screen pb-16 px-3 pt-3 font-sans">
 
+    <!-- ആധുനിക ഗ്ലാസ് മോഡേൺ കണ്ടെയ്നർ -->
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ലോഡ് ആകുന്ന കണ്ടെയ്നർ -->
+        <!-- ഹെഡർ ലോഡ് ആകുന്ന ഡിവിഷൻ -->
         <div id="appHeader" class="w-full"></div>
 
-        <!-- സൈറ്റിന്റെ പേരും തൊട്ടടുത്ത് ഹോം ബട്ടണും -->
-        <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
+        <!-- സൈറ്റിന്റെ പേരും ഹോം ബട്ടണും -->
+        <div class="glass-card p-4 rounded-3xl flex justify-between items-center">
             <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide" data-key="siteDetails">സൈറ്റിന്റെ വിവരങ്ങൾ</h1>
 
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
+            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-2xl text-xs font-black shadow-lg shadow-amber-500/20 transition flex items-center gap-1.5 active:scale-95">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -488,84 +471,74 @@
             </a>
         </div>
 
-        <!-- തിരയുന്ന ഭാഗം -->
-        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
-            <input type="text" id="searchBox" data-key="searchWorker" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+        <!-- സെർച്ച് ബോക്സ് -->
+        <div class="glass-card p-3 rounded-2xl">
+            <input type="text" id="searchBox" data-key="searchWorker" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()" class="w-full p-3.5 bg-slate-900/60 text-white rounded-xl border border-slate-700/50 text-xs font-bold focus:outline-none focus:border-amber-400 transition">
         </div>
 
         <form id="siteForm" onsubmit="saveSiteData(event)" class="space-y-4">
             
-            <!-- സൈറ്റും ക്ലയന്റും -->
-            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-4">
+            <!-- സൈറ്റും ക്ലയന്റും വിവരങ്ങളും -->
+            <div class="glass-card p-5 rounded-3xl space-y-4">
                 <div>
-                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="siteNamePlace">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
-                    <div class="space-y-2">
-                        <select id="siteSelectDropdown" onchange="onSiteSelectChange()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    <label class="block text-xs font-black text-slate-400 mb-2 uppercase tracking-wider" data-key="siteNamePlace">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
+                    <div class="space-y-2.5">
+                        <select id="siteSelectDropdown" onchange="onSiteSelectChange()" class="w-full p-3.5 bg-slate-900/85 text-white rounded-2xl border border-slate-700/60 text-sm font-bold focus:outline-none focus:border-amber-400">
                             <option value="" data-key="newSiteType">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>
                         </select>
-                        <input type="text" id="siteName" required data-key="siteInputPlaceholder" placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                        <input type="text" id="siteName" required data-key="siteInputPlaceholder" placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-900/85 text-white rounded-2xl border border-slate-700/60 text-sm font-bold focus:outline-none focus:border-amber-400">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="payerLabel">പണം തരുന്നയാൾ (Client):</label>
-                    <input type="text" id="payerName" data-key="payerPlaceholder" placeholder="പേര് നൽകുക (ആവശ്യമെങ്കിൽ മാത്രം)" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    <label class="block text-xs font-black text-slate-400 mb-2 uppercase tracking-wider" data-key="payerLabel">പണം തരുന്നയാൾ (Client):</label>
+                    <input type="text" id="payerName" data-key="payerPlaceholder" placeholder="പേര് നൽകുക (ആവശ്യമെങ്കിൽ മാത്രം)" class="w-full p-3.5 bg-slate-900/85 text-white rounded-2xl border border-slate-700/60 text-sm font-bold focus:outline-none focus:border-amber-400">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="dateLabel">തീയതി:</label>
-                        <input type="date" id="entryDate" required class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                        <label class="block text-xs font-black text-slate-400 mb-2 uppercase tracking-wider" data-key="dateLabel">തീയതി:</label>
+                        <input type="date" id="entryDate" required class="w-full p-3.5 bg-slate-900/85 text-white rounded-2xl border border-slate-700/60 text-sm font-bold focus:outline-none focus:border-amber-400">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="incomeLabel">ലഭിച്ച വരവ് (₹):</label>
-                        <input type="number" id="siteIncome" placeholder="0" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                        <label class="block text-xs font-black text-slate-400 mb-2 uppercase tracking-wider" data-key="incomeLabel">ലഭിച്ച വരവ് (₹):</label>
+                        <input type="number" id="siteIncome" placeholder="0" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-900/85 text-white rounded-2xl border border-slate-700/60 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                </div>
+
+                <!-- പുതിയ ഫീൽഡുകൾ: മേസ്തിരി അഡ്വാൻസും കയ്യിൽ നിന്ന് മുടക്കിയ തുകയും -->
+                <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-700/50">
+                    <div>
+                        <label class="block text-xs font-black text-amber-300 mb-2 uppercase tracking-wider">മേസ്തിരി അഡ്വാൻസ് (₹):</label>
+                        <input type="number" id="meshtriAdvance" placeholder="0" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-900/85 text-white rounded-2xl border border-amber-500/40 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-amber-300 mb-2 uppercase tracking-wider">കയ്യിൽ നിന്ന് മുടക്കിയത് (₹):</label>
+                        <input type="number" id="selfSpent" placeholder="0" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-900/85 text-white rounded-2xl border border-amber-500/40 text-sm font-bold focus:outline-none focus:border-amber-400">
                     </div>
                 </div>
             </div>
 
             <!-- മറ്റ് ചെലവുകൾ -->
-            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
-                <h3 class="text-sm font-black text-amber-400" data-key="otherExpenseTitle">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ)</h3>
-                <div id="expenseListContainer" class="space-y-2"></div>
-                <button type="button" onclick="addExpenseRow()" data-key="addExpenseBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
+            <div class="glass-card p-5 rounded-3xl space-y-3.5">
+                <h3 class="text-xs font-black text-amber-400 uppercase tracking-wider" data-key="otherExpenseTitle">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ)</h3>
+                <div id="expenseListContainer" class="space-y-2.5"></div>
+                <button type="button" onclick="addExpenseRow()" data-key="addExpenseBtn" class="w-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 p-3.5 rounded-2xl font-black text-xs transition">+ ചെലവ് ചേർക്കുക</button>
             </div>
 
             <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ -->
-            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
-                <h3 class="text-sm font-black text-amber-400" data-key="workerDetailsTitle">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
+            <div class="glass-card p-5 rounded-3xl space-y-3.5">
+                <h3 class="text-xs font-black text-amber-400 uppercase tracking-wider" data-key="workerDetailsTitle">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
                 <div id="workerListContainer" class="space-y-3"></div>
                 
-                <div class="grid grid-cols-2 gap-2 pt-2">
-                    <button type="button" onclick="addWorkerRow()" data-key="addWorkerBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ തൊഴിലാളിയെ ചേർക്കുക</button>
-                    <a href="staff.html" data-key="addNewPersonBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
+                <div class="grid grid-cols-2 gap-2.5 pt-2">
+                    <button type="button" onclick="addWorkerRow()" data-key="addWorkerBtn" class="w-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 p-3.5 rounded-2xl font-black text-xs transition">+ തൊഴിലാളിയെ ചേർക്കുക</button>
+                    <a href="staff.html" data-key="addNewPersonBtn" class="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/30 p-3.5 rounded-2xl font-black text-xs transition text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
                 </div>
-            </div>
-
-            <!-- മേസ്തിരി സെറ്റിൽമെന്റ് ട്രാക്കർ -->
-            <div class="bg-slate-900/90 p-5 rounded-3xl border border-amber-500/40 shadow-xl space-y-3">
-                <h3 class="text-sm font-black text-amber-400" data-key="settlementTitle">🤝 മേസ്തിരി സെറ്റിൽമെന്റ് കണക്ക് (Settlement)</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-black text-slate-400 mb-1" data-key="meshtriGivenLabel">മേസ്തിരി തന്നത് (₹):</label>
-                        <input type="number" id="meshtriGivenAmount" value="0" oninput="calculateTotal()" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black text-slate-400 mb-1" data-key="outOfPocketLabel">കയ്യിൽ നിന്ന് മുടക്കിയത് (₹):</label>
-                        <input type="number" id="outOfPocketExp" value="0" oninput="calculateTotal()" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-                    </div>
-                </div>
-                <div class="flex justify-between font-black text-sm pt-2 border-t border-slate-800">
-                    <span class="text-slate-300" data-key="settlementBalanceText">കയ്യിലുള്ള ബാലൻസ് / കിട്ടാനുള്ളത്:</span>
-                    <span id="settlementBalanceDisplay" class="text-emerald-400">₹ 0</span>
-                </div>
-                <button type="button" onclick="shareSettlementWhatsApp()" data-key="whatsappSettlementBtn" class="w-full bg-teal-600 hover:bg-teal-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md flex items-center justify-center gap-2">
-                    💬 സെറ്റിൽമെന്റ് കണക്ക് WhatsApp അയക്കുക
-                </button>
             </div>
 
             <!-- സംഗ്രഹം & ലാഭം/നഷ്ടം -->
-            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-2.5 text-sm">
+            <div class="glass-card p-5 rounded-3xl space-y-3 text-sm">
                 <div class="flex justify-between font-bold text-slate-300">
                     <span data-key="totalIncomeText">ആകെ വരവ്:</span>
                     <span id="displayIncome" class="text-cyan-400">₹ 0</span>
@@ -574,36 +547,36 @@
                     <span data-key="totalExpenseText">ആകെ ചെലവ്:</span>
                     <span id="displayExpense" class="text-red-400">₹ 0</span>
                 </div>
-                <div class="flex justify-between font-black text-base border-t border-slate-800 pt-2">
+                <div class="flex justify-between font-black text-base border-t border-slate-700/60 pt-3">
                     <span data-key="balanceText">ബാക്കി തുക / ബാലൻസ് (ലാഭം/നഷ്ടം):</span>
                     <span id="grandTotal" class="text-amber-400">₹ 0</span>
                 </div>
             </div>
 
             <!-- വാട്സാപ്പ് ഷെയർ ബട്ടണുകൾ -->
-            <div class="grid grid-cols-2 gap-2.5 pt-1">
-                <button type="button" onclick="shareSiteWhatsApp()" data-key="whatsappSiteBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg transition flex items-center justify-center gap-1.5 border border-emerald-400/30">
+            <div class="grid grid-cols-2 gap-3 pt-1">
+                <button type="button" onclick="shareSiteWhatsApp()" data-key="whatsappSiteBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-4 rounded-2xl font-black text-xs shadow-lg shadow-emerald-900/30 transition flex items-center justify-center gap-1.5 active:scale-95">
                     💬 സൈറ്റ് കണക്ക് WhatsApp
                 </button>
-                <button type="button" onclick="shareWorkersWhatsApp()" data-key="whatsappWorkersBtn" class="w-full bg-teal-600 hover:bg-teal-700 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg transition flex items-center justify-center gap-1.5 border border-teal-400/30">
+                <button type="button" onclick="shareWorkersWhatsApp()" data-key="whatsappWorkersBtn" class="w-full bg-teal-600 hover:bg-teal-700 text-white p-4 rounded-2xl font-black text-xs shadow-lg shadow-teal-900/30 transition flex items-center justify-center gap-1.5 active:scale-95">
                     👥 തൊഴിലാളി കൂലി WhatsApp
                 </button>
             </div>
 
             <!-- സേവ് ബട്ടൺ -->
-            <button type="submit" data-key="saveAccountBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-base shadow-xl shadow-amber-950/50 border border-white/20 transition">കണക്ക് സേവ് ചെയ്യുക</button>
+            <button type="submit" data-key="saveAccountBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-base shadow-xl shadow-amber-500/20 transition active:scale-95">കണക്ക് സേവ് ചെയ്യുക</button>
         </form>
     </div>
 
     <!-- കസ്റ്റം അലേർട്ട് / മോഡൽ കോഡ് -->
-    <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border-2 border-amber-400/50 rounded-3xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(251,191,36,0.3)] text-center space-y-4">
+    <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-card border border-amber-500/30 rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4">
             <div id="modalIcon" class="text-4xl">⚠️</div>
             <h3 id="modalTitle" class="text-xl font-black text-amber-300">ശ്രദ്ധിക്കുക</h3>
-            <p id="modalMessage" class="text-sm font-bold text-blue-100 leading-relaxed">ഇവിടെ മെസ്സേജ് വരുന്നതായിരിക്കും...</p>
+            <p id="modalMessage" class="text-sm font-bold text-slate-200 leading-relaxed">ഇവിടെ മെസ്സേജ് വരുന്നതായിരിക്കും...</p>
             
             <div class="flex gap-3 pt-2">
-                <button id="modalCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl font-black text-base transition border border-slate-700 hidden">
+                <button id="modalCancelBtn" class="flex-1 bg-slate-800/80 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl font-black text-base transition border border-slate-700 hidden">
                     വേണ്ട
                 </button>
                 <button id="modalOkBtn" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-3 rounded-2xl font-black text-base shadow-lg transition">
