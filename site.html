@@ -340,26 +340,53 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        window.shareSettlementWhatsApp = function() {
+                window.shareSettlementWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
             const entryDate = document.getElementById('entryDate').value;
             const outOfPocket = parseFloat(document.getElementById('outOfPocketExp').value) || 0;
             const meshtriGiven = parseFloat(document.getElementById('meshtriGivenAmount').value) || 0;
-            const settlementBalance = meshtriGiven - outOfPocket;
+            
+            // ആദ്യത്തെ സെറ്റിൽമെന്റ് ബാലൻസ് (ഉദാഹരണത്തിന്: 1000 - 320 = 680)
+            const initialBalance = meshtriGiven - outOfPocket;
+
+            // അന്ന് സൈറ്റിൽ വരുന്ന മറ്റ് ചെലവുകൾ കൂട്ടാൻ
+            let otherExpTotal = 0;
+            document.querySelectorAll('#expenseListContainer > div').forEach(row => {
+                let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
+                otherExpTotal += amt;
+            });
+
+            // തൊഴിലാളികളുടെ കൂലി കൂട്ടാൻ
+            let wagesTotal = 0;
+            document.querySelectorAll('.worker-wage').forEach(input => { 
+                wagesTotal += parseFloat(input.value) || 0; 
+            });
+
+            // ആകെ ചെലവുകൾ
+            const totalExp = otherExpTotal + wagesTotal;
+
+            // മൊത്തം ബാക്കി കണക്ക് (680 - 300 = 380)
+            const finalBalance = initialBalance - totalExp;
 
             let msg = `🤝 *മേസ്തിരി സെറ്റിൽമെന്റ് കണക്ക്* 🤝\n`;
             msg += `📅 തീയതി: ${entryDate}\n`;
             msg += `📍 സൈറ്റ്: ${siteName}\n`;
             msg += `--------------------------------\n`;
             msg += `💵 മേസ്തിരി തന്ന തുക: ₹ ${meshtriGiven}\n`;
-            msg += `🛒 എന്റെ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${outOfPocket}\n`;
+            msg += `🛒 കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${outOfPocket}\n`;
             msg += `--------------------------------\n`;
-            msg += `📌 കൈവശമുള്ള ബാക്കി തുക / കിട്ടാനുള്ളത്: ₹ ${settlementBalance}\n`;
+            msg += `📌 മുൻ ബാക്കി / കിട്ടാനുള്ളത്: ₹ ${initialBalance}\n`;
+            if (totalExp > 0) {
+                msg += `➖ ഇന്നത്തെ ചെലവുകൾ: ₹ ${totalExp}\n`;
+            }
+            msg += `--------------------------------\n`;
+            msg += `💰 മൊത്തം കിട്ടാനുള്ള ബാക്കി തുക: ₹ ${finalBalance}\n`;
             msg += `--------------------------------\n`;
             msg += `👤 ${currentMeshtri}`;
 
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
+
 
         window.saveSiteData = async function(event) {
             event.preventDefault();
