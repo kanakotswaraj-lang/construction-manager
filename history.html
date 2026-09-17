@@ -73,22 +73,23 @@
             </div>
         </div>
 
-        <!-- വാട്സാപ്പ് ഷെയർ & ഡേറ്റ് ഫിൽട്ടർ സെക്ഷൻ -->
+                <!-- വാട്സാപ്പ് ഷെയർ & ഡേറ്റ് ഫിൽട്ടർ സെക്ഷൻ -->
         <div class="bg-slate-900/90 p-4 rounded-3xl shadow-xl border border-slate-800 space-y-3">
             <div class="grid grid-cols-2 gap-2">
                 <div>
                     <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="fromDateLabel">മുതൽ (From Date)</label>
-                    <input type="date" id="historyFromDate" class="w-full p-2.5 bg-slate-800 rounded-xl text-xs">
+                    <input type="date" id="historyFromDate" onchange="window.filterAndDisplay()" class="w-full p-2.5 bg-slate-800 rounded-xl text-xs">
                 </div>
                 <div>
                     <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="toDateLabel">വരെ (To Date)</label>
-                    <input type="date" id="historyToDate" class="w-full p-2.5 bg-slate-800 rounded-xl text-xs">
+                    <input type="date" id="historyToDate" onchange="window.filterAndDisplay()" class="w-full p-2.5 bg-slate-800 rounded-xl text-xs">
                 </div>
             </div>
             <button onclick="window.sendCurrentHistoryToWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black py-3 rounded-2xl text-xs shadow-lg transition flex items-center justify-center gap-2">
                 <span>📱</span> <span class="lang" data-key="sendWhatsAppBtn">ഈ കണക്കുകൾ WhatsApp അയക്കുക</span>
             </button>
         </div>
+
 
         <!-- കണക്കുകൾ മുഴുവൻ ലിസ്റ്റ് ചെയ്യുന്ന സ്ഥലം -->
         <div id="historyListContainer" class="space-y-3">
@@ -243,39 +244,39 @@
             window.filterAndDisplay();
         }
 
-window.filterAndDisplay = function() {
-    let queryVal = (document.getElementById('searchHistory')?.value || '').toLowerCase();
-    
-    let fromDateStr = document.getElementById('fromDate')?.value;
-    let toDateStr = document.getElementById('toDate')?.value;
+        window.filterAndDisplay = function() {
+            let queryVal = (document.getElementById('searchHistory')?.value || '').toLowerCase();
+            
+            let fromDateStr = document.getElementById('historyFromDate')?.value;
+            let toDateStr = document.getElementById('historyToDate')?.value;
 
-    let filtered = allHistoryData.filter(item => {
-        // തീയതി ഫിൽട്ടറിംഗ് കൃത്യമായി നടക്കാൻ
-        if (fromDateStr && item.date) {
-            if (item.date < fromDateStr) return false;
+            let filtered = allHistoryData.filter(item => {
+                // തീയതി ഫിൽട്ടറിംഗ് കൃത്യമായി നടക്കാൻ
+                if (fromDateStr && item.date) {
+                    if (item.date < fromDateStr) return false;
+                }
+                if (toDateStr && item.date) {
+                    if (item.date > toDateStr) return false;
+                }
+
+                let dataType = String(item.type || '').toLowerCase();
+                let matchesCategory = true;
+
+                if (currentFilter === 'income') {
+                    matchesCategory = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
+                } else if (currentFilter === 'wage') {
+                    matchesCategory = (dataType === 'wage' || dataType === 'കൂലി');
+                } else if (currentFilter === 'expense') {
+                    matchesCategory = (dataType !== 'income' && dataType !== 'varavu' && dataType !== 'വരവ്' && dataType !== 'wage' && dataType !== 'കൂലി');
+                }
+
+                let searchString = ((item.site || '') + ' ' + (item.name || '') + ' ' + (item.details || '')).toLowerCase();
+                let matchesSearch = searchString.includes(queryVal);
+                return matchesCategory && matchesSearch;
+            });
+
+            displayHistory(filtered);
         }
-        if (toDateStr && item.date) {
-            if (item.date > toDateStr) return false;
-        }
-
-        let dataType = String(item.type || '').toLowerCase();
-        let matchesCategory = true;
-
-        if (currentFilter === 'income') {
-            matchesCategory = (dataType === 'income' || dataType === 'varavu' || dataType === 'വരവ്');
-        } else if (currentFilter === 'wage') {
-            matchesCategory = (dataType === 'wage' || dataType === 'കൂലി');
-        } else if (currentFilter === 'expense') {
-            matchesCategory = (dataType !== 'income' && dataType !== 'varavu' && dataType !== 'വരവ്' && dataType !== 'wage' && dataType !== 'കൂലി');
-        }
-
-        let searchString = ((item.site || '') + ' ' + (item.name || '') + ' ' + (item.details || '')).toLowerCase();
-        let matchesSearch = searchString.includes(queryVal);
-        return matchesCategory && matchesSearch;
-    });
-
-    displayHistory(filtered);
-}
 
         function displayHistory(dataList) {
             const container = document.getElementById('historyListContainer');
