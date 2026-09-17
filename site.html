@@ -141,8 +141,31 @@
                 siteInput.readOnly = false;
                 siteInput.classList.remove('opacity-60');
             }
+            loadPreviousBalance();
             calculateTotal();
         }
+
+        // മുൻ ദിവസത്തെ ബാലൻസ് ഓട്ടോമാറ്റിക്കായി അഡ്വാൻസിലേക്ക് കൊണ്ടുവരാൻ
+        function loadPreviousBalance() {
+            let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
+            if (!currentSite || allAccountsData.length === 0) return;
+
+            let siteEntries = allAccountsData.filter(d => (d.site || '').toLowerCase() === currentSite);
+            if (siteEntries.length > 0) {
+                let lastEntry = siteEntries[siteEntries.length - 1];
+                let lastBalance = parseFloat(lastEntry.balance) || 0;
+                
+                const advanceInput = document.getElementById('meshtriAdvance');
+                if (advanceInput) {
+                    advanceInput.value = lastBalance > 0 ? lastBalance : 0;
+                }
+                calculateTotal();
+            }
+        }
+
+        document.getElementById('siteName')?.addEventListener('blur', () => {
+            loadPreviousBalance();
+        });
 
         function updateAllDropdowns() {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
@@ -237,14 +260,10 @@
             let todayWages = 0;
             document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
 
-            // മേസ്തിരി അഡ്വാൻസ് തുകയും കയ്യിൽ നിന്ന് മുടക്കിയ തുകയും
             let meshtriAdvance = parseFloat(document.getElementById('meshtriAdvance').value) || 0;
             let selfSpent = parseFloat(document.getElementById('selfSpent').value) || 0;
 
-            // ആകെ ചെലവുകൾ (മറ്റ് ചെലവുകൾ + കൂലി + കയ്യിൽ നിന്ന് മുടക്കിയത്)
             let totalExpense = pastExpense + todayOtherExp + todayWages + selfSpent;
-            
-            // ആകെ വരവിലേക്ക് അഡ്വാൻസ് കൂടി ചേർക്കുന്നു
             let finalIncome = totalIncome + meshtriAdvance;
             let balance = finalIncome - totalExpense;
 
@@ -368,7 +387,6 @@
                     });
                 }
 
-                // മേസ്തിരി അഡ്വാൻസ് സേവ് ചെയ്യാൻ
                 if (meshtriAdvance > 0) {
                     await addDoc(collection(db, "accounts"), {
                         meshtriOwner: currentMeshtri,
@@ -381,7 +399,6 @@
                     });
                 }
 
-                // കയ്യിൽ നിന്ന് മുടക്കിയ തുക സേവ് ചെയ്യാൻ
                 if (selfSpent > 0) {
                     await addDoc(collection(db, "accounts"), {
                         meshtriOwner: currentMeshtri,
@@ -454,22 +471,20 @@
             box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
         }
         @media print { .no-print { display: none !important; } }
-        /* സൈറ്റ് വിവരങ്ങൾ കാണിക്കുന്ന ഔട്ടർ ബോക്സ് ഡിസൈൻ */
-.site-card {
-    background: #111827;
-    border: 2px solid #F59E0B;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1), 0 2px 4px -1px rgba(245, 158, 11, 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.site-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2);
-}
-
+        
+        .site-card {
+            background: #111827;
+            border: 2px solid #F59E0B;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1), 0 2px 4px -1px rgba(245, 158, 11, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .site-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2);
+        }
     </style>
 </head>
 <body class="text-white min-h-screen pb-16 px-3 pt-3 font-sans">
@@ -482,18 +497,17 @@
 
         <!-- സൈറ്റിന്റെ പേരും ഹോം ബട്ടണും -->
         <div class="site-card">
-    
+            <div class="flex justify-between items-center">
+                <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide" data-key="siteDetails">സൈറ്റിന്റെ വിവരങ്ങൾ</h1>
 
-        <div class="glass-card p-4 rounded-3xl flex justify-between items-center">
-            <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide" data-key="siteDetails">സൈറ്റിന്റെ വിവരങ്ങൾ</h1>
-
-            <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-2xl text-xs font-black shadow-lg shadow-amber-500/20 transition flex items-center gap-1.5 active:scale-95">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                <span data-key="home">Home</span>
-            </a>
+                <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-2xl text-xs font-black shadow-lg shadow-amber-500/20 transition flex items-center gap-1.5 active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span data-key="home">Home</span>
+                </a>
+            </div>
         </div>
 
         <!-- സെർച്ച് ബോക്സ് -->
