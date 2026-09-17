@@ -246,23 +246,16 @@
 window.filterAndDisplay = function() {
     let queryVal = (document.getElementById('searchHistory')?.value || '').toLowerCase();
     
-    // 1. ഫ്രം ഡേറ്റും ടൂ ഡേറ്റും എടുക്കുന്നു (ഇതാണ് പുതിയതായി ചേർത്തത്)
     let fromDateStr = document.getElementById('fromDate')?.value;
     let toDateStr = document.getElementById('toDate')?.value;
 
-    let fromDate = fromDateStr ? new Date(fromDateStr) : null;
-    if (fromDate) fromDate.setHours(0, 0, 0, 0);
-
-    let toDate = toDateStr ? new Date(toDateStr) : null;
-    if (toDate) toDate.setHours(23, 59, 59, 999);
-
     let filtered = allHistoryData.filter(item => {
-        // 2. തീയതി കൃത്യമാണോ എന്ന് പരിശോധിക്കുന്നു
-        if (item.date) {
-            let itemDate = new Date(item.date);
-            itemDate.setHours(0, 0, 0, 0);
-            if (fromDate && item.date && itemDate < fromDate) return false;
-            if (toDate && item.date && itemDate > toDate) return false;
+        // തീയതി ഫിൽട്ടറിംഗ് കൃത്യമായി നടക്കാൻ
+        if (fromDateStr && item.date) {
+            if (item.date < fromDateStr) return false;
+        }
+        if (toDateStr && item.date) {
+            if (item.date > toDateStr) return false;
         }
 
         let dataType = String(item.type || '').toLowerCase();
