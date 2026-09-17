@@ -313,6 +313,28 @@
 
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         };
+        
+        // സൈറ്റ് കണക്ക് വാട്സാപ്പ് ഷെയർ ചെയ്യുവാൻ
+        window.shareSiteWhatsApp = function() {
+            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
+            const entryDate = document.getElementById('entryDate').value;
+            const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
+            const totalIncome = document.getElementById('displayIncome').innerText;
+            const totalExpense = document.getElementById('displayExpense').innerText;
+            const grandTotal = document.getElementById('grandTotal').innerText;
+
+            let msg = `📊 *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 📊\n`;
+            msg += `📅 തീയതി: ${entryDate}\n`;
+            msg += `📍 സൈറ്റ്: ${siteName}\n`;
+            msg += `--------------------------------\n`;
+            msg += `💰 ആകെ വരവ്: ${totalIncome}\n`;
+            msg += `💸 ആകെ ചെലവ്: ${totalExpense}\n`;
+            msg += `⚖️ ബാലൻസ് (ലാഭം/നഷ്ടം): ${grandTotal}\n`;
+            msg += `--------------------------------\n`;
+            msg += `👤 ${currentMeshtri}`;
+
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        };
 
         window.shareWorkersWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
