@@ -37,14 +37,12 @@
             
             document.getElementById('entryDate').valueAsDate = new Date();
             
-            // പേജ് ലോഡ് ചെയ്യുമ്പോൾ നിലവിലുള്ള ഭാഷ സെറ്റ് ചെയ്യുക
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             changePageLanguage(savedLang);
 
             fetchData();
         });
 
-        // ഭാഷ മാറ്റുമ്പോൾ പേജിലെ വാക്കുകൾ മാറുന്ന ഫങ്ഷൻ
         window.changePageLanguage = function(lang) {
             localStorage.setItem('selectedLang', lang);
             if (typeof words === 'undefined') return;
@@ -61,7 +59,6 @@
             });
         }
 
-        // കസ്റ്റം അലേർട്ട് ഫംഗ്ഷൻ
         function showCustomAlert(message, title = "ശ്രദ്ധിക്കുക", isConfirm = false, onConfirm = null) {
             const modal = document.getElementById('customModal');
             const modalTitle = document.getElementById('modalTitle');
@@ -246,12 +243,22 @@
             let totalExpense = pastExpense + todayOtherExp + todayWages;
             let balance = totalIncome - totalExpense;
 
+            let outOfPocket = parseFloat(document.getElementById('outOfPocketExp').value) || 0;
+            let meshtriGiven = parseFloat(document.getElementById('meshtriGivenAmount').value) || 0;
+            let settlementBalance = meshtriGiven - outOfPocket;
+
             document.getElementById('displayIncome').innerText = `₹ ${totalIncome}`;
             document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
             
             let balanceText = document.getElementById('grandTotal');
             balanceText.innerText = `₹ ${balance}`;
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+
+            let settleText = document.getElementById('settlementBalanceDisplay');
+            if(settleText) {
+                settleText.innerText = `₹ ${settlementBalance}`;
+                settleText.className = settlementBalance < 0 ? "text-red-400 font-black text-base" : "text-emerald-400 font-black text-base";
+            }
         }
 
         window.shareSiteWhatsApp = function() {
@@ -332,6 +339,27 @@
 
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         };
+
+        window.shareSettlementWhatsApp = function() {
+            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
+            const entryDate = document.getElementById('entryDate').value;
+            const outOfPocket = parseFloat(document.getElementById('outOfPocketExp').value) || 0;
+            const meshtriGiven = parseFloat(document.getElementById('meshtriGivenAmount').value) || 0;
+            const settlementBalance = meshtriGiven - outOfPocket;
+
+            let msg = `🤝 *മേസ്തിരി സെറ്റിൽമെന്റ് കണക്ക്* 🤝\n`;
+            msg += `📅 തീയതി: ${entryDate}\n`;
+            msg += `📍 സൈറ്റ്: ${siteName}\n`;
+            msg += `--------------------------------\n`;
+            msg += `💵 മേസ്തിരി തന്ന തുക: ₹ ${meshtriGiven}\n`;
+            msg += `🛒 എന്റെ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${outOfPocket}\n`;
+            msg += `--------------------------------\n`;
+            msg += `📌 കൈവശമുള്ള ബാക്കി തുക / കിട്ടാനുള്ളത്: ₹ ${settlementBalance}\n`;
+            msg += `--------------------------------\n`;
+            msg += `👤 ${currentMeshtri}`;
+
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        }
 
         window.saveSiteData = async function(event) {
             event.preventDefault();
@@ -485,6 +513,28 @@
                     <button type="button" onclick="addWorkerRow()" data-key="addWorkerBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ തൊഴിലാളിയെ ചേർക്കുക</button>
                     <a href="staff.html" data-key="addNewPersonBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
                 </div>
+            </div>
+
+            <!-- മേസ്തിരി സെറ്റിൽമെന്റ് ട്രാക്കർ -->
+            <div class="bg-slate-900/90 p-5 rounded-3xl border border-amber-500/40 shadow-xl space-y-3">
+                <h3 class="text-sm font-black text-amber-400" data-key="settlementTitle">🤝 മേസ്തിരി സെറ്റിൽമെന്റ് കണക്ക് (Settlement)</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 mb-1" data-key="meshtriGivenLabel">മേസ്തിരി തന്നത് (₹):</label>
+                        <input type="number" id="meshtriGivenAmount" value="0" oninput="calculateTotal()" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 mb-1" data-key="outOfPocketLabel">കയ്യിൽ നിന്ന് മുടക്കിയത് (₹):</label>
+                        <input type="number" id="outOfPocketExp" value="0" oninput="calculateTotal()" class="w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                </div>
+                <div class="flex justify-between font-black text-sm pt-2 border-t border-slate-800">
+                    <span class="text-slate-300" data-key="settlementBalanceText">കയ്യിലുള്ള ബാലൻസ് / കിട്ടാനുള്ളത്:</span>
+                    <span id="settlementBalanceDisplay" class="text-emerald-400">₹ 0</span>
+                </div>
+                <button type="button" onclick="shareSettlementWhatsApp()" data-key="whatsappSettlementBtn" class="w-full bg-teal-600 hover:bg-teal-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md flex items-center justify-center gap-2">
+                    💬 സെറ്റിൽമെന്റ് കണക്ക് WhatsApp അയക്കുക
+                </button>
             </div>
 
             <!-- സംഗ്രഹം & ലാഭം/നഷ്ടം -->
