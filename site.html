@@ -213,7 +213,6 @@
                 row.style.display = data.includes(queryVal) ? '' : 'none';
             });
         }
-
         window.calculateTotal = function() {
             let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
             let pastIncome = 0;
@@ -229,7 +228,10 @@
             }
 
             let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-            let totalIncome = pastIncome + todayIncome;
+            let meshtriAdvance = parseFloat(document.getElementById('meshtriAdvance').value) || 0;
+            
+            // ആകെ വരവ്: പഴയ വരവ് + ഇന്നത്തെ വരവ് + മേസ്തിരി അഡ്വാൻസ്
+            let totalIncome = pastIncome + todayIncome + meshtriAdvance;
 
             let todayOtherExp = 0;
             document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
@@ -237,11 +239,10 @@
             let todayWages = 0;
             document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
 
-            // പുതിയ ഫീൽഡുകൾ: മേസ്തിരി അഡ്വാൻസ് തുകയും കയ്യിൽ നിന്ന് മുടക്കിയ തുകയും
-            let meshtriAdvance = parseFloat(document.getElementById('meshtriAdvance').value) || 0;
             let selfSpent = parseFloat(document.getElementById('selfSpent').value) || 0;
 
-            let totalExpense = pastExpense + todayOtherExp + todayWages;
+            // ആകെ ചെലവ്: പഴയ ചെലവ് + മറ്റ് ചെലവുകൾ + തൊഴിലാളി കൂലി + കയ്യിൽ നിന്ന് മുടക്കിയത്
+            let totalExpense = pastExpense + todayOtherExp + todayWages + selfSpent;
             let balance = totalIncome - totalExpense;
 
             document.getElementById('displayIncome').innerText = `₹ ${totalIncome}`;
@@ -255,9 +256,9 @@
         window.shareSiteWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
             const entryDate = document.getElementById('entryDate').value;
-            const income = document.getElementById('siteIncome').value || 0;
-            const meshtriAdvance = document.getElementById('meshtriAdvance').value || 0;
-            const selfSpent = document.getElementById('selfSpent').value || 0;
+            const income = parseFloat(document.getElementById('siteIncome').value) || 0;
+            const meshtriAdvance = parseFloat(document.getElementById('meshtriAdvance').value) || 0;
+            const selfSpent = parseFloat(document.getElementById('selfSpent').value) || 0;
             
             let details = "";
             let otherExpTotal = 0;
@@ -274,16 +275,18 @@
             let wagesTotal = 0;
             document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
 
-            let totalExp = otherExpTotal + wagesTotal;
-            let balance = income - totalExp;
+            let totalExp = otherExpTotal + wagesTotal + selfSpent;
+            let totalInc = income + meshtriAdvance;
+            let balance = totalInc - totalExp;
 
             let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
             msg += `📅 തീയതി: ${entryDate}\n`;
             msg += `📍 സൈറ്റ്: ${siteName}\n`;
             msg += `--------------------------------\n`;
-            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n`;
-            if(meshtriAdvance > 0) msg += `💵 മേസ്തിരി അഡ്വാൻസ്: ₹ ${meshtriAdvance}\n`;
-            if(selfSpent > 0) msg += `🏷️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n`;
+            if (income > 0) msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n`;
+            if (meshtriAdvance > 0) msg += `💵 മേസ്തിരി അഡ്വാൻസ്: ₹ ${meshtriAdvance}\n`;
+            if (selfSpent > 0) msg += `🏷️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n`;
+            
             msg += `\n💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
             msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
             msg += `--------------------------------\n`;
@@ -448,6 +451,22 @@
             box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
         }
         @media print { .no-print { display: none !important; } }
+        /* സൈറ്റ് വിവരങ്ങൾ കാണിക്കുന്ന ഔട്ടർ ബോക്സ് ഡിസൈൻ */
+.site-card {
+    background: #111827;
+    border: 2px solid #F59E0B;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1), 0 2px 4px -1px rgba(245, 158, 11, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.site-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2);
+}
+
     </style>
 </head>
 <body class="text-white min-h-screen pb-16 px-3 pt-3 font-sans">
@@ -459,6 +478,19 @@
         <div id="appHeader" class="w-full"></div>
 
         <!-- സൈറ്റിന്റെ പേരും ഹോം ബട്ടണും -->
+        <div class="site-card">
+    <div class="flex justify-between items-center mb-2">
+        <h3 class="text-amber-400 font-bold text-lg">📍 പൂവത്തിങ്കീഴിൽ</h3>
+        <span class="text-gray-400 text-sm">📅 2026-09-17</span>
+    </div>
+    
+    <div class="text-gray-300 text-sm space-y-1">
+        <p>💰 ആകെ വരവ്: ₹ 0</p>
+        <p>💸 ആകെ ചെലവ്: ₹ 200</p>
+        <p class="font-bold text-amber-500">💰 ബാലൻസ്: ₹ -200</p>
+    </div>
+</div>
+
         <div class="glass-card p-4 rounded-3xl flex justify-between items-center">
             <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide" data-key="siteDetails">സൈറ്റിന്റെ വിവരങ്ങൾ</h1>
 
