@@ -264,14 +264,18 @@ window.calculateTotal = function() {
     // മുൻ ദിവസങ്ങളിലെ ബാക്കി തുക (Carry Forward Balance) കണ്ടെത്തുന്നു
     let carryForwardBalance = pastIncome - pastExpense;
 
-    // സെറ്റിൽമെന്റ് ബോക്സിലെ ഇൻപുട്ടിലേക്ക് ഇത് ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു (നെഗറ്റീവ് ആണെങ്കിൽ 0 കൊടുക്കാം അല്ലെങ്കിൽ ഉള്ളത് എടുക്കാം)
+    // സെറ്റിൽമെന്റ് ബോക്സിലെ 'മേസ്തിരി തന്നത് (Advance)' ഫീൽഡിലേക്ക് മുൻ ദിവസത്തെ ബാക്കി ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
     let settleAdvanceInput = document.getElementById('settleAdvance');
-    if (settleAdvanceInput && carryForwardBalance > 0 && settleAdvanceInput.value == "0") {
-        settleAdvanceInput.value = carryForwardBalance;
+    if (settleAdvanceInput) {
+        // ഉപയോക്താവ് മാനുവലായി മാറ്റാത്ത പക്ഷം അല്ലെങ്കിൽ തുടക്കത്തിൽ മുൻ ബാലൻസ് നൽകുന്നു
+        if (carryForwardBalance !== 0 && (settleAdvanceInput.value === "" || settleAdvanceInput.value === "0" || settleAdvanceInput.dataset.auto === "true")) {
+            settleAdvanceInput.value = carryForwardBalance > 0 ? carryForwardBalance : 0;
+            settleAdvanceInput.dataset.auto = "true";
+        }
     }
 
     let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-    let meshtriAdvance = parseFloat(settleAdvanceInput.value) || 0;
+    let meshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
     let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
 
     let settlementBalance = meshtriAdvance - selfSpent;
@@ -290,13 +294,19 @@ window.calculateTotal = function() {
     let finalIncome = pastIncome + todayIncome + meshtriAdvance;
     let balance = finalIncome - totalExpense;
 
-    document.getElementById('displayIncome').innerText = `₹ ${finalIncome}`;
-    document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
+    let displayIncElem = document.getElementById('displayIncome');
+    if(displayIncElem) displayIncElem.innerText = `₹ ${finalIncome}`;
+
+    let displayExpElem = document.getElementById('displayExpense');
+    if(displayExpElem) displayExpElem.innerText = `₹ ${totalExpense}`;
     
     let balanceText = document.getElementById('grandTotal');
-    balanceText.innerText = `₹ ${balance}`;
-    balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+    if(balanceText) {
+        balanceText.innerText = `₹ ${balance}`;
+        balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+    }
 }
+
 
         // സെറ്റിൽമെന്റ് കണക്ക് വാട്സാപ്പിൽ അയക്കാൻ
         window.sendSettlementWhatsApp = function() {
