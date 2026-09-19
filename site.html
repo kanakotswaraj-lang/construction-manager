@@ -223,32 +223,35 @@
             });
         }
 
-        window.calculateTotal = function() {
+        
+window.calculateTotal = function() {
     let currentSite = document.getElementById('siteName')?.value.trim().toLowerCase();
-    let currentDate = document.getElementById('entryDate')?.value; // നിലവിലെ തീയതി എടുക്കാൻ
+    let currentDate = document.getElementById('entryDate')?.value;
     
     let pastIncome = 0;
     let pastExpense = 0;
-    let todayIncome = 0;
+    let todayIncome = parseFloat(document.getElementById('siteIncome')?.value) || 0;
     let todayOtherExp = 0;
     let todayWages = 0;
 
+    // മുൻ ദിവസങ്ങളിലെ കണക്കുകൾ പരിശോധിക്കുന്നു
     if (currentSite && window.allAccountsData) {
         window.allAccountsData.forEach(d => {
-            if ((d.site || '').toLowerCase() === currentSite) {
+            let dSite = (d.site || '').trim().toLowerCase();
+            if (dSite === currentSite) {
                 let dDate = d.date || '';
                 let amount = parseFloat(d.amount) || 0;
 
-                // മുൻ ദിവസങ്ങളിലെ കണക്കുകൾ (Carry Forward)
+                // തീയതി പരിശോധന (മുൻ ദിവസങ്ങൾ)
                 if (currentDate && dDate < currentDate) {
                     if (d.type === 'income' || d.type === 'advance') {
                         pastIncome += amount;
-                    } else if (d.type === 'expense' || d.type === 'settlement' || d.type === 'selfSpent') {
+                    } else if (d.type === 'expense' || d.type === 'settlement' || d.type === 'selfSpent' || d.type === 'wage' || d.type === 'other') {
                         pastExpense += amount;
                     }
                 } 
-                // ഇന്നത്തെ ദിവസത്തെ കണക്കുകൾ
-                else if (!currentDate || dDate === currentDate) {
+                // ഇന്നത്തെ ദിവസത്തെ ഡാറ്റ ഡാറ്റാബേസിൽ ഉണ്ടെങ്കിൽ
+                else if (currentDate && dDate === currentDate) {
                     if (d.type === 'income' || d.type === 'advance') {
                         todayIncome += amount;
                     }
@@ -257,22 +260,22 @@
         });
     }
 
-    // ഇന്നത്തെ മറ്റ് ചെലവുകളും കൂലിയും കണക്കാക്കുന്നു
+    // ഇന്നത്തെ മറ്റ് ചെലവുകൾ കൂട്ടുന്നു
     document.querySelectorAll('.expense-amount').forEach(input => {
         todayOtherExp += parseFloat(input.value) || 0;
     });
 
+    // ഇന്നത്തെ തൊഴിലാളി കൂലി കൂട്ടുന്നു
     document.querySelectorAll('.worker-wage').forEach(input => {
         todayWages += parseFloat(input.value) || 0;
     });
 
-    // ആകെ വരവും ചെലവും ബാലൻസും കണക്കാക്കുന്നു
     let totalIncome = pastIncome + todayIncome;
     let todayTotalExp = todayOtherExp + todayWages;
     let totalExpense = pastExpense + todayTotalExp;
     let balance = totalIncome - totalExpense;
 
-    // സ്ക്രീനിൽ ഡിസ്പ്ലേ ചെയ്യുന്ന ഭാഗം
+    // സ്ക്രീനിൽ വിലകൾ അപ്ഡേറ്റ് ചെയ്യുന്നു
     let displayInc = document.getElementById('displayIncome');
     if (displayInc) displayInc.innerText = `₹ ${totalIncome}`;
 
@@ -485,6 +488,16 @@
                 showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
             }
         };
+        document.getElementById('siteSelectDropdown')?.addEventListener('change', (e) => {
+    let siteNameInput = document.getElementById('siteName');
+    if(siteNameInput) {
+        siteNameInput.value = e.target.value;
+    }
+    if(typeof calculateTotal === 'function') {
+        calculateTotal();
+    }
+});
+
     </script>
 
     <style>
