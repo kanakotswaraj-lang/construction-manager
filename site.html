@@ -289,46 +289,76 @@ window.calculateTotal = function() {
     if (balanceText) {
         balanceText.innerText = `₹ ${balance}`;
         balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-emerald-400 font-black text-base";
-    }
 
-    if (typeof calculateSettlement === 'function') {
-        calculateSettlement();
-    }
-}
 
-    // ഇന്നത്തെ മറ്റ് ചെലവുകൾ കൂട്ടുന്നു
-    document.querySelectorAll('.expense-amount').forEach(input => {
-        todayOtherExp += parseFloat(input.value) || 0;
-    });
+        window.calculateTotal = function() {
+            let currentSite = document.getElementById('siteName')?.value.trim().toLowerCase();
+            let currentDate = document.getElementById('entryDate')?.value;
+            
+            let pastIncome = 0;
+            let pastExpense = 0;
+            let todayIncome = parseFloat(document.getElementById('siteIncome')?.value) || 0;
+            let todayOtherExp = 0;
+            let todayWages = 0;
 
-    // ഇന്നത്തെ തൊഴിലാളി കൂലി കൂട്ടുന്നു
-    document.querySelectorAll('.worker-wage').forEach(input => {
-        todayWages += parseFloat(input.value) || 0;
-    });
+            // മുൻ ദിവസങ്ങളിലെ കണക്കുകൾ പരിശോധിക്കുന്നു (Carry Forward / Past data)
+            if (window.allAccountsData) {
+                window.allAccountsData.forEach(d => {
+                    let dSite = (d.site || '').trim().toLowerCase();
+                    
+                    if (!currentSite || dSite === currentSite || dSite.includes(currentSite) || currentSite.includes(dSite)) {
+                        let dDate = d.date || '';
+                        let amount = parseFloat(d.amount) || 0;
 
-    let totalIncome = pastIncome + todayIncome;
-    let todayTotalExp = todayOtherExp + todayWages;
-    let totalExpense = pastExpense + todayTotalExp;
-    let balance = totalIncome - totalExpense;
+                        if (currentDate && dDate < currentDate) {
+                            if (d.type === 'income' || d.type === 'advance') {
+                                pastIncome += amount;
+                            } else {
+                                pastExpense += amount;
+                            }
+                        } else if (currentDate && dDate === currentDate) {
+                            if (d.type === 'income' || d.type === 'advance') {
+                                todayIncome += amount;
+                            } else if (d.type !== 'income' && d.type !== 'advance') {
+                                pastExpense += amount;
+                            }
+                        }
+                    }
+                });
+            }
 
-    // സ്ക്രീനിൽ വിലകൾ അപ്ഡേറ്റ് ചെയ്യുന്നു
-    let displayInc = document.getElementById('displayIncome');
-    if (displayInc) displayInc.innerText = `₹ ${totalIncome}`;
+            // ഇന്നത്തെ മറ്റ് ചെലവുകൾ കൂട്ടുന്നു
+            document.querySelectorAll('.expense-amount').forEach(input => {
+                todayOtherExp += parseFloat(input.value) || 0;
+            });
 
-    let displayExp = document.getElementById('displayExpense');
-    if (displayExp) displayExp.innerText = `₹ ${totalExpense}`;
+            // ഇന്നത്തെ തൊഴിലാളി കൂലി കൂട്ടുന്നു
+            document.querySelectorAll('.worker-wage').forEach(input => {
+                todayWages += parseFloat(input.value) || 0;
+            });
 
-    let balanceText = document.getElementById('grandTotal');
-    if (balanceText) {
-        balanceText.innerText = `₹ ${balance}`;
-        balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-emerald-400 font-black text-base";
-    }
+            let totalIncome = pastIncome + todayIncome;
+            let todayTotalExp = todayOtherExp + todayWages;
+            let totalExpense = pastExpense + todayTotalExp;
+            let balance = totalIncome - totalExpense;
 
-    if (typeof calculateSettlement === 'function') {
-        calculateSettlement();
-    }
-}
+            // സ്ക്രീനിൽ വിലകൾ അപ്ഡേറ്റ് ചെയ്യുന്നു
+            let displayInc = document.getElementById('displayIncome');
+            if (displayInc) displayInc.innerText = `₹ ${totalIncome}`;
 
+            let displayExp = document.getElementById('displayExpense');
+            if (displayExp) displayExp.innerText = `₹ ${totalExpense}`;
+
+            let balanceText = document.getElementById('grandTotal');
+            if (balanceText) {
+                balanceText.innerText = `₹ ${balance}`;
+                balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-emerald-400 font-black text-base";
+            }
+
+            if (typeof calculateSettlement === 'function') {
+                calculateSettlement();
+            }
+        }
 
         // സെറ്റിൽമെന്റ് കണക്കുകൂട്ടൽ
         window.calculateSettlement = function() {
@@ -348,6 +378,7 @@ window.calculateTotal = function() {
                 }
             }
         }
+
 
         // സെറ്റിൽമെന്റ് കണക്ക് വാട്സാപ്പിൽ അയക്കാൻ
         window.sendSettlementWhatsApp = function() {
