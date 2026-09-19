@@ -222,8 +222,24 @@
         }
 
         // പ്രധാന കാൽക്കുലേഷൻ ഫങ്ഷൻ
+        // സെറ്റിൽമെന്റ് ബാലൻസ് കണക്കുകൂട്ടാൻ
+        window.calculateSettlement = function() {
+            let meshtriAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
+            let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
+            
+            // മേസ്തിരി തന്ന അഡ്വാൻസ് തുകയിൽ നിന്നും കയ്യിൽ നിന്ന് മുടക്കിയത് കുറച്ചുള്ള ബാലൻസ്
+            let settlementBalance = meshtriAdvance - selfSpent;
+            let balanceDisplay = document.getElementById('settleBalanceText');
+            if(balanceDisplay) {
+                balanceDisplay.innerText = `₹ ${settlementBalance}`;
+            }
+            
+            if (typeof calculateTotal === 'function') {
+                calculateTotal();
+            }
+        }
 
-        
+        // പ്രധാന കാൽക്കുലേഷൻ ഫങ്ഷൻ
         window.calculateTotal = function() {
             let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
             let pastIncome = 0;
@@ -239,17 +255,8 @@
             }
 
             let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-            
-            // ഇവിടെ ഐഡി ശരിയായ രീതിയിൽ മാറ്റുക (settleAdvance, settleSelfSpent)
             let meshtriAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
             let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
-
-            // സെറ്റിൽമെന്റ് ബാലൻസ് കണക്കുകൂട്ടൽ
-            let settlementBalance = meshtriAdvance - selfSpent;
-            let balanceDisplay = document.getElementById('settleBalanceText');
-            if(balanceDisplay) {
-                balanceDisplay.innerText = `₹ ${settlementBalance}`;
-            }
 
             let todayOtherExp = 0;
             document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
@@ -269,12 +276,34 @@
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
 
+        // സെറ്റിൽമെന്റ് കണക്ക് വാട്സാപ്പിൽ അയക്കാൻ
+        window.sendSettlementWhatsApp = function() {
+            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
+            const entryDate = document.getElementById('entryDate').value;
+            const meshtriAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
+            const selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
+            const settlementBalance = meshtriAdvance - selfSpent;
+
+            let msg = `⚖️ *മേസ്തിരി പ്രോ - സെറ്റിൽമെന്റ് കണക്ക്* ⚖️\n`;
+            msg += `📅 തീയതി: ${entryDate}\n`;
+            msg += `📍 സൈറ്റ്: ${siteName}\n`;
+            msg += `--------------------------------\n`;
+            msg += `💵 മേസ്തിരി തന്നത് (Advance): ₹ ${meshtriAdvance}\n`;
+            msg += `🏷️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n`;
+            msg += `--------------------------------\n`;
+            msg += `💰 ബാക്കി തുക: ₹ ${settlementBalance}\n`;
+            msg += `--------------------------------\n`;
+            msg += `👤 ${currentMeshtri}`;
+
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
         window.shareSiteWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
             const entryDate = document.getElementById('entryDate').value;
             const income = parseFloat(document.getElementById('siteIncome').value) || 0;
-            const meshtriAdvance = parseFloat(document.getElementById('meshtriAdvance').value) || 0;
-            const selfSpent = parseFloat(document.getElementById('selfSpent').value) || 0;
+            const meshtriAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
+            const selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
             
             let details = "";
             let otherExpTotal = 0;
@@ -304,45 +333,6 @@
             if (selfSpent > 0) msg += `🏷️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n`;
             
             msg += `\n💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
-            msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
-            msg += `--------------------------------\n`;
-            msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
-            msg += `💰 ബാലൻസ്: ₹ ${balance}\n`;
-            msg += `--------------------------------\n`;
-            msg += `👤 ${currentMeshtri}`;
-
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        window.shareSiteWhatsApp = function() {
-            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
-            const entryDate = document.getElementById('entryDate').value;
-            const income = document.getElementById('siteIncome').value || 0;
-            
-            let details = "";
-            let otherExpTotal = 0;
-            
-            document.querySelectorAll('#expenseListContainer > div').forEach(row => {
-                let desc = row.querySelector('.expense-desc').value.trim();
-                let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
-                if (desc && amt > 0) {
-                    details += `➖ ${desc}: ₹ ${amt}\n`;
-                    otherExpTotal += amt;
-                }
-            });
-
-            let wagesTotal = 0;
-            document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
-
-            let totalExp = otherExpTotal + wagesTotal;
-            let balance = income - totalExp;
-
-            let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
-            msg += `📅 തീയതി: ${entryDate}\n`;
-            msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `--------------------------------\n`;
-            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
-            msg += `💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
             msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
             msg += `--------------------------------\n`;
             msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
@@ -395,57 +385,7 @@
 
         window.saveSiteData = async function(event) {
             event.preventDefault();
-            const siteName = document.getElementById('siteName').value.trim();
-            const entryDate = document.getElementById('entryDate').value;
-            const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-            const payerInput = document.getElementById('payerName').value.trim();
-
-            if (!siteName) {
-                showCustomAlert("സൈറ്റിന്റെ പേര് നൽകുക!", "ശ്രദ്ധിക്കുക");
-                return;
-            }
-
-            try {
-                if (siteIncome > 0) {
-                    await addDoc(collection(db, "accounts"), {
-                        meshtriOwner: currentMeshtri,
-                        name: payerInput || "ക്ലയന്റ് വരവ്",
-                        site: siteName,
-                        type: "income",
-                        payment: "cash",
-                        amount: siteIncome,
-                        date: entryDate
-                    });
-                }
-
-                const expRows = document.querySelectorAll('#expenseListContainer > div');
-                for (let r of expRows) {
-                    const desc = r.querySelector('.expense-desc').value.trim();
-                    const amt = parseFloat(r.querySelector('.expense-amount').value) || 0;
-                    if (desc && amt > 0) {
-                        await addDoc(collection(db, "accounts"), {
-                            meshtriOwner: currentMeshtri,
-                            name: desc,
-                            site: siteName,
-                            type: "other",
-                            payment: "cash",
-                            amount: amt,
-                            date: entryDate
-                        });
-                    }
-                }
-
-                const workerRows = document.querySelectorAll('.worker-row');
-                for (let row of workerRows) {
-                    const select = row.querySelector('.worker-select');
-                    const staffId = select.value;
-                    const selectedOption = select.options[select.selectedIndex];
-                    const workerName = selectedOption ? selectedOption.getAttribute('data-name') : 'തൊഴിലാളി';
-                    const jobTitle = row.querySelector('.worker-job').value.trim() || "പണി";
-        window.saveSiteData = async function(event) {
-            event.preventDefault();
             
-            // സൈറ്റ് പേര് ഡ്രോപ്പ്ഡൗണിൽ നിന്നോ ഇൻപുട്ട് ഫീൽഡിൽ നിന്നോ കൃത്യമായി എടുക്കുക
             const siteSelect = document.getElementById('siteSelectDropdown').value;
             const siteInput = document.getElementById('siteName').value.trim();
             const siteName = siteSelect ? siteSelect : siteInput;
@@ -454,7 +394,6 @@
             const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
             const payerInput = document.getElementById('payerName').value.trim();
             
-            // സെറ്റിൽമെന്റ് തുകകൾ
             const settleAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
             const settleSelfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
 
@@ -483,7 +422,7 @@
                         meshtriOwner: currentMeshtri,
                         name: "മേസ്തിരി അഡ്വാൻസ്",
                         site: siteName,
-                        type: "income", // വരവ് വിഭാഗത്തിൽ വരാൻ
+                        type: "income",
                         payment: "cash",
                         amount: settleAdvance,
                         date: entryDate
@@ -553,6 +492,7 @@
                 showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
             }
         };
+
 
     </script>
 
