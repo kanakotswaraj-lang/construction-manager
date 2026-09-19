@@ -273,7 +273,7 @@
             
             let balanceText = document.getElementById('grandTotal');
             balanceText.innerText = `₹ ${balance}`;
-            balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+            balanceText.className = balance < 0 ? "text-red-400 font-black text-sm" : "text-amber-400 font-black text-sm";
         }
 
         window.calculateSettlement = function() {
@@ -284,9 +284,9 @@
             calculateTotal();
         }
 
-        // ചിത്രത്തിലുള്ളതുപോലെ സെറ്റിൽമെന്റ് കണക്ക് വാട്സാപ്പിൽ അയക്കുന്ന ഫങ്ഷൻ
         window.sendBalanceSettlementWhatsApp = function() {
             let siteName = document.getElementById('siteName').value.trim() || 'സൈറ്റ്';
+            let clientName = document.getElementById('clientName').value.trim() || 'ലഭ്യമല്ല';
             let date = document.getElementById('entryDate').value || '';
             let advance = document.getElementById('meshtriAdvance').value || '0';
             let selfSpent = document.getElementById('selfSpent').value || '0';
@@ -295,6 +295,7 @@
             let message = `⚖️ *മേസ്തിരി പ്രോ - സെറ്റിൽമെന്റ് & ബാലൻസ്* ⚖️\n` +
                           `📅 തീയതി: ${date}\n` +
                           `📍 സൈറ്റ്: ${siteName}\n` +
+                          `👤 ക്ലയന്റ്: ${clientName}\n` +
                           `--------------------------------\n` +
                           `💵 മേസ്തിരി തന്നത് (Advance): ₹ ${advance}\n` +
                           `💸 കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n` +
@@ -453,7 +454,7 @@
 
                 <div>
                     <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">പണം തരുന്നയാൾ (CLIENT):</label>
-                    <input type="text" placeholder="പേര് നൽകുക (ആവശ്യമെങ്കിൽ മാത്രം)" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    <input type="text" id="clientName" placeholder="പേര് നൽകുക (ആവശ്യമെങ്കിൽ മാത്രം)" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
@@ -467,7 +468,7 @@
                     </div>
                 </div>
 
-                <!-- സെറ്റിൽമെന്റ് & ബാലൻസ് ബോക്സ് (ചിത്രത്തിലുള്ള ശൈലിയിൽ) -->
+                <!-- സെറ്റിൽമെന്റ് & ബാലൻസ് ബോക്സ് -->
                 <div class="bg-slate-950/60 p-4 rounded-2xl border-2 border-amber-500/60 shadow-xl space-y-3">
                     <h3 class="text-xs font-black text-amber-400 tracking-wider flex items-center gap-1.5">
                         ⚖️ സെറ്റിൽമെന്റ് & ബാലൻസ് (BALANCE SETTLEMENT)
@@ -513,7 +514,7 @@
                 </div>
             </div>
 
-            <!-- ആകെ വരവ്/ചെലവ് രഹസ്യ വിവരങ്ങൾ (Hidden/Display calculations) -->
+            <!-- ആകെ വരവ്/ചെലവ് രഹസ്യ വിവരങ്ങൾ (Hidden calculations) -->
             <div class="hidden">
                 <span id="displayIncome">₹ 0</span>
                 <span id="displayExpense">₹ 0</span>
