@@ -221,7 +221,7 @@
             });
         }
 
-        // കൃത്യമായ ഒരൊറ്റ കാൽക്കുലേഷൻ ഫങ്ഷൻ
+        // പഴയതും പുതിയതുമായ മുഴുവൻ കണക്കുകളും കൃത്യമായി കണക്കാക്കുന്ന ഫങ്ഷൻ
         window.calculateTotal = function() {
             let siteInput = document.getElementById('siteName');
             let siteSelect = document.getElementById('siteSelectDropdown');
@@ -234,37 +234,21 @@
                 currentSite = siteInput.value.trim().toLowerCase();
             }
 
-            let currentDateVal = document.getElementById('entryDate').value;
             let pastIncome = 0;
             let pastExpense = 0;
-
-            let currentDateObj = new Date(currentDateVal);
-            if (isNaN(currentDateObj.getTime())) {
-                currentDateObj = new Date();
-            }
-            currentDateObj.setHours(0, 0, 0, 0);
 
             if (currentSite && window.allAccountsData && Array.isArray(window.allAccountsData)) {
                 window.allAccountsData.forEach(d => {
                     let dSite = (d.site || '').trim().toLowerCase();
                     if (dSite === currentSite) {
-                        let dDateVal = d.date || '';
-                        let dDateObj = new Date(dDateVal);
-                        
-                        if (!isNaN(dDateObj.getTime())) {
-                            dDateObj.setHours(0, 0, 0, 0);
-                            
-                            if (dDateObj.getTime() < currentDateObj.getTime()) {
-                                let amount = parseFloat(d.amount) || 0;
-                                let type = (d.type || '').trim().toLowerCase();
-                                let name = (d.name || '').trim();
+                        let amount = parseFloat(d.amount) || 0;
+                        let type = (d.type || '').trim().toLowerCase();
+                        let name = (d.name || '').trim();
 
-                                if (type === 'income' || name.includes('അഡ്വാൻസ്') || name.includes('വരവ്') || name.includes('തന്നത്')) {
-                                    pastIncome += amount;
-                                } else {
-                                    pastExpense += amount;
-                                }
-                            }
+                        if (type === 'income' || name.includes('അഡ്വാൻസ്') || name.includes('വരവ്') || name.includes('തന്നത്')) {
+                            pastIncome += amount;
+                        } else {
+                            pastExpense += amount;
                         }
                     }
                 });
