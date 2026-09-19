@@ -222,45 +222,29 @@
         }
 
     
-        
-
-        // സെറ്റിൽമെന്റ് ബാലൻസ് കണക്കുകൂട്ടാൻ
-        window.calculateSettlement = function() {
-            let meshtriAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
-            let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
-            
-            // മേസ്തിരി തന്ന അഡ്വാൻസ് തുകയിൽ നിന്നും കയ്യിൽ നിന്ന് മുടക്കിയത് കുറച്ചുള്ള ബാലൻസ്
-            let settlementBalance = meshtriAdvance - selfSpent;
-            let balanceDisplay = document.getElementById('settleBalanceText');
-            if(balanceDisplay) {
-                balanceDisplay.innerText = `₹ ${settlementBalance}`;
-            }
-            
-            if (typeof calculateTotal === 'function') {
-                calculateTotal();
-            }
-        }
-
         // പ്രധാന കാൽക്കുലേഷൻ ഫങ്ഷൻ
-        
 window.calculateTotal = function() {
-    let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
+    let siteInput = document.getElementById('siteName');
+    let siteSelect = document.getElementById('siteSelectDropdown');
+    let currentSite = (siteSelect && siteSelect.value ? siteSelect.value : (siteInput ? siteInput.value : '')).trim().toLowerCase();
+    
     let currentDate = document.getElementById('entryDate').value;
     let pastIncome = 0;
     let pastExpense = 0;
 
     // മുൻ ദിവസങ്ങളിലെ വരവും ചെലവും കണക്കാക്കുന്നു
-    if (currentSite && window.allAccountsData) {
+    if (currentSite && window.allAccountsData && Array.isArray(window.allAccountsData)) {
         window.allAccountsData.forEach(d => {
-            if ((d.site || '').toLowerCase() === currentSite) {
+            let dSite = (d.site || '').trim().toLowerCase();
+            if (dSite === currentSite) {
                 let dDate = d.date || '';
                 // ഇന്നത്തെ തീയതിക്ക് മുമ്പുള്ള കണക്കുകൾ മാത്രം എടുക്കുന്നു
                 if (currentDate && dDate < currentDate) {
-                    // income അല്ലെങ്കിൽ മേസ്തിരി അഡ്വാൻസ് ആണെങ്കിൽ വരവായി കൂട്ടുക
-                    if (d.type === 'income' || d.name === 'മേസ്തിരി അഡ്വാൻസ്') {
-                        pastIncome += parseFloat(d.amount) || 0;
+                    let amount = parseFloat(d.amount) || 0;
+                    if (d.type === 'income' || d.name === 'മേസ്തിരി അഡ്വാൻസ്' || d.name === 'ക്ലയന്റ് വരവ്') {
+                        pastIncome += amount;
                     } else {
-                        pastExpense += parseFloat(d.amount) || 0;
+                        pastExpense += amount;
                     }
                 }
             }
@@ -273,7 +257,6 @@ window.calculateTotal = function() {
     // സെറ്റിൽമെന്റ് ബോക്സിലെ 'മേസ്തിരി തന്നത് (Advance)' ഫീൽഡിലേക്ക് മുൻ ദിവസത്തെ ബാക്കി ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
     let settleAdvanceInput = document.getElementById('settleAdvance');
     if (settleAdvanceInput) {
-        // ഇൻപുട്ട് കാലിയാണെങ്കിൽ അല്ലെങ്കിൽ ഓട്ടോ-ഫിൽ ആണെങ്കിൽ മുൻ ബാലൻസ് നൽകുന്നു
         if (settleAdvanceInput.value === "" || settleAdvanceInput.dataset.auto === "true") {
             settleAdvanceInput.value = carryForwardBalance !== 0 ? carryForwardBalance : 0;
             settleAdvanceInput.dataset.auto = "true";
@@ -312,6 +295,24 @@ window.calculateTotal = function() {
         balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
     }
 }
+
+// സെറ്റിൽമെന്റ് ബാലൻസ് കാൽക്കുലേഷൻ ഫങ്ഷൻ
+window.calculateSettlement = function() {
+    let meshtriAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
+    let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
+    
+    let settlementBalance = meshtriAdvance - selfSpent;
+    let balanceDisplay = document.getElementById('settleBalanceText');
+    if(balanceDisplay) {
+        balanceDisplay.innerText = `₹ ${settlementBalance}`;
+    }
+    
+    if (typeof calculateTotal === 'function') {
+        calculateTotal();
+    }
+}
+
+
 
 
         // സെറ്റിൽമെന്റ് കണക്ക് വാട്സാപ്പിൽ അയക്കാൻ
