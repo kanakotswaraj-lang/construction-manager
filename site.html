@@ -135,7 +135,6 @@
         window.onSiteSelectChange = function() {
             const selectedSite = document.getElementById('siteSelectDropdown').value;
             const siteInput = document.getElementById('siteName');
-            
             if (selectedSite) {
                 siteInput.value = selectedSite;
                 siteInput.readOnly = true;
@@ -145,10 +144,7 @@
                 siteInput.readOnly = false;
                 siteInput.classList.remove('opacity-60');
             }
-            
-            if (typeof calculateTotal === 'function') {
-                calculateTotal();
-            }
+            calculateTotal();
         }
 
         function updateAllDropdowns() {
@@ -221,7 +217,7 @@
             });
         }
 
-                // പഴയതും പുതിയതുമായ മുഴുവൻ കണക്കുകളും കൃത്യമായി കണക്കാക്കുന്ന ഫങ്ഷൻ (Carry Forward ഉൾപ്പെടെ)
+        // മുൻകാല കണക്കുകൾ (Carry Forward) ഉൾപ്പെടെയുള്ള ടോട്ടൽ കണക്കാക്കുന്ന ഫങ്ഷൻ
         window.calculateTotal = function() {
             let siteInput = document.getElementById('siteName');
             let siteSelect = document.getElementById('siteSelectDropdown');
@@ -230,7 +226,6 @@
             let currentSite = "";
             if (siteSelect && siteSelect.value && siteSelect.value !== "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക") {
                 currentSite = siteSelect.value.trim().toLowerCase();
-                if (siteInput) siteInput.value = siteSelect.value;
             } else if (siteInput) {
                 currentSite = siteInput.value.trim().toLowerCase();
             }
@@ -238,9 +233,8 @@
             let pastIncome = 0;
             let pastExpense = 0;
 
-            // മുൻ ദിവസങ്ങളിലെ വരവും ചെലവും കണക്കാക്കുന്നു (Carry Forward)
-            if (currentSite && window.allAccountsData && Array.isArray(window.allAccountsData)) {
-                window.allAccountsData.forEach(d => {
+            if (currentSite && Array.isArray(allAccountsData)) {
+                allAccountsData.forEach(d => {
                     let dSite = (d.site || '').trim().toLowerCase();
                     let dDate = d.date || '';
                     
@@ -249,7 +243,6 @@
                         let type = (d.type || '').trim().toLowerCase();
                         let name = (d.name || '').trim();
 
-                        // ഇന്നത്തെ തീയതിക്ക് മുമ്പുള്ള കണക്കുകൾ മാത്രം കാരി-ഫോർവേർഡ് എടുക്കാൻ
                         if (currentDate && dDate < currentDate) {
                             if (type === 'income' || name.includes('അഡ്വാൻസ്') || name.includes('വരവ്') || name.includes('തന്നത്')) {
                                 pastIncome += amount;
@@ -261,26 +254,8 @@
                 });
             }
 
-            let carryForwardBalance = pastIncome - pastExpense;
-
-            let settleAdvanceInput = document.getElementById('settleAdvance');
-            if (settleAdvanceInput) {
-                // ഓട്ടോമാറ്റിക്കായി കാരി ഫോർവേർഡ് തുക സെറ്റ് ചെയ്യുന്നു
-                if (settleAdvanceInput.value === "" || settleAdvanceInput.dataset.auto === "true") {
-                    settleAdvanceInput.value = carryForwardBalance !== 0 ? carryForwardBalance : 0;
-                    settleAdvanceInput.dataset.auto = "true";
-                }
-            }
-
             let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-            let meshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-            let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
-
-            let settlementBalance = meshtriAdvance - selfSpent;
-            let balanceDisplay = document.getElementById('settleBalanceText');
-            if(balanceDisplay) {
-                balanceDisplay.innerText = `₹ ${settlementBalance}`;
-            }
+            let totalIncome = pastIncome + todayIncome;
 
             let todayOtherExp = 0;
             document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
@@ -288,71 +263,21 @@
             let todayWages = 0;
             document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
 
-            let totalExpense = todayOtherExp + todayWages + selfSpent;
-            let finalIncome = todayIncome + meshtriAdvance;
-            let balance = finalIncome - totalExpense;
+            let totalExpense = pastExpense + todayOtherExp + todayWages;
+            let balance = totalIncome - totalExpense;
 
-            let displayIncElem = document.getElementById('displayIncome');
-            if(displayIncElem) displayIncElem.innerText = `₹ ${finalIncome}`;
-
-            let displayExpElem = document.getElementById('displayExpense');
-            if(displayExpElem) displayExpElem.innerText = `₹ ${totalExpense}`;
+            document.getElementById('displayIncome').innerText = `₹ ${totalIncome}`;
+            document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
             
             let balanceText = document.getElementById('grandTotal');
-            if(balanceText) {
-                balanceText.innerText = `₹ ${balance}`;
-                balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-            }
+            balanceText.innerText = `₹ ${balance}`;
+            balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
-
-
-        window.calculateSettlement = function() {
-            let settleAdvanceInput = document.getElementById('settleAdvance');
-            if (settleAdvanceInput) {
-                settleAdvanceInput.dataset.auto = "false"; 
-            }
-            
-            let meshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-            let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
-            
-            let settlementBalance = meshtriAdvance - selfSpent;
-            let balanceDisplay = document.getElementById('settleBalanceText');
-            if(balanceDisplay) {
-                balanceDisplay.innerText = `₹ ${settlementBalance}`;
-            }
-            
-            if (typeof calculateTotal === 'function') {
-                calculateTotal();
-            }
-        }
-
-        window.sendSettlementWhatsApp = function() {
-            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
-            const entryDate = document.getElementById('entryDate').value;
-            const meshtriAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
-            const selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
-            const settlementBalance = meshtriAdvance - selfSpent;
-
-            let msg = `⚖️ *മേസ്തിരി പ്രോ - സെറ്റിൽമെന്റ് കണക്ക്* ⚖️\n`;
-            msg += `📅 തീയതി: ${entryDate}\n`;
-            msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `--------------------------------\n`;
-            msg += `💵 മേസ്തിരി തന്നത് (Advance): ₹ ${meshtriAdvance}\n`;
-            msg += `🏷️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n`;
-            msg += `--------------------------------\n`;
-            msg += `💰 ബാക്കി തുക: ₹ ${settlementBalance}\n`;
-            msg += `--------------------------------\n`;
-            msg += `👤 ${currentMeshtri}`;
-
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        };
 
         window.shareSiteWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
             const entryDate = document.getElementById('entryDate').value;
-            const income = parseFloat(document.getElementById('siteIncome').value) || 0;
-            const meshtriAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
-            const selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
+            const income = document.getElementById('siteIncome').value || 0;
             
             let details = "";
             let otherExpTotal = 0;
@@ -369,19 +294,15 @@
             let wagesTotal = 0;
             document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
 
-            let totalExp = otherExpTotal + wagesTotal + selfSpent;
-            let totalInc = income;
-            let balance = totalInc - totalExp;
+            let totalExp = otherExpTotal + wagesTotal;
+            let balance = income - totalExp;
 
             let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
             msg += `📅 തീയതി: ${entryDate}\n`;
             msg += `📍 സൈറ്റ്: ${siteName}\n`;
             msg += `--------------------------------\n`;
-            if (income > 0) msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n`;
-            if (meshtriAdvance > 0) msg += `💵 മേസ്തിരി അഡ്വാൻസ്: ₹ ${meshtriAdvance}\n`;
-            if (selfSpent > 0) msg += `🏷️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n`;
-            
-            msg += `\n💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
+            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
+            msg += `💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
             msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
             msg += `--------------------------------\n`;
             msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
@@ -434,17 +355,10 @@
 
         window.saveSiteData = async function(event) {
             event.preventDefault();
-            
-            const siteSelect = document.getElementById('siteSelectDropdown').value;
-            const siteInput = document.getElementById('siteName').value.trim();
-            const siteName = siteSelect ? siteSelect : siteInput;
-
+            const siteName = document.getElementById('siteName').value.trim();
             const entryDate = document.getElementById('entryDate').value;
             const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
             const payerInput = document.getElementById('payerName').value.trim();
-            
-            const settleAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
-            const settleSelfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
 
             if (!siteName) {
                 showCustomAlert("സൈറ്റിന്റെ പേര് നൽകുക!", "ശ്രദ്ധിക്കുക");
@@ -460,30 +374,6 @@
                         type: "income",
                         payment: "cash",
                         amount: siteIncome,
-                        date: entryDate
-                    });
-                }
-
-                if (settleAdvance > 0) {
-                    await addDoc(collection(db, "accounts"), {
-                        meshtriOwner: currentMeshtri,
-                        name: "മേസ്തിരി അഡ്വാൻസ്",
-                        site: siteName,
-                        type: "income",
-                        payment: "cash",
-                        amount: settleAdvance,
-                        date: entryDate
-                    });
-                }
-
-                if (settleSelfSpent > 0) {
-                    await addDoc(collection(db, "accounts"), {
-                        meshtriOwner: currentMeshtri,
-                        name: "കയ്യിൽ നിന്ന് മുടക്കിയത്",
-                        site: siteName,
-                        type: "other",
-                        payment: "cash",
-                        amount: settleSelfSpent,
                         date: entryDate
                     });
                 }
@@ -574,7 +464,7 @@
                         <select id="siteSelectDropdown" onchange="onSiteSelectChange()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                             <option value="" data-key="newSiteType">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>
                         </select>
-                        <input type="text" id="siteName" required data-key="siteInputPlaceholder" placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                        <input type="text" id="siteName" required data-key="siteInputPlaceholder" placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                     </div>
                 </div>
 
@@ -586,36 +476,13 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="dateLabel">തീയതി:</label>
-                        <input type="date" id="entryDate" required class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400" onchange="calculateTotal()">
+                        <input type="date" id="entryDate" onchange="calculateTotal()" required class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="incomeLabel">ലഭിച്ച വരവ് (₹):</label>
                         <input type="number" id="siteIncome" placeholder="0" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                     </div>
                 </div>
-            </div>
-
-            <div class="bg-slate-900/90 border-2 border-amber-500/80 p-5 rounded-3xl shadow-xl space-y-3">
-                <h3 class="text-xs font-black text-yellow-400 uppercase flex items-center gap-2">
-                    <span>⚖️</span> സെറ്റിൽമെന്റ് & ബാലൻസ് (Balance Settlement)
-                </h3>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-[10px] text-slate-400 font-bold block mb-1">മേസ്തിരി തന്നത് (Advance)</label>
-                        <input type="number" id="settleAdvance" oninput="calculateSettlement()" placeholder="₹ 0" class="w-full p-3 bg-slate-800 rounded-xl text-xs font-bold text-yellow-300 border border-slate-700">
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-slate-400 font-bold block mb-1">കയ്യിൽ നിന്ന് മുടക്കിയത്</label>
-                        <input type="number" id="settleSelfSpent" oninput="calculateSettlement()" placeholder="₹ 0" class="w-full p-3 bg-slate-800 rounded-xl text-xs font-bold text-amber-300 border border-slate-700">
-                    </div>
-                </div>
-                <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 flex justify-between items-center">
-                    <span class="text-xs font-bold text-slate-300">ബാക്കി തുക:</span>
-                    <span id="settleBalanceText" class="text-xs font-black text-emerald-400">₹ 0</span>
-                </div>
-                <button type="button" onclick="sendSettlementWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg transition flex items-center justify-center gap-2">
-                    <span>📱</span> <span>സെറ്റിൽമെന്റ് കണക്ക് WhatsApp അയക്കുക</span>
-                </button>
             </div>
 
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
