@@ -331,6 +331,7 @@ window.calculateTotal = function() {
     if (settleAdvanceInput) {
         if (settleAdvanceInput.value === "" || settleAdvanceInput.dataset.auto === "true") {
             settleAdvanceInput.value = carryForwardBalance !== 0 ? carryForwardBalance : 0;
+
             settleAdvanceInput.dataset.auto = "true";
         }
     }
@@ -367,7 +368,6 @@ window.calculateTotal = function() {
         balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
     }
 }
-
 
         // സെറ്റിൽമെന്റ് കണക്ക് വാട്സാപ്പിൽ അയക്കാൻ
         window.sendSettlementWhatsApp = function() {
