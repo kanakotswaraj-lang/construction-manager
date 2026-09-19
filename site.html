@@ -291,7 +291,7 @@ window.calculateTotal = function() {
         balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-emerald-400 font-black text-base";
 
 
-        window.calculateTotal = function() {
+                window.calculateTotal = function() {
             let currentSite = document.getElementById('siteName')?.value.trim().toLowerCase();
             let currentDate = document.getElementById('entryDate')?.value;
             
@@ -359,6 +359,7 @@ window.calculateTotal = function() {
                 calculateSettlement();
             }
         }
+
 
         // സെറ്റിൽമെന്റ് കണക്കുകൂട്ടൽ
         window.calculateSettlement = function() {
