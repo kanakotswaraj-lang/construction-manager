@@ -442,6 +442,93 @@
                     const selectedOption = select.options[select.selectedIndex];
                     const workerName = selectedOption ? selectedOption.getAttribute('data-name') : 'തൊഴിലാളി';
                     const jobTitle = row.querySelector('.worker-job').value.trim() || "പണി";
+        window.saveSiteData = async function(event) {
+            event.preventDefault();
+            
+            // സൈറ്റ് പേര് ഡ്രോപ്പ്ഡൗണിൽ നിന്നോ ഇൻപുട്ട് ഫീൽഡിൽ നിന്നോ കൃത്യമായി എടുക്കുക
+            const siteSelect = document.getElementById('siteSelectDropdown').value;
+            const siteInput = document.getElementById('siteName').value.trim();
+            const siteName = siteSelect ? siteSelect : siteInput;
+
+            const entryDate = document.getElementById('entryDate').value;
+            const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
+            const payerInput = document.getElementById('payerName').value.trim();
+            
+            // സെറ്റിൽമെന്റ് തുകകൾ
+            const settleAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
+            const settleSelfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
+
+            if (!siteName) {
+                showCustomAlert("സൈറ്റിന്റെ പേര് നൽകുക!", "ശ്രദ്ധിക്കുക");
+                return;
+            }
+
+            try {
+                // 1. ലഭിച്ച വരവ് സേവ് ചെയ്യുക
+                if (siteIncome > 0) {
+                    await addDoc(collection(db, "accounts"), {
+                        meshtriOwner: currentMeshtri,
+                        name: payerInput || "ക്ലയന്റ് വരവ്",
+                        site: siteName,
+                        type: "income",
+                        payment: "cash",
+                        amount: siteIncome,
+                        date: entryDate
+                    });
+                }
+
+                // 2. മേസ്തിരി അഡ്വാൻസ് സേവ് ചെയ്യുക
+                if (settleAdvance > 0) {
+                    await addDoc(collection(db, "accounts"), {
+                        meshtriOwner: currentMeshtri,
+                        name: "മേസ്തിരി അഡ്വാൻസ്",
+                        site: siteName,
+                        type: "income", // വരവ് വിഭാഗത്തിൽ വരാൻ
+                        payment: "cash",
+                        amount: settleAdvance,
+                        date: entryDate
+                    });
+                }
+
+                // 3. കയ്യിൽ നിന്ന് മുടക്കിയത് ചെലവായി സേവ് ചെയ്യുക
+                if (settleSelfSpent > 0) {
+                    await addDoc(collection(db, "accounts"), {
+                        meshtriOwner: currentMeshtri,
+                        name: "കയ്യിൽ നിന്ന് മുടക്കിയത്",
+                        site: siteName,
+                        type: "other",
+                        payment: "cash",
+                        amount: settleSelfSpent,
+                        date: entryDate
+                    });
+                }
+
+                // 4. മറ്റ് ചെലവുകൾ സേവ് ചെയ്യുക
+                const expRows = document.querySelectorAll('#expenseListContainer > div');
+                for (let r of expRows) {
+                    const desc = r.querySelector('.expense-desc').value.trim();
+                    const amt = parseFloat(r.querySelector('.expense-amount').value) || 0;
+                    if (desc && amt > 0) {
+                        await addDoc(collection(db, "accounts"), {
+                            meshtriOwner: currentMeshtri,
+                            name: desc,
+                            site: siteName,
+                            type: "other",
+                            payment: "cash",
+                            amount: amt,
+                            date: entryDate
+                        });
+                    }
+                }
+
+                // 5. തൊഴിലാളികളുടെ കൂലി സേവ് ചെയ്യുക
+                const workerRows = document.querySelectorAll('.worker-row');
+                for (let row of workerRows) {
+                    const select = row.querySelector('.worker-select');
+                    const staffId = select.value;
+                    const selectedOption = select.options[select.selectedIndex];
+                    const workerName = selectedOption ? selectedOption.getAttribute('data-name') : 'തൊഴിലാളി';
+                    const jobTitle = row.querySelector('.worker-job').value.trim() || "പണി";
                     const wageAmount = parseFloat(row.querySelector('.worker-wage').value) || 0;
 
                     if (staffId && wageAmount > 0) {
@@ -466,6 +553,7 @@
                 showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
             }
         };
+
     </script>
 
     <style>
