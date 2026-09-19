@@ -10,7 +10,7 @@
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         import { setupHeader } from './header.js';
 
         const firebaseConfig = {
@@ -217,7 +217,6 @@
             });
         }
 
-        // കൃത്യമായ കണക്കുകൂട്ടലുകൾ (Calculation Logic with Advance Integration)
         window.calculateTotal = function() {
             let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
             let currentDateVal = document.getElementById('entryDate').value;
@@ -285,101 +284,22 @@
             calculateTotal();
         }
 
-        // വാട്സാപ്പ് ഷെയർ ഫങ്ഷനുകൾ (3 വ്യത്യസ്ത മെസ്സേജുകൾ)
-        window.sendSiteBalanceWhatsApp = function() {
+        // ചിത്രത്തിലുള്ളതുപോലെ സെറ്റിൽമെന്റ് കണക്ക് വാട്സാപ്പിൽ അയക്കുന്ന ഫങ്ഷൻ
+        window.sendBalanceSettlementWhatsApp = function() {
             let siteName = document.getElementById('siteName').value.trim() || 'സൈറ്റ്';
             let date = document.getElementById('entryDate').value || '';
             let advance = document.getElementById('meshtriAdvance').value || '0';
             let selfSpent = document.getElementById('selfSpent').value || '0';
-            let totalIncome = document.getElementById('displayIncome').innerText || '₹ 0';
-            let totalExpense = document.getElementById('displayExpense').innerText || '₹ 0';
             let balance = document.getElementById('grandTotal').innerText || '₹ 0';
 
-            let message = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n` +
+            let message = `⚖️ *മേസ്തിരി പ്രോ - സെറ്റിൽമെന്റ് & ബാലൻസ്* ⚖️\n` +
                           `📅 തീയതി: ${date}\n` +
                           `📍 സൈറ്റ്: ${siteName}\n` +
                           `--------------------------------\n` +
-                          `💵 മേസ്തിരി അഡ്വാൻസ്: ₹ ${advance}\n` +
+                          `💵 മേസ്തിരി തന്നത് (Advance): ₹ ${advance}\n` +
                           `💸 കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n` +
                           `--------------------------------\n` +
-                          `💰 ആകെ വരവ്: ${totalIncome}\n` +
-                          `📉 ആകെ ചെലവ്: ${totalExpense}\n` +
-                          `💰 ബാക്കി ബാലൻസ്: ${balance}\n` +
-                          `--------------------------------\n` +
-                          `👤 ${currentMeshtri}`;
-
-            let whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-
-        window.sendExpenseWhatsApp = function() {
-            let siteName = document.getElementById('siteName').value.trim() || 'സൈറ്റ്';
-            let date = document.getElementById('entryDate').value || '';
-            
-            let message = `💸 *മേസ്തിരി പ്രോ - ചെലവുകൾ* 💸\n` +
-                          `📅 തീയതി: ${date}\n` +
-                          `📍 സൈറ്റ്: ${siteName}\n` +
-                          `--------------------------------\n`;
-
-            let details = "";
-            let totalOtherExp = 0;
-            document.querySelectorAll('#expenseListContainer > div').forEach(row => {
-                let desc = row.querySelector('.expense-desc').value.trim();
-                let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
-                if (desc && amt > 0) {
-                    details += `➖ ${desc}: ₹ ${amt}\n`;
-                    totalOtherExp += amt;
-                }
-            });
-
-            if(!details) {
-                details = "മറ്റു ചെലവുകൾ ഒന്നുമില്ല\n";
-            }
-
-            message += details;
-            message += `--------------------------------\n`;
-            message += `💵 ആകെ മറ്റു ചെലവുകൾ: ₹ ${totalOtherExp}\n`;
-            message += `--------------------------------\n`;
-            message += `👤 ${currentMeshtri}`;
-
-            let whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-
-        window.sendWorkerWageWhatsApp = function() {
-            let siteName = document.getElementById('siteName').value.trim() || 'സൈറ്റ്';
-            let date = document.getElementById('entryDate').value || '';
-            
-            let workerDetails = "";
-            let totalWages = 0;
-            let index = 1;
-
-            document.querySelectorAll('.worker-row').forEach(row => {
-                let select = row.querySelector('.worker-select');
-                let opt = select.options[select.selectedIndex];
-                let wName = opt ? opt.getAttribute('data-name') : 'തൊഴിലാളി';
-                let job = row.querySelector('.worker-job').value || 'പണി';
-                let wage = parseFloat(row.querySelector('.worker-wage').value) || 0;
-
-                if(wage > 0) {
-                    workerDetails += `${index}. ${wName} (${job}) - ₹ ${wage}\n`;
-                    totalWages += wage;
-                    index++;
-                }
-            });
-
-            if(totalWages === 0) {
-                showCustomAlert("വാട്സാപ്പിൽ അയക്കാൻ തൊഴിലാളികളുടെ കൂലി വിവരങ്ങൾ ചേർത്തിട്ടില്ല!", "ശ്രദ്ധിക്കുക");
-                return;
-            }
-
-            let message = `👥 *മേസ്തിരി പ്രോ - തൊഴിലാളി കൂലി* 👥\n` +
-                          `📅 തീയതി: ${date}\n` +
-                          `📍 സൈറ്റ്: ${siteName}\n` +
-                          `--------------------------------\n` +
-                          workerDetails +
-                          `--------------------------------\n` +
-                          `💵 ആകെ തൊഴിലാളി കൂലി: ₹ ${totalWages}\n` +
+                          `💰 ബാക്കി തുക: ${balance}\n` +
                           `--------------------------------\n` +
                           `👤 ${currentMeshtri}`;
 
@@ -531,6 +451,11 @@
                     </div>
                 </div>
 
+                <div>
+                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">പണം തരുന്നയാൾ (CLIENT):</label>
+                    <input type="text" placeholder="പേര് നൽകുക (ആവശ്യമെങ്കിൽ മാത്രം)" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                </div>
+
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="dateLabel">തീയതി:</label>
@@ -542,16 +467,31 @@
                     </div>
                 </div>
 
-                <!-- മേസ്തിരി സെറ്റിൽമെന്റ് ബോക്സ് -->
-                <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
-                    <div>
-                        <label class="block text-xs font-black text-amber-400 mb-1.5 uppercase tracking-wide">മേസ്തിരി തന്നത് (₹):</label>
-                        <input type="number" id="meshtriAdvance" placeholder="0" value="0" oninput="calculateSettlement()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                <!-- സെറ്റിൽമെന്റ് & ബാലൻസ് ബോക്സ് (ചിത്രത്തിലുള്ള ശൈലിയിൽ) -->
+                <div class="bg-slate-950/60 p-4 rounded-2xl border-2 border-amber-500/60 shadow-xl space-y-3">
+                    <h3 class="text-xs font-black text-amber-400 tracking-wider flex items-center gap-1.5">
+                        ⚖️ സെറ്റിൽമെന്റ് & ബാലൻസ് (BALANCE SETTLEMENT)
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-black text-slate-300 mb-1">മേസ്തിരി തന്നത് (Advance)</label>
+                            <input type="number" id="meshtriAdvance" placeholder="0" value="0" oninput="calculateSettlement()" class="w-full p-3 bg-slate-900 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-black text-slate-300 mb-1">കയ്യിൽ നിന്ന് മുടക്കിയത്</label>
+                            <input type="number" id="selfSpent" placeholder="₹ 0" value="0" oninput="calculateTotal()" class="w-full p-3 bg-slate-900 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-black text-amber-400 mb-1.5 uppercase tracking-wide">കയ്യിൽ നിന്ന് മുടക്കിയത് (₹):</label>
-                        <input type="number" id="selfSpent" placeholder="0" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+
+                    <div class="flex justify-between items-center bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                        <span class="text-xs font-black text-slate-300">ബാക്കി തുക:</span>
+                        <span id="grandTotal" class="text-amber-400 font-black text-sm">₹ 0</span>
                     </div>
+
+                    <button type="button" onclick="sendBalanceSettlementWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs shadow-lg transition flex items-center justify-center gap-2 border border-emerald-400/30">
+                        💬 സെറ്റിൽമെന്റ് കണക്ക് WhatsApp അയക്കുക
+                    </button>
                 </div>
             </div>
 
@@ -573,33 +513,10 @@
                 </div>
             </div>
 
-            <!-- സംഗ്രഹം & ലാഭം/നഷ്ടം -->
-            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-2.5 text-sm">
-                <div class="flex justify-between font-bold text-slate-300">
-                    <span data-key="totalIncomeText">ആകെ വരവ്:</span>
-                    <span id="displayIncome" class="text-cyan-400">₹ 0</span>
-                </div>
-                <div class="flex justify-between font-bold text-slate-300">
-                    <span data-key="totalExpenseText">ആകെ ചെലവ്:</span>
-                    <span id="displayExpense" class="text-red-400">₹ 0</span>
-                </div>
-                <div class="flex justify-between font-black text-base border-t border-slate-800 pt-2">
-                    <span data-key="balanceText">ബാക്കി തുക / ബാലൻസ്:</span>
-                    <span id="grandTotal" class="text-amber-400">₹ 0</span>
-                </div>
-            </div>
-
-            <!-- വാട്സാപ്പ് ഷെയർ ബട്ടണുകൾ (3 വ്യത്യസ്ത മെസ്സേജുകൾക്കായി) -->
-            <div class="grid grid-cols-3 gap-2 pt-1">
-                <button type="button" onclick="sendSiteBalanceWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-2xl font-black text-[11px] shadow-lg transition flex flex-col items-center justify-center gap-1 border border-emerald-400/30 text-center">
-                    💬 സൈറ്റ് ബാലൻസ്
-                </button>
-                <button type="button" onclick="sendExpenseWhatsApp()" class="w-full bg-teal-600 hover:bg-teal-700 text-white p-3 rounded-2xl font-black text-[11px] shadow-lg transition flex flex-col items-center justify-center gap-1 border border-teal-400/30 text-center">
-                    💸 മറ്റു ചെലവുകൾ
-                </button>
-                <button type="button" onclick="sendWorkerWageWhatsApp()" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white p-3 rounded-2xl font-black text-[11px] shadow-lg transition flex flex-col items-center justify-center gap-1 border border-cyan-400/30 text-center">
-                    👥 തൊഴിലാളി കൂലി
-                </button>
+            <!-- ആകെ വരവ്/ചെലവ് രഹസ്യ വിവരങ്ങൾ (Hidden/Display calculations) -->
+            <div class="hidden">
+                <span id="displayIncome">₹ 0</span>
+                <span id="displayExpense">₹ 0</span>
             </div>
 
             <!-- സേവ് ബട്ടൺ -->
