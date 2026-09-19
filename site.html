@@ -221,7 +221,9 @@
             });
         }
 
-        // പ്രധാന കാൽക്കുലേഷൻ ഫങ്ഷൻ
+    
+        
+
         // സെറ്റിൽമെന്റ് ബാലൻസ് കണക്കുകൂട്ടാൻ
         window.calculateSettlement = function() {
             let meshtriAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
@@ -254,8 +256,12 @@ window.calculateTotal = function() {
                 let dDate = d.date || '';
                 // ഇന്നത്തെ തീയതിക്ക് മുമ്പുള്ള കണക്കുകൾ മാത്രം എടുക്കുന്നു
                 if (currentDate && dDate < currentDate) {
-                    if (d.type === 'income') pastIncome += parseFloat(d.amount) || 0;
-                    else pastExpense += parseFloat(d.amount) || 0;
+                    // income അല്ലെങ്കിൽ മേസ്തിരി അഡ്വാൻസ് ആണെങ്കിൽ വരവായി കൂട്ടുക
+                    if (d.type === 'income' || d.name === 'മേസ്തിരി അഡ്വാൻസ്') {
+                        pastIncome += parseFloat(d.amount) || 0;
+                    } else {
+                        pastExpense += parseFloat(d.amount) || 0;
+                    }
                 }
             }
         });
@@ -267,9 +273,9 @@ window.calculateTotal = function() {
     // സെറ്റിൽമെന്റ് ബോക്സിലെ 'മേസ്തിരി തന്നത് (Advance)' ഫീൽഡിലേക്ക് മുൻ ദിവസത്തെ ബാക്കി ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
     let settleAdvanceInput = document.getElementById('settleAdvance');
     if (settleAdvanceInput) {
-        // ഉപയോക്താവ് മാനുവലായി മാറ്റാത്ത പക്ഷം അല്ലെങ്കിൽ തുടക്കത്തിൽ മുൻ ബാലൻസ് നൽകുന്നു
-        if (carryForwardBalance !== 0 && (settleAdvanceInput.value === "" || settleAdvanceInput.value === "0" || settleAdvanceInput.dataset.auto === "true")) {
-            settleAdvanceInput.value = carryForwardBalance > 0 ? carryForwardBalance : 0;
+        // ഇൻപുട്ട് കാലിയാണെങ്കിൽ അല്ലെങ്കിൽ ഓട്ടോ-ഫിൽ ആണെങ്കിൽ മുൻ ബാലൻസ് നൽകുന്നു
+        if (settleAdvanceInput.value === "" || settleAdvanceInput.dataset.auto === "true") {
+            settleAdvanceInput.value = carryForwardBalance !== 0 ? carryForwardBalance : 0;
             settleAdvanceInput.dataset.auto = "true";
         }
     }
@@ -291,7 +297,7 @@ window.calculateTotal = function() {
     document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
 
     let totalExpense = pastExpense + todayOtherExp + todayWages + selfSpent;
-    let finalIncome = pastIncome + todayIncome + meshtriAdvance;
+    let finalIncome = pastIncome + todayIncome;
     let balance = finalIncome - totalExpense;
 
     let displayIncElem = document.getElementById('displayIncome');
@@ -353,7 +359,7 @@ window.calculateTotal = function() {
             document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
 
             let totalExp = otherExpTotal + wagesTotal + selfSpent;
-            let totalInc = income + meshtriAdvance;
+            let totalInc = income;
             let balance = totalInc - totalExp;
 
             let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
@@ -524,7 +530,6 @@ window.calculateTotal = function() {
                 showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
             }
         };
-
 
     </script>
 
