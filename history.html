@@ -416,7 +416,7 @@
         };
 
         window.deleteAccount = async function(id) {
-            if (confirm("ഈ കണക്ക് തീർച്ചയായും ഡിലീറ്റ് ചെയ്യ வேண்டுമോ?")) {
+            if (confirm("ഈ കണക്ക് തീർച്ചയായും ഡിലീറ്റ് ചെയ്യണമോ?")) {
                 try {
                     await deleteDoc(doc(db, "accounts", id));
                     window.showToast("കണക്ക് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!", true);
