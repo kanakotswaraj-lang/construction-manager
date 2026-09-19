@@ -133,19 +133,25 @@
         }
 
         window.onSiteSelectChange = function() {
-            const selectedSite = document.getElementById('siteSelectDropdown').value;
-            const siteInput = document.getElementById('siteName');
-            if (selectedSite) {
-                siteInput.value = selectedSite;
-                siteInput.readOnly = true;
-                siteInput.classList.add('opacity-60');
-            } else {
-                siteInput.value = '';
-                siteInput.readOnly = false;
-                siteInput.classList.remove('opacity-60');
-            }
-            calculateTotal();
-        }
+    const selectedSite = document.getElementById('siteSelectDropdown').value;
+    const siteInput = document.getElementById('siteName');
+    
+    if (selectedSite) {
+        siteInput.value = selectedSite;
+        siteInput.readOnly = true;
+        siteInput.classList.add('opacity-60');
+    } else {
+        siteInput.value = '';
+        siteInput.readOnly = false;
+        siteInput.classList.remove('opacity-60');
+    }
+    
+    // സൈറ്റ് സെレクト ചെയ്യുമ്പോൾ കണക്കുകൾ കൃത്യമായി കാൽക്കുലേറ്റ് ചെയ്യാൻ
+    if (typeof calculateTotal === 'function') {
+        calculateTotal();
+    }
+}
+
 
         function updateAllDropdowns() {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
