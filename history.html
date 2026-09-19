@@ -416,15 +416,33 @@
         };
 
         window.deleteAccount = async function(id) {
-            if (confirm("ഈ കണക്ക് തീർച്ചയായും ഡിലീറ്റ് ചെയ്യണമോ?")) {
-                try {
-                    await deleteDoc(doc(db, "accounts", id));
-                    window.showToast("കണക്ക് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!", true);
-                } catch (error) {
-                    window.showToast("കണക്ക് ഡിലീറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", false);
-                }
-            }
+    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+    
+    // ലാംഗ്വേജ് ഫയലിൽ നിന്ന് തർജ്ജിമ എടുക്കുന്നു
+    const deleteConfirmMsg = (typeof words !== 'undefined' && words['this_account_delete_confirm'] && words['this_account_delete_confirm'][currentLang]) 
+        ? words['this_account_delete_confirm'][currentLang] 
+        : "ഈ കണക്ക് തീർച്ചയായും ഡിലീറ്റ് ചെയ്യണമോ?";
+
+    const deleteSuccessMsg = (typeof words !== 'undefined' && words['account_deleted_success'] && words['account_deleted_success'][currentLang]) 
+        ? words['account_deleted_success'][currentLang] 
+        : "കണക്ക് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു";
+
+    const deleteFailedMsg = (typeof words !== 'undefined' && words['account_delete_failed'] && words['account_delete_failed'][currentLang]) 
+        ? words['account_delete_failed'][currentLang] 
+        : "കണക്ക് ഡിലീറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല";
+
+    if (confirm(deleteConfirmMsg)) {
+        try {
+            await deleteDoc(doc(db, "accounts", id));
+            window.showToast(deleteSuccessMsg, true);
+            // പേജ് റിഫ്രഷ് ചെയ്യാനോ ഡാറ്റ വീണ്ടും ലോഡ് ചെയ്യാനോ ഉള്ള കോഡ് ഇവിടെ നൽകാം (ഉദാഹരണത്തിന്: fetchData())
+        } catch (error) {
+            console.error("ഡിലീറ്റ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
+            window.showToast(deleteFailedMsg, false);
         }
+    }
+}
+
     </script>
 </body>
 </html>
