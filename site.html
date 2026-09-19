@@ -221,155 +221,118 @@
             });
         }
 
-    
-        // പ്രധാന കാൽക്കുലേഷൻ ഫങ്ഷൻ
-window.calculateTotal = function() {
-    let siteInput = document.getElementById('siteName');
-    let siteSelect = document.getElementById('siteSelectDropdown');
-    let currentSite = (siteSelect && siteSelect.value ? siteSelect.value : (siteInput ? siteInput.value : '')).trim().toLowerCase();
-    
-    let currentDate = document.getElementById('entryDate').value;
-    let pastIncome = 0;
-    let pastExpense = 0;
-
-    // മുൻ ദിവസങ്ങളിലെ വരവും ചെലവും കണക്കാക്കുന്നു
-    if (currentSite && window.allAccountsData && Array.isArray(window.allAccountsData)) {
-        window.allAccountsData.forEach(d => {
-            let dSite = (d.site || '').trim().toLowerCase();
-            if (dSite === currentSite) {
-                let dDate = d.date || '';
-                // ഇന്നത്തെ തീയതിക്ക് മുമ്പുള്ള കണക്കുകൾ മാത്രം എടുക്കുന്നു
-                if (currentDate && dDate < currentDate) {
-                    let amount = parseFloat(d.amount) || 0;
-                    if (d.type === 'income' || d.name === 'മേസ്തിരി അഡ്വാൻസ്' || d.name === 'ക്ലയന്റ് വരവ്') {
-                        pastIncome += amount;
-                    } else {
-                        pastExpense += amount;
-                    }
-                }
+        // കൃത്യമായ ഒരൊറ്റ കാൽക്കുലേഷൻ ഫങ്ഷൻ
+        window.calculateTotal = function() {
+            let siteInput = document.getElementById('siteName');
+            let siteSelect = document.getElementById('siteSelectDropdown');
+            
+            let currentSite = "";
+            if (siteSelect && siteSelect.value && siteSelect.value !== "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക") {
+                currentSite = siteSelect.value.trim().toLowerCase();
+                if (siteInput) siteInput.value = siteSelect.value;
+            } else if (siteInput) {
+                currentSite = siteInput.value.trim().toLowerCase();
             }
-        });
-    }
 
-    // മുൻ ദിവസങ്ങളിലെ ബാക്കി തുക (Carry Forward Balance) കണ്ടെത്തുന്നു
-    let carryForwardBalance = pastIncome - pastExpense;
+            let currentDateVal = document.getElementById('entryDate').value;
+            let pastIncome = 0;
+            let pastExpense = 0;
 
-    // സെറ്റിൽമെന്റ് ബോക്സിലെ 'മേസ്തിരി തന്നത് (Advance)' ഫീൽഡിലേക്ക് മുൻ ദിവസത്തെ ബാക്കി ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
-    let settleAdvanceInput = document.getElementById('settleAdvance');
-    if (settleAdvanceInput) {
-        if (settleAdvanceInput.value === "" || settleAdvanceInput.dataset.auto === "true") {
-            settleAdvanceInput.value = carryForwardBalance !== 0 ? carryForwardBalance : 0;
-            settleAdvanceInput.dataset.auto = "true";
-        }
-    }
+            let currentDateObj = new Date(currentDateVal);
+            if (isNaN(currentDateObj.getTime())) {
+                currentDateObj = new Date();
+            }
+            currentDateObj.setHours(0, 0, 0, 0);
 
-    let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-    let meshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-    let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
+            if (currentSite && window.allAccountsData && Array.isArray(window.allAccountsData)) {
+                window.allAccountsData.forEach(d => {
+                    let dSite = (d.site || '').trim().toLowerCase();
+                    if (dSite === currentSite) {
+                        let dDateVal = d.date || '';
+                        let dDateObj = new Date(dDateVal);
+                        
+                        if (!isNaN(dDateObj.getTime())) {
+                            dDateObj.setHours(0, 0, 0, 0);
+                            
+                            if (dDateObj.getTime() < currentDateObj.getTime()) {
+                                let amount = parseFloat(d.amount) || 0;
+                                let type = (d.type || '').trim().toLowerCase();
+                                let name = (d.name || '').trim();
 
-    let settlementBalance = meshtriAdvance - selfSpent;
-    let balanceDisplay = document.getElementById('settleBalanceText');
-    if(balanceDisplay) {
-        balanceDisplay.innerText = `₹ ${settlementBalance}`;
-    }
-
-    let todayOtherExp = 0;
-    document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
-
-    let todayWages = 0;
-    document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
-
-
-// പ്രധാന കാൽക്കുലേഷൻ ഫങ്ഷൻ
-window.calculateTotal = function() {
-    let siteInput = document.getElementById('siteName');
-    let siteSelect = document.getElementById('siteSelectDropdown');
-    let currentSite = (siteSelect && siteSelect.value ? siteSelect.value : (siteInput ? siteInput.value : '')).trim().toLowerCase();
-    
-    let currentDateVal = document.getElementById('entryDate').value;
-    let pastIncome = 0;
-    let pastExpense = 0;
-
-    let currentDateObj = new Date(currentDateVal);
-    // തീയതി തെറ്റാണെങ്കിൽ ഇന്നത്തെ തീയതി എടുക്കുക
-    if (isNaN(currentDateObj.getTime())) {
-        currentDateObj = new Date();
-    }
-    // സമയത്തിന്റെ ഭാഗം ഒഴിവാക്കാൻ മിഡ്‌നൈറ്റ് ആക്കുക
-    currentDateObj.setHours(0, 0, 0, 0);
-
-    // മുൻ ദിവസങ്ങളിലെ വരവും ചെലവും കണക്കാക്കുന്നു
-    if (currentSite && window.allAccountsData && Array.isArray(window.allAccountsData)) {
-        window.allAccountsData.forEach(d => {
-            let dSite = (d.site || '').trim().toLowerCase();
-            if (dSite === currentSite) {
-                let dDateVal = d.date || '';
-                let dDateObj = new Date(dDateVal);
-                
-                if (!isNaN(dDateObj.getTime())) {
-                    dDateObj.setHours(0, 0, 0, 0);
-                    
-                    // ഇന്നത്തെ തീയതിക്ക് മുമ്പുള്ള കണക്കുകൾ മാത്രം എടുക്കുന്നു
-                    if (dDateObj.getTime() < currentDateObj.getTime()) {
-                        let amount = parseFloat(d.amount) || 0;
-                        if (d.type === 'income' || d.name === 'മേസ്തിരി അഡ്വാൻസ്' || d.name === 'ക്ലയന്റ് വരവ്') {
-                            pastIncome += amount;
-                        } else {
-                            pastExpense += amount;
+                                if (type === 'income' || name.includes('അഡ്വാൻസ്') || name.includes('വരവ്') || name.includes('തന്നത്')) {
+                                    pastIncome += amount;
+                                } else {
+                                    pastExpense += amount;
+                                }
+                            }
                         }
                     }
+                });
+            }
+
+            let carryForwardBalance = pastIncome - pastExpense;
+
+            let settleAdvanceInput = document.getElementById('settleAdvance');
+            if (settleAdvanceInput) {
+                if (settleAdvanceInput.value === "" || settleAdvanceInput.dataset.auto === "true") {
+                    settleAdvanceInput.value = carryForwardBalance !== 0 ? carryForwardBalance : 0;
+                    settleAdvanceInput.dataset.auto = "true";
                 }
             }
-        });
-    }
 
-    // മുൻ ദിവസങ്ങളിലെ ബാക്കി തുക (Carry Forward Balance) കണ്ടെത്തുന്നു
-    let carryForwardBalance = pastIncome - pastExpense;
+            let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
+            let meshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
+            let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
 
-    // സെറ്റിൽമെന്റ് ബോക്സിലെ 'മേസ്തിരി തന്നത് (Advance)' ഫീൽഡിലേക്ക് മുൻ ദിവസത്തെ ബാക്കി ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
-    let settleAdvanceInput = document.getElementById('settleAdvance');
-    if (settleAdvanceInput) {
-        if (settleAdvanceInput.value === "" || settleAdvanceInput.dataset.auto === "true") {
-            settleAdvanceInput.value = carryForwardBalance !== 0 ? carryForwardBalance : 0;
+            let settlementBalance = meshtriAdvance - selfSpent;
+            let balanceDisplay = document.getElementById('settleBalanceText');
+            if(balanceDisplay) {
+                balanceDisplay.innerText = `₹ ${settlementBalance}`;
+            }
 
-            settleAdvanceInput.dataset.auto = "true";
+            let todayOtherExp = 0;
+            document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
+
+            let todayWages = 0;
+            document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
+
+            let totalExpense = pastExpense + todayOtherExp + todayWages + selfSpent;
+            let finalIncome = pastIncome + todayIncome;
+            let balance = finalIncome - totalExpense;
+
+            let displayIncElem = document.getElementById('displayIncome');
+            if(displayIncElem) displayIncElem.innerText = `₹ ${finalIncome}`;
+
+            let displayExpElem = document.getElementById('displayExpense');
+            if(displayExpElem) displayExpElem.innerText = `₹ ${totalExpense}`;
+            
+            let balanceText = document.getElementById('grandTotal');
+            if(balanceText) {
+                balanceText.innerText = `₹ ${balance}`;
+                balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+            }
         }
-    }
 
-    let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-    let meshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-    let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
+        window.calculateSettlement = function() {
+            let settleAdvanceInput = document.getElementById('settleAdvance');
+            if (settleAdvanceInput) {
+                settleAdvanceInput.dataset.auto = "false"; 
+            }
+            
+            let meshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
+            let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
+            
+            let settlementBalance = meshtriAdvance - selfSpent;
+            let balanceDisplay = document.getElementById('settleBalanceText');
+            if(balanceDisplay) {
+                balanceDisplay.innerText = `₹ ${settlementBalance}`;
+            }
+            
+            if (typeof calculateTotal === 'function') {
+                calculateTotal();
+            }
+        }
 
-    let settlementBalance = meshtriAdvance - selfSpent;
-    let balanceDisplay = document.getElementById('settleBalanceText');
-    if(balanceDisplay) {
-        balanceDisplay.innerText = `₹ ${settlementBalance}`;
-    }
-
-    let todayOtherExp = 0;
-    document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
-
-    let todayWages = 0;
-    document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
-
-    let totalExpense = pastExpense + todayOtherExp + todayWages + selfSpent;
-    let finalIncome = pastIncome + todayIncome;
-    let balance = finalIncome - totalExpense;
-
-    let displayIncElem = document.getElementById('displayIncome');
-    if(displayIncElem) displayIncElem.innerText = `₹ ${finalIncome}`;
-
-    let displayExpElem = document.getElementById('displayExpense');
-    if(displayExpElem) displayExpElem.innerText = `₹ ${totalExpense}`;
-    
-    let balanceText = document.getElementById('grandTotal');
-    if(balanceText) {
-        balanceText.innerText = `₹ ${balance}`;
-        balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-    }
-}
-
-        // സെറ്റിൽമെന്റ് കണക്ക് വാട്സാപ്പിൽ അയക്കാൻ
         window.sendSettlementWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
             const entryDate = document.getElementById('entryDate').value;
@@ -496,7 +459,6 @@ window.calculateTotal = function() {
             }
 
             try {
-                // 1. ലഭിച്ച വരവ് സേവ് ചെയ്യുക
                 if (siteIncome > 0) {
                     await addDoc(collection(db, "accounts"), {
                         meshtriOwner: currentMeshtri,
@@ -509,7 +471,6 @@ window.calculateTotal = function() {
                     });
                 }
 
-                // 2. മേസ്തിരി അഡ്വാൻസ് സേവ് ചെയ്യുക
                 if (settleAdvance > 0) {
                     await addDoc(collection(db, "accounts"), {
                         meshtriOwner: currentMeshtri,
@@ -522,7 +483,6 @@ window.calculateTotal = function() {
                     });
                 }
 
-                // 3. കയ്യിൽ നിന്ന് മുടക്കിയത് ചെലവായി സേവ് ചെയ്യുക
                 if (settleSelfSpent > 0) {
                     await addDoc(collection(db, "accounts"), {
                         meshtriOwner: currentMeshtri,
@@ -535,7 +495,6 @@ window.calculateTotal = function() {
                     });
                 }
 
-                // 4. മറ്റ് ചെലവുകൾ സേവ് ചെയ്യുക
                 const expRows = document.querySelectorAll('#expenseListContainer > div');
                 for (let r of expRows) {
                     const desc = r.querySelector('.expense-desc').value.trim();
@@ -553,7 +512,6 @@ window.calculateTotal = function() {
                     }
                 }
 
-                // 5. തൊഴിലാളികളുടെ കൂലി സേവ് ചെയ്യുക
                 const workerRows = document.querySelectorAll('.worker-row');
                 for (let row of workerRows) {
                     const select = row.querySelector('.worker-select');
@@ -585,7 +543,6 @@ window.calculateTotal = function() {
                 showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
             }
         };
-
     </script>
 
     <style>
@@ -597,10 +554,8 @@ window.calculateTotal = function() {
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ലോഡ് ആകുന്ന കണ്ടെയ്നർ -->
         <div id="appHeader" class="w-full"></div>
 
-        <!-- സൈറ്റിന്റെ പേരും തൊട്ടടുത്ത് ഹോം ബട്ടണും -->
         <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
             <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide" data-key="siteDetails">സൈറ്റിന്റെ വിവരങ്ങൾ</h1>
 
@@ -613,14 +568,12 @@ window.calculateTotal = function() {
             </a>
         </div>
 
-        <!-- തിരയുന്ന ഭാഗം -->
         <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
             <input type="text" id="searchBox" data-key="searchWorker" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
         </div>
 
         <form id="siteForm" onsubmit="saveSiteData(event)" class="space-y-4">
             
-            <!-- സൈറ്റും ക്ലയന്റും -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-4">
                 <div>
                     <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="siteNamePlace">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
@@ -640,7 +593,7 @@ window.calculateTotal = function() {
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="dateLabel">തീയതി:</label>
-                        <input type="date" id="entryDate" required class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                        <input type="date" id="entryDate" required class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400" onchange="calculateTotal()">
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="incomeLabel">ലഭിച്ച വരവ് (₹):</label>
@@ -649,7 +602,6 @@ window.calculateTotal = function() {
                 </div>
             </div>
 
-            <!-- സെറ്റിൽമെന്റ് & ബാലൻസ് ബോക്സ് -->
             <div class="bg-slate-900/90 border-2 border-amber-500/80 p-5 rounded-3xl shadow-xl space-y-3">
                 <h3 class="text-xs font-black text-yellow-400 uppercase flex items-center gap-2">
                     <span>⚖️</span> സെറ്റിൽമെന്റ് & ബാലൻസ് (Balance Settlement)
@@ -673,14 +625,12 @@ window.calculateTotal = function() {
                 </button>
             </div>
 
-            <!-- മറ്റ് ചെലവുകൾ -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
                 <h3 class="text-sm font-black text-amber-400" data-key="otherExpenseTitle">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ)</h3>
                 <div id="expenseListContainer" class="space-y-2"></div>
                 <button type="button" onclick="addExpenseRow()" data-key="addExpenseBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
             </div>
 
-            <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
                 <h3 class="text-sm font-black text-amber-400" data-key="workerDetailsTitle">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
                 <div id="workerListContainer" class="space-y-3"></div>
@@ -691,7 +641,6 @@ window.calculateTotal = function() {
                 </div>
             </div>
 
-            <!-- സംഗ്രഹം & ലാഭം/നഷ്ടം -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-2.5 text-sm">
                 <div class="flex justify-between font-bold text-slate-300">
                     <span data-key="totalIncomeText">ആകെ വരവ്:</span>
@@ -707,7 +656,6 @@ window.calculateTotal = function() {
                 </div>
             </div>
 
-            <!-- വാട്സാപ്പ് ഷെയർ ബട്ടണുകൾ -->
             <div class="grid grid-cols-2 gap-2.5 pt-1">
                 <button type="button" onclick="shareSiteWhatsApp()" data-key="whatsappSiteBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg transition flex items-center justify-center gap-1.5 border border-emerald-400/30">
                     💬 സൈറ്റ് കണക്ക് WhatsApp
@@ -717,12 +665,10 @@ window.calculateTotal = function() {
                 </button>
             </div>
 
-            <!-- സേവ് ബട്ടൺ -->
             <button type="submit" data-key="saveAccountBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-base shadow-xl shadow-amber-950/50 border border-white/20 transition">കണക്ക് സേവ് ചെയ്യുക</button>
         </form>
     </div>
 
-    <!-- കസ്റ്റം അലേർട്ട് / മോഡൽ കോഡ് -->
     <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border-2 border-amber-400/50 rounded-3xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(251,191,36,0.3)] text-center space-y-4">
             <div id="modalIcon" class="text-4xl">⚠️</div>
