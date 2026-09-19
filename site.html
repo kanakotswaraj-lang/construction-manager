@@ -220,7 +220,6 @@
                 row.style.display = data.includes(queryVal) ? '' : 'none';
             });
         }
-
         // പഴയതും പുതിയതുമായ മുഴുവൻ കണക്കുകളും കൃത്യമായി കണക്കാക്കുന്ന ഫങ്ഷൻ
         window.calculateTotal = function() {
             let siteInput = document.getElementById('siteName');
@@ -240,12 +239,15 @@
             if (currentSite && window.allAccountsData && Array.isArray(window.allAccountsData)) {
                 window.allAccountsData.forEach(d => {
                     let dSite = (d.site || '').trim().toLowerCase();
-                    if (dSite === currentSite) {
+                    
+                    // സൈറ്റുകളുടെ പേരുകൾ കൃത്യമായി മാച്ച് ചെയ്യുന്നുണ്ടെന്ന് ഉറപ്പുവരുത്താൻ
+                    if (dSite === currentSite || dSite.replace(/\s+/g, '') === currentSite.replace(/\s+/g, '')) {
                         let amount = parseFloat(d.amount) || 0;
                         let type = (d.type || '').trim().toLowerCase();
-                        let name = (d.name || '').trim();
+                        let name = (d.name || '').trim().toLowerCase();
 
-                        if (type === 'income' || name.includes('അഡ്വാൻസ്') || name.includes('വരവ്') || name.includes('തന്നത്')) {
+                        // വരവുകളും അഡ്വാൻസുകളും കൃത്യമായി തിരിച്ചറിയുന്നു
+                        if (type === 'income' || name.includes('അഡ്വാൻസ്') || name.includes('വരവ്') || name.includes('തന്നത്') || type === 'advance') {
                             pastIncome += amount;
                         } else {
                             pastExpense += amount;
@@ -296,6 +298,7 @@
                 balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
             }
         }
+
 
         window.calculateSettlement = function() {
             let settleAdvanceInput = document.getElementById('settleAdvance');
