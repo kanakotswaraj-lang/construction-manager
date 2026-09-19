@@ -218,40 +218,72 @@
         }
 
         window.calculateTotal = function() {
-            let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
-            let pastIncome = 0;
-            let pastExpense = 0;
+    let currentSite = document.getElementById('siteName')?.value.trim().toLowerCase();
+    let currentDate = document.getElementById('entryDate')?.value; // നിലവിലെ തീയതി എടുക്കാൻ
+    
+    let pastIncome = 0;
+    let pastExpense = 0;
+    let todayIncome = 0;
+    let todayOtherExp = 0;
+    let todayWages = 0;
 
-            if (currentSite) {
-                allAccountsData.forEach(d => {
-                    if ((d.site || '').toLowerCase() === currentSite) {
-                        if (d.type === 'income') pastIncome += parseFloat(d.amount) || 0;
-                        else pastExpense += parseFloat(d.amount) || 0;
+    if (currentSite && window.allAccountsData) {
+        window.allAccountsData.forEach(d => {
+            if ((d.site || '').toLowerCase() === currentSite) {
+                let dDate = d.date || '';
+                let amount = parseFloat(d.amount) || 0;
+
+                // മുൻ ദിവസങ്ങളിലെ കണക്കുകൾ (Carry Forward)
+                if (currentDate && dDate < currentDate) {
+                    if (d.type === 'income' || d.type === 'advance') {
+                        pastIncome += amount;
+                    } else if (d.type === 'expense' || d.type === 'settlement' || d.type === 'selfSpent') {
+                        pastExpense += amount;
                     }
-                });
+                } 
+                // ഇന്നത്തെ ദിവസത്തെ കണക്കുകൾ
+                else if (!currentDate || dDate === currentDate) {
+                    if (d.type === 'income' || d.type === 'advance') {
+                        todayIncome += amount;
+                    }
+                }
             }
+        });
+    }
 
-            let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-            let totalIncome = pastIncome + todayIncome;
+    // ഇന്നത്തെ മറ്റ് ചെലവുകളും കൂലിയും കണക്കാക്കുന്നു
+    document.querySelectorAll('.expense-amount').forEach(input => {
+        todayOtherExp += parseFloat(input.value) || 0;
+    });
 
-            let todayOtherExp = 0;
-            document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
+    document.querySelectorAll('.worker-wage').forEach(input => {
+        todayWages += parseFloat(input.value) || 0;
+    });
 
-            let todayWages = 0;
-            document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
+    // ആകെ വരവും ചെലവും ബാലൻസും കണക്കാക്കുന്നു
+    let totalIncome = pastIncome + todayIncome;
+    let todayTotalExp = todayOtherExp + todayWages;
+    let totalExpense = pastExpense + todayTotalExp;
+    let balance = totalIncome - totalExpense;
 
-            let totalExpense = pastExpense + todayOtherExp + todayWages;
-            let balance = totalIncome - totalExpense;
+    // സ്ക്രീനിൽ ഡിസ്പ്ലേ ചെയ്യുന്ന ഭാഗം
+    let displayInc = document.getElementById('displayIncome');
+    if (displayInc) displayInc.innerText = `₹ ${totalIncome}`;
 
-            document.getElementById('displayIncome').innerText = `₹ ${totalIncome}`;
-            document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
-            
-            let balanceText = document.getElementById('grandTotal');
-            balanceText.innerText = `₹ ${balance}`;
-            balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+    let displayExp = document.getElementById('displayExpense');
+    if (displayExp) displayExp.innerText = `₹ ${totalExpense}`;
 
-            calculateSettlement();
-        }
+    let balanceText = document.getElementById('grandTotal');
+    if (balanceText) {
+        balanceText.innerText = `₹ ${balance}`;
+        balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-emerald-400 font-black text-base";
+    }
+
+    if (typeof calculateSettlement === 'function') {
+        calculateSettlement();
+    }
+}
+
 
         // സെറ്റിൽമെന്റ് കണക്കുകൂട്ടൽ
         window.calculateSettlement = function() {
