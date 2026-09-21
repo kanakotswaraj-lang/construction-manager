@@ -219,6 +219,90 @@
                 row.style.display = data.includes(queryVal) ? '' : 'none';
             });
         }
+        
+        // സെറ്റിൽമെന്റും ടോട്ടലും കണക്കാക്കുന്ന ഫങ്ഷൻ
+        window.calculateTotal = function() {
+            let currentSite = document.getElementById('siteName')?.value.trim().toLowerCase() || '';
+            let currentDate = document.getElementById('entryDate')?.value || '';
+            
+            let pastIncome = 0;
+            let pastExpense = 0;
+
+            if (window.allAccountsData) {
+                window.allAccountsData.forEach(d => {
+                    let dSite = (d.site || '').trim().toLowerCase();
+                    if (!currentSite || dSite === currentSite || dSite.includes(currentSite) || currentSite.includes(dSite)) {
+                        let dDate = d.date || '';
+                        let amount = parseFloat(d.amount) || 0;
+
+                        if (currentDate && dDate < currentDate) {
+                            if (d.type === 'income' || d.type === 'advance') {
+                                pastIncome += amount;
+                            } else {
+                                pastExpense += amount;
+                            }
+                        }
+                    }
+                });
+            }
+
+            let todayIncome = parseFloat(document.getElementById('siteIncome')?.value) || 0;
+            let meshtriAdvance = parseFloat(document.getElementById('settleAdvance')?.value) || 0;
+            let selfSpent = parseFloat(document.getElementById('settleSelfSpent')?.value) || 0;
+
+            let todayOtherExp = 0;
+            document.querySelectorAll('.expense-amount').forEach(input => {
+                todayOtherExp += parseFloat(input.value) || 0;
+            });
+
+            let todayWages = 0;
+            document.querySelectorAll('.worker-wage').forEach(input => {
+                todayWages += parseFloat(input.value) || 0;
+            });
+
+            let totalIncome = pastIncome + todayIncome + meshtriAdvance;
+            let totalExpense = pastExpense + todayOtherExp + todayWages + selfSpent;
+            let balance = totalIncome - totalExpense;
+
+            let settlementBalance = meshtriAdvance - selfSpent;
+            let settleBalanceDisplay = document.getElementById('settleBalanceText');
+            if (settleBalanceDisplay) {
+                settleBalanceDisplay.innerText = `₹ ${settlementBalance}`;
+            }
+
+            let displayInc = document.getElementById('displayIncome');
+            if (displayInc) displayInc.innerText = `₹ ${totalIncome}`;
+
+            let displayExp = document.getElementById('displayExpense');
+            if (displayExp) displayExp.innerText = `₹ ${totalExpense}`;
+
+            let balanceText = document.getElementById('grandTotal');
+            if (balanceText) {
+                balanceText.innerText = `₹ ${balance}`;
+                balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-emerald-400 font-black text-base";
+            }
+        };
+
+        // വാട്സാപ്പിലേക്ക് സെറ്റിൽമെന്റ് അയക്കുന്ന ഫങ്ഷൻ
+        window.sendWhatsAppSettlement = function() {
+            let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
+            let advance = document.getElementById('settleAdvance')?.value || '0';
+            let selfSpent = document.getElementById('settleSelfSpent')?.value || '0';
+            let balance = document.getElementById('settleBalanceText')?.innerText || '₹ 0';
+
+            let message = `🏗️ *സൈറ്റ് സെറ്റിൽമെന്റ് കണക്ക്*\n` +
+                          `📍 സൈറ്റ്: ${siteName}\n` +
+                          `💰 മേസ്തിരി തന്നത്: ₹ ${advance}\n` +
+                          `🛠️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n` +
+                          `⚖️ ബാക്കി തുക: ${balance}\n\n` +
+                          `- മേസ്തിരി പ്രോ ആപ്പ് വഴി അയച്ചത്`;
+
+            let encodedUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(encodedUrl, '_blank');
+        };
+
+        window.saveSiteData = async function(event) {
+            // നിങ്ങളുടെ പഴയ സേവ് ഫങ്ഷൻ കോഡ് ഇവിടെ തുടരുന്നു...
 
         window.calculateTotal = function() {
             let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
@@ -485,6 +569,31 @@
                     <button type="button" onclick="addWorkerRow()" data-key="addWorkerBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ തൊഴിലാളിയെ ചേർക്കുക</button>
                     <a href="staff.html" data-key="addNewPersonBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
                 </div>
+            </div>
+            
+            <!-- സെറ്റിൽമെന്റ് & ബാലൻസ് സെക്ഷൻ -->
+            <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
+                <h3 class="text-sm font-black text-amber-400">⚖️ സെറ്റിൽമെന്റ് & ബാലൻസ് (BALANCE SETTLEMENT)</h3>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">മേസ്തിരി തന്നത് (Advance)</label>
+                        <input type="number" id="settleAdvance" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">കയ്യിൽ നിന്ന് മുടക്കിയത്</label>
+                        <input type="number" id="settleSelfSpent" value="0" oninput="calculateTotal()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center bg-slate-800/60 p-3 rounded-2xl border border-slate-700 text-sm">
+                    <span class="font-bold text-slate-300">ബാക്കി തുക (Balance):</span>
+                    <span id="settleBalanceText" class="text-emerald-400 font-black">₹ 0</span>
+                </div>
+
+                <button type="button" onclick="sendWhatsAppSettlement()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md flex items-center justify-center gap-1.5">
+                    📱 സെറ്റിൽമെന്റ് കണക്ക് WhatsApp അയക്കുക
+                </button>
             </div>
 
             <!-- സംഗ്രഹം & ലാഭം/നഷ്ടം -->
