@@ -126,11 +126,13 @@
                     });
                 }
 
-                updateAllDropdowns();
+                                updateAllDropdowns();
+                calculateTotal(); // ഡാറ്റ ലോഡ് ആയ ഉടൻ കണക്കുകൾ ഓട്ടോമാറ്റിക്കായി വരാൻ ഇത് സഹായിക്കും
             } catch (e) {
                 console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", e);
             }
         }
+
 
         window.onSiteSelectChange = function() {
             const selectedSite = document.getElementById('siteSelectDropdown').value;
