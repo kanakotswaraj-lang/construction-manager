@@ -131,22 +131,21 @@
                 console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", e);
             }
         }
-window.onSiteSelectChange = function() {
-    const selectedSite = document.getElementById('siteSelectDropdown').value;
-    const siteInput = document.getElementById('siteName');
-    
-    if (selectedSite) {
-        siteInput.value = selectedSite;
-        siteInput.readOnly = true;
-        siteInput.classList.add('opacity-60');
-    } else {
-        siteInput.value = '';
-        siteInput.readOnly = false;
-        siteInput.classList.remove('opacity-60');
-    }
-    calculateTotal(); // പഴയ കണക്കുകളും ബാലൻസും കൂട്ടാൻ ഇത് സഹായിക്കും
-}
 
+        window.onSiteSelectChange = function() {
+            const selectedSite = document.getElementById('siteSelectDropdown').value;
+            const siteInput = document.getElementById('siteName');
+            if (selectedSite) {
+                siteInput.value = selectedSite;
+                siteInput.readOnly = true;
+                siteInput.classList.add('opacity-60');
+            } else {
+                siteInput.value = '';
+                siteInput.readOnly = false;
+                siteInput.classList.remove('opacity-60');
+            }
+            calculateTotal();
+        }
 
         function updateAllDropdowns() {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
