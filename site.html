@@ -37,14 +37,12 @@
             
             document.getElementById('entryDate').valueAsDate = new Date();
             
-            // പേജ് ലോഡ് ചെയ്യുമ്പോൾ നിലവിലുള്ള ഭാഷ സെറ്റ് ചെയ്യുക
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             changePageLanguage(savedLang);
 
             fetchData();
         });
 
-        // ഭാഷ മാറ്റുമ്പോൾ പേജിലെ വാക്കുകൾ മാറുന്ന ഫങ്ഷൻ
         window.changePageLanguage = function(lang) {
             localStorage.setItem('selectedLang', lang);
             if (typeof words === 'undefined') return;
@@ -61,7 +59,6 @@
             });
         }
 
-        // കസ്റ്റം അലേർട്ട് ഫംഗ്ഷൻ
         function showCustomAlert(message, title = "ശ്രദ്ധിക്കുക", isConfirm = false, onConfirm = null) {
             const modal = document.getElementById('customModal');
             const modalTitle = document.getElementById('modalTitle');
@@ -115,7 +112,7 @@
                 accSnap.forEach(doc => {
                     const d = doc.data();
                     allAccountsData.push(d);
-                    if (d.site) siteSet.add(d.site);
+                    if (d.site) siteSet.add(d.site.trim());
                 });
 
                 const siteDropdown = document.getElementById('siteSelectDropdown');
@@ -300,43 +297,6 @@
             let encodedUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
             window.open(encodedUrl, '_blank');
         };
-
-        window.saveSiteData = async function(event) {
-            // നിങ്ങളുടെ പഴയ സേവ് ഫങ്ഷൻ കോഡ് ഇവിടെ തുടരുന്നു...
-
-        window.calculateTotal = function() {
-            let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
-            let pastIncome = 0;
-            let pastExpense = 0;
-
-            if (currentSite) {
-                allAccountsData.forEach(d => {
-                    if ((d.site || '').toLowerCase() === currentSite) {
-                        if (d.type === 'income') pastIncome += parseFloat(d.amount) || 0;
-                        else pastExpense += parseFloat(d.amount) || 0;
-                    }
-                });
-            }
-
-            let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-            let totalIncome = pastIncome + todayIncome;
-
-            let todayOtherExp = 0;
-            document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
-
-            let todayWages = 0;
-            document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
-
-            let totalExpense = pastExpense + todayOtherExp + todayWages;
-            let balance = totalIncome - totalExpense;
-
-            document.getElementById('displayIncome').innerText = `₹ ${totalIncome}`;
-            document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
-            
-            let balanceText = document.getElementById('grandTotal');
-            balanceText.innerText = `₹ ${balance}`;
-            balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-        }
 
         window.shareSiteWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
