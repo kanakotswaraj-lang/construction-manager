@@ -223,10 +223,12 @@
         
 window.calculateTotal = function() {
     let siteSelect = document.getElementById('siteSelectDropdown');
-    let currentSite = (siteSelect ? siteSelect.value : '') || document.getElementById('siteName')?.value || '';
+    let siteInput = document.getElementById('siteName');
+    let currentSite = (siteSelect && siteSelect.value ? siteSelect.value : (siteInput ? siteInput.value : ''));
     currentSite = currentSite.trim().toLowerCase();
     
-    let currentDate = document.getElementById('entryDate')?.value || '';
+    let currentDateVal = document.getElementById('entryDate')?.value || '';
+    let currentDateObj = currentDateVal ? new Date(currentDateVal) : new Date();
     
     let pastIncome = 0;
     let pastExpense = 0;
@@ -235,17 +237,20 @@ window.calculateTotal = function() {
         window.allAccountsData.forEach(d => {
             let dSite = (d.site || '').trim().toLowerCase();
             
-            // സൈറ്റ് പേര് ഒന്നുതന്നെയാണെങ്കിൽ മാത്രം കണക്കുകൾ കൂട്ടുക
+            // സൈറ്റ് പേര് ഒന്നുതന്നെയാണോ എന്ന് പരിശോധിക്കുന്നു
             if (currentSite && dSite === currentSite) {
-                let dDate = d.date || '';
+                let dDateVal = d.date || '';
                 let amount = parseFloat(d.amount) || 0;
 
-                // തീയതി പരിശോധന (ഇന്നത്തെ തീയതിക്ക് മുൻപുള്ള പഴയ കണക്കുകൾ)
-                if (currentDate && dDate < currentDate) {
-                    if (d.type === 'income' || d.type === 'advance') {
-                        pastIncome += amount;
-                    } else {
-                        pastExpense += amount;
+                if (dDateVal) {
+                    let dDateObj = new Date(dDateVal);
+                    // തീയതികൾ തമ്മിൽ കൃത്യമായി താരതമ്യം ചെയ്യുന്നു (ഇന്നത്തെ തീയതിക്ക് മുൻപുള്ളവ)
+                    if (dDateObj < currentDateObj) {
+                        if (d.type === 'income' || d.type === 'advance') {
+                            pastIncome += amount;
+                        } else {
+                            pastExpense += amount;
+                        }
                     }
                 }
             }
