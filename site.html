@@ -218,157 +218,106 @@
             });
         }
 
-window.calculateTotal = function() {
-    try {
-        let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
-        
-        let siteIncome = 0;
-        let siteExpense = 0;
-        let siteCurrentSiteSelfSpent = 0;
-        
-        let globalTotalMeshtriAdvance = 0;
-        let globalTotalSelfSpent = 0;
-        let globalTotalExpense = 0;
+        window.calculateTotal = function() {
+            try {
+                let siteNameElem = document.getElementById('siteName');
+                let currentSite = siteNameElem ? siteNameElem.value.trim().toLowerCase() : '';
+                
+                let siteIncome = 0;
+                let siteExpense = 0;
+                let siteCurrentSiteSelfSpent = 0;
+                
+                let globalTotalMeshtriAdvance = 0;
+                let globalTotalSelfSpent = 0;
+                let globalTotalExpense = 0;
 
-        // എല്ലാ സൈറ്റുകളിലെയും കണക്കുകൾ പരിശോധിക്കുന്നു
-        if (Array.isArray(allAccountsData)) {
-            allAccountsData.forEach(d => {
-                let amount = parseFloat(d.amount) || 0;
-                let type = (d.type || '').trim().toLowerCase();
-                let name = (d.name || '').trim();
-                let dSite = (d.site || '').trim().toLowerCase();
+                if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
+                    allAccountsData.forEach(d => {
+                        let amount = parseFloat(d.amount) || 0;
+                        let type = (d.type || '').trim().toLowerCase();
+                        let name = (d.name || '').trim();
+                        let dSite = (d.site || '').trim().toLowerCase();
 
-                if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
-                    globalTotalMeshtriAdvance += amount;
-                } else if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
-                    globalTotalSelfSpent += amount;
-                    globalTotalExpense += amount;
-                    if (dSite === currentSite) {
-                        siteCurrentSiteSelfSpent += amount;
-                    }
-                } else {
-                    // ബാക്കി എല്ലാ ചെലവുകളും (തൊഴിലാളി കൂലി, മറ്റ് ചെലവുകൾ)
-                    if (type !== 'income') {
-                        globalTotalExpense += amount;
-                    }
-                    if (dSite === currentSite) {
-                        if (type === 'income') {
-                            siteIncome += amount;
+                        if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
+                            globalTotalMeshtriAdvance += amount;
+                        } else if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
+                            globalTotalSelfSpent += amount;
+                            globalTotalExpense += amount;
+                            if (currentSite && dSite === currentSite) {
+                                siteCurrentSiteSelfSpent += amount;
+                            }
                         } else {
-                            siteExpense += amount;
+                            if (type !== 'income') {
+                                globalTotalExpense += amount;
+                            }
+                            if (currentSite && dSite === currentSite) {
+                                if (type === 'income') {
+                                    siteIncome += amount;
+                                } else {
+                                    siteExpense += amount;
+                                }
+                            }
                         }
-                    }
+                    });
                 }
-            });
-        }
 
-        const settleAdvanceInput = document.getElementById('settleAdvance');
-        const settleSelfSpentInput = document.getElementById('settleSelfSpent');
+                const settleAdvanceInput = document.getElementById('settleAdvance');
+                const settleSelfSpentInput = document.getElementById('settleSelfSpent');
 
-        if (settleAdvanceInput && !settleAdvanceInput.dataset.initialized) {
-            settleAdvanceInput.value = globalTotalMeshtriAdvance;
-            settleAdvanceInput.dataset.initialized = "true";
-window.calculateTotal = function() {
-    try {
-        let siteNameElem = document.getElementById('siteName');
-        let currentSite = siteNameElem ? siteNameElem.value.trim().toLowerCase() : '';
-        
-        let siteIncome = 0;
-        let siteExpense = 0;
-        let siteCurrentSiteSelfSpent = 0;
-        
-        let globalTotalMeshtriAdvance = 0;
-        let globalTotalSelfSpent = 0;
-        let globalTotalExpense = 0;
-
-        // എല്ലാ സൈറ്റുകളിലെയും കണക്കുകൾ പരിശോധിക്കുന്നു
-        if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
-            allAccountsData.forEach(d => {
-                let amount = parseFloat(d.amount) || 0;
-                let type = (d.type || '').trim().toLowerCase();
-                let name = (d.name || '').trim();
-                let dSite = (d.site || '').trim().toLowerCase();
-
-                if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
-                    globalTotalMeshtriAdvance += amount;
-                } else if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
-                    globalTotalSelfSpent += amount;
-                    globalTotalExpense += amount;
-                    if (currentSite && dSite === currentSite) {
-                        siteCurrentSiteSelfSpent += amount;
-                    }
-                } else {
-                    if (type !== 'income') {
-                        globalTotalExpense += amount;
-                    }
-                    if (currentSite && dSite === currentSite) {
-                        if (type === 'income') {
-                            siteIncome += amount;
-                        } else {
-                            siteExpense += amount;
-                        }
-                    }
+                if (settleAdvanceInput && !settleAdvanceInput.dataset.initialized) {
+                    settleAdvanceInput.value = globalTotalMeshtriAdvance;
+                    settleAdvanceInput.dataset.initialized = "true";
                 }
-            });
-        }
+                if (settleSelfSpentInput && !settleSelfSpentInput.dataset.initialized) {
+                    settleSelfSpentInput.value = 0;
+                    settleSelfSpentInput.dataset.initialized = "true";
+                }
 
-        const settleAdvanceInput = document.getElementById('settleAdvance');
-        const settleSelfSpentInput = document.getElementById('settleSelfSpent');
+                let currentInputMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
+                let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
 
-        if (settleAdvanceInput && !settleAdvanceInput.dataset.initialized) {
-            settleAdvanceInput.value = globalTotalMeshtriAdvance;
-            settleAdvanceInput.dataset.initialized = "true";
-        }
-        if (settleSelfSpentInput && !settleSelfSpentInput.dataset.initialized) {
-            settleSelfSpentInput.value = 0;
-            settleSelfSpentInput.dataset.initialized = "true";
-        }
+                let todayIncomeElem = document.getElementById('siteIncome');
+                let todayIncome = todayIncomeElem ? (parseFloat(todayIncomeElem.value) || 0) : 0;
 
-        let currentInputMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-        let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
+                let todayOtherExp = 0;
+                document.querySelectorAll('.expense-amount').forEach(input => {
+                    todayOtherExp += parseFloat(input.value) || 0;
+                });
 
-        let todayIncomeElem = document.getElementById('siteIncome');
-        let todayIncome = todayIncomeElem ? (parseFloat(todayIncomeElem.value) || 0) : 0;
+                let todayWages = 0;
+                document.querySelectorAll('.worker-wage').forEach(input => {
+                    todayWages += parseFloat(input.value) || 0;
+                });
 
-        let todayOtherExp = 0;
-        document.querySelectorAll('.expense-amount').forEach(input => {
-            todayOtherExp += parseFloat(input.value) || 0;
-        });
+                let totalIncome = siteIncome + todayIncome;
+                let totalExpense = siteExpense + todayOtherExp + todayWages + siteCurrentSiteSelfSpent + currentInputSelfSpent;
+                let balance = totalIncome - totalExpense;
 
-        let todayWages = 0;
-        document.querySelectorAll('.worker-wage').forEach(input => {
-            todayWages += parseFloat(input.value) || 0;
-        });
+                let totalAllTimeExpense = globalTotalExpense + todayOtherExp + todayWages + currentInputSelfSpent;
+                let totalAllTimeAdvance = globalTotalMeshtriAdvance + (currentInputMeshtriAdvance > globalTotalMeshtriAdvance ? (currentInputMeshtriAdvance - globalTotalMeshtriAdvance) : 0);
 
-        let totalIncome = siteIncome + todayIncome;
-        let totalExpense = siteExpense + todayOtherExp + todayWages + siteCurrentSiteSelfSpent + currentInputSelfSpent;
-        let balance = totalIncome - totalExpense;
+                let globalSettlementBalance = totalAllTimeAdvance - totalAllTimeExpense;
 
-        let totalAllTimeExpense = globalTotalExpense + todayOtherExp + todayWages + currentInputSelfSpent;
-        let totalAllTimeAdvance = globalTotalMeshtriAdvance + (currentInputMeshtriAdvance > globalTotalMeshtriAdvance ? (currentInputMeshtriAdvance - globalTotalMeshtriAdvance) : 0);
+                let settleBalanceDisplay = document.getElementById('settleBalanceText');
+                if (settleBalanceDisplay) {
+                    settleBalanceDisplay.innerText = `₹ ${globalSettlementBalance}`;
+                }
 
-        let globalSettlementBalance = totalAllTimeAdvance - totalAllTimeExpense;
+                let displayIncome = document.getElementById('displayIncome');
+                if (displayIncome) displayIncome.innerText = `₹ ${totalIncome}`;
 
-        let settleBalanceDisplay = document.getElementById('settleBalanceText');
-        if (settleBalanceDisplay) {
-            settleBalanceDisplay.innerText = `₹ ${globalSettlementBalance}`;
-        }
-
-        let displayIncome = document.getElementById('displayIncome');
-        if (displayIncome) displayIncome.innerText = `₹ ${totalIncome}`;
-
-        let displayExpense = document.getElementById('displayExpense');
-        if (displayExpense) displayExpense.innerText = `₹ ${totalExpense}`;
-        
-        let balanceText = document.getElementById('grandTotal');
-        if (balanceText) {
-            balanceText.innerText = `₹ ${balance}`;
-            balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-        }
-    } catch (err) {
-        console.error("Calculation Error:", err);
-    }
-};
+                let displayExpense = document.getElementById('displayExpense');
+                if (displayExpense) displayExpense.innerText = `₹ ${totalExpense}`;
+                
+                let balanceText = document.getElementById('grandTotal');
+                if (balanceText) {
+                    balanceText.innerText = `₹ ${balance}`;
+                    balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+                }
+            } catch (err) {
+                console.error("Calculation Error:", err);
+            }
+        };
 
         window.sendWhatsAppSettlement = function() {
             let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
