@@ -277,6 +277,60 @@
                 let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
 
                 let todayIncomeElem = document.getElementById('siteIncome');
+        window.calculateTotal = function() {
+            try {
+                let siteNameElem = document.getElementById('siteName');
+                let currentSite = siteNameElem ? siteNameElem.value.trim().toLowerCase() : '';
+                
+                let siteIncome = 0;
+                let siteExpense = 0;
+                let siteSelfSpent = 0;
+                let totalMeshtriAdvance = 0;
+                let totalSiteExpense = 0;
+
+                // ഡാറ്റാബേസിൽ നിന്നുള്ള കണക്കുകൾ പരിശോധിക്കുന്നു
+                if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
+                    allAccountsData.forEach(d => {
+                        let amount = parseFloat(d.amount) || 0;
+                        let type = (d.type || '').trim().toLowerCase();
+                        let name = (d.name || '').trim();
+                        let dSite = (d.site || '').trim().toLowerCase();
+
+                        // മേസ്തിരി തന്ന മൊത്തം അഡ്വാൻസ് കണക്കാക്കുന്നു
+                        if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
+                            totalMeshtriAdvance += amount;
+                        }
+
+                        // നിലവിലെ സൈറ്റിലെ ചെലവുകളും വരവുകളും മാത്രം
+                        if (currentSite && dSite === currentSite) {
+                            if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
+                                siteSelfSpent += amount;
+                                siteExpense += amount;
+                            } else if (type === 'income') {
+                                siteIncome += amount;
+                            } else {
+                                siteExpense += amount;
+                            }
+                        }
+                    });
+                }
+
+                const settleAdvanceInput = document.getElementById('settleAdvance');
+                const settleSelfSpentInput = document.getElementById('settleSelfSpent');
+
+                if (settleAdvanceInput && !settleAdvanceInput.dataset.initialized) {
+                    settleAdvanceInput.value = 0;
+                    settleAdvanceInput.dataset.initialized = "true";
+                }
+                if (settleSelfSpentInput && !settleSelfSpentInput.dataset.initialized) {
+                    settleSelfSpentInput.value = 0;
+                    settleSelfSpentInput.dataset.initialized = "true";
+                }
+
+                let currentInputMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
+                let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
+
+                let todayIncomeElem = document.getElementById('siteIncome');
                 let todayIncome = todayIncomeElem ? (parseFloat(todayIncomeElem.value) || 0) : 0;
 
                 let todayOtherExp = 0;
@@ -290,13 +344,17 @@
                 });
 
                 let totalIncome = siteIncome + todayIncome;
-                let totalExpense = siteExpense + todayOtherExp + todayWages + siteCurrentSiteSelfSpent + currentInputSelfSpent;
+                let totalExpense = siteExpense + todayOtherExp + todayWages + siteSelfSpent + currentInputSelfSpent;
                 let balance = totalIncome - totalExpense;
 
-                let totalAllTimeExpense = globalTotalExpense + todayOtherExp + todayWages + currentInputSelfSpent;
-                let totalAllTimeAdvance = currentInputMeshtriAdvance;
+                // ആകെ അഡ്വാൻസ് തുകയോടൊപ്പം സെറ്റിൽമെന്റ് ബോക്സിൽ പുതിയതായി നൽകിയ അഡ്വാൻസും കൂട്ടുന്നു
+                let finalTotalAdvance = totalMeshtriAdvance + currentInputMeshtriAdvance;
+                
+                // ആകെ ചെലവുകൾ
+                let finalTotalExpense = totalExpense;
 
-                let globalSettlementBalance = totalAllTimeAdvance - totalAllTimeExpense;
+                // മേസ്തിരി തന്ന അഡ്വാൻസിൽ നിന്ന് ആകെ ചെലവ് കഴിച്ച് ബാക്കി തുക കാണിക്കുന്നു
+                let globalSettlementBalance = finalTotalAdvance - finalTotalExpense;
 
                 let settleBalanceDisplay = document.getElementById('settleBalanceText');
                 if (settleBalanceDisplay) {
@@ -318,6 +376,7 @@
                 console.error("Calculation Error:", err);
             }
         };
+
 
         window.sendWhatsAppSettlement = function() {
             let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
