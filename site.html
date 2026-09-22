@@ -265,7 +265,7 @@
                 const settleSelfSpentInput = document.getElementById('settleSelfSpent');
 
                 if (settleAdvanceInput && !settleAdvanceInput.dataset.initialized) {
-                    settleAdvanceInput.value = globalTotalMeshtriAdvance;
+                    settleAdvanceInput.value = 0; // പഴയ തുക ഓട്ടോമാറ്റിക് വരുന്നത് ഒഴിവാക്കി 0 നൽകിയിരിക്കുന്നു
                     settleAdvanceInput.dataset.initialized = "true";
                 }
                 if (settleSelfSpentInput && !settleSelfSpentInput.dataset.initialized) {
@@ -294,7 +294,7 @@
                 let balance = totalIncome - totalExpense;
 
                 let totalAllTimeExpense = globalTotalExpense + todayOtherExp + todayWages + currentInputSelfSpent;
-                let totalAllTimeAdvance = globalTotalMeshtriAdvance + (currentInputMeshtriAdvance > globalTotalMeshtriAdvance ? (currentInputMeshtriAdvance - globalTotalMeshtriAdvance) : 0);
+                let totalAllTimeAdvance = currentInputMeshtriAdvance;
 
                 let globalSettlementBalance = totalAllTimeAdvance - totalAllTimeExpense;
 
