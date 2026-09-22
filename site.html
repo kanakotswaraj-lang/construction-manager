@@ -253,6 +253,23 @@
             balanceText.innerText = `₹ ${balance}`;
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
+        window.sendWhatsAppSettlement = function() {
+            let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
+            let advance = document.getElementById('settleAdvance')?.value || '0';
+            let selfSpent = document.getElementById('settleSelfSpent')?.value || '0';
+            let balance = document.getElementById('settleBalanceText')?.innerText || '₹ 0';
+
+            let message = `🏗️ *സൈറ്റ് സെറ്റിൽമെന്റ് കണക്ക്*\n` +
+                          `📍 സൈറ്റ്: ${siteName}\n` +
+                          `💰 മേസ്തിരി തന്നത്: ₹ ${advance}\n` +
+                          `🛠️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n` +
+                          `⚖️ ബാക്കി തുക: ${balance}\n\n` +
+                          `- മേസ്തിരി പ്രോ ആപ്പ് വഴി അയച്ചത്`;
+
+            let encodedUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(encodedUrl, '_blank');
+        };
+
 
         window.shareSiteWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
@@ -468,6 +485,31 @@
                     </div>
                 </div>
             </div>
+              <!-- സെറ്റിൽമെന്റ് & ബാലൻസ് സെക്ഷൻ -->
+            <div class="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-4 space-y-3 mt-4">
+                <h3 class="text-amber-400 font-bold text-sm">⚖️ സെറ്റിൽമെന്റ് & ബാലൻസ് (BALANCE SETTLEMENT)</h3>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-gray-300">മേസ്തിരി തന്നത് (Advance)</label>
+                        <input type="number" id="settleAdvance" value="0" oninput="calculateTotal()" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-300">കയ്യിൽ നിന്ന് മുടക്കിയത്</label>
+                        <input type="number" id="settleSelfSpent" value="0" oninput="calculateTotal()" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white text-sm">
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/60 p-3 rounded-xl flex justify-between items-center border border-slate-700">
+                    <span class="text-xs text-gray-300 font-bold">ബാക്കി തുക:</span>
+                    <span id="settleBalanceText" class="text-emerald-400 font-black text-sm">₹ 0</span>
+                </div>
+
+                <button type="button" onclick="sendWhatsAppSettlement()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2">
+                    📱 സെറ്റിൽമെന്റ് കണക്ക് WhatsApp അയക്കുക
+                </button>
+            </div>
+
 
             <!-- മറ്റ് ചെലവുകൾ -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
