@@ -257,6 +257,52 @@
                     });
                 }
 
+
+        window.calculateTotal = function() {
+            try {
+                let siteNameElem = document.getElementById('siteName');
+                let currentSite = siteNameElem ? siteNameElem.value.trim().toLowerCase() : '';
+                
+                let siteIncome = 0;
+                let siteExpense = 0;
+                let siteSelfSpent = 0;
+                let totalMeshtriAdvance = 0;
+                let grandTotalAllExpense = 0;
+
+                // ഡാറ്റാബേസിൽ നിന്നുള്ള മൊത്തം കണക്കുകൾ പരിശോധിക്കുന്നു
+                if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
+                    allAccountsData.forEach(d => {
+                        let amount = parseFloat(d.amount) || 0;
+                        let type = (d.type || '').trim().toLowerCase();
+                        let name = (d.name || '').trim();
+                        let dSite = (d.site || '').trim().toLowerCase();
+
+                        // മേസ്തിരി തന്ന മൊത്തം അഡ്വാൻസ് കണക്കാക്കുന്നു
+                        if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
+                            totalMeshtriAdvance += amount;
+                        }
+
+                        // മൊത്തം ചെലവുകൾ കണക്കാക്കുന്നു
+                        if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
+                            grandTotalAllExpense += amount;
+                        } else if (type !== 'income' && !name.includes('മേസ്തിരി അഡ്വാൻസ്')) {
+                            grandTotalAllExpense += amount;
+                        }
+
+                        // നിലവിലെ സൈറ്റിലെ ചെലവുകൾ മാത്രം (താഴത്തെ ബോക്സിനായി)
+                        if (currentSite && dSite === currentSite) {
+                            if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
+                                siteSelfSpent += amount;
+                                siteExpense += amount;
+                            } else if (type === 'income') {
+                                siteIncome += amount;
+                            } else if (!name.includes('മേസ്തിരി അഡ്വാൻസ്') && type !== 'advance') {
+                                siteExpense += amount;
+                            }
+                        }
+                    });
+                }
+
                 const settleAdvanceInput = document.getElementById('settleAdvance');
                 const settleSelfSpentInput = document.getElementById('settleSelfSpent');
 
@@ -289,13 +335,13 @@
                 let totalExpense = siteExpense + todayOtherExp + todayWages + siteSelfSpent + currentInputSelfSpent;
                 let balance = totalIncome - totalExpense;
 
-                // ആകെ അഡ്വാൻസ് തുകയോടൊപ്പം സെറ്റിൽമെന്റ് ബോക്സിൽ പുതിയതായി നൽകിയ അഡ്വാൻസും കൂട്ടുന്നു
+                // ആകെ അഡ്വാൻസ് തുക
                 let finalTotalAdvance = totalMeshtriAdvance + currentInputMeshtriAdvance;
                 
-                // ആകെ ചെലവുകൾ
-                let finalTotalExpense = totalExpense;
+                // മൊത്തം ചെലവുകൾ (പഴയ ചെലവുകൾ + ഇന്നത്തെ ചെലവുകൾ)
+                let finalTotalExpense = grandTotalAllExpense + todayOtherExp + todayWages + currentInputSelfSpent;
 
-                // മേസ്തിരി തന്ന അഡ്വാൻസിൽ നിന്ന് ആകെ ചെലവ് കഴിച്ച് ബാക്കി തുക കാണിക്കുന്നു
+                // മേസ്തിരി തന്ന മൊത്തം അഡ്വാൻസിൽ നിന്ന് എല്ലാ സൈറ്റിലെയും ആകെ ചെലവ് കഴിഞ്ഞ് ബാക്കി കാണിക്കുന്നു
                 let globalSettlementBalance = finalTotalAdvance - finalTotalExpense;
 
                 let settleBalanceDisplay = document.getElementById('settleBalanceText');
@@ -319,6 +365,7 @@
             }
         };
 
+                
                 
 
 
