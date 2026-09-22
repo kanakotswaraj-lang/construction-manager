@@ -219,44 +219,7 @@
         }
 
         
-                        window.calculateTotal = function() {
-            try {
-                let siteNameElem = document.getElementById('siteName');
-                let currentSite = siteNameElem ? siteNameElem.value.trim().toLowerCase() : '';
-                
-                let siteIncome = 0;
-                let siteExpense = 0;
-                let siteSelfSpent = 0;
-                let totalMeshtriAdvance = 0;
-                let totalSiteExpense = 0;
-
-                // ഡാറ്റാബേസിൽ നിന്നുള്ള കണക്കുകൾ പരിശോധിക്കുന്നു
-                if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
-                    allAccountsData.forEach(d => {
-                        let amount = parseFloat(d.amount) || 0;
-                        let type = (d.type || '').trim().toLowerCase();
-                        let name = (d.name || '').trim();
-                        let dSite = (d.site || '').trim().toLowerCase();
-
-                        // മേസ്തിരി തന്ന മൊത്തം അഡ്വാൻസ് കണക്കാക്കുന്നു
-                        if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
-                            totalMeshtriAdvance += amount;
-                        }
-
-                        // നിലവിലെ സൈറ്റിലെ ചെലവുകളും വരവുകളും മാത്രം
-                        if (currentSite && dSite === currentSite) {
-                            if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
-                                siteSelfSpent += amount;
-                                siteExpense += amount;
-                            } else if (type === 'income') {
-                                siteIncome += amount;
-                            } else {
-                                siteExpense += amount;
-                            }
-                        }
-                    });
-                }
-
+                        
 
         window.calculateTotal = function() {
             try {
