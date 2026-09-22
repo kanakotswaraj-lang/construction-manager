@@ -37,14 +37,12 @@
             
             document.getElementById('entryDate').valueAsDate = new Date();
             
-            // പേജ് ലോഡ് ചെയ്യുമ്പോൾ നിലവിലുള്ള ഭാഷ സെറ്റ് ചെയ്യുക
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             changePageLanguage(savedLang);
 
             fetchData();
         });
 
-        // ഭാഷ മാറ്റുമ്പോൾ പേജിലെ വാക്കുകൾ മാറുന്ന ഫങ്ഷൻ
         window.changePageLanguage = function(lang) {
             localStorage.setItem('selectedLang', lang);
             if (typeof words === 'undefined') return;
@@ -61,7 +59,6 @@
             });
         }
 
-        // കസ്റ്റം അലേർട്ട് ഫംഗ്ഷൻ
         function showCustomAlert(message, title = "ശ്രദ്ധിക്കുക", isConfirm = false, onConfirm = null) {
             const modal = document.getElementById('customModal');
             const modalTitle = document.getElementById('modalTitle');
@@ -130,6 +127,7 @@
                 }
 
                 updateAllDropdowns();
+                calculateTotal();
             } catch (e) {
                 console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", e);
             }
@@ -220,39 +218,74 @@
             });
         }
 
+        // അഡ്വാൻസ് തുകയും മറ്റ് ചെലവുകളും കൃത്യമായി വേർതിരിച്ചു കണക്കാക്കുന്ന ഫങ്ഷൻ
         window.calculateTotal = function() {
-            let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
-            let pastIncome = 0;
-            let pastExpense = 0;
+            try {
+                let currentSite = document.getElementById('siteName').value.trim().toLowerCase();
+                let pastIncome = 0;
+                let pastExpense = 0;
+                let pastMeshtriAdvance = 0;
+                let pastSelfSpent = 0;
 
-            if (currentSite) {
-                allAccountsData.forEach(d => {
-                    if ((d.site || '').toLowerCase() === currentSite) {
-                        if (d.type === 'income') pastIncome += parseFloat(d.amount) || 0;
-                        else pastExpense += parseFloat(d.amount) || 0;
-                    }
+                if (currentSite && Array.isArray(allAccountsData)) {
+                    allAccountsData.forEach(d => {
+                        let dSite = (d.site || '').trim().toLowerCase();
+                        if (dSite === currentSite) {
+                            let amount = parseFloat(d.amount) || 0;
+                            let type = (d.type || '').trim().toLowerCase();
+                            let name = (d.name || '').trim();
+
+                            if (name.includes('മേസ്തിരി അഡ്വാൻസ്')) {
+                                pastMeshtriAdvance += amount;
+                            } else if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്')) {
+                                pastSelfSpent += amount;
+                            } else if (type === 'income') {
+                                pastIncome += amount;
+                            } else {
+                                pastExpense += amount;
+                            }
+                        }
+                    });
+                }
+
+                let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
+                let currentMeshtriAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
+                let currentSelfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
+
+                let totalMeshtriAdvance = pastMeshtriAdvance + currentMeshtriAdvance;
+                let totalSelfSpent = pastSelfSpent + currentSelfSpent;
+
+                let todayOtherExp = 0;
+                document.querySelectorAll('.expense-amount').forEach(input => {
+                    todayOtherExp += parseFloat(input.value) || 0;
                 });
+
+                let todayWages = 0;
+                document.querySelectorAll('.worker-wage').forEach(input => {
+                    todayWages += parseFloat(input.value) || 0;
+                });
+
+                let totalIncome = pastIncome + todayIncome + totalMeshtriAdvance;
+                let totalExpense = pastExpense + todayOtherExp + todayWages + totalSelfSpent;
+                let balance = totalIncome - totalExpense;
+
+                let settlementBalance = totalMeshtriAdvance - totalSelfSpent;
+                let settleBalanceDisplay = document.getElementById('settleBalanceText');
+                if(settleBalanceDisplay) {
+                    settleBalanceDisplay.innerText = `₹ ${settlementBalance}`;
+                }
+
+                document.getElementById('displayIncome').innerText = `₹ ${totalIncome}`;
+                document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
+                
+                let balanceText = document.getElementById('grandTotal');
+                balanceText.innerText = `₹ ${balance}`;
+                balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+            } catch (err) {
+                console.error("Calculation Error:", err);
             }
+        };
 
-            let todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-            let totalIncome = pastIncome + todayIncome;
-
-            let todayOtherExp = 0;
-            document.querySelectorAll('.expense-amount').forEach(input => { todayOtherExp += parseFloat(input.value) || 0; });
-
-            let todayWages = 0;
-            document.querySelectorAll('.worker-wage').forEach(input => { todayWages += parseFloat(input.value) || 0; });
-
-            let totalExpense = pastExpense + todayOtherExp + todayWages;
-            let balance = totalIncome - totalExpense;
-
-            document.getElementById('displayIncome').innerText = `₹ ${totalIncome}`;
-            document.getElementById('displayExpense').innerText = `₹ ${totalExpense}`;
-            
-            let balanceText = document.getElementById('grandTotal');
-            balanceText.innerText = `₹ ${balance}`;
-            balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-        }
         window.sendWhatsAppSettlement = function() {
             let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
             let advance = document.getElementById('settleAdvance')?.value || '0';
@@ -269,7 +302,6 @@
             let encodedUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
             window.open(encodedUrl, '_blank');
         };
-
 
         window.shareSiteWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
@@ -356,6 +388,8 @@
             const entryDate = document.getElementById('entryDate').value;
             const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
             const payerInput = document.getElementById('payerName').value.trim();
+            const settleAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
+            const settleSelfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
 
             if (!siteName) {
                 showCustomAlert("സൈറ്റിന്റെ പേര് നൽകുക!", "ശ്രദ്ധിക്കുക");
@@ -371,6 +405,30 @@
                         type: "income",
                         payment: "cash",
                         amount: siteIncome,
+                        date: entryDate
+                    });
+                }
+
+                if (settleAdvance > 0) {
+                    await addDoc(collection(db, "accounts"), {
+                        meshtriOwner: currentMeshtri,
+                        name: "മേസ്തിരി അഡ്വാൻസ്",
+                        site: siteName,
+                        type: "advance",
+                        payment: "cash",
+                        amount: settleAdvance,
+                        date: entryDate
+                    });
+                }
+
+                if (settleSelfSpent > 0) {
+                    await addDoc(collection(db, "accounts"), {
+                        meshtriOwner: currentMeshtri,
+                        name: "കയ്യിൽ നിന്ന് മുടക്കിയത്",
+                        site: siteName,
+                        type: "self_spent",
+                        payment: "cash",
+                        amount: settleSelfSpent,
                         date: entryDate
                     });
                 }
@@ -434,10 +492,8 @@
 
     <div class="max-w-md mx-auto space-y-4">
         
-        <!-- ഹെഡർ ലോഡ് ആകുന്ന കണ്ടെയ്നർ -->
         <div id="appHeader" class="w-full"></div>
 
-        <!-- സൈറ്റിന്റെ പേരും തൊട്ടടുത്ത് ഹോം ബട്ടണും -->
         <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
             <h1 class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 tracking-wide" data-key="siteDetails">സൈറ്റിന്റെ വിവരങ്ങൾ</h1>
 
@@ -450,14 +506,12 @@
             </a>
         </div>
 
-        <!-- തിരയുന്ന ഭാഗം -->
         <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
             <input type="text" id="searchBox" data-key="searchWorker" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." oninput="filterWorkers()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
         </div>
 
         <form id="siteForm" onsubmit="saveSiteData(event)" class="space-y-4">
             
-            <!-- സൈറ്റും ക്ലയന്റും -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-4">
                 <div>
                     <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="siteNamePlace">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
@@ -485,7 +539,7 @@
                     </div>
                 </div>
             </div>
-              <!-- സെറ്റിൽമെന്റ് & ബാലൻസ് സെക്ഷൻ -->
+
             <div class="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-4 space-y-3 mt-4">
                 <h3 class="text-amber-400 font-bold text-sm">⚖️ സെറ്റിൽമെന്റ് & ബാലൻസ് (BALANCE SETTLEMENT)</h3>
                 
@@ -510,15 +564,12 @@
                 </button>
             </div>
 
-
-            <!-- മറ്റ് ചെലവുകൾ -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
                 <h3 class="text-sm font-black text-amber-400" data-key="otherExpenseTitle">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ)</h3>
                 <div id="expenseListContainer" class="space-y-2"></div>
                 <button type="button" onclick="addExpenseRow()" data-key="addExpenseBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
             </div>
 
-            <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
                 <h3 class="text-sm font-black text-amber-400" data-key="workerDetailsTitle">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
                 <div id="workerListContainer" class="space-y-3"></div>
@@ -529,7 +580,6 @@
                 </div>
             </div>
 
-            <!-- സംഗ്രഹം & ലാഭം/നഷ്ടം -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-2.5 text-sm">
                 <div class="flex justify-between font-bold text-slate-300">
                     <span data-key="totalIncomeText">ആകെ വരവ്:</span>
@@ -545,7 +595,6 @@
                 </div>
             </div>
 
-            <!-- വാട്സാപ്പ് ഷെയർ ബട്ടണുകൾ -->
             <div class="grid grid-cols-2 gap-2.5 pt-1">
                 <button type="button" onclick="shareSiteWhatsApp()" data-key="whatsappSiteBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg transition flex items-center justify-center gap-1.5 border border-emerald-400/30">
                     💬 സൈറ്റ് കണക്ക് WhatsApp
@@ -555,12 +604,10 @@
                 </button>
             </div>
 
-            <!-- സേവ് ബട്ടൺ -->
             <button type="submit" data-key="saveAccountBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-base shadow-xl shadow-amber-950/50 border border-white/20 transition">കണക്ക് സേവ് ചെയ്യുക</button>
         </form>
     </div>
 
-    <!-- കസ്റ്റം അലേർട്ട് / മോഡൽ കോഡ് -->
     <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border-2 border-amber-400/50 rounded-3xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(251,191,36,0.3)] text-center space-y-4">
             <div id="modalIcon" class="text-4xl">⚠️</div>
