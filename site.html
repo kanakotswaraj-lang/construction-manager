@@ -218,66 +218,8 @@
             });
         }
 
-        window.calculateTotal = function() {
-            try {
-                let siteNameElem = document.getElementById('siteName');
-                let currentSite = siteNameElem ? siteNameElem.value.trim().toLowerCase() : '';
-                
-                let siteIncome = 0;
-                let siteExpense = 0;
-                let siteCurrentSiteSelfSpent = 0;
-                
-                let globalTotalMeshtriAdvance = 0;
-                let globalTotalSelfSpent = 0;
-                let globalTotalExpense = 0;
-
-                if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
-                    allAccountsData.forEach(d => {
-                        let amount = parseFloat(d.amount) || 0;
-                        let type = (d.type || '').trim().toLowerCase();
-                        let name = (d.name || '').trim();
-                        let dSite = (d.site || '').trim().toLowerCase();
-
-                        if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
-                            globalTotalMeshtriAdvance += amount;
-                        } else if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
-                            globalTotalSelfSpent += amount;
-                            globalTotalExpense += amount;
-                            if (currentSite && dSite === currentSite) {
-                                siteCurrentSiteSelfSpent += amount;
-                            }
-                        } else {
-                            if (type !== 'income') {
-                                globalTotalExpense += amount;
-                            }
-                            if (currentSite && dSite === currentSite) {
-                                if (type === 'income') {
-                                    siteIncome += amount;
-                                } else {
-                                    siteExpense += amount;
-                                }
-                            }
-                        }
-                    });
-                }
-
-                const settleAdvanceInput = document.getElementById('settleAdvance');
-                const settleSelfSpentInput = document.getElementById('settleSelfSpent');
-
-                if (settleAdvanceInput && !settleAdvanceInput.dataset.initialized) {
-                    settleAdvanceInput.value = 0; // പഴയ തുക ഓട്ടോമാറ്റിക് വരുന്നത് ഒഴിവാക്കി 0 നൽകിയിരിക്കുന്നു
-                    settleAdvanceInput.dataset.initialized = "true";
-                }
-                if (settleSelfSpentInput && !settleSelfSpentInput.dataset.initialized) {
-                    settleSelfSpentInput.value = 0;
-                    settleSelfSpentInput.dataset.initialized = "true";
-                }
-
-                let currentInputMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-                let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
-
-                let todayIncomeElem = document.getElementById('siteIncome');
-        window.calculateTotal = function() {
+        
+                        window.calculateTotal = function() {
             try {
                 let siteNameElem = document.getElementById('siteName');
                 let currentSite = siteNameElem ? siteNameElem.value.trim().toLowerCase() : '';
@@ -376,6 +318,11 @@
                 console.error("Calculation Error:", err);
             }
         };
+
+                
+
+
+                
 
 
         window.sendWhatsAppSettlement = function() {
