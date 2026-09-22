@@ -29,11 +29,19 @@
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
         document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader', true, currentMeshtri);
+            try {
+                if (typeof setupHeader === 'function') {
+                    setupHeader('appHeader', true, currentMeshtri);
+                } else {
+                    document.getElementById('appHeader').innerHTML = `
+                        <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex justify-between items-center shadow-xl">
+                            <span class="text-amber-400 font-bold text-sm">സ്വാഗതം, ${currentMeshtri}</span>
+                            <a href="dashboard.html" class="px-3 py-1.5 bg-amber-500 text-slate-950 rounded-xl text-xs font-black">ഡാഷ്‌ബോർഡ്</a>
+                        </div>`;
+                }
+            } catch (e) {
+                console.error("ഹെഡർ ലോഡിങ് പിഴവ്:", e);
             }
-            const nameSpan = document.getElementById('loggedInMeshtri');
-            if(nameSpan) nameSpan.innerText = `സ്വാഗതം, ${currentMeshtri}`;
             
             document.getElementById('entryDate').valueAsDate = new Date();
             
@@ -121,16 +129,14 @@
                     const currentLang = localStorage.getItem('selectedLang') || 'ml';
                     const defaultText = (typeof words !== 'undefined' && words['newSiteType'] && words['newSiteType'][currentLang]) ? words['newSiteType'][currentLang] : "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക";
                     
-                    siteDropdown.innerHTML = `<option value="" data-key="newSiteType">${defaultText}</option>`;
+                    siteDropdown.innerHTML = `<option value="">${defaultText}</option>`;
                     siteSet.forEach(s => {
                         siteDropdown.innerHTML += `<option value="${s}">${s}</option>`;
                     });
                 }
 
                 updateAllDropdowns();
-                if (typeof calculateTotal === 'function') {
-                    calculateTotal();
-                }
+                calculateTotal();
             } catch (e) {
                 console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", e);
             }
@@ -226,9 +232,8 @@
             let siteInput = document.getElementById('siteName');
             
             let currentSite = "";
-            if (siteSelect && siteSelect.value && siteSelect.value !== "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക") {
+            if (siteSelect && siteSelect.value) {
                 currentSite = siteSelect.value.trim().toLowerCase();
-                if (siteInput) siteInput.value = siteSelect.value;
             } else if (siteInput) {
                 currentSite = siteInput.value.trim().toLowerCase();
             }
@@ -242,62 +247,6 @@
             if (window.allAccountsData && Array.isArray(window.allAccountsData)) {
                 window.allAccountsData.forEach(d => {
                     let dSite = (d.site || '').trim().toLowerCase();
-                    if (currentSite && dSite === currentSite) {
-                        let dDateVal = d.date || '';
-                        let amount = parseFloat(d.amount) || 0;
-
-                        if (dDateVal) {
-                            let dDateObj = new Date(dDateVal);
-                            if (dDateObj < currentDateObj) {
-                                let type = (d.type || '').trim().toLowerCase();
-                                let name = (d.name || '').trim();
-                                if (type === 'income' || type === 'advance' || name.includes('അഡ്വാൻസ്') || name.includes('വരവ്')) {
-                                    pastIncome += amount;
-                                } else {
-                                    pastExpense += amount;
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            let todayIncome = parseFloat(document.getElementById('siteIncome')?.value) || 0;
-            let settleAdvanceInput = document.getElementById('settleAdvance');
-            let meshtriAdvance = parseFloat(settleAdvanceInput?.value) || 0;
-            let selfSpent = parseFloat(document.getElementById('settleSelfSpent')?.value) || 0;
-
-            let todayOtherExp = 0;
-            document.querySelectorAll('.expense-amount').forEach(input => {
-                todayOtherExp += parseFloat(input.value) || 0;
-            });
-
-            let todayWages = 0;
-            document.querySelectorAll('.worker-wage').forEach(input => {
-
-        window.calculateTotal = function() {
-            let siteSelect = document.getElementById('siteSelectDropdown');
-            let siteInput = document.getElementById('siteName');
-            
-            let currentSite = "";
-            if (siteSelect && siteSelect.value && siteSelect.value !== "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക") {
-                currentSite = siteSelect.value.trim().toLowerCase();
-                if (siteInput) siteInput.value = siteSelect.value;
-            } else if (siteInput) {
-                currentSite = siteInput.value.trim().toLowerCase();
-            }
-
-            let currentDateVal = document.getElementById('entryDate')?.value || '';
-            let currentDateObj = currentDateVal ? new Date(currentDateVal) : new Date();
-            
-            let pastIncome = 0;
-            let pastExpense = 0;
-
-            if (window.allAccountsData && Array.isArray(window.allAccountsData)) {
-                window.allAccountsData.forEach(d => {
-                    let dSite = (d.site || '').trim().toLowerCase();
-                    
-                    // സൈറ്റിന്റെ പേരുകൾ തമ്മിൽ കൃത്യമായി മാച്ച് ചെയ്യുന്നുണ്ടോ എന്ന് പരിശോധിക്കാൻ
                     if (currentSite && (dSite === currentSite || dSite.includes(currentSite) || currentSite.includes(dSite))) {
                         let dDateVal = d.date || '';
                         let amount = parseFloat(d.amount) || 0;
@@ -567,7 +516,7 @@
                         <select id="siteSelectDropdown" onchange="onSiteSelectChange()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                             <option value="" data-key="newSiteType">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>
                         </select>
-                        <input type="text" id="siteName" required data-key="siteInputPlaceholder" placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                        <input type="text" id="siteName" required data-key="siteInputPlaceholder" placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400" oninput="calculateTotal()">
                     </div>
                 </div>
 
@@ -579,7 +528,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="dateLabel">തീയതി:</label>
-                        <input type="date" id="entryDate" required class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                        <input type="date" id="entryDate" required onchange="calculateTotal()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="incomeLabel">ലഭിച്ച വരവ് (₹):</label>
@@ -670,7 +619,7 @@
             <p id="modalMessage" class="text-sm font-bold text-blue-100 leading-relaxed">ഇവിടെ മെസ്സേജ് വരുന്നതായിരിക്കും...</p>
             
             <div class="flex gap-3 pt-2">
-                <button id="modalCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl font-black text-base transition border border-slate-700 hidden">
+                <button id="modalCancelBtn" class="flex-1 bg-slate-800/80 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl font-black text-base transition border border-slate-700 hidden">
                     വേണ്ട
                 </button>
                 <button id="modalOkBtn" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-3 rounded-2xl font-black text-base shadow-lg transition">
