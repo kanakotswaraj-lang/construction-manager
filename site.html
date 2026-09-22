@@ -281,12 +281,68 @@
             document.querySelectorAll('.worker-wage').forEach(input => {
                 todayWages += parseFloat(input.value) || 0;
             });
+        window.calculateTotal = function() {
+            let siteSelect = document.getElementById('siteSelectDropdown');
+            let siteInput = document.getElementById('siteName');
+            
+            let currentSite = "";
+            if (siteSelect && siteSelect.value) {
+                currentSite = siteSelect.value.trim().toLowerCase();
+            } else if (siteInput) {
+                currentSite = siteInput.value.trim().toLowerCase();
+            }
+            
+            let pastIncome = 0;
+            let pastExpense = 0;
+            let pastMeshtriAdvance = 0;
+            let pastSelfSpent = 0;
 
-            let totalIncome = pastIncome + todayIncome + meshtriAdvance;
-            let totalExpense = pastExpense + todayOtherExp + todayWages + selfSpent;
+            // തീയതി നോക്കാതെ ആ സൈറ്റിലെ മുഴുവൻ കണക്കുകളും സെറ്റിൽമെന്റ് വിവരങ്ങളും കൂട്ടുന്നു
+            if (window.allAccountsData && Array.isArray(window.allAccountsData)) {
+                window.allAccountsData.forEach(d => {
+                    let dSite = (d.site || '').trim().toLowerCase();
+                    
+                    if (currentSite && (dSite === currentSite || dSite.includes(currentSite) || currentSite.includes(dSite))) {
+                        let amount = parseFloat(d.amount) || 0;
+                        let type = (d.type || '').trim().toLowerCase();
+                        let name = (d.name || '').trim();
+
+                        if (name.includes('മേസ്തിരി അഡ്വാൻസ്')) {
+                            pastMeshtriAdvance += amount;
+                        } else if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്')) {
+                            pastSelfSpent += amount;
+                        } else if (type === 'income' || type === 'advance' || name.includes('വരവ്')) {
+                            pastIncome += amount;
+                        } else {
+                            pastExpense += amount;
+                        }
+                    }
+                });
+            }
+
+            let todayIncome = parseFloat(document.getElementById('siteIncome')?.value) || 0;
+            let currentMeshtriAdvance = parseFloat(document.getElementById('settleAdvance')?.value) || 0;
+            let currentSelfSpent = parseFloat(document.getElementById('settleSelfSpent')?.value) || 0;
+
+            let totalMeshtriAdvance = pastMeshtriAdvance + currentMeshtriAdvance;
+            let totalSelfSpent = pastSelfSpent + currentSelfSpent;
+
+            let todayOtherExp = 0;
+            document.querySelectorAll('.expense-amount').forEach(input => {
+                todayOtherExp += parseFloat(input.value) || 0;
+            });
+
+            let todayWages = 0;
+            document.querySelectorAll('.worker-wage').forEach(input => {
+                todayWages += parseFloat(input.value) || 0;
+            });
+
+            // ആകെ വരവിലും ചെലവിലും സെറ്റിൽമെന്റ് തുകകളും ഉൾപ്പെടുത്തുന്നു
+            let totalIncome = pastIncome + todayIncome + totalMeshtriAdvance;
+            let totalExpense = pastExpense + todayOtherExp + todayWages + totalSelfSpent;
             let balance = totalIncome - totalExpense;
 
-            let settlementBalance = meshtriAdvance - selfSpent;
+            let settlementBalance = totalMeshtriAdvance - totalSelfSpent;
             let settleBalanceDisplay = document.getElementById('settleBalanceText');
             if(settleBalanceDisplay) {
                 settleBalanceDisplay.innerText = `₹ ${settlementBalance}`;
