@@ -218,21 +218,18 @@
             });
         }
 
-        
-                        
-
         window.calculateTotal = function() {
             try {
-                let siteNameElem = document.getElementById('siteName');
-                let currentSite = siteNameElem ? siteNameElem.value.trim().toLowerCase() : '';
+                let siteSelect = document.getElementById('siteSelectDropdown');
+                let siteInput = document.getElementById('siteName');
+                let currentSite = (siteSelect && siteSelect.value ? siteSelect.value : (siteInput ? siteInput.value : ''));
+                currentSite = currentSite.trim().toLowerCase();
                 
                 let siteIncome = 0;
                 let siteExpense = 0;
                 let siteSelfSpent = 0;
-                let totalMeshtriAdvance = 0;
-                let grandTotalAllExpense = 0;
+                let siteSpecificAdvance = 0;
 
-                // ഡാറ്റാബേസിൽ നിന്നുള്ള മൊത്തം കണക്കുകൾ പരിശോധിക്കുന്നു
                 if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
                     allAccountsData.forEach(d => {
                         let amount = parseFloat(d.amount) || 0;
@@ -240,26 +237,15 @@
                         let name = (d.name || '').trim();
                         let dSite = (d.site || '').trim().toLowerCase();
 
-                        // മേസ്തിരി തന്ന മൊത്തം അഡ്വാൻസ് കണക്കാക്കുന്നു
-                        if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
-                            totalMeshtriAdvance += amount;
-                        }
-
-                        // മൊത്തം ചെലവുകൾ കണക്കാക്കുന്നു
-                        if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
-                            grandTotalAllExpense += amount;
-                        } else if (type !== 'income' && !name.includes('മേസ്തിരി അഡ്വാൻസ്')) {
-                            grandTotalAllExpense += amount;
-                        }
-
-                        // നിലവിലെ സൈറ്റിലെ ചെലവുകൾ മാത്രം (താഴത്തെ ബോക്സിനായി)
                         if (currentSite && dSite === currentSite) {
-                            if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
+                            if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
+                                siteSpecificAdvance += amount;
+                            } else if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
                                 siteSelfSpent += amount;
                                 siteExpense += amount;
                             } else if (type === 'income') {
                                 siteIncome += amount;
-                            } else if (!name.includes('മേസ്തിരി അഡ്വാൻസ്') && type !== 'advance') {
+                            } else {
                                 siteExpense += amount;
                             }
                         }
@@ -268,15 +254,6 @@
 
                 const settleAdvanceInput = document.getElementById('settleAdvance');
                 const settleSelfSpentInput = document.getElementById('settleSelfSpent');
-
-                if (settleAdvanceInput && !settleAdvanceInput.dataset.initialized) {
-                    settleAdvanceInput.value = 0;
-                    settleAdvanceInput.dataset.initialized = "true";
-                }
-                if (settleSelfSpentInput && !settleSelfSpentInput.dataset.initialized) {
-                    settleSelfSpentInput.value = 0;
-                    settleSelfSpentInput.dataset.initialized = "true";
-                }
 
                 let currentInputMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
                 let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
@@ -287,120 +264,63 @@
                 let todayOtherExp = 0;
                 document.querySelectorAll('.expense-amount').forEach(input => {
                     todayOtherExp += parseFloat(input.value) || 0;
-window.calculateTotal = function() {
-    try {
-        let siteSelect = document.getElementById('siteSelectDropdown');
-        let siteInput = document.getElementById('siteName');
-        let currentSite = (siteSelect && siteSelect.value ? siteSelect.value : (siteInput ? siteInput.value : ''));
-        currentSite = currentSite.trim().toLowerCase();
-        
-        let siteIncome = 0;
-        let siteExpense = 0;
-        let siteSelfSpent = 0;
-        let siteSpecificAdvance = 0;
+                });
 
-        // നിലവിലെ സൈറ്റിലെ കണക്കുകൾ മാത്രം പരിശോധിക്കുന്നു
-        if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
-            allAccountsData.forEach(d => {
-                let amount = parseFloat(d.amount) || 0;
-                let type = (d.type || '').trim().toLowerCase();
-                let name = (d.name || '').trim();
-                let dSite = (d.site || '').trim().toLowerCase();
+                let todayWages = 0;
+                document.querySelectorAll('.worker-wage').forEach(input => {
+                    todayWages += parseFloat(input.value) || 0;
+                });
 
-                if (currentSite && dSite === currentSite) {
-                    if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
-                        siteSpecificAdvance += amount;
-                    } else if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
-                        siteSelfSpent += amount;
-                        siteExpense += amount;
-                    } else if (type === 'income') {
-                        siteIncome += amount;
-                    } else {
-                        siteExpense += amount;
-                    }
+                let totalIncome = siteIncome + todayIncome;
+                let totalExpense = siteExpense + todayOtherExp + todayWages + siteSelfSpent + currentInputSelfSpent;
+                let balance = totalIncome - totalExpense;
+
+                let totalAdvanceForSite = siteSpecificAdvance + currentInputMeshtriAdvance;
+                let globalSettlementBalance = totalAdvanceForSite - totalExpense;
+
+                let settleBalanceDisplay = document.getElementById('settleBalanceText');
+                if (settleBalanceDisplay) {
+                    settleBalanceDisplay.innerText = `₹ ${globalSettlementBalance}`;
                 }
-            });
-        }
 
-        const settleAdvanceInput = document.getElementById('settleAdvance');
-        const settleSelfSpentInput = document.getElementById('settleSelfSpent');
+                let displayIncome = document.getElementById('displayIncome');
+                if (displayIncome) displayIncome.innerText = `₹ ${totalIncome}`;
 
-        let currentInputMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-        let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
-
-        let todayIncomeElem = document.getElementById('siteIncome');
-        let todayIncome = todayIncomeElem ? (parseFloat(todayIncomeElem.value) || 0) : 0;
-
-        let todayOtherExp = 0;
-        document.querySelectorAll('.expense-amount').forEach(input => {
-            todayOtherExp += parseFloat(input.value) || 0;
-        });
-
-        let todayWages = 0;
-        document.querySelectorAll('.worker-wage').forEach(input => {
-            todayWages += parseFloat(input.value) || 0;
-        });
-
-        let totalIncome = siteIncome + todayIncome;
-        let totalExpense = siteExpense + todayOtherExp + todayWages + siteSelfSpent + currentInputSelfSpent;
-        let balance = totalIncome - totalExpense;
-
-        // ഓരോ സൈറ്റിനും അതാത് സൈറ്റിലെ അഡ്വാൻസും ചെലവുകളും മാത്രം വെച്ച് ബാലൻസ് കാണിക്കുന്നു
-        let totalAdvanceForSite = siteSpecificAdvance + currentInputMeshtriAdvance;
-        let globalSettlementBalance = totalAdvanceForSite - totalExpense;
-
-        let settleBalanceDisplay = document.getElementById('settleBalanceText');
-        if (settleBalanceDisplay) {
-            settleBalanceDisplay.innerText = `₹ ${globalSettlementBalance}`;
-        }
-
-        let displayIncome = document.getElementById('displayIncome');
-        if (displayIncome) displayIncome.innerText = `₹ ${totalIncome}`;
-
-        let displayExpense = document.getElementById('displayExpense');
-        if (displayExpense) displayExpense.innerText = `₹ ${totalExpense}`;
-        
-        let balanceText = document.getElementById('grandTotal');
-        if (balanceText) {
-            balanceText.innerText = `₹ ${balance}`;
-            balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-        }
-    } catch (err) {
-        console.error("Calculation Error:", err);
-    }
-};
-
-// സെറ്റിൽമെന്റ് കണക്കുകൾ പൂർണ്ണമായി തീർത്ത് അടുത്ത റൗണ്ട് (New Cycle) ആരംഭിക്കാനുള്ള ഫങ്ഷൻ
-window.resetSettlementCycle = function() {
-    if (confirm("ഈ സൈറ്റിലെ സെറ്റിൽമെന്റ് കണക്കുകൾ പൂർണ്ണമായി തീർത്ത് അടുത്ത പുതിയ സൈക്കിൾ (New Cycle) ആരംഭിക്കണമെന്നുറപ്പാണോ?")) {
-        
-        // ഇൻപുട്ട് ഫീൽഡുകൾ പൂജ്യമാക്കുന്നു
-        const settleAdvanceInput = document.getElementById('settleAdvance');
-        const settleSelfSpentInput = document.getElementById('settleSelfSpent');
-        
-        if (settleAdvanceInput) settleAdvanceInput.value = 0;
-        if (settleSelfSpentInput) settleSelfSpentInput.value = 0;
-
-        // ലോക്കൽ സ്റ്റോറേജിൽ ഈ സൈക്കിളിന്റെ ക്ലിയറൻസ് സേവ് ചെയ്യാം
-        let siteSelect = document.getElementById('siteSelectDropdown');
-        let currentSite = siteSelect ? siteSelect.value.trim().toLowerCase() : '';
-        
-        if (currentSite) {
-            localStorage.setItem('reset_cycle_' + currentSite, Date.now());
-        }
-
-        // കണക്കുകൾ വീണ്ടും കാൾ ചെയ്ത് അപ്ഡേറ്റ് ചെയ്യുന്നു
-        if (typeof window.calculateTotal === 'function') {
-            window.calculateTotal();
-        }
-
-        alert("സെറ്റിൽമെന്റ് കണക്കുകൾ വിജയകരമായി റീസെറ്റ് ചെയ്തു. പുതിയ സൈക്കിൾ ആരംഭിക്കാം.");
-    }
-};
-
-
+                let displayExpense = document.getElementById('displayExpense');
+                if (displayExpense) displayExpense.innerText = `₹ ${totalExpense}`;
                 
+                let balanceText = document.getElementById('grandTotal');
+                if (balanceText) {
+                    balanceText.innerText = `₹ ${balance}`;
+                    balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+                }
+            } catch (err) {
+                console.error("Calculation Error:", err);
+            }
+        };
 
+        window.resetSettlementCycle = function() {
+            if (confirm("ഈ സൈറ്റിലെ സെറ്റിൽമെന്റ് കണക്കുകൾ പൂർണ്ണമായി തീർത്ത് അടുത്ത പുതിയ സൈക്കിൾ (New Cycle) ആരംഭിക്കണമെന്നുറപ്പാണോ?")) {
+                const settleAdvanceInput = document.getElementById('settleAdvance');
+                const settleSelfSpentInput = document.getElementById('settleSelfSpent');
+                
+                if (settleAdvanceInput) settleAdvanceInput.value = 0;
+                if (settleSelfSpentInput) settleSelfSpentInput.value = 0;
+
+                let siteSelect = document.getElementById('siteSelectDropdown');
+                let currentSite = siteSelect ? siteSelect.value.trim().toLowerCase() : '';
+                
+                if (currentSite) {
+                    localStorage.setItem('reset_cycle_' + currentSite, Date.now());
+                }
+
+                if (typeof window.calculateTotal === 'function') {
+                    window.calculateTotal();
+                }
+
+                alert("സെറ്റിൽമെന്റ് കണക്കുകൾ വിജയകരമായി റീസെറ്റ് ചെയ്തു. പുതിയ സൈക്കിൾ ആരംഭിക്കാം.");
+            }
+        };
 
         window.sendWhatsAppSettlement = function() {
             let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
@@ -675,10 +595,10 @@ window.resetSettlementCycle = function() {
                     <span id="settleBalanceText" class="text-emerald-400 font-black text-sm">₹ 0</span>
                 </div>
 
-      <button type="button" onclick="resetSettlementCycle()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg mt-3">
-    🔄 സെറ്റിൽമെന്റ് ക്ലോസ് ചെയ്ത് പുതിയ സൈക്കിൾ തുടങ്ങുക
-</button>
-          <button type="button" onclick="sendWhatsAppSettlement()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2">
+                <button type="button" onclick="resetSettlementCycle()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg mt-3">
+                    🔄 സെറ്റിൽമെന്റ് ക്ലോസ് ചെയ്ത് പുതിയ സൈക്കിൾ തുടങ്ങുക
+                </button>
+                <button type="button" onclick="sendWhatsAppSettlement()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2">
                     📱 സെറ്റിൽമെന്റ് കണക്ക് WhatsApp അയക്കുക
                 </button>
             </div>
