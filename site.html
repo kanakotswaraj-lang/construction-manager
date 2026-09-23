@@ -217,7 +217,6 @@
                 row.style.display = data.includes(queryVal) ? '' : 'none';
             });
         }
-
         window.calculateTotal = function() {
             try {
                 let siteSelect = document.getElementById('siteSelectDropdown');
@@ -230,6 +229,10 @@
                 let siteSelfSpent = 0;
                 let siteSpecificAdvance = 0;
 
+                // റീസെറ്റ് ചെയ്ത സൈക്കിൾ ടൈംസ്റ്റാമ്പ് പരിശോധിക്കുക
+                let resetKey = 'reset_cycle_' + currentSite;
+                let resetTime = parseInt(localStorage.getItem(resetKey)) || 0;
+
                 if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
                     allAccountsData.forEach(d => {
                         let amount = parseFloat(d.amount) || 0;
@@ -237,7 +240,14 @@
                         let name = (d.name || '').trim();
                         let dSite = (d.site || '').trim().toLowerCase();
 
+                        // തീയതി അല്ലെങ്കിൽ എൻട്രി റീസെറ്റ് ടൈമിന് ശേഷമുള്ളതാണോ എന്ന് നോക്കുക (ആവശ്യമെങ്കിൽ ഫിൽട്ടർ ചെയ്യാൻ)
                         if (currentSite && dSite === currentSite) {
+                            // മുൻപ് സെറ്റിൽമെന്റ് ക്ലോസ് ചെയ്തിട്ടുണ്ടെങ്കിൽ ആ തീയതിക്ക് ശേഷമുള്ള എൻട്രികൾ മാത്രം എടുക്കുക
+                            let entryTimestamp = d.date ? new Date(d.date).getTime() : 0;
+                            if (resetTime && entryTimestamp > 0 && entryTimestamp < resetTime) {
+                                return; // പഴയ സൈക്കിളിലെ കണക്കുകൾ ഒഴിവാക്കുന്നു
+                            }
+
                             if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
                                 siteSpecificAdvance += amount;
                             } else if (name.includes('കയ്യിൽ നിന്ന് മുടക്കിയത്') || type === 'self_spent') {
@@ -299,28 +309,6 @@
             }
         };
 
-        window.resetSettlementCycle = function() {
-            if (confirm("ഈ സൈറ്റിലെ സെറ്റിൽമെന്റ് കണക്കുകൾ പൂർണ്ണമായി തീർത്ത് അടുത്ത പുതിയ സൈക്കിൾ (New Cycle) ആരംഭിക്കണമെന്നുറപ്പാണോ?")) {
-                const settleAdvanceInput = document.getElementById('settleAdvance');
-                const settleSelfSpentInput = document.getElementById('settleSelfSpent');
-                
-                if (settleAdvanceInput) settleAdvanceInput.value = 0;
-                if (settleSelfSpentInput) settleSelfSpentInput.value = 0;
-
-                let siteSelect = document.getElementById('siteSelectDropdown');
-                let currentSite = siteSelect ? siteSelect.value.trim().toLowerCase() : '';
-                
-                if (currentSite) {
-                    localStorage.setItem('reset_cycle_' + currentSite, Date.now());
-                }
-
-                if (typeof window.calculateTotal === 'function') {
-                    window.calculateTotal();
-                }
-
-                alert("സെറ്റിൽമെന്റ് കണക്കുകൾ വിജയകരമായി റീസെറ്റ് ചെയ്തു. പുതിയ സൈക്കിൾ ആരംഭിക്കാം.");
-            }
-        };
 
         window.sendWhatsAppSettlement = function() {
             let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
