@@ -112,7 +112,7 @@
                 accSnap.forEach(doc => {
                     const d = doc.data();
                     allAccountsData.push(d);
-                    if (d.site) siteSet.add(d.site);
+                    if (d.site) siteSet.add(d.site.trim());
                 });
 
                 const siteDropdown = document.getElementById('siteSelectDropdown');
@@ -217,40 +217,26 @@
                 row.style.display = data.includes(queryVal) ? '' : 'none';
             });
         }
-        
-                        async function fetchData() {
-            try {
-                const staffQuery = query(collection(db, "staffs"), where("meshtriOwner", "==", currentMeshtri));
-                const staffSnap = await getDocs(staffQuery);
-                registeredWorkers = [];
-                staffSnap.forEach(doc => registeredWorkers.push({ id: doc.id, ...doc.data() }));
 
-                const accQuery = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
-                const accSnap = await getDocs(accQuery);
-                allAccountsData = [];
-                const siteSet = new Set();
-                accSnap.forEach(doc => {
-                    const d = doc.data();
-                    allAccountsData.push(d);
-                    if (d.site) siteSet.add(d.site.trim()); // സൈറ്റുകളുടെ പേരുകൾ കൃത്യമായി എടുക്കാൻ
-                });
+        window.resetSettlementCycle = function() {
+            let siteSelect = document.getElementById('siteSelectDropdown');
+            let siteInput = document.getElementById('siteName');
+            let currentSite = (siteSelect && siteSelect.value ? siteSelect.value : (siteInput ? siteInput.value : ''));
+            currentSite = currentSite.trim().toLowerCase();
 
-                const siteDropdown = document.getElementById('siteSelectDropdown');
-                if(siteDropdown) {
-                    const currentLang = localStorage.getItem('selectedLang') || 'ml';
-                    const defaultText = (typeof words !== 'undefined' && words['newSiteType'] && words['newSiteType'][currentLang]) ? words['newSiteType'][currentLang] : "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക";
-                    
-                    siteDropdown.innerHTML = `<option value="" data-key="newSiteType">${defaultText}</option>`;
-                    siteSet.forEach(s => {
-                        siteDropdown.innerHTML += `<option value="${s}">${s}</option>`;
-                    });
-                }
-
-                updateAllDropdowns();
-                calculateTotal();
-            } catch (e) {
-                console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", e);
+            if (!currentSite) {
+                showCustomAlert("ദയവായി സൈറ്റ് തിരഞ്ഞെടുക്കുക!", "ശ്രദ്ധിക്കുക");
+                return;
             }
+
+            showCustomAlert("ഈ സൈറ്റിന്റെ സെറ്റിൽമെന്റ് ക്ലോസ് ചെയ്ത് പുതിയ സൈക്കിൾ തുടങ്ങണമോ?", "ഉറപ്പാണോ?", true, (confirmed) => {
+                if (confirmed) {
+                    let resetKey = 'reset_cycle_' + currentSite;
+                    localStorage.setItem(resetKey, Date.now().toString());
+                    showCustomAlert("പുതിയ സൈക്കിൾ വിജയകരമായി ആരംഭിച്ചു!", "വിജയം");
+                    calculateTotal();
+                }
+            });
         }
 
         window.calculateTotal = function() {
@@ -315,14 +301,12 @@
                 });
 
                 let totalIncome = siteIncome + todayIncome;
-                // ആകെ ചെലവ് കണക്കാക്കൽ (പഴയ ചെലവുകൾ + ഇന്നത്തെ ചെലവുകൾ + കയ്യിൽ നിന്ന് മുടക്കിയത്)
                 let totalExpense = siteExpense + todayOtherExp + todayWages + siteSelfSpent + currentInputSelfSpent;
                 let balance = totalIncome - totalExpense;
 
-                // മേസ്തിരി തന്ന ആകെ അഡ്വാൻസ് തുക
                 let totalAdvanceForSite = siteSpecificAdvance + currentInputMeshtriAdvance;
                 
-                // സെറ്റിൽമെന്റ് കള്ളിയിൽ: മേസ്തിരി അഡ്വാൻസ് തുകയിൽ നിന്ന് ആകെ ചെലവുകൾ കഴിഞ്ഞ് ബാക്കി വന്ന തുക മാത്രം കാണിക്കുക
+                // സെറ്റിൽമെന്റ് കള്ളിയിൽ: മേസ്തിരി തന്ന അഡ്വാൻസ് തുകയിൽ നിന്ന് ആകെ ചെലവുകൾ കഴിഞ്ഞ് ബാക്കി വന്ന തുക കാണിക്കുന്നു
                 let globalSettlementBalance = totalAdvanceForSite - totalExpense;
 
                 let settleBalanceDisplay = document.getElementById('settleBalanceText');
@@ -346,7 +330,6 @@
                 console.error("Calculation Error:", err);
             }
         };
-
 
         window.sendWhatsAppSettlement = function() {
             let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
