@@ -308,9 +308,7 @@
                 let balance = totalIncome - totalExpense;
 
                 let totalAdvanceForSite = siteSpecificAdvance + currentInputMeshtriAdvance;
-// ഇവിടെ മൊത്തം ചെലവിന് പകരം മേസ്തിരി അഡ്വാൻസുമായി ബന്ധപ്പെട്ട ചെലവുകൾ മാത്രം (ഉദാഹരണത്തിന് siteSelfSpent അല്ലെങ്കിൽ സൈറ്റിലെ മറ്റ് ചെലവുകൾ) കുറയ്ക്കാം. 
-// അല്ലെങ്കിൽ നിങ്ങൾ ഉദ്ദേശിച്ച രീതിയിൽ അഡ്വാൻസിൽ നിന്ന് ആകെ ചെലവ് കുറച്ചുള്ള കണക്ക് മാത്രമാക്കാൻ താഴെ നൽകുന്നത് ഉപയോഗിക്കുക:
-let globalSettlementBalance = totalAdvanceForSite - (siteExpense + todayOtherExp + todayWages);
+let globalSettlementBalance = totalAdvanceForSite - (siteSelfSpent + currentInputSelfSpent + todayOtherExp);
 
                 let settleBalanceDisplay = document.getElementById('settleBalanceText');
                 if (settleBalanceDisplay) {
