@@ -164,7 +164,7 @@
             const container = document.getElementById('expenseListContainer');
             const expId = Date.now();
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const ph = (currentLang === 'en') ? "Description (e.g., Vehicle, Material)" : "വിവരം (ഉദാ: വാഹനം, മെറ്റീരിയൽ)";
+            const ph = (currentLang === 'en') ? "Description (e.g., Food, Vehicle)" : "വിവരം (ഉദാ: ഭക്ഷണം, വാഹനം, മെറ്റീരിയൽ)";
             const amtPh = (currentLang === 'en') ? "Amount" : "തുക";
 
             container.insertAdjacentHTML('beforeend', `
@@ -305,8 +305,6 @@
                 let balance = totalIncome - totalExpense;
 
                 let totalAdvanceForSite = siteSpecificAdvance + currentInputMeshtriAdvance;
-                
-                // സെറ്റിൽമെന്റ് കള്ളിയിൽ: മേസ്തിരി തന്ന അഡ്വാൻസ് തുകയിൽ നിന്ന് ആകെ ചെലവുകൾ കഴിഞ്ഞ് ബാക്കി വന്ന തുക കാണിക്കുന്നു
                 let globalSettlementBalance = totalAdvanceForSite - totalExpense;
 
                 let settleBalanceDisplay = document.getElementById('settleBalanceText');
@@ -376,7 +374,7 @@
             msg += `📍 സൈറ്റ്: ${siteName}\n`;
             msg += `--------------------------------\n`;
             msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
-            msg += `💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
+            msg += `💸 *ചെലവുകൾ (ഭക്ഷണം/വാഹനം മുതലായവ):*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
             msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
             msg += `--------------------------------\n`;
             msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
@@ -613,13 +611,13 @@
             </div>
 
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
-                <h3 class="text-sm font-black text-amber-400" data-key="otherExpenseTitle">മറ്റു ചെലവുകൾ (വാഹനം, ഭക്ഷണം, മെറ്റീരിയൽ)</h3>
+                <h3 class="text-sm font-black text-amber-400" data-key="otherExpenseTitle">മറ്റു ചെലവുകൾ (ഭക്ഷണം, വാഹനം, മെറ്റീരിയൽ)</h3>
                 <div id="expenseListContainer" class="space-y-2"></div>
                 <button type="button" onclick="addExpenseRow()" data-key="addExpenseBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
             </div>
 
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
-                <h3 class="text-sm font-black text-amber-400" data-key="workerDetailsTitle">തൊഴിലാളികളുടെ വിവരങ്ങൾ</h3>
+                <h3 class="text-sm font-black text-amber-400" data-key="workerDetailsTitle">തൊഴിലാളികളുടെ വിവരങ്ങൾ (കൂലി)</h3>
                 <div id="workerListContainer" class="space-y-3"></div>
                 
                 <div class="grid grid-cols-2 gap-2 pt-2">
