@@ -242,33 +242,48 @@
             });
         }
 
-        // 1. ഫംഗ്ഷൻ: മേസ്തിരി അഡ്വാൻസ് സെറ്റിൽമെന്റ് മാത്രം കണക്കാക്കാൻ (പൂർണ്ണമായും സ്വതന്ത്രം)
+        
+        
+        // 1. ഫംഗ്ഷൻ: മേസ്തിരി അഡ്വാൻസ് സെറ്റിൽമെന്റ് കണക്കാക്കാൻ (ഡാറ്റാബേസ് കണക്കുകൾ ഉൾപ്പെടെ)
         window.calculateAdvanceSettlement = function() {
             try {
                 let siteNameInput = document.getElementById('siteName');
-                let currentSite = siteNameInput ? siteNameInput.value.trim().toLowerCase() : 'default_site';
-                if (!currentSite) currentSite = 'default_site';
+                let currentSite = siteNameInput ? siteNameInput.value.trim().toLowerCase() : '';
+                
+                let totalMeshtriAdvance = 0;
+                let totalSiteExpense = 0;
+
+                // ഡാറ്റാബേസിൽ നിന്നുള്ള മുൻകാല കണക്കുകൾ പരിശോധിക്കുന്നു
+                if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
+                    allAccountsData.forEach(d => {
+                        let amount = parseFloat(d.amount) || 0;
+                        let type = (d.type || '').trim().toLowerCase();
+                        let name = (d.name || '').trim();
+                        let dSite = (d.site || '').trim().toLowerCase();
+
+                        if (currentSite && dSite === currentSite) {
+                            if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
+                                totalMeshtriAdvance += amount;
+                            } else {
+                                totalSiteExpense += amount;
+                            }
+                        }
+                    });
+                }
 
                 const settleAdvanceInput = document.getElementById('settleAdvance');
                 const settleSelfSpentInput = document.getElementById('settleSelfSpent');
 
-                // ലോക്കൽ സ്റ്റോറേജിൽ നിന്ന് അഡ്വാൻസ് എടുക്കുക
-                let savedAdvance = localStorage.getItem('advance_' + currentSite);
-                if (settleAdvanceInput) {
-                    if (savedAdvance !== null && settleAdvanceInput.value === "0") {
-                        settleAdvanceInput.value = savedAdvance;
-                    }
-                    settleAdvanceInput.oninput = function() {
-                        localStorage.setItem('advance_' + currentSite, settleAdvanceInput.value);
-                        calculateAdvanceSettlement();
-                    };
-                }
+                let currentInputAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
+                let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
 
-                let adv = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-                let self = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
+                // ആകെ അഡ്വാൻസ് തുകയും ഇൻപുട്ട് ചെയ്ത തുകയും കൂട്ടുന്നു
+                let finalAdvance = totalMeshtriAdvance + currentInputAdvance;
+                
+                // ആകെ ചെലവുകളും കയ്യിൽ നിന്ന് മുടക്കിയതും കൂട്ടുന്നു
+                let finalExpense = totalSiteExpense + currentInputSelfSpent;
 
-                // ഇവിടെ ഗ്രാന്റ് ടോട്ടലിലെ ചെലവുകൾ ഒട്ടും ബാധിക്കില്ല. അഡ്വാൻസ് - കയ്യിൽ നിന്ന് മുടക്കിയത് മാത്രം.
-                let settlementBalance = adv - self;
+                let settlementBalance = finalAdvance - finalExpense;
 
                 let settleBalanceDisplay = document.getElementById('settleBalanceText');
                 if (settleBalanceDisplay) {
