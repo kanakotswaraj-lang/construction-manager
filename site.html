@@ -246,8 +246,9 @@ window.calculateTotal = function() {
         if (!currentSite) currentSite = 'default_site';
         
         let siteExpense = 0;
+        let totalHistoricalAdvance = 0;
 
-        // നിലവിലെ സൈറ്റിലെ ചെലവുകൾ മാത്രം കണക്കാക്കുന്നു
+        // ഫയർബേസിൽ നിന്ന് ഈ സൈറ്റിലെ പഴയ അഡ്വാൻസും ചെലവുകളും കണക്കാക്കുന്നു
         if (Array.isArray(allAccountsData)) {
             allAccountsData.forEach(d => {
                 let amount = parseFloat(d.amount) || 0;
@@ -255,7 +256,9 @@ window.calculateTotal = function() {
                 let dSite = (d.site || '').trim().toLowerCase();
 
                 if (dSite === currentSite || dSite.includes(currentSite) || currentSite.includes(dSite)) {
-                    if (type !== 'income' && type !== 'advance') {
+                    if (type === 'advance') {
+                        totalHistoricalAdvance += amount;
+                    } else if (type !== 'income') {
                         siteExpense += amount;
                     }
                 }
@@ -265,16 +268,15 @@ window.calculateTotal = function() {
         const settleAdvanceInput = document.getElementById('settleAdvance');
         const settleSelfSpentInput = document.getElementById('settleSelfSpent');
 
-        // localStorage-ൽ നിന്ന് ഈ സൈറ്റിന്റെ അഡ്വാൻസ് തുക എടുക്കുന്നു
-        let savedAdvance = localStorage.getItem('advance_' + currentSite);
-        
+        // ഇൻപുട്ട് ബോക്സിൽ വാല്യൂ ഇല്ലെങ്കിൽ, അല്ലെങ്കിൽ പുതിയ സൈറ്റാണെങ്കിൽ അഡ്വാൻസ് സെറ്റ് ചെയ്യുക
         if (settleAdvanceInput) {
-            // ആദ്യമായിട്ടാണ് എങ്കിൽ അല്ലെങ്കിൽ സേവ് ചെയ്ത ഡാറ്റ ഉണ്ടെങ്കിൽ അത് ഇൻപുട്ടിൽ കൊടുക്കും
-            if (savedAdvance !== null && settleAdvanceInput.value === "") {
-                settleAdvanceInput.value = savedAdvance;
+            let manualSaved = localStorage.getItem('advance_' + currentSite);
+            if (manualSaved !== null && settleAdvanceInput.value === "0") {
+                settleAdvanceInput.value = manualSaved;
+            } else if (totalHistoricalAdvance > 0 && settleAdvanceInput.value === "0") {
+                settleAdvanceInput.value = totalHistoricalAdvance;
             }
-            
-            // അഡ്വാൻസ് ഇൻപുട്ട് മാറുമ്പോൾ അത് ആ സൈറ്റിന്റെ പേരിൽ ലോക്കൽ സ്റ്റോറേജിൽ സേവ് ചെയ്യും
+
             settleAdvanceInput.oninput = function() {
                 localStorage.setItem('advance_' + currentSite, settleAdvanceInput.value);
                 window.calculateTotal();
@@ -297,15 +299,17 @@ window.calculateTotal = function() {
 
         let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : 0) || 0;
 
-        // ഈ സൈറ്റിലെ ആകെ ചെലവ്
+        // ഈ സൈറ്റിലെ ആകെ ചെലവ് (പഴയ ചെലവുകൾ + ഇന്നത്തെ ചെലവുകൾ)
         let totalSpentForSite = siteExpense + todayOtherExp + todayWages + currentInputSelfSpent;
         
-        // **ശാശ്വത പരിഹാരം: അഡ്വാൻസിൽ നിന്ന് ആ സൈറ്റിലെ ചെലവ് കുറച്ചത്**
+        // **സെറ്റിൽമെന്റ് ബാലൻസ്: (ആകെ അഡ്വാൻസ്) - (ആകെ ചെലവ്)**
         let settlementBalance = currentInputAdvance - totalSpentForSite;
 
         let settleBalanceDisplay = document.getElementById('settleBalanceText');
         if (settleBalanceDisplay) {
             settleBalanceDisplay.innerText = `₹ ${settlementBalance}`;
+            // നെഗറ്റീവ് ആണെങ്കിൽ ചുവപ്പ് നിറവും അല്ലാത്തത് പച്ച നിറവും നൽകാം
+            settleBalanceDisplay.className = settlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
         }
 
         let totalIncome = todayIncome;
@@ -324,15 +328,6 @@ window.calculateTotal = function() {
         console.error("Calculation Error:", err);
     }
 };
-
-// സൈറ്റ് മാറുമ്പോൾ സെറ്റിൽമെന്റ് അഡ്വാൻസ് ബോക്സ് അപ്ഡേറ്റ് ചെയ്യാൻ
-const siteDropdownElem = document.getElementById('siteSelectDropdown') || document.getElementById('siteName');
-if (siteDropdownElem) {
-    siteDropdownElem.addEventListener('change', () => {
-        setTimeout(window.calculateTotal, 100);
-    });
-}
-
 
 
         window.sendWhatsAppSettlement = function() {
