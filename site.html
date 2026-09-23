@@ -308,7 +308,20 @@
                 let balance = totalIncome - totalExpense;
 
                 let totalAdvanceForSite = siteSpecificAdvance + currentInputMeshtriAdvance;
-let globalSettlementBalance = totalAdvanceForSite - (siteSelfSpent + currentInputSelfSpent + todayOtherExp);
+
+// എല്ലാ സൈറ്റുകളിലെയും ആകെ ചെലവും കയ്യിൽ നിന്ന് മുടക്കിയതും ചേർത്ത് മൊത്തം അഡ്വാൻസിൽ നിന്ന് കുറയ്ക്കുന്നു
+let totalGlobalSpent = (window.allAccountsData ? window.allAccountsData.reduce((sum, d) => {
+    let amount = parseFloat(d.amount) || 0;
+    // വരവല്ലാത്ത, അതായത് എല്ലാത്തരം ചെലവുകളും കൂട്ടുന്നു
+    if (d.type !== 'income' && d.type !== 'advance') {
+        return sum + amount;
+    }
+    return sum;
+}, 0) : 0) + todayOtherExp + siteSelfSpent + currentInputSelfSpent;
+
+let globalSettlementBalance = totalAdvanceForSite - totalGlobalSpent;
+
+
 
                 let settleBalanceDisplay = document.getElementById('settleBalanceText');
                 if (settleBalanceDisplay) {
