@@ -244,46 +244,16 @@
 
         
         
-        // 1. ഫംഗ്ഷൻ: മേസ്തിരി അഡ്വാൻസ് സെറ്റിൽമെന്റ് കണക്കാക്കാൻ (ഡാറ്റാബേസ് കണക്കുകൾ ഉൾപ്പെടെ)
+                // 1. ഫംഗ്ഷൻ: മേസ്തിരി അഡ്വാൻസ് സെറ്റിൽമെന്റ് കണക്കാക്കാൻ (ഇൻപുട്ട് ചെയ്ത തുകകൾ മാത്രം)
         window.calculateAdvanceSettlement = function() {
             try {
-                let siteNameInput = document.getElementById('siteName');
-                let currentSite = siteNameInput ? siteNameInput.value.trim().toLowerCase() : '';
-                
-                let totalMeshtriAdvance = 0;
-                let totalSiteExpense = 0;
-
-                // ഡാറ്റാബേസിൽ നിന്നുള്ള മുൻകാല കണക്കുകൾ പരിശോധിക്കുന്നു
-                if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
-                    allAccountsData.forEach(d => {
-                        let amount = parseFloat(d.amount) || 0;
-                        let type = (d.type || '').trim().toLowerCase();
-                        let name = (d.name || '').trim();
-                        let dSite = (d.site || '').trim().toLowerCase();
-
-                        if (currentSite && dSite === currentSite) {
-                            if (name.includes('മേസ്തിരി അഡ്വാൻസ്') || type === 'advance') {
-                                totalMeshtriAdvance += amount;
-                            } else {
-                                totalSiteExpense += amount;
-                            }
-                        }
-                    });
-                }
-
                 const settleAdvanceInput = document.getElementById('settleAdvance');
                 const settleSelfSpentInput = document.getElementById('settleSelfSpent');
 
                 let currentInputAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
                 let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
 
-                // ആകെ അഡ്വാൻസ് തുകയും ഇൻപുട്ട് ചെയ്ത തുകയും കൂട്ടുന്നു
-                let finalAdvance = totalMeshtriAdvance + currentInputAdvance;
-                
-                // ആകെ ചെലവുകളും കയ്യിൽ നിന്ന് മുടക്കിയതും കൂട്ടുന്നു
-                let finalExpense = totalSiteExpense + currentInputSelfSpent;
-
-                let settlementBalance = finalAdvance - finalExpense;
+                let settlementBalance = currentInputAdvance - currentInputSelfSpent;
 
                 let settleBalanceDisplay = document.getElementById('settleBalanceText');
                 if (settleBalanceDisplay) {
@@ -294,6 +264,7 @@
                 console.error("Advance Calculation Error:", err);
             }
         };
+
 
         // 2. ഫംഗ്ഷൻ: ഗ്രാന്റ് ടോട്ടൽ (വരവ്, ചെലവ്, ബാലൻസ്) മാത്രം കണക്കാക്കാൻ (പൂർണ്ണമായും സ്വതന്ത്രം)
         window.calculateGrandTotal = function() {
