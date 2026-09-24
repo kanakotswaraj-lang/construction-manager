@@ -168,10 +168,19 @@
             const amtPh = (currentLang === 'en') ? "Amount" : "തുക";
 
             container.insertAdjacentHTML('beforeend', `
-                <div class="flex gap-2 items-center" id="exp-${expId}">
-                    <input type="text" placeholder="${ph}" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-                    <input type="number" placeholder="${amtPh}" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()">
-                    <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3 py-3 rounded-xl font-bold text-xs">X</button>
+                <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2 expense-row" id="exp-${expId}">
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="${ph}" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+                        <input type="number" placeholder="${amtPh}" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()">
+                        <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3.5 py-3 rounded-xl font-bold text-xs">X</button>
+                    </div>
+                    <div>
+                        <select class="expense-source w-full p-2.5 bg-slate-800 text-amber-300 rounded-xl border border-slate-700 text-xs font-bold">
+                            <option value="Meshtri">പണം നൽകിയത്: മേസ്തിരി ഫണ്ട്</option>
+                            <option value="Owner">പണം നൽകിയത്: മുതലാളി ഫണ്ട്</option>
+                            <option value="Self">പണം നൽകിയത്: സ്വന്തം കയ്യിൽ നിന്ന്</option>
+                        </select>
+                    </div>
                 </div>
             `);
         }
@@ -291,7 +300,6 @@
                 const ownerAdvanceInput = document.getElementById('ownerAdvance');
                 const settleSelfSpentInput = document.getElementById('settleSelfSpent');
 
-                // മേസ്തിരി അഡ്വാൻസ്
                 if (settleAdvanceInput) {
                     let manualSaved = localStorage.getItem('advance_Meshtri_' + currentSite);
                     if (manualSaved !== null && settleAdvanceInput.value === "") {
@@ -305,7 +313,6 @@
                     };
                 }
 
-                // മുതലാളി അഡ്വാൻസ്
                 if (ownerAdvanceInput) {
                     let manualSavedOwner = localStorage.getItem('advance_Owner_' + currentSite);
                     if (manualSavedOwner !== null && ownerAdvanceInput.value === "") {
@@ -335,11 +342,12 @@
 
                 let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : 0) || 0;
 
+                // ആകെ ചെലവ് (സൈറ്റിന്റെ സാധാരണ വരവ്-ചെലവ് കണക്കുകൾ)
                 let totalSpentForSite = siteExpense + todayOtherExp + todayWages + currentInputSelfSpent;
                 
-                // കണക്കുകൂട്ടലുകൾ വെവ്വേറെ
-                let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance) - totalSpentForSite;
-                let ownerSettlementBalance = (prevOwnerBalance + currentOwnerAdvance) - totalSpentForSite;
+                // സെറ്റിൽമെന്റ് കണക്ക് (അഡ്വാൻസ് മാത്രം അടിസ്ഥാനമാക്കി)
+                let meshtriSettlementBalance = currentMeshtriAdvance - prevMeshtriBalance;
+                let ownerSettlementBalance = currentOwnerAdvance - prevOwnerBalance;
 
                 let settleBalanceDisplay = document.getElementById('settleBalanceText');
                 if (settleBalanceDisplay) {
@@ -370,22 +378,16 @@
         window.sendWhatsAppSettlement = function() {
             let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
             let fundSource = document.getElementById('fundSourceSelect')?.value || 'Meshtri';
-            let currentSite = siteName.trim().toLowerCase();
 
             let sourceTitle = fundSource === 'Owner' ? "മുതലാളി (Owner)" : "മേസ്തിരി (Meshtri)";
             let advance = fundSource === 'Owner' ? (document.getElementById('ownerAdvance')?.value || '0') : (document.getElementById('settleAdvance')?.value || '0');
             let balance = fundSource === 'Owner' ? (document.getElementById('ownerBalanceText')?.innerText || '₹ 0') : (document.getElementById('settleBalanceText')?.innerText || '₹ 0');
-            let prevBalance = parseFloat(localStorage.getItem('prev_balance_' + fundSource + '_' + currentSite)) || 0;
-            let selfSpent = document.getElementById('settleSelfSpent')?.value || '0';
 
             let message = `🏗️ *${sourceTitle} അഡ്വാൻസ് സെറ്റിൽമെന്റ്*\n` +
                           `📍 സൈറ്റ്: ${siteName}\n` +
                           `--------------------------------\n` +
-                          `📌 മുൻ ആഴ്ചയിലെ ബാക്കി: ₹ ${prevBalance}\n` +
-                          `💰 ഈ ആഴ്ച തന്നത്: ₹ ${advance}\n` +
-                          `🛠️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n` +
-                          `--------------------------------\n` +
-                          `⚖️ ആകെ ബാക്കി തുക: ${balance}\n\n` +
+                          `💰 തന്ന തുക (Advance): ₹ ${advance}\n` +
+                          `⚖️ ബാക്കി തുക: ${balance}\n\n` +
                           `- മേസ്തിരി പ്രോ ആപ്പ് വഴി അയച്ചത്`;
 
             let encodedUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
@@ -400,11 +402,14 @@
             let details = "";
             let otherExpTotal = 0;
             
-            document.querySelectorAll('#expenseListContainer > div').forEach(row => {
+            document.querySelectorAll('.expense-row').forEach(row => {
                 let desc = row.querySelector('.expense-desc').value.trim();
                 let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
+                let source = row.querySelector('.expense-source').value;
+                let sourceText = source === 'Owner' ? '(മുതലാളി ഫണ്ട്)' : (source === 'Self' ? '(സ്വന്തം കയ്യിൽ നിന്ന്)' : '(മേസ്തിരി ഫണ്ട്)');
+
                 if (desc && amt > 0) {
-                    details += `➖ ${desc}: ₹ ${amt}\n`;
+                    details += `➖ ${desc} ${sourceText}: ₹ ${amt}\n`;
                     otherExpTotal += amt;
                 }
             });
@@ -420,7 +425,7 @@
             msg += `📍 സൈറ്റ്: ${siteName}\n`;
             msg += `--------------------------------\n`;
             msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
-            msg += `💸 *ചെലവുകൾ (ഭക്ഷണം/വാഹനം മുതലായവ):*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
+            msg += `💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
             msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
             msg += `--------------------------------\n`;
             msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
@@ -537,16 +542,18 @@
                     });
                 }
 
-                const expRows = document.querySelectorAll('#expenseListContainer > div');
+                const expRows = document.querySelectorAll('.expense-row');
                 for (let r of expRows) {
                     const desc = r.querySelector('.expense-desc').value.trim();
                     const amt = parseFloat(r.querySelector('.expense-amount').value) || 0;
+                    const source = r.querySelector('.expense-source').value;
                     if (desc && amt > 0) {
                         await addDoc(collection(db, "accounts"), {
                             meshtriOwner: currentMeshtri,
                             name: desc,
                             site: siteName,
                             type: "other",
+                            expenseSource: source,
                             payment: "cash",
                             amount: amt,
                             date: entryDate
