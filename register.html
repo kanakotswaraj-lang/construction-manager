@@ -9,8 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- language.js ഫയൽ ഇവിടെ ഹെഡറിൽ നൽകുന്നു -->
- 
-<script src="language.js?v=2.0"></script>
+    <script src="language.js?v=2.0"></script>
 
     <style>
         body {
@@ -43,6 +42,13 @@
             <div>
                 <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="phoneLabel">ഫോൺ നമ്പർ</label>
                 <input type="tel" id="phone" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="phonePlaceholder" placeholder="10 അക്ക ഫോൺ നമ്പർ">
+            </div>
+
+            <!-- സെക്യൂരിറ്റി പിൻ (4 Digit PIN) -->
+            <div>
+                <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="securityPinLabel">സുരക്ഷാ പിൻ (4 Digit PIN)</label>
+                <input type="password" id="securityPin" maxlength="4" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="pinPlaceholder" placeholder="4 അക്ക രഹസ്യ പിൻ നൽകുക">
+                <p class="lang text-[11px] text-slate-400 mt-1.5" data-key="pinNote">പാസ്‌വേർഡ് റിക്കവറി ചെയ്യുമ്പോൾ ഈ പിൻ ആവശ്യമാണ്.</p>
             </div>
 
             <!-- പാസ്‌വേർഡ് -->
@@ -86,7 +92,6 @@
         setupModal();
         setupHeader('appHeader');
 
-        // ഭാഷ സെറ്റ് ചെയ്യാനും തത്സമയം മാറ്റാനുമുള്ള ഒറ്റ ബ്ലോക്ക് കോഡ്
         function applySavedLanguage() {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
@@ -94,10 +99,7 @@
             }
         }
 
-        // 1. പേജ് ലോഡ് ചെയ്യുമ്പോൾ
         window.addEventListener('DOMContentLoaded', applySavedLanguage);
-
-        // 2. ഹെഡറിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ (languageChanged event)
         window.addEventListener('languageChanged', (e) => {
             const newLang = (e && e.detail) ? e.detail : localStorage.getItem('selectedLang');
             if (typeof window.switchLanguage === 'function') {
@@ -105,17 +107,7 @@
             }
         });
         
-
-        // 3. മറ്റ് ടാബുകളിലോ സെറ്റിങ്സിലോ ഭാഷ മാറുമ്പോൾ (storage event)
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'selectedLang') {
-                if (typeof window.switchLanguage === 'function') {
-                    window.switchLanguage(e.newValue || 'ml');
-                }
-            }
-        });
-        
-                window.showCustomAlert = function(messageKey, isSuccess = false) {
+        window.showCustomAlert = function(messageKey, isSuccess = false) {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             let message = messageKey;
             
@@ -124,23 +116,14 @@
             }
             
             document.getElementById('popupMessage').innerText = message;
-            
             const titleEl = document.getElementById('popupTitle');
             const iconEl = document.getElementById('popupIcon');
             
             if (isSuccess) {
-                if (typeof words !== 'undefined' && words['alertRegSuccess'] && words['alertRegSuccess'][currentLang]) {
-                    titleEl.innerText = words['alertRegSuccess'][currentLang];
-                } else {
-                    titleEl.innerText = "Success";
-                }
+                titleEl.innerText = (typeof words !== 'undefined' && words['alertRegSuccess'] && words['alertRegSuccess'][currentLang]) ? words['alertRegSuccess'][currentLang] : "Success";
                 iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-green-400"></i>';
             } else {
-                if (typeof words !== 'undefined' && words['alertWarningTitle'] && words['alertWarningTitle'][currentLang]) {
-                    titleEl.innerText = words['alertWarningTitle'][currentLang];
-                } else {
-                    titleEl.innerText = "Warning";
-                }
+                titleEl.innerText = (typeof words !== 'undefined' && words['alertWarningTitle'] && words['alertWarningTitle'][currentLang]) ? words['alertWarningTitle'][currentLang] : "Warning";
                 iconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-400"></i>';
             }
 
@@ -149,20 +132,10 @@
             popup.classList.add('flex');
         }
 
-        // പോപ്പ്-അപ്പ് ക്ലോസ് ചെയ്യാനുള്ള ഫങ്ഷൻ കൂടി ഇതിനൊപ്പം ചേർക്കുക
-        
-window.closeCustomPopup = function() {
-    const popup = document.getElementById('customPopup');
-    popup.classList.remove('flex');
-    popup.classList.add('hidden');
-}
-
-        function getAlertText(key) {
-            const lang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof words !== 'undefined' && words[key] && words[key][lang]) {
-                return words[key][lang];
-            }
-            return words[key] ? words[key]['ml'] : '';
+        window.closeCustomPopup = function() {
+            const popup = document.getElementById('customPopup');
+            popup.classList.remove('flex');
+            popup.classList.add('hidden');
         }
 
         const firebaseConfig = {
@@ -181,6 +154,7 @@ window.closeCustomPopup = function() {
 
         const usernameInput = document.getElementById("username");
         const phoneInput = document.getElementById("phone");
+        const securityPinInput = document.getElementById("securityPin");
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
         const eyeIcon = document.getElementById("eyeIcon");
@@ -202,19 +176,24 @@ window.closeCustomPopup = function() {
                 }
             });
         }
+
         if (btnRegister) {
             btnRegister.addEventListener("click", async () => {
                 const user = usernameInput.value.trim().toLowerCase();
                 const phone = phoneInput.value.trim();
+                const pin = securityPinInput.value.trim();
                 const pass = passwordInput.value.trim();
 
-                if (!user || !phone || !pass) {
+                if (!user || !phone || !pin || !pass) {
                     return showCustomAlert('alertFillAll', false);
                 }
 
-                // 10 അക്കം ഉണ്ടോയെന്ന് പരിശോധിക്കാൻ
                 if (phone.length !== 10) {
                     return showCustomAlert('alertInvalidPhone', false);
+                }
+
+                if (pin.length !== 4) {
+                    return showCustomAlert('alertPinLength', false);
                 }
 
                 if (pass.length < 6) {
@@ -225,6 +204,7 @@ window.closeCustomPopup = function() {
                     await set(ref(db, 'users/' + user), {
                         username: user,
                         phone: phone,
+                        securityPin: pin,
                         password: pass
                     });
 
@@ -240,13 +220,9 @@ window.closeCustomPopup = function() {
                 }
             });
         }
-
     </script>
-            
-    <!-- രജിസ്ട്രേഷൻ കാർഡും മറ്റ് കോഡുകളും ഇവിടെ അവസാനിക്കുന്നു -->
-    </div>
 
-    <!-- Custom Popup Modal (ഇത് ഇവിടെ പേസ്റ്റ് ചെയ്യുക) -->
+    <!-- Custom Popup Modal -->
     <div id="customPopup" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-900 border border-amber-500/40 rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center relative">
             <div id="popupIcon" class="text-amber-400 text-3xl mb-2">
@@ -259,8 +235,5 @@ window.closeCustomPopup = function() {
             </button>
         </div>
     </div>
-
-
-
 </body>
 </html>
