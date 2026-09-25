@@ -208,8 +208,7 @@
                 }
             });
         }
-
-        // പാസ്‌വേർഡ് റിക്കവറി പരിശോധന (PIN Check)
+        // പാസ്‌വേർഡ് റിക്കവറി പരിശോധന (PIN Check - Updated for Old Users)
         window.verifyAndRecover = async function() {
             const phone = document.getElementById('recoveryPhone').value.trim();
             const pin = document.getElementById('recoveryPin').value.trim();
@@ -229,9 +228,10 @@
                     snapshot.forEach((childSnapshot) => {
                         const userData = childSnapshot.val();
                         if (userData.phone === phone) {
-                            // പുതിയ യൂസർമാർക്ക് പിൻ പരിശോധിക്കുക. പഴയ യൂസർമാർക്ക് പിൻ ഇല്ലെങ്കിൽ അനുവദിക്കുക.
+                            // 1. പഴയ യൂസർമാർക്ക് പിൻ ഇല്ലെങ്കിൽ ഫോൺ നമ്പർ മാത്രം വെച്ച് പാസ്‌വേർഡ് കാണിക്കുക
+                            // 2. പുതിയ യൂസർമാർക്ക് പിൻ കൃത്യമാണെങ്കിൽ മാത്രം കാണിക്കുക
                             if (userData.securityPin && userData.securityPin !== pin) {
-                                return; // പിൻ തെറ്റിയാൽ അടുത്തത് നോക്കുകയോ നിർത്തുകയോ ചെയ്യാം
+                                return; // പിൻ തെറ്റിയാൽ അടുത്തത് നോക്കുക
                             }
                             
                             found = true;
@@ -251,6 +251,7 @@
                 showCustomAlert('alertError', false);
             }
         }
+
 
         if (btnLogin) {
             btnLogin.addEventListener("click", async () => {
