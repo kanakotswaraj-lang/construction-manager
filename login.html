@@ -208,7 +208,8 @@
                 }
             });
         }
-                // പാസ്‌വേർഡ് റിക്കവറി പരിശോധന (Updated Code for Old Users)
+                
+        // പാസ്‌വേർഡ് റിക്കവറി പരിശോധന (Updated Code)
         window.verifyAndRecover = async function() {
             const phone = document.getElementById('recoveryPhone').value.trim();
             const pin = document.getElementById('recoveryPin').value.trim();
@@ -228,13 +229,13 @@
                     snapshot.forEach((childSnapshot) => {
                         const userData = childSnapshot.val();
                         if (userData.phone === phone) {
-                            // ഡാറ്റാബേസിൽ പിൻ ഉണ്ടെങ്കിൽ മാത്രം അത് പരിശോധിക്കുക, ഇല്ലെങ്കിൽ ഫോൺ നമ്പർ മാത്രം മതി
-                            if (userData.securityPin && userData.securityPin !== pin) {
-                                return; // പിൻ തെറ്റിയാൽ പരിശോധന തുടരുക
+                            // ഡാറ്റാബേസിൽ പിൻ നമ്പർ ഉണ്ടെങ്കിൽ മാത്രം അത് പരിശോധിക്കുക, അല്ലെങ്കിൽ ഫോൺ നമ്പർ മാത്രം മതി
+                            if (userData.securityPin && userData.securityPin.trim() !== "" && userData.securityPin !== pin) {
+                                return; // പിൻ തെറ്റിയാൽ അടുത്തതിലേക്ക് പോവുക
                             }
                             
                             found = true;
-                            recoveredInfo.innerHTML = `പേര്: ${userData.username}<br>പാസ്‌വേർഡ്: ${userData.password}`;
+                            recoveredInfo.innerHTML = `പേര്: ${userData.username || childSnapshot.key}<br>പാസ്‌വേർഡ്: ${userData.password}`;
                             resultBox.classList.remove('hidden');
                         }
                     });
@@ -250,7 +251,6 @@
                 showCustomAlert('alertError', false);
             }
         }
-
 
 
         if (btnLogin) {
