@@ -209,11 +209,10 @@
                 }
             });
         }
-                        window.verifyAndRecover = async function() {
+                        
+        window.verifyAndRecover = async function() {
             const phone = document.getElementById('recoveryPhone').value.trim();
             const pin = document.getElementById('recoveryPin').value.trim();
-            const resultBox = document.getElementById('recoveryResult');
-            const recoveredInfo = document.getElementById('recoveredInfo');
 
             if (!phone || phone.length !== 10) {
                 return showCustomAlert('alertInvalidPhone', false);
@@ -233,8 +232,9 @@
                             }
                             
                             found = true;
-                            recoveredInfo.innerHTML = `പേര്: ${userData.username || childSnapshot.key}<br>പാസ്‌വേർഡ്: ${userData.password}`;
-                            resultBox.classList.remove('hidden');
+                            // സുരക്ഷിതമായി അലേർട്ട് വഴി മാത്രം പാസ്‌വേർഡ് കാണിക്കുന്നു
+                            window.alert(`നിങ്ങളുടെ പേര്: ${userData.username || childSnapshot.key}\nപാസ്‌വേർഡ്: ${userData.password}`);
+                            closeForgotModal();
                         }
                     });
 
@@ -245,7 +245,6 @@
                     showCustomAlert('alertUserNotFound', false);
                 }
             } catch (error) {
-                // എറർ മെസ്സേജ് നേരിട്ട് പോപ്-അപ്പ് ആയി കാണാൻ
                 window.alert("Firebase Error: " + error.message);
                 console.error(error);
                 showCustomAlert('alertError', false);
