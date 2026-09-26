@@ -246,11 +246,13 @@
                 } else {
                     showCustomAlert('alertUserNotFound', false);
                 }
-            } catch (error) {
+                        } catch (error) {
                 console.error(error);
+                // എറർ മെസ്സേജ് എന്താണെന്ന് അറിയാൻ ഇത് സഹായിക്കും
+                alert("Technical Error: " + error.message);
                 showCustomAlert('alertError', false);
             }
-        }
+
 
 
         if (btnLogin) {
