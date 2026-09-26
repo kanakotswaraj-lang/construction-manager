@@ -29,7 +29,7 @@
 
     <!-- ലാംഗ്വേജ് മാറ്റുന്നതിനുള്ള കോഡ് -->
     <script>
-                        window.switchLanguage = function(langCode) {
+        window.switchLanguage = function(langCode) {
             if (!langCode) {
                 langCode = localStorage.getItem('selectedLang') || 'ml';
             }
@@ -66,14 +66,12 @@
                 dropdown.classList.add('hidden');
             }
 
-            // ലാംഗ്വേജ് മാറ്റുമ്പോൾ റീഫ്രഷ് ഇല്ലാതെ ഡേറ്റ് മാറാൻ
             if (typeof updateDateAndCalendar === 'function') {
                 updateDateAndCalendar();
             }
         };
 
         window.changeLanguage = window.switchLanguage;
-
 
         window.toggleLangMenu = function(e) {
             if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
@@ -115,7 +113,6 @@
                 return;
             }
             
-            // യൂസറുടെ പേര് സെറ്റ് ചെയ്യുന്നു
             const nameElement = document.getElementById('loggedInMeshtri');
             if (nameElement) {
                 const currentLang = localStorage.getItem('selectedLang') || 'ml';
@@ -149,16 +146,13 @@
                 console.log("Error loading photos:", error);
             }
             
-            // തീയതിയും കലണ്ടറും സെറ്റ് ചെയ്യാൻ
             updateDateAndCalendar();
 
-            // ലാംഗ്വേജ് അപ്ഡേറ്റ് ചെയ്യാൻ
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
             }
 
-            // കണക്കുകൾ ഫെച്ച് ചെയ്യാൻ
             fetchDashboardData(db, userName);
         });
                 
@@ -174,7 +168,7 @@
                 'ta': 'ta-IN',
                 'hi': 'hi-IN',
                 'kn': 'kn-IN',
-                'as': 'as-IN', // അസാമീസ് ഭാഷയ്ക്കുള്ള കോഡ് ഇവിടെ ചേർത്തിട്ടുണ്ട്
+                'as': 'as-IN',
                 'bn': 'bn-IN'
             };
 
@@ -192,8 +186,6 @@
                 dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
             }
         }
-
-
 
         function setFallbackProfile(userName) {
             const savedPhoto = localStorage.getItem('profilePhoto');
@@ -329,6 +321,28 @@
             });
         }
 
+        // പിൻ നമ്പർ മാറ്റുന്നതിനുള്ള ഫങ്ഷൻ
+        window.changeAppPin = function() {
+            const oldPinInput = document.getElementById('oldPin').value.trim();
+            const newPinInput = document.getElementById('newPin').value.trim();
+            const currentSavedPin = localStorage.getItem("appPin") || "1234";
+
+            if (oldPinInput !== currentSavedPin) {
+                alert("നൽകിയ പഴയ പിൻ നമ്പർ തെറ്റാണ്!");
+                return;
+            }
+
+            if (newPinInput.length !== 4 || isNaN(newPinInput)) {
+                alert("പുതിയ പിൻ കൃത്യം 4 അക്ക സംഖ്യ ആയിരിക്കണം!");
+                return;
+            }
+
+            localStorage.setItem("appPin", newPinInput);
+            alert("പിൻ നമ്പർ വിജയകരമായി മാറ്റിയിരിക്കുന്നു!");
+            document.getElementById('oldPin').value = "";
+            document.getElementById('newPin').value = "";
+        };
+
         window.logoutUser = function() {
             localStorage.removeItem('userName');
             localStorage.removeItem('profilePhoto');
@@ -343,14 +357,12 @@
         <!-- കവർ & പ്രൊഫൈൽ ഹെഡർ -->
         <div class="glass-card rounded-[2.5rem] shadow-2xl relative overflow-hidden border border-white/10 pb-4">
             
-            <!-- കവർ ബാനർ ഭാഗം -->
             <div class="relative h-44 w-full group overflow-hidden bg-slate-900">
                 <label for="coverUpload" class="cursor-pointer block w-full h-full">
                     <img id="coverImage" src="https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover opacity-90">
                 </label>
                 <input type="file" id="coverUpload" class="hidden" accept="image/*" onchange="updateCoverPhoto(event)">
                 
-                <!-- ലോഗ് ഔട്ട് ബട്ടൺ -->
                 <button onclick="logoutUser()" class="absolute top-3 right-3 w-10 h-10 rounded-2xl bg-slate-900/80 backdrop-blur-xl text-rose-400 border border-white/10 flex items-center justify-center shadow-lg hover:bg-rose-500 hover:text-white transition duration-300 z-10" title="ലോഗ് ഔട്ട്">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -358,7 +370,6 @@
                 </button>
             </div>
 
-            <!-- പ്രൊഫൈൽ ഫോട്ടോയും തീയതിയും -->
             <div class="flex flex-col items-center -mt-16 px-4 relative z-10">
                 <label for="photoUpload" class="cursor-pointer group relative inline-block">
                     <div class="relative p-1.5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-3xl shadow-2xl glow-gold bg-slate-900">
@@ -367,7 +378,6 @@
                     <input type="file" id="photoUpload" class="hidden" accept="image/*" onchange="updateProfilePhoto(event)">
                 </label>
 
-                <!-- തീയതി ബാഡ്ജ് -->
                 <div class="mt-3.5 bg-white/5 border border-white/10 px-4 py-2 rounded-full flex items-center gap-2.5 shadow-inner backdrop-blur-md">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
                     <div id="currentDashboardDate" class="text-xs font-bold text-slate-200 tracking-wide">
@@ -375,7 +385,7 @@
                     </div>
                 </div>
             </div>
-        </div> <!-- (ഇവിടെയാണ് പ്രൊഫൈൽ കാർഡിന്റെ ഡിവ് കൃത്യമായി ക്ലോസ് ചെയ്തിരിക്കുന്നത്) -->
+        </div>
 
         <!-- സ്വാഗതം & ലാംഗ്വേജ് സെക്ഷൻ -->
         <div class="w-full flex items-center justify-between px-4 pt-2 pb-2 relative">
@@ -383,13 +393,11 @@
                 <span class="lang" data-key="welcome">സ്വാഗതം</span>
             </span>
 
-            <!-- ലാംഗ്വേജ് ബട്ടണും ഡ്രോപ്പ്ഡൗണും -->
             <div class="relative">
                 <button onclick="toggleLangMenu(event)" class="flex items-center gap-1.5 bg-gray-800/80 text-yellow-400 px-3 py-1.5 rounded-xl border border-yellow-500/30 text-sm font-semibold shadow-md active:scale-95 transition-all">
                     <span>🌐 Lang</span>
                 </button>
                 
-                <!-- ഡ്രോപ്പ്ഡൗൺ മെനു -->
                 <div id="langDropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl p-1.5 space-y-1">
                     <div onclick="switchLanguage('ml')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">മലയാളം</div>
                     <div onclick="switchLanguage('en')" class="lang-option w-full text-left px-4 py-2 text-gray-300 hover:bg-slate-700/60 rounded-lg transition-all font-medium cursor-pointer">English</div>
@@ -404,7 +412,6 @@
 
         <!-- വരുമാനം, ചെലവ്, ലാഭം/നഷ്ടം കാർഡുകൾ -->
         <div class="grid grid-cols-3 gap-2 px-4 mb-5">
-            <!-- വരുമാനം -->
             <div id="incomeCard" class="bg-slate-900/90 border-2 border-emerald-500 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-md">
                 <span class="text-[11px] font-bold text-emerald-400 tracking-wider mb-1 flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -413,7 +420,6 @@
                 <span class="text-sm font-black text-emerald-300">₹ <span id="statIncome">0</span></span>
             </div>
 
-            <!-- ചെലവ് -->
             <div id="expenseCard" class="bg-slate-900/90 border-2 border-rose-500 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-md">
                 <span class="text-[11px] font-bold text-rose-400 tracking-wider mb-1 flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-rose-400"></span>
@@ -422,7 +428,6 @@
                 <span class="text-sm font-black text-rose-300">₹ <span id="statExpense">0</span></span>
             </div>
 
-            <!-- ലാഭം / നഷ്ടം -->
             <div id="netCard" class="bg-slate-900/90 border-2 border-amber-500 p-2.5 rounded-2xl flex flex-col items-center justify-center shadow-md">
                 <span class="text-[11px] font-bold text-amber-400 tracking-wider mb-1 flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-amber-400"></span>
@@ -432,7 +437,7 @@
             </div>
         </div>
 
-                <!-- പ്രധാന മെനു നാവിഗേഷൻ ലിങ്കുകൾ -->
+        <!-- പ്രധാന മെനു നാവിഗേഷൻ ലിങ്കുകൾ -->
         <div class="space-y-2.5 pt-1 px-4">
             <a href="site.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
                 <div class="flex items-center gap-3.5">
@@ -466,14 +471,13 @@
                 <span class="text-cyan-400 font-bold text-lg">→</span>
             </a>
             
-<a href="advance_settlement.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
-    <div class="flex items-center gap-3.5">
-        <div class="w-9 h-9 rounded-xl bg-amber-500/30 border border-amber-500/30 flex items-center justify-center text-base">⚖️</div>
-        <p class="text-base font-black tracking-wide lang" data-key="advanceSettlementMenu">മേസ്തിരി അഡ്വാൻസ് സെറ്റിൽമെന്റ്</p>
-    </div>
-    <span class="text-amber-400 font-bold text-lg">→</span>
-</a>
-
+            <a href="advance_settlement.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-amber-500 group">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/30 border border-amber-500/30 flex items-center justify-center text-base">⚖️</div>
+                    <p class="text-base font-black tracking-wide lang" data-key="advanceSettlementMenu">മേസ്തിരി അഡ്വാൻസ് സെറ്റിൽമെന്റ്</p>
+                </div>
+                <span class="text-amber-400 font-bold text-lg">→</span>
+            </a>
 
             <a href="rentals.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-emerald-500 group">
                 <div class="flex items-center gap-3.5">
@@ -520,9 +524,29 @@
             </a>
         </div>
 
+        <!-- ആപ്പ് പിൻ മാറ്റാനുള്ള പുതിയ സെക്ഷൻ (ഡാഷ്‌ബോർഡ് ലുക്കിന് അനുയോജ്യമായത്) -->
+        <div class="px-4 pt-2">
+            <div class="glass-card p-4 rounded-2xl shadow-xl border-l-4 border-l-amber-500 bg-slate-900/90 border border-slate-700/60 text-center">
+                <div class="flex items-center justify-center gap-2 mb-2">
+                    <span class="text-lg">🔐</span>
+                    <h4 class="text-base font-black text-amber-400 tracking-wide">ആപ്പ് പിൻ മാറ്റുക</h4>
+                </div>
+                <p class="text-xs text-slate-400 mb-3">ആപ്പിന്റെ സുരക്ഷയ്ക്കായി നിങ്ങളുടെ 4 അക്ക പിൻ മാറ്റുക.</p>
+                
+                <div class="space-y-2.5">
+                    <input type="password" id="oldPin" maxlength="4" placeholder="പഴയ പിൻ നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-center text-white text-xs focus:outline-none focus:border-amber-400">
+                    <input type="password" id="newPin" maxlength="4" placeholder="പുതിയ പിൻ (4 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-center text-white text-xs focus:outline-none focus:border-amber-400">
+                    
+                    <button type="button" onclick="changeAppPin()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md hover:opacity-95">
+                        പിൻ മാറ്റാം
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- വാട്സാപ്പ് സപ്പോർട്ട് ബട്ടൺ -->
         <div class="px-4 pb-6">
-            <a href="https://wa.me/916238020523" target="_blank" class="mt-6 bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-4 rounded-2xl flex items-center justify-center gap-2 font-black text-sm shadow-xl hover:opacity-95 transition duration-300 border border-emerald-400/30">
+            <a href="https://wa.me/916238020523" target="_blank" class="mt-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-4 rounded-2xl flex items-center justify-center gap-2 font-black text-sm shadow-xl hover:opacity-95 transition duration-300 border border-emerald-400/30">
                 <span class="lang" data-key="whatsapp_support">💬 സംശയങ്ങൾക്ക് വാട്സാപ്പിൽ ബന്ധപ്പെടുക</span> (916238020523)
             </a>
         </div>
