@@ -3,15 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ലോഗിൻ - മേസ്തിരി പ്രോ</title>
+    <title>മേസ്തിരി പ്രോ - ലോഗിൻ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="language.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- language.js ഉം header.js ഉം ഇവിടെ ലോഡ് ചെയ്യുന്നു -->
+    <script src="language.js"></script>
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- മുകളിൽ ഹെഡർ വരാനുള്ള കണ്ടെയ്നർ -->
+    <div class="w-full max-w-sm mx-auto mb-4">
+        <div id="appHeader" class="w-full"></div>
+    </div>
+
+    <!-- ലോഗിൻ കാർഡ് -->
+    <div class="w-full max-w-sm bg-slate-900/90 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
+        
+        <h2 data-key="loginTitle" class="lang text-xl font-bold text-white mb-1">ലോഗിൻ ചെയ്യുക</h2>
+        <p data-key="loginSubtitle" class="lang text-xs text-slate-400 mb-5">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
+
+        <div class="space-y-4">
+            <div>
+                <label data-key="usernameLabel" class="lang block text-xs font-semibold text-amber-300/90 mb-1.5">യൂസർനെയിം (പേര്)</label>
+                <input type="text" id="username" data-key-placeholder="usernamePlaceholder" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div>
+                <label data-key="passwordLabel" class="lang block text-xs font-semibold text-amber-300/90 mb-1.5">പാസ്‌വേർഡ്</label>
+                <div class="relative">
+                    <input type="password" id="password" data-key-placeholder="passwordPlaceholder" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
+                    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2 cursor-pointer">
+                        <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button id="btnLogin" data-key="loginBtn" class="lang w-full mt-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition duration-200 text-sm cursor-pointer">
+                ലോഗിൻ ചെയ്യാം
+            </button>
+        </div>
+
+        <div class="mt-4 text-center">
+            <button type="button" id="btnForgotOpen" data-key="forgotPassword" class="lang text-xs text-amber-400/90 hover:underline bg-transparent border-none cursor-pointer">പാസ്‌വേർഡ് മറന്നുപോയോ?</button>
+        </div>
+    </div>
+
+    <div class="mt-6 text-center text-xs text-slate-400">
+        <span data-key="noAccountText" class="lang">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
+        <a href="register.html" data-key="loginLinkText" class="lang text-amber-400 font-bold hover:underline ml-1">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
+    </div>
+
+<!-- ഫോർഗെറ്റ് പാസ്‌വേർഡ് / യൂസർനെയിം മോഡൽ -->
+<div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+        
+        <h3 data-key="forgotTitle" class="lang text-lg font-bold text-white mb-2">യൂസർനെയിം / പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
+        <p data-key="forgotDesc" class="lang text-xs text-slate-400 mb-4">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
+        
+        <input type="tel" id="forgotPhone" data-key-placeholder="phonePlaceholder" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
+        
+        <div id="forgotResult" class="hidden bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 mb-4 text-center">
+            <p class="text-xs text-slate-300">നിങ്ങളുടെ യൂസർനെയിം: <strong id="displayUsername" class="text-amber-400"></strong></p>
+            <p class="text-xs text-slate-300 mt-1">നിങ്ങളുടെ പാസ്‌വേർഡ്: <strong id="displayPassword" class="text-amber-400"></strong></p>
+        </div>
+
+        <div class="flex gap-2">
+            <button type="button" id="btnForgotClose" data-key="closeBtn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer">അടയ്ക്കുക</button>
+            <button type="button" id="btnGetDetails" data-key="showDetailsBtn" class="lang flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer">വിവരങ്ങൾ കാണുക</button>
+        </div>
+    </div>
+</div>
+
+    <!-- ഫയർബേസ് & സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         import { setupHeader } from './header.js';
+
+        // ഹെഡർ ലോഡ് ചെയ്യുന്നു
+        setupHeader('appHeader');
+
+        // ഭാഷ മാറ്റാനുള്ള കോഡ്
+        function applySavedLanguage() {
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
+        }
+        window.addEventListener('DOMContentLoaded', applySavedLanguage);
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : localStorage.getItem('selectedLang');
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
+            }
+        });
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -25,180 +116,163 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
 
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader', false);
-            }
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            changePageLanguage(savedLang);
+        // എലമെന്റുകൾ
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const togglePasswordBtn = document.getElementById("togglePassword");
+        const eyeIcon = document.getElementById("eyeIcon");
+        const btnLogin = document.getElementById("btnLogin");
 
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                loginForm.addEventListener('submit', handleLogin);
-            }
+        const btnForgotOpen = document.getElementById("btnForgotOpen");
+        const forgotModal = document.getElementById("forgotModal");
+        const btnForgotClose = document.getElementById("btnForgotClose");
+        const btnGetDetails = document.getElementById("btnGetDetails");
+        const forgotPhone = document.getElementById("forgotPhone");
+        const forgotResult = document.getElementById("forgotResult");
+        const displayUsername = document.getElementById("displayUsername");
+        const displayPassword = document.getElementById("displayPassword");
+
+        // പാസ്‌വേർഡ് കാണിക്കാൻ / മറയ്ക്കാൻ
+        togglePasswordBtn.addEventListener("click", () => {
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+            eyeIcon.classList.toggle("fa-eye");
+            eyeIcon.classList.toggle("fa-eye-slash");
         });
 
-        window.changePageLanguage = function(lang) {
-            localStorage.setItem('selectedLang', lang);
-            if (typeof words === 'undefined') return;
+        // ഫോർഗെറ്റ് പാസ്‌വേർഡ് മോഡൽ ഓപ്പൺ/ക്ലോസ്
+        btnForgotOpen.addEventListener("click", () => {
+            forgotModal.classList.remove("hidden");
+            forgotModal.classList.add("flex");
+            forgotResult.classList.add("hidden");
+            forgotPhone.value = "";
+        });
 
-            document.querySelectorAll('[data-key]').forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (words[key] && words[key][lang]) {
-                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                        element.placeholder = words[key][lang];
-                    } else {
-                        element.innerText = words[key][lang];
-                    }
-                }
-            });
-        }
+        btnForgotClose.addEventListener("click", () => {
+            forgotModal.classList.add("hidden");
+            forgotModal.classList.remove("flex");
+        });
 
-        function showCustomAlert(message, title = "ശ്രദ്ധിക്കുക", isConfirm = false, onConfirm = null) {
-            const modal = document.getElementById('customModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalMessage = document.getElementById('modalMessage');
-            const modalOkBtn = document.getElementById('modalOkBtn');
-            const modalCancelBtn = document.getElementById('modalCancelBtn');
-
-            modalTitle.innerText = title;
-            modalMessage.innerText = message;
-            modal.classList.remove('hidden');
-
-            if (isConfirm) {
-                modalCancelBtn.classList.remove('hidden');
-                modalOkBtn.innerText = "ഉവ്വ്";
-            } else {
-                modalCancelBtn.classList.add('hidden');
-                modalOkBtn.innerText = "ശരി";
+        // കസ്റ്റം പോപ്പ്-അപ്പ് ഫംഗ്ഷനുകൾ
+        window.showCustomAlert = function(messageKey) {
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            let message = messageKey;
+            
+            if (typeof words !== 'undefined' && words[messageKey] && words[messageKey][currentLang]) {
+                message = words[messageKey][currentLang];
             }
-
-            const newOkBtn = modalOkBtn.cloneNode(true);
-            modalOkBtn.parentNode.replaceChild(newOkBtn, modalOkBtn);
-
-            const newCancelBtn = modalCancelBtn.cloneNode(true);
-            modalCancelBtn.parentNode.replaceChild(newCancelBtn, modalCancelBtn);
-
-            newOkBtn.addEventListener('click', () => {
-                modal.classList.add('hidden');
-                if (onConfirm) onConfirm(true);
-            });
-
-            newCancelBtn.addEventListener('click', () => {
-                modal.classList.add('hidden');
-                if (onConfirm) onConfirm(false);
-            });
+            
+            document.getElementById('popupMessage').innerText = message;
+            const popup = document.getElementById('customPopup');
+            popup.classList.remove('hidden');
+            popup.classList.add('flex');
         }
 
-        async function handleLogin(e) {
-            e.preventDefault();
-            const usernameInput = document.getElementById('username').value.trim();
-            const passwordInput = document.getElementById('password').value.trim();
+        window.closeCustomPopup = function() {
+            const popup = document.getElementById('customPopup');
+            popup.classList.add('hidden');
+            popup.classList.remove('flex');
+        }
 
-            if (!usernameInput || !passwordInput) {
-                showCustomAlert("ദയവായി മേസ്തിരിയുടെ പേരും പാസ്‌വേർഡും നൽകുക!", "ശ്രദ്ധിക്കുക");
+        // ഫോർഗെറ്റ് പാസ്‌വേർഡ് ഫോൺ നമ്പർ ചെക്ക് ചെയ്യുന്ന ഭാഗം (പ്രശ്നം വരാത്ത രീതിയിൽ ലൂപ്പ് ചെയ്ത് പരിശോധിക്കുന്നു)
+        btnGetDetails.addEventListener("click", async () => {
+            const phone = forgotPhone.value.trim();
+            if (!phone || phone.length < 10) {
+                showCustomAlert('phoneRequired');
                 return;
             }
 
             try {
-                // ഫയർബേസിൽ നിന്ന് യൂസറെ പരിശോധിക്കുന്നു
-                const q = query(collection(db, "mesthris"), where("name", "==", usernameInput));
-                const querySnapshot = await getDocs(q);
+                const usersRef = ref(db, 'users');
+                const snapshot = await get(usersRef);
 
-                if (querySnapshot.empty) {
-                    showCustomAlert("ഈ പേരിൽ മേസ്തിരി ആരെയും കണ്ടെത്താനായില്ല! ദയവായി രജിസ്റ്റർ ചെയ്യുക.", "പിഴവ്");
-                    return;
-                }
-
-                let userFound = false;
-                let userPass = "";
-
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    userPass = data.password || "";
-                    if (userPass === passwordInput) {
-                        userFound = true;
-                    }
-                });
-
-                if (userFound) {
-                    localStorage.setItem('userName', usernameInput);
-                    showCustomAlert("ലോഗിൻ വിജയകരമാണ്!", "വിജയം", false, () => {
-                        window.location.href = "dashboard.html";
+                if (snapshot.exists()) {
+                    let found = false;
+                    snapshot.forEach((childSnapshot) => {
+                        const userData = childSnapshot.val();
+                        if (userData && userData.phone && userData.phone.toString().trim() === phone) {
+                            displayUsername.textContent = userData.username || childSnapshot.key;
+                            displayPassword.textContent = userData.password;
+                            forgotResult.classList.remove("hidden");
+                            found = true;
+                        }
                     });
+
+                    if (!found) {
+                        showCustomAlert('phoneNotFound');
+                        forgotResult.classList.add("hidden");
+                    }
                 } else {
-                    showCustomAlert("നൽകിയ പാസ്‌വേർഡ് തെറ്റാണ്. ദയവായി ശരിയായ പാസ്‌വേർഡ് നൽകുക.", "പാസ്‌വേർഡ് തെറ്റാണ്");
+                    showCustomAlert('userNotFound');
                 }
-
-            } catch (error) {
-                console.error("Login Error:", error);
-                showCustomAlert("ലോഗിൻ ചെയ്യുന്നതിൽ തടസ്സം നേരിട്ടു. വീണ്ടും ശ്രമിക്കുക.", "പിഴവ്");
+            } catch (err) {
+                console.error(err);
+                showCustomAlert('connectivityError');
             }
-        }
+        });
 
-        window.togglePassword = function() {
-            const passwordInput = document.getElementById('password');
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-            } else {
-                passwordInput.type = "password";
+        // ലോഗിൻ ബട്ടൺ ആക്ഷൻ (ഡാറ്റാബേസിൽ നേരിട്ട് നോക്കുന്നതിന് പുറമെ മുഴുവൻ ലിസ്റ്റും നോക്കി പേര് മാച്ച് ചെയ്യുന്ന രീതി)
+        btnLogin.addEventListener("click", async () => {
+            const userInput = usernameInput.value.trim();
+            const passInput = passwordInput.value.trim();
+
+            if (!userInput || !passInput) {
+                showCustomAlert('fillAllFields');
+                return;
             }
-        }
+
+            try {
+                const usersRef = ref(db, 'users');
+                const snapshot = await get(usersRef);
+
+                if (snapshot.exists()) {
+                    let matchedUserKey = null;
+                    let matchedUserData = null;
+
+                    snapshot.forEach((childSnapshot) => {
+                        const key = childSnapshot.key;
+                        const data = childSnapshot.val();
+                        const dbUsername = (data.username || key || "").toString().trim();
+
+                        // വലിയ/ചെറിയ അക്ഷര വ്യത്യാസമില്ലാതെ പേര് ഒത്തുനോക്കുന്നു
+                        if (dbUsername.toLowerCase() === userInput.toLowerCase()) {
+                            matchedUserKey = key;
+                            matchedUserData = data;
+                        }
+                    });
+
+                    if (matchedUserData) {
+                        if (matchedUserData.password === passInput) {
+                            showCustomAlert('loginSuccess');
+                            localStorage.setItem('userName', matchedUserKey);
+                            setTimeout(() => {
+                                window.location.href = "dashboard.html";
+                            }, 1500);
+                        } else {
+                            showCustomAlert('wrongPassword');
+                        }
+                    } else {
+                        showCustomAlert('userNotFound');
+                    }
+                } else {
+                    showCustomAlert('userNotFound');
+                }
+            } catch (err) {
+                console.error(err);
+                showCustomAlert('connectivityError');
+            }
+        });
     </script>
 
-    <style>
-        body { font-family: 'Manjari', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%) !important; }
-    </style>
-</head>
-<body class="text-white min-h-screen flex items-center justify-center p-4">
-
-    <div class="max-w-md w-full space-y-6">
-        
-        <div id="appHeader" class="w-full"></div>
-
-        <div class="bg-slate-900/90 p-6 rounded-3xl border border-slate-800 shadow-2xl space-y-6">
-            <div class="text-center space-y-2">
-                <h1 class="text-xl font-black text-amber-400">ലോഗിൻ ചെയ്യുക[span_1](start_span)[span_1](end_span)</h1>
-                <p class="text-xs text-slate-400 font-bold">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം[span_2](start_span)[span_2](end_span)</p>
-            </div>
-
-            <form id="loginForm" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">മേസ്തിരിയുടെ പേര്[span_3](start_span)[span_3](end_span):</label>
-                    <input type="text" id="username" required placeholder="പേര് നൽകുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase">പാസ്‌വേർഡ് (Password)[span_4](start_span)[span_4](end_span):</label>
-                    <div class="relative">
-                        <input type="password" id="password" required placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400 pr-10">
-                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-3.5 text-slate-400 hover:text-white text-xs">👁️</button>
-                    </div>
-                </div>
-
-                <div class="text-right">
-                    <a href="forgot_password.html" class="text-xs text-amber-400 hover:underline font-bold">പാസ്‌വേർഡ് മറന്നുപോയോ?[span_5](start_span)[span_5](end_span)</a>
-                </div>
-
-                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-base shadow-xl shadow-amber-950/50 transition">ലോഗിൻ ചെയ്യാം[span_6](start_span)[span_6](end_span)</button>
-            </form>
-
-            <div class="text-center pt-2 border-t border-slate-800">
-                <p class="text-xs text-slate-400">അക്കൗണ്ട് ഇല്ലെങ്കിൽ? <a href="register.html" class="text-amber-400 font-bold hover:underline">പുതിയ അക്കൗണ്ട് ഉണ്ടാക്കാം[span_7](start_span)[span_7](end_span)</a></p>
-            </div>
-        </div>
-    </div>
-
-    <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border-2 border-amber-400/50 rounded-3xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(251,191,36,0.3)] text-center space-y-4">
-            <h3 id="modalTitle" class="text-xl font-black text-amber-300">ശ്രദ്ധിക്കുക</h3>
-            <p id="modalMessage" class="text-sm font-bold text-blue-100 leading-relaxed"></p>
-            <div class="flex gap-3 pt-2">
-                <button id="modalCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl font-black text-base transition hidden">വേണ്ട</button>
-                <button id="modalOkBtn" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-3 rounded-2xl font-black text-base shadow-lg transition">ശരി</button>
-            </div>
+    <!-- Custom Popup Modal -->
+    <div id="customPopup" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center relative">
+            <p id="popupMessage" class="text-white text-base mb-6 font-medium">മെസ്സേജ് ഇവിടെ വരും</p>
+            <button onclick="closeCustomPopup()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg cursor-pointer">
+                OK ✅
+            </button>
         </div>
     </div>
 
