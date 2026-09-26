@@ -159,8 +159,24 @@
                 siteInput.readOnly = false;
                 siteInput.classList.remove('opacity-60');
             }
+                        } else {
+                siteInput.value = '';
+                siteInput.readOnly = false;
+                siteInput.classList.remove('opacity-60');
+            }
+
+            // ഈ ഭാഗം ഇവിടെ ചേർക്കുക
+            const selectedDropdown = document.getElementById('siteSelectDropdown');
+            if (selectedDropdown && selectedDropdown.value) {
+                let currentSiteKey = selectedDropdown.value.trim().toLowerCase();
+                document.getElementById('settleAdvance').value = localStorage.getItem('advance_Meshtri_' + currentSiteKey) || 0;
+                document.getElementById('ownerAdvance').value = localStorage.getItem('advance_Owner_' + currentSiteKey) || 0;
+            }
+
             calculateTotal();
         }
+
+        
 
         window.onManualSiteInput = function() {
             document.getElementById('settleAdvance').value = 0;
