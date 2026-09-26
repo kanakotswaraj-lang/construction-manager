@@ -209,9 +209,7 @@
                 }
             });
         }
-                
-        // പാസ്‌വേർഡ് റിക്കവറി പരിശോധന
-        window.verifyAndRecover = async function() {
+                        window.verifyAndRecover = async function() {
             const phone = document.getElementById('recoveryPhone').value.trim();
             const pin = document.getElementById('recoveryPin').value.trim();
             const resultBox = document.getElementById('recoveryResult');
@@ -247,42 +245,12 @@
                     showCustomAlert('alertUserNotFound', false);
                 }
             } catch (error) {
+                // എറർ മെസ്സേജ് നേരിട്ട് പോപ്-അപ്പ് ആയി കാണാൻ
+                window.alert("Firebase Error: " + error.message);
                 console.error(error);
                 showCustomAlert('alertError', false);
             }
         };
-
-        if (btnLogin) {
-            btnLogin.addEventListener("click", async () => {
-                const user = usernameInput.value.trim().toLowerCase();
-                const pass = passwordInput.value.trim();
-
-                if (!user || !pass) {
-                    return showCustomAlert('alertFillAll', false);
-                }
-
-                try {
-                    const snapshot = await get(child(ref(db), 'users/' + user));
-                    if (snapshot.exists()) {
-                        const userData = snapshot.val();
-                        if (userData.password === pass) {
-                            localStorage.setItem('userName', user);
-                            window.location.href = "dashboard.html";
-                        } else {
-                            showCustomAlert('alertWrongPass', false);
-                        }
-                    } else {
-                        showCustomAlert('alertUserNotFound', false);
-                    }
-                            } catch (error) {
-                console.error(error);
-                // യഥാർത്ഥ എറർ എന്താണെന്ന് സ്ക്രീനിൽ കാണാൻ ഇത് സഹായിക്കും
-                alert("Technical Error: " + error.message);
-                showCustomAlert('alertError', false);
-            }
-                });
-        }
-
 
     
 
