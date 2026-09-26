@@ -41,26 +41,34 @@
             <!-- ഫോൺ നമ്പർ -->
             <div>
                 <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="phoneLabel">ഫോൺ നമ്പർ</label>
-                <input type="tel" id="phone" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="phonePlaceholder" placeholder="10 അക്ക ഫോൺ നമ്പർ">
+                <input type="tel" id="phone" maxlength="10" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="phonePlaceholder" placeholder="10 അക്ക മൊബൈൽ നമ്പർ">
             </div>
 
             <!-- സെക്യൂരിറ്റി പിൻ (4 Digit PIN) -->
             <div>
-                <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="securityPinLabel">സുരക്ഷാ പിൻ (4 Digit PIN)</label>
+                <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="securityPinLabel">സുരക്ഷാ പിൻ (Security PIN)</label>
                 <input type="password" id="securityPin" maxlength="4" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="pinPlaceholder" placeholder="4 അക്ക രഹസ്യ പിൻ നൽകുക">
                 <p class="lang text-[11px] text-slate-400 mt-1.5" data-key="pinNote">പാസ്‌വേർഡ് റിക്കവറി ചെയ്യുമ്പോൾ ഈ പിൻ ആവശ്യമാണ്.</p>
             </div>
 
-            <!-- പാസ്‌വേർഡ് -->
+            <!-- പാസ്‌വേർഡ് (6 അക്കത്തിൽ കൂടുതൽ) -->
             <div>
-                <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="passwordLabel">പാസ്‌വേർഡ് (Password)</label>
+                <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="passwordLabel">പാസ്‌വേർഡ് (6 അക്കത്തിൽ കൂടുതൽ)</label>
                 <div class="relative">
-                    <input type="password" id="password" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="passwordPlaceholder" placeholder="പാസ്‌വേർഡ് നൽകുക">
+                    <input type="password" id="password" minlength="6" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="passwordPlaceholder" placeholder="കുറഞ്ഞത് 6 അക്ഷരങ്ങളോ അക്കങ്ങളോ നൽകുക">
                     <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2">
                         <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
                     </button>
                 </div>
                 <p class="lang text-[11px] text-slate-400 mt-1.5" data-key="passwordNote">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
+            </div>
+
+            <!-- പുതിയ ഉപയോക്താക്കൾക്കുള്ള പിൻ നമ്പർ സൂചന -->
+            <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-center my-3">
+                <p class="text-xs text-amber-300 font-bold">
+                    💡 <span class="lang" data-key="default_pin_hint">പുതുതായി ജോയിൻ ചെയ്യുന്നവരുടെ ഡിഫോൾട്ട് പിൻ നമ്പർ 1234 ആണ്.</span> 
+                    <span class="bg-slate-800 px-2 py-0.5 rounded text-white tracking-widest ml-1">1234</span>
+                </p>
             </div>
 
             <!-- സബ്‌മിറ്റ് ബട്ടൺ -->
