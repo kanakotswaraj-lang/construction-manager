@@ -274,12 +274,16 @@
                     } else {
                         showCustomAlert('alertUserNotFound', false);
                     }
-                } catch (error) {
-                    console.error(error);
-                    showCustomAlert('alertError', false);
-                }
-            });
+                            } catch (error) {
+                console.error(error);
+                // യഥാർത്ഥ എറർ എന്താണെന്ന് സ്ക്രീനിൽ കാണാൻ ഇത് സഹായിക്കും
+                alert("Technical Error: " + error.message);
+                showCustomAlert('alertError', false);
+            }
+                });
         }
+
+
     </script>
 
     </script>
