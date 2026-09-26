@@ -103,6 +103,7 @@
     </div>
 
     <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
@@ -209,7 +210,7 @@
             });
         }
                 
-        // പാസ്‌വേർഡ് റിക്കവറി പരിശോധന (Updated Code)
+        // പാസ്‌വേർഡ് റിക്കവറി പരിശോധന
         window.verifyAndRecover = async function() {
             const phone = document.getElementById('recoveryPhone').value.trim();
             const pin = document.getElementById('recoveryPin').value.trim();
@@ -229,9 +230,8 @@
                     snapshot.forEach((childSnapshot) => {
                         const userData = childSnapshot.val();
                         if (userData.phone === phone) {
-                            // ഡാറ്റാബേസിൽ പിൻ നമ്പർ ഉണ്ടെങ്കിൽ മാത്രം അത് പരിശോധിക്കുക, അല്ലെങ്കിൽ ഫോൺ നമ്പർ മാത്രം മതി
                             if (userData.securityPin && userData.securityPin.trim() !== "" && userData.securityPin !== pin) {
-                                return; // പിൻ തെറ്റിയാൽ അടുത്തതിലേക്ക് പോവുക
+                                return;
                             }
                             
                             found = true;
@@ -246,14 +246,11 @@
                 } else {
                     showCustomAlert('alertUserNotFound', false);
                 }
-                        } catch (error) {
+            } catch (error) {
                 console.error(error);
-                // എറർ മെസ്സേജ് എന്താണെന്ന് അറിയാൻ ഇത് സഹായിക്കും
-                alert("Technical Error: " + error.message);
                 showCustomAlert('alertError', false);
             }
-
-
+        };
 
         if (btnLogin) {
             btnLogin.addEventListener("click", async () => {
@@ -283,6 +280,8 @@
                 }
             });
         }
+    </script>
+
     </script>
 
     <!-- Custom Popup Modal -->
