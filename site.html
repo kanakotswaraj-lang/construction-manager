@@ -141,6 +141,11 @@ window.onSiteSelectChange = function() {
     document.getElementById('settleAdvance').value = 0;
     document.getElementById('ownerAdvance').value = 0;
     document.getElementById('settleSelfSpent').value = 0;
+    document.getElementById('siteIncome').value = 0;
+
+    // പഴയ ചെലവുകളും തൊഴിലാളികളുടെ ലിസ്റ്റും ക്ലിയർ ചെയ്യുക
+    if (document.getElementById('expenseListContainer')) document.getElementById('expenseListContainer').innerHTML = '';
+    if (document.getElementById('workerListContainer')) document.getElementById('workerListContainer').innerHTML = '';
 
     if (selectedSite) {
         siteInput.value = selectedSite;
@@ -149,14 +154,39 @@ window.onSiteSelectChange = function() {
 
         let currentSiteKey = selectedSite.trim().toLowerCase();
         
-        // localStorage-ൽ നിന്ന് അഡ്വാൻസ് തുക എടുക്കുന്നു
+        // localStorage-ൽ നിന്ന് അഡ്വാൻസ് തുകയും വരവും എടുക്കുന്നു
         let savedMeshtriAdv = localStorage.getItem('advance_Meshtri_' + currentSiteKey);
         let savedOwnerAdv = localStorage.getItem('advance_Owner_' + currentSiteKey);
         let savedSelfSpent = localStorage.getItem('selfspent_' + currentSiteKey);
+        let savedIncome = localStorage.getItem('income_' + currentSiteKey);
 
         if (savedMeshtriAdv) document.getElementById('settleAdvance').value = savedMeshtriAdv;
         if (savedOwnerAdv) document.getElementById('ownerAdvance').value = savedOwnerAdv;
         if (savedSelfSpent) document.getElementById('settleSelfSpent').value = savedSelfSpent;
+        if (savedIncome) document.getElementById('siteIncome').value = savedIncome;
+
+        // ഫയർബേസിൽ നിന്നോ അക്കൗണ്ട് ഡാറ്റയിൽ നിന്നോ പഴയ കണക്കുകൾ ഉണ്ടെങ്കിൽ ലോഡ് ചെയ്യുക
+        if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
+            const matchingAccounts = allAccountsData.filter(d => d.site && d.site.trim().toLowerCase() === currentSiteKey);
+            
+            matchingAccounts.forEach(acc => {
+                if (acc.type === 'income') {
+                    document.getElementById('siteIncome').value = acc.amount;
+                } else if (acc.type === 'other') {
+                    const container = document.getElementById('expenseListContainer');
+                    if (container) {
+                        const expId = Date.now() + Math.random();
+                        container.insertAdjacentHTML('beforeend', `
+                            <div class="flex gap-2 items-center" id="exp-${expId}">
+                                <input type="text" value="${acc.name}" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
+                                <input type="number" value="${acc.amount}" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="calculateTotal()">
+                                <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3 py-3 rounded-xl font-bold text-xs">X</button>
+                            </div>
+                        `);
+                    }
+                }
+            });
+        }
 
     } else {
         siteInput.value = '';
@@ -168,6 +198,7 @@ window.onSiteSelectChange = function() {
         calculateTotal();
     }
 }
+
 
         window.onManualSiteInput = function() {
             document.getElementById('settleAdvance').value = 0;
