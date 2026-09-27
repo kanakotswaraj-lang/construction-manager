@@ -404,8 +404,11 @@ window.onSiteSelectChange = function() {
             ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
         }
 
-        document.getElementById('displayIncome').innerText = `₹ ${todayIncome}`;
-        document.getElementById('displayExpense').innerText = `₹ ${totalExpenseWithSelf}`;
+        let displayIncomeEl = document.getElementById('displayIncome');
+        if(displayIncomeEl) displayIncomeEl.innerText = `₹ ${todayIncome}`;
+
+        let displayExpenseEl = document.getElementById('displayExpense');
+        if(displayExpenseEl) displayExpenseEl.innerText = `₹ ${totalExpenseWithSelf}`;
         
         let balanceText = document.getElementById('grandTotal');
         if (balanceText) {
@@ -413,11 +416,10 @@ window.onSiteSelectChange = function() {
             balanceText.innerText = `₹ ${netBalance}`;
             balanceText.className = netBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
-    } async (err) => {
+    } catch (err) {
         console.error("Calculation Error:", err);
     }
 };
-
 
         window.sendWhatsAppSettlement = function() {
             let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
