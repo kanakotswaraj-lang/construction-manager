@@ -346,6 +346,7 @@ window.onSiteSelectChange = function() {
             });
         }
 
+
 window.calculateTotal = function() {
     try {
         let siteNameInput = document.getElementById('siteName');
@@ -362,8 +363,8 @@ window.calculateTotal = function() {
         const ownerAdvanceInput = document.getElementById('ownerAdvance');
         const settleSelfSpentInput = document.getElementById('settleSelfSpent');
 
-        // വരവ് തുക മേസ്തിരി തന്ന തുകയുടെ ഇൻപുട്ട് ബോക്സിൽ ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
-        if (settleAdvanceInput && todayIncome > 0 && settleAdvanceInput.value == "") {
+        // മേസ്ത്രി തന്നത് എന്ന കള്ളിയിൽ വരവ് തുക (1000) ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
+        if (settleAdvanceInput) {
             settleAdvanceInput.value = todayIncome;
         }
 
@@ -388,8 +389,11 @@ window.calculateTotal = function() {
         let totalSpentForSite = todayOtherExp + todayWages;
         let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
 
-        // ബാലൻസ് കണക്കുകൂട്ടൽ
-        let meshtriSettlementBalance = prevMeshtriBalance + currentMeshtriAdvance - totalExpenseWithSelf;
+        // വരവും ചെലവും തമ്മിലുള്ള വ്യത്യാസം (1000 - 400 = 600)
+        let netSiteBalance = todayIncome - totalExpenseWithSelf;
+
+        // മേസ്തിരി ബാലൻസ് കണക്കുകൂട്ടൽ (₹600 വരും)
+        let meshtriSettlementBalance = prevMeshtriBalance + netSiteBalance;
         let ownerSettlementBalance = prevOwnerBalance + currentOwnerAdvance;
 
         let settleBalanceDisplay = document.getElementById('settleBalanceText');
@@ -414,9 +418,8 @@ window.calculateTotal = function() {
         
         let balanceText = document.getElementById('grandTotal');
         if (balanceText) {
-            let netSiteProfit = todayIncome - totalExpenseWithSelf;
-            balanceText.innerText = `₹ ${netSiteProfit}`;
-            balanceText.className = netSiteProfit < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+            balanceText.innerText = `₹ ${netSiteBalance}`;
+            balanceText.className = netSiteBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
     } catch (err) {
         console.error("Calculation Error:", err);
