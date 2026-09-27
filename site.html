@@ -133,45 +133,41 @@
             }
         }
 
-        window.onSiteSelectChange = function() {
-            const selectedSite = document.getElementById('siteSelectDropdown').value;
-            const siteInput = document.getElementById('siteName');
-            
-            document.getElementById('settleAdvance').value = 0;
-            document.getElementById('ownerAdvance').value = 0;
-            document.getElementById('settleSelfSpent').value = 0;
+window.onSiteSelectChange = function() {
+    const selectedSite = document.getElementById('siteSelectDropdown').value;
+    const siteInput = document.getElementById('siteName');
+    
+    // ഫീൽഡുകൾ റീസെറ്റ് ചെയ്യുക
+    document.getElementById('settleAdvance').value = 0;
+    document.getElementById('ownerAdvance').value = 0;
+    document.getElementById('settleSelfSpent').value = 0;
 
-            if (selectedSite) {
-                siteInput.value = selectedSite;
-                siteInput.readOnly = true;
-                siteInput.classList.add('opacity-60');
+    if (selectedSite) {
+        siteInput.value = selectedSite;
+        siteInput.readOnly = true;
+        siteInput.classList.add('opacity-60');
 
-                let currentSiteKey = selectedSite.trim().toLowerCase();
-                let savedMeshtriAdv = localStorage.getItem('advance_Meshtri_' + currentSiteKey);
-                let savedOwnerAdv = localStorage.getItem('advance_Owner_' + currentSiteKey);
-                let savedSelfSpent = localStorage.getItem('selfspent_' + currentSiteKey);
+        let currentSiteKey = selectedSite.trim().toLowerCase();
+        
+        // localStorage-ൽ നിന്ന് അഡ്വാൻസ് തുക എടുക്കുന്നു
+        let savedMeshtriAdv = localStorage.getItem('advance_Meshtri_' + currentSiteKey);
+        let savedOwnerAdv = localStorage.getItem('advance_Owner_' + currentSiteKey);
+        let savedSelfSpent = localStorage.getItem('selfspent_' + currentSiteKey);
 
-                if(savedMeshtriAdv) document.getElementById('settleAdvance').value = savedMeshtriAdv;
-                if(savedOwnerAdv) document.getElementById('ownerAdvance').value = savedOwnerAdv;
-                if(savedSelfSpent) document.getElementById('settleSelfSpent').value = savedSelfSpent;
-            } else {
-                siteInput.value = '';
-                siteInput.readOnly = false;
-                siteInput.classList.remove('opacity-60');
-            }
-                            // സൈറ്റ് ഡ്രോപ്പ്ഡൗൺ മാറുമ്പോഴോ ഡാറ്റ ലോഡ് ചെയ്യുമ്പോഴോ നിലവിലെ സൈറ്റിന്റെ അഡ്വാൻസ് തുക ലോഡ് ചെയ്യാൻ
-                const selectedDropdown = document.getElementById('siteSelectDropdown');
-                if (selectedDropdown && selectedDropdown.value) {
-                    let currentSiteKey = selectedDropdown.value.trim().toLowerCase();
-                    document.getElementById('settleAdvance').value = localStorage.getItem('advance_Meshtri_' + currentSiteKey) || 0;
-                    document.getElementById('ownerAdvance').value = localStorage.getItem('advance_Owner_' + currentSiteKey) || 0;
-                }
+        if (savedMeshtriAdv) document.getElementById('settleAdvance').value = savedMeshtriAdv;
+        if (savedOwnerAdv) document.getElementById('ownerAdvance').value = savedOwnerAdv;
+        if (savedSelfSpent) document.getElementById('settleSelfSpent').value = savedSelfSpent;
 
-                updateAllDropdowns();
-                calculateTotal();
+    } else {
+        siteInput.value = '';
+        siteInput.readOnly = false;
+        siteInput.classList.remove('opacity-60');
+    }
 
-            
-        }
+    if (typeof calculateTotal === 'function') {
+        calculateTotal();
+    }
+}
 
         window.onManualSiteInput = function() {
             document.getElementById('settleAdvance').value = 0;
