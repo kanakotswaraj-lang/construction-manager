@@ -143,7 +143,7 @@ window.onSiteSelectChange = function() {
     document.getElementById('settleSelfSpent').value = 0;
     document.getElementById('siteIncome').value = 0;
 
-    // പഴയ ചെലവുകളും തൊഴിലാളികളുടെ ലിസ്റ്റും ക്ലിയർ ചെയ്യുക
+    // ലിസ്റ്റുകൾ ക്ലിയർ ചെയ്യുക
     if (document.getElementById('expenseListContainer')) document.getElementById('expenseListContainer').innerHTML = '';
     if (document.getElementById('workerListContainer')) document.getElementById('workerListContainer').innerHTML = '';
 
@@ -154,7 +154,7 @@ window.onSiteSelectChange = function() {
 
         let currentSiteKey = selectedSite.trim().toLowerCase();
         
-        // localStorage-ൽ നിന്ന് അഡ്വാൻസ് തുകയും വരവും എടുക്കുന്നു
+        // 1. localStorage-ൽ നിന്ന് അഡ്വാൻസ് തുകയും വരവും എടുക്കുന്നു
         let savedMeshtriAdv = localStorage.getItem('advance_Meshtri_' + currentSiteKey);
         let savedOwnerAdv = localStorage.getItem('advance_Owner_' + currentSiteKey);
         let savedSelfSpent = localStorage.getItem('selfspent_' + currentSiteKey);
@@ -165,13 +165,19 @@ window.onSiteSelectChange = function() {
         if (savedSelfSpent) document.getElementById('settleSelfSpent').value = savedSelfSpent;
         if (savedIncome) document.getElementById('siteIncome').value = savedIncome;
 
-        // ഫയർബേസിൽ നിന്നോ അക്കൗണ്ട് ഡാറ്റയിൽ നിന്നോ പഴയ കണക്കുകൾ ഉണ്ടെങ്കിൽ ലോഡ് ചെയ്യുക
+        // 2. ഫയർബേസ് ഡാറ്റയിൽ നിന്ന് (allAccountsData) ഈ സൈറ്റിന്റെ കണക്കുകൾ ഫെച്ച് ചെയ്യുക
         if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
             const matchingAccounts = allAccountsData.filter(d => d.site && d.site.trim().toLowerCase() === currentSiteKey);
             
             matchingAccounts.forEach(acc => {
                 if (acc.type === 'income') {
                     document.getElementById('siteIncome').value = acc.amount;
+                } else if (acc.type === 'advance_meshtri') {
+                    document.getElementById('settleAdvance').value = acc.amount;
+                } else if (acc.type === 'advance_owner') {
+                    document.getElementById('ownerAdvance').value = acc.amount;
+                } else if (acc.type === 'self_spent') {
+                    document.getElementById('settleSelfSpent').value = acc.amount;
                 } else if (acc.type === 'other') {
                     const container = document.getElementById('expenseListContainer');
                     if (container) {
@@ -181,6 +187,31 @@ window.onSiteSelectChange = function() {
                                 <input type="text" value="${acc.name}" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
                                 <input type="number" value="${acc.amount}" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="calculateTotal()">
                                 <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3 py-3 rounded-xl font-bold text-xs">X</button>
+                            </div>
+                        `);
+                    }
+                } else if (acc.type === 'wage') {
+                    const container = document.getElementById('workerListContainer');
+                    if (container) {
+                        const rowId = Date.now() + Math.random();
+                        const optionsHTML = typeof registeredWorkers !== 'undefined' ? registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}" ${w.id === acc.staffId ? 'selected' : ''}>${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('') : '';
+                        
+                        let jobTitle = "പണി";
+                        if(acc.name && acc.name.includes("കൂലി - ")) {
+                            jobTitle = acc.name.split("കൂലി - ")[1].replace(")", "").trim();
+                        }
+
+                        container.insertAdjacentHTML('beforeend', `
+                            <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2 worker-row" id="row-${rowId}" data-worker="">
+                                <select class="worker-select w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" onchange="updateRowData(this, '${rowId}')" required>
+                                    <option value="">തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക</option>
+                                    ${optionsHTML}
+                                </select>
+                                <div class="flex gap-2">
+                                    <input type="text" value="${jobTitle}" placeholder="പണി" class="worker-job w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="updateRowData(this, '${rowId}')" required>
+                                    <input type="number" value="${acc.amount}" placeholder="കൂലി (₹)" class="worker-wage w-32 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="calculateTotal()" required>
+                                    <button type="button" onclick="document.getElementById('row-${rowId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3.5 py-3 rounded-xl font-bold text-xs">X</button>
+                                </div>
                             </div>
                         `);
                     }
