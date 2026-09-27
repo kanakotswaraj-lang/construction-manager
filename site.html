@@ -346,7 +346,7 @@ window.onSiteSelectChange = function() {
             });
         }
 
-        window.calculateTotal = function() {
+window.calculateTotal = function() {
     try {
         let siteNameInput = document.getElementById('siteName');
         let currentSite = siteNameInput ? siteNameInput.value.trim().toLowerCase() : 'default_site';
@@ -355,9 +355,17 @@ window.onSiteSelectChange = function() {
         let prevMeshtriBalance = parseFloat(localStorage.getItem('prev_balance_Meshtri_' + currentSite)) || 0;
         let prevOwnerBalance = parseFloat(localStorage.getItem('prev_balance_Owner_' + currentSite)) || 0;
 
+        // മുകളിൽ ലഭിച്ച വരവ് തുക എടുക്കുന്നു (ഉദാ: 1000)
+        let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : 0) || 0;
+
         const settleAdvanceInput = document.getElementById('settleAdvance');
         const ownerAdvanceInput = document.getElementById('ownerAdvance');
         const settleSelfSpentInput = document.getElementById('settleSelfSpent');
+
+        // വരവ് തുക മേസ്തിരി തന്ന തുകയുടെ ഇൻപുട്ട് ബോക്സിൽ ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
+        if (settleAdvanceInput && todayIncome > 0 && settleAdvanceInput.value == "") {
+            settleAdvanceInput.value = todayIncome;
+        }
 
         let currentMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
         let currentOwnerAdvance = parseFloat(ownerAdvanceInput ? ownerAdvanceInput.value : 0) || 0;
@@ -377,29 +385,23 @@ window.onSiteSelectChange = function() {
             todayWages += parseFloat(input.value) || 0;
         });
 
-        let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : 0) || 0;
-
         let totalSpentForSite = todayOtherExp + todayWages;
         let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
 
-        // മേസ്തിരിയുടെ കണക്ക്: മേസ്തിരി തന്ന അഡ്വാൻസും സ്വന്തം മുടക്കും വെച്ച് കണക്കാക്കുന്നു
-        let meshtriTotalInflow = prevMeshtriBalance + currentMeshtriAdvance + currentInputSelfSpent;
-        let meshtriSettlementBalance = meshtriTotalInflow - totalExpenseWithSelf;
-
-        // മുതലാളിയുടെ കണക്ക്: മുതലാളി തന്ന അഡ്വാൻസ് വെച്ച് കണക്കാക്കുന്നു
-        let ownerTotalInflow = prevOwnerBalance + currentOwnerAdvance;
-        let ownerSettlementBalance = ownerTotalInflow - totalExpenseWithSelf;
+        // ബാലൻസ് കണക്കുകൂട്ടൽ
+        let meshtriSettlementBalance = prevMeshtriBalance + currentMeshtriAdvance - totalExpenseWithSelf;
+        let ownerSettlementBalance = prevOwnerBalance + currentOwnerAdvance;
 
         let settleBalanceDisplay = document.getElementById('settleBalanceText');
         if (settleBalanceDisplay) {
-            let textVal = meshtriSettlementBalance < 0 ? `₹ ${Math.abs(meshtriSettlementBalance)} (കൊടുക്കാനുള്ളത്)` : `₹ ${meshtriSettlementBalance} (കയ്യിലുള്ളത്)`;
+            let textVal = meshtriSettlementBalance < 0 ? `₹ ${Math.abs(meshtriSettlementBalance)} (കൊടുക്കാനുള്ളത്)` : `₹ ${meshtriSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
             settleBalanceDisplay.innerText = textVal;
             settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
         }
 
         let ownerBalanceDisplay = document.getElementById('ownerBalanceText');
         if (ownerBalanceDisplay) {
-            let textValOwner = ownerSettlementBalance < 0 ? `₹ ${Math.abs(ownerSettlementBalance)} (കൊടുക്കാനുള്ളത്)` : `₹ ${ownerSettlementBalance} (കയ്യിലുള്ളത്)`;
+            let textValOwner = ownerSettlementBalance < 0 ? `₹ ${Math.abs(ownerSettlementBalance)} (കൊടുക്കാനുള്ളത്)` : `₹ ${ownerSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
             ownerBalanceDisplay.innerText = textValOwner;
             ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
         }
@@ -412,9 +414,9 @@ window.onSiteSelectChange = function() {
         
         let balanceText = document.getElementById('grandTotal');
         if (balanceText) {
-            let netBalance = todayIncome - totalExpenseWithSelf;
-            balanceText.innerText = `₹ ${netBalance}`;
-            balanceText.className = netBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+            let netSiteProfit = todayIncome - totalExpenseWithSelf;
+            balanceText.innerText = `₹ ${netSiteProfit}`;
+            balanceText.className = netSiteProfit < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
     } catch (err) {
         console.error("Calculation Error:", err);
