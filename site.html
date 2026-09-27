@@ -159,7 +159,18 @@
                 siteInput.readOnly = false;
                 siteInput.classList.remove('opacity-60');
             }
-            calculateTotal();
+                            // സൈറ്റ് ഡ്രോപ്പ്ഡൗൺ മാറുമ്പോഴോ ഡാറ്റ ലോഡ് ചെയ്യുമ്പോഴോ നിലവിലെ സൈറ്റിന്റെ അഡ്വാൻസ് തുക ലോഡ് ചെയ്യാൻ
+                const selectedDropdown = document.getElementById('siteSelectDropdown');
+                if (selectedDropdown && selectedDropdown.value) {
+                    let currentSiteKey = selectedDropdown.value.trim().toLowerCase();
+                    document.getElementById('settleAdvance').value = localStorage.getItem('advance_Meshtri_' + currentSiteKey) || 0;
+                    document.getElementById('ownerAdvance').value = localStorage.getItem('advance_Owner_' + currentSiteKey) || 0;
+                }
+
+                updateAllDropdowns();
+                calculateTotal();
+
+            
         }
 
         window.onManualSiteInput = function() {
@@ -593,14 +604,16 @@
             
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-4">
                 <div>
-                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
+                    
+                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="siteNameLabel">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
                     <div class="space-y-2">
                         <select id="siteSelectDropdown" onchange="onSiteSelectChange()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
-                            <option value="">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>
+                            <option value="" data-key="newSiteType">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>
                         </select>
-                        <input type="text" id="siteName" oninput="onManualSiteInput()" required placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                        <input type="text" id="siteName" oninput="onManualSiteInput()" required placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" data-key-placeholder="siteNamePlaceholder" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                     </div>
                 </div>
+
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
