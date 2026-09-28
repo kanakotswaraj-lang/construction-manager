@@ -16,7 +16,7 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- ആപ്പ് ലോക്ക് / പിൻ വെരിഫിക്കേഷൻ മോഡൽ (ആപ്പ് തുറക്കുമ്പോൾ ആദ്യം കാണുന്നത്) -->
+    <!-- ആപ്പ് ലോക്ക് / പിൻ വെരിഫിക്കേഷൻ മോഡൽ -->
     <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
             
@@ -76,21 +76,21 @@
         <a href="register.html" class="text-amber-400 font-bold hover:underline ml-1" data-key="link_register">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
     </div>
 
-<!-- പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ -->
-<div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
-        
-        <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
-        <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
-        
-        <input type="tel" id="forgotPhone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" data-key="placeholder_phone" data-key-type="placeholder" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
-        
-        <div class="flex gap-2">
-            <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
-            <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_verify">പരിശോധിക്കുക</button>
+    <!-- പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ -->
+    <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+            
+            <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
+            <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
+            
+            <input type="tel" id="forgotPhone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" data-key="placeholder_phone" data-key-type="placeholder" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
+            
+            <div class="flex gap-2">
+                <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
+                <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_verify">പരിശോധിക്കുക</button>
+            </div>
         </div>
     </div>
-</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -99,8 +99,46 @@
 
         setupHeader('appHeader');
 
-        // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ കോഡ്
+        // ഭാഷ മാറ്റുമ്പോൾ പേജിലെ ടെക്സ്റ്റുകൾ അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
+        function updatePageLanguage(lang) {
+            document.querySelectorAll("[data-key]").forEach(el => {
+                const key = el.getAttribute("data-key");
+                if (window.translations && window.translations[lang] && window.translations[lang][key]) {
+                    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+                        if (el.hasAttribute("placeholder") || el.getAttribute("data-key-type") === "placeholder") {
+                            el.placeholder = window.translations[lang][key];
+                        }
+                    } else {
+                        el.innerText = window.translations[lang][key];
+                    }
+                }
+            });
+
+            document.querySelectorAll("[data-key-type='placeholder']").forEach(el => {
+                const key = el.getAttribute("data-key");
+                if (window.translations && window.translations[lang] && window.translations[lang][key]) {
+                    el.placeholder = window.translations[lang][key];
+                }
+            });
+        }
+
+        // അലർട്ട് മെസ്സേജുകൾ ഭാഷ അനുസരിച്ച് എടുക്കാൻ
+        function getMsg(key) {
+            const lang = localStorage.getItem('selectedLang') || localStorage.getItem('selectedLanguage') || 'ml';
+            if (window.translations && window.translations[lang] && window.translations[lang][key]) {
+                return window.translations[lang][key];
+            }
+            if (window.translations && window.translations['ml'] && window.translations['ml'][key]) {
+                return window.translations['ml'][key];
+            }
+            return key;
+        }
+
+        // പേജ് ലോഡ് ആകുമ്പോൾ നിലവിലെ ഭാഷ സെറ്റ് ചെയ്യുക
         document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem('selectedLang') || localStorage.getItem('selectedLanguage') || 'ml';
+            updatePageLanguage(savedLang);
+
             const pinModal = document.getElementById("pinLockModal");
             const pinInput = document.getElementById("appPinInput");
             const btnVerifyPin = document.getElementById("btnVerifyPin");
@@ -112,10 +150,16 @@
                     pinModal.classList.add("hidden");
                     pinModal.classList.remove("flex");
                 } else {
-                    alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
+                    alert(getMsg('alertPinWrong') || "നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
                     pinInput.value = "";
                 }
             });
+        });
+
+        // ഭാഷ മാറുന്ന ഈവെന്റ് ലിസൺ ചെയ്യാൻ
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
+            updatePageLanguage(newLang);
         });
 
         const firebaseConfig = {
@@ -165,7 +209,7 @@
         btnGetDetails.addEventListener("click", async () => {
             const phone = forgotPhone.value.trim();
             if (!phone || phone.length < 10) {
-                alert('ദയവായി ശരിയായ ഫോൺ നമ്പർ നൽകുക!');
+                alert(getMsg('alertInvalidPhone') || 'ദയവായി ശരിയായ ഫോൺ നമ്പർ നൽകുക!');
                 return;
             }
 
@@ -180,16 +224,16 @@
                         if (userData && userData.phone && userData.phone.toString().trim() === phone) {
                             const uName = userData.username || childSnapshot.key;
                             const uPass = userData.password;
-                            alert("നിങ്ങളുടെ പേര്: " + uName + "\nപാസ്‌വേർഡ്: " + uPass);
+                            alert(`നിങ്ങളുടെ പേര്: ${uName}\nപാസ്‌വേർഡ്: ${uPass}`);
                             found = true;
                         }
                     });
 
                     if (!found) {
-                        alert('ഈ ഫോൺ നമ്പറിൽ അക്കൗണ്ട് കണ്ടെത്താനായില്ല!');
+                        alert(getMsg('accountNotFound') || 'ഈ ഫോൺ നമ്പറിൽ അക്കൗണ്ട് കണ്ടെത്താനായില്ല!');
                     }
                 } else {
-                    alert('ഡാറ്റാബേസിൽ യൂസർമാരെ ലഭ്യമല്ല.');
+                    alert(getMsg('noAccounts') || 'ഡാറ്റാബേസിൽ യൂസർമാരെ ലഭ്യമല്ല.');
                 }
             } catch (err) {
                 console.error(err);
@@ -202,7 +246,7 @@
             const passInput = passwordInput.value.trim();
 
             if (!userInput || !passInput) {
-                alert('ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!');
+                alert(getMsg('alertFillAll') || 'ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!');
                 return;
             }
 
@@ -227,19 +271,19 @@
 
                     if (matchedUserData) {
                         if (matchedUserData.password === passInput) {
-                            alert('ലോഗിൻ വിജയകരമാണ്!');
+                            alert(getMsg('loginSuccess') || 'ലോഗിൻ വിജയകരമാണ്!');
                             localStorage.setItem('userName', matchedUserKey);
                             setTimeout(() => {
                                 window.location.href = "dashboard.html";
                             }, 1000);
                         } else {
-                            alert('നൽകിയ പാസ്‌വേർഡ് തെറ്റാണ്!');
+                            alert(getMsg('wrongPassword') || 'നൽകിയ പാസ്‌വേർഡ് തെറ്റാണ്!');
                         }
                     } else {
-                        alert('ഈ പേരിൽ അക്കൗണ്ട് കണ്ടെത്താനായില്ല!');
+                        alert(getMsg('accountNotFound') || 'ഈ പേരിൽ അക്കൗണ്ട് കണ്ടെത്താനായില്ല!');
                     }
                 } else {
-                    alert('അക്കൗണ്ടുകൾ ലഭ്യമല്ല.');
+                    alert(getMsg('noAccounts') || 'അക്കൗണ്ടുകൾ ലഭ്യമല്ല.');
                 }
             } catch (err) {
                 console.error(err);
