@@ -93,7 +93,7 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+                import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         import { setupHeader } from './header.js';
 
@@ -117,6 +117,44 @@
                 });
             }
         }
+
+        // പേജ് ലോഡ് ആകുമ്പോൾ localStorage-ൽ ഉള്ള ഭാഷ എടുത്തു സെറ്റ് ചെയ്യുക
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            updatePageLanguage(savedLang);
+
+            // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ
+            const pinModal = document.getElementById("pinLockModal");
+            const pinInput = document.getElementById("appPinInput");
+            const btnVerifyPin = document.getElementById("btnVerifyPin");
+            const savedPin = localStorage.getItem("appPin") || "1234";
+
+            btnVerifyPin.addEventListener("click", () => {
+                if (pinInput.value.trim() === savedPin) {
+                    pinModal.classList.add("hidden");
+                    pinModal.classList.remove("flex");
+                } else {
+                    alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
+                    pinInput.value = "";
+                }
+            });
+        });
+
+        // ഹെഡറിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ ഈ ഈവെന്റ് വഴി പേജ് അപ്ഡേറ്റ് ആകും
+        window.addEventListener('languageChanged', (e) => {
+            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
+            updatePageLanguage(newLang);
+        });
+
+        // പുറമെ നിന്ന് switchLanguage കോൾ ചെയ്യുമ്പോഴും ഇത് വർക്ക് ചെയ്യും
+        const originalSwitchLang = window.switchLanguage;
+        window.switchLanguage = function(langCode) {
+            if (typeof originalSwitchLang === 'function') {
+                originalSwitchLang(langCode);
+            }
+            updatePageLanguage(langCode);
+        };
+
 
         // പേജ് ലോഡ് ആകുമ്പോൾ
         document.addEventListener("DOMContentLoaded", () => {
