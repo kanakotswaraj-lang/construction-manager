@@ -92,14 +92,14 @@
         </div>
     </div>
 
-        <script type="module">
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         import { setupHeader } from './header.js';
 
         setupHeader('appHeader');
 
-        // ഭാഷ മാറ്റുമ്പോൾ പേജിലെ ടെക്സ്റ്റുകൾ അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ (words വേരിയബിൾ അനുസരിച്ച്)
+        // ഭാഷ മാറ്റുമ്പോൾ പേജിലെ ടെക്സ്റ്റുകൾ അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
         function updatePageLanguage(langCode) {
             if (typeof words !== 'undefined') {
                 document.querySelectorAll("[data-key]").forEach(el => {
@@ -109,8 +109,8 @@
                     }
                 });
 
-                document.querySelectorAll("[data-key-placeholder]").forEach(input => {
-                    const key = input.getAttribute("data-key-placeholder");
+                document.querySelectorAll("[data-key-type='placeholder']").forEach(input => {
+                    const key = input.getAttribute("data-key");
                     if (words[key] && words[key][langCode]) {
                         input.placeholder = words[key][langCode];
                     }
@@ -118,32 +118,15 @@
             }
         }
 
-        // അലർട്ട് മെസ്സേജുകൾ ഭാഷ അനുസരിച്ച് എടുക്കാൻ
-        function getMsg(key) {
-            const langCode = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof words !== 'undefined' && words[key] && words[key][langCode]) {
-                return words[key][langCode];
-            }
-            if (typeof words !== 'undefined' && words[key] && words[key]['ml']) {
-                return words[key]['ml'];
-            }
-            return key;
-        }
-
-        // പേജ് ലോഡ് ആകുമ്പോൾ നിലവിലെ ഭാഷ സെറ്റ് ചെയ്യുക
+        // പേജ് ലോഡ് ആകുമ്പോൾ
         document.addEventListener("DOMContentLoaded", () => {
-    const savedLang = localStorage.getItem('selectedLang') || 'ml';
-    if (typeof updatePageLanguage === 'function') {
-        updatePageLanguage(savedLang);
-    }
-});
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            updatePageLanguage(savedLang);
 
-    
-
+            // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ
             const pinModal = document.getElementById("pinLockModal");
             const pinInput = document.getElementById("appPinInput");
             const btnVerifyPin = document.getElementById("btnVerifyPin");
-
             const savedPin = localStorage.getItem("appPin") || "1234";
 
             btnVerifyPin.addEventListener("click", () => {
@@ -157,13 +140,12 @@
             });
         });
 
-        // ഭാഷ മാറുന്ന ഈവെന്റ് ലിസൺ ചെയ്യാൻ (Header-ൽ നിന്ന് വിളിക്കുമ്പോൾ)
+        // ഭാഷ മാറുന്ന ഈവെന്റ് ലിസൺ ചെയ്യാൻ
         window.addEventListener('languageChanged', (e) => {
             const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
             updatePageLanguage(newLang);
         });
 
-        // പുറമെ നിന്ന് switchLanguage കോൾ ചെയ്യുമ്പോൾ പേജ് ലാംഗ്വേജ് അപ്ഡേറ്റ് ആകാൻ
         const originalSwitchLang = window.switchLanguage;
         window.switchLanguage = function(langCode) {
             if (typeof originalSwitchLang === 'function') {
@@ -172,6 +154,7 @@
             updatePageLanguage(langCode);
         };
 
+        // Firebase കോൺഫിഗറേഷൻ
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -216,6 +199,7 @@
             forgotModal.classList.remove("flex");
         });
 
+        // പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ
         btnGetDetails.addEventListener("click", async () => {
             const phone = forgotPhone.value.trim();
             if (!phone || phone.length < 10) {
@@ -251,6 +235,7 @@
             }
         });
 
+        // ലോഗിൻ പ്രോസസ്സ്
         btnLogin.addEventListener("click", async () => {
             const userInput = usernameInput.value.trim();
             const passInput = passwordInput.value.trim();
@@ -301,6 +286,5 @@
             }
         });
     </script>
-
 </body>
 </html>
