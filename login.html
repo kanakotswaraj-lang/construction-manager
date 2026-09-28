@@ -118,12 +118,13 @@
             }
         }
 
-        // പേജ് ലോഡ് ആകുമ്പോൾ ഒരൊറ്റ തവണ മാത്രം എക്സിക്യൂട്ട് ചെയ്യാൻ
+     // പേജ് ലോഡ് ആകുമ്പോൾ സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യാൻ
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            updatePageLanguage(savedLang);
-
-            // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
+        });        // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ
             const pinModal = document.getElementById("pinLockModal");
             const pinInput = document.getElementById("appPinInput");
             const btnVerifyPin = document.getElementById("btnVerifyPin");
@@ -139,12 +140,14 @@
                 }
             });
         });
-
-        // ഹെഡറിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ ഈ ഈവെന്റ് വഴി പേജ് അപ്ഡേറ്റ് ആകും
+ // ഹെഡറിൽ നിന്നോ ലാംഗ്വേജ് മെനുവിൽ നിന്നോ ഭാഷ മാറ്റുമ്പോൾ ഇത് വർക്ക് ചെയ്യും
         window.addEventListener('languageChanged', (e) => {
             const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
-            updatePageLanguage(newLang);
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(newLang);
+            }
         });
+
 
         const originalSwitchLang = window.switchLanguage;
         window.switchLanguage = function(langCode) {
