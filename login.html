@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-key="login_page_title">മേസ്തിരി പ്രോ - ലോഗിൻ</title>
+    <title>മേസ്തിരി പ്രോ - ലോഗിൻ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- ആപ്പ് ലോക്ക് / പിൻ വെരിഫിക്കേഷൻ മോഡൽ -->
+    <!-- ആപ്പ് ലോക്ക് / പിൻ വെരിഫിക്കേഷൻ മോഡൽ (ആപ്പ് തുറക്കുമ്പോൾ ആദ്യം കാണുന്നത്) -->
     <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
             
@@ -48,13 +48,13 @@
         <div class="space-y-4">
             <div>
                 <label class="block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="label_username">യൂസർനെയിം (പേര്)</label>
-                <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" data-key="placeholder_username" data-key-type="placeholder" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
+                <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="label_password">പാസ്‌വേർഡ്</label>
                 <div class="relative">
-                    <input type="password" id="password" placeholder="പാസ്‌വേർഡ് നൽകുക" data-key="placeholder_password" data-key-type="placeholder" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
+                    <input type="password" id="password" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
                     <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2 cursor-pointer">
                         <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
                     </button>
@@ -76,21 +76,21 @@
         <a href="register.html" class="text-amber-400 font-bold hover:underline ml-1" data-key="link_register">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
     </div>
 
-    <!-- പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ -->
-    <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
-            
-            <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
-            <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
-            
-            <input type="tel" id="forgotPhone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" data-key="placeholder_phone" data-key-type="placeholder" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
-            
-            <div class="flex gap-2">
-                <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
-                <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_verify">പരിശോധിക്കുക</button>
-            </div>
+<!-- പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ -->
+<div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+        
+        <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
+        <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
+        
+        <input type="tel" id="forgotPhone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
+        
+        <div class="flex gap-2">
+            <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
+            <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_verify">പരിശോധിക്കുക</button>
         </div>
     </div>
+</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -99,35 +99,13 @@
 
         setupHeader('appHeader');
 
-        // ഭാഷ മാറ്റുമ്പോൾ പേജിലെ ടെക്സ്റ്റുകളും പ്ലേസ്‌ഹോൾഡറുകളും അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
-        function updatePageLanguage(langCode) {
-            if (typeof words !== 'undefined') {
-                document.querySelectorAll("[data-key]").forEach(el => {
-                    const key = el.getAttribute("data-key");
-                    if (words[key] && words[key][langCode]) {
-                        el.innerText = words[key][langCode];
-                    }
-                });
-
-                document.querySelectorAll("[data-key-type='placeholder']").forEach(input => {
-                    const key = input.getAttribute("data-key");
-                    if (words[key] && words[key][langCode]) {
-                        input.placeholder = words[key][langCode];
-                    }
-                });
-            }
-        }
-
-     // പേജ് ലോഡ് ആകുമ്പോൾ സേവ് ചെയ്ത ഭാഷ സെറ്റ് ചെയ്യാൻ
+        // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ കോഡ്
         document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(savedLang);
-            }
-        });        // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ
             const pinModal = document.getElementById("pinLockModal");
             const pinInput = document.getElementById("appPinInput");
             const btnVerifyPin = document.getElementById("btnVerifyPin");
+
+            // ഡിഫോൾട്ട് പിൻ '1234' (ആവശ്യമെങ്കിൽ പിന്നീട് യൂസർക്ക് മാറ്റാൻ കോഡ് സെറ്റ് ചെയ്യാം)
             const savedPin = localStorage.getItem("appPin") || "1234";
 
             btnVerifyPin.addEventListener("click", () => {
@@ -140,24 +118,7 @@
                 }
             });
         });
- // ഹെഡറിൽ നിന്നോ ലാംഗ്വേജ് മെനുവിൽ നിന്നോ ഭാഷ മാറ്റുമ്പോൾ ഇത് വർക്ക് ചെയ്യും
-        window.addEventListener('languageChanged', (e) => {
-            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(newLang);
-            }
-        });
 
-
-        const originalSwitchLang = window.switchLanguage;
-        window.switchLanguage = function(langCode) {
-            if (typeof originalSwitchLang === 'function') {
-                originalSwitchLang(langCode);
-            }
-            updatePageLanguage(langCode);
-        };
-
-        // Firebase കോൺഫിഗറേഷൻ
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -202,7 +163,6 @@
             forgotModal.classList.remove("flex");
         });
 
-        // പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ
         btnGetDetails.addEventListener("click", async () => {
             const phone = forgotPhone.value.trim();
             if (!phone || phone.length < 10) {
@@ -221,7 +181,7 @@
                         if (userData && userData.phone && userData.phone.toString().trim() === phone) {
                             const uName = userData.username || childSnapshot.key;
                             const uPass = userData.password;
-                            alert(`നിങ്ങളുടെ പേര്: ${uName}\nപാസ്‌വേർഡ്: ${uPass}`);
+                            alert("നിങ്ങളുടെ പേര്: " + uName + "\nപാസ്‌വേർഡ്: " + uPass);
                             found = true;
                         }
                     });
@@ -238,9 +198,8 @@
             }
         });
 
-        // ലോഗിൻ പ്രോസസ്സ്
         btnLogin.addEventListener("click", async () => {
-            const userInput = usernameInput.value.trim();
+            const userInput = usernameInput.value.username ? usernameInput.value.trim() : usernameInput.value.trim();
             const passInput = passwordInput.value.trim();
 
             if (!userInput || !passInput) {
@@ -289,5 +248,6 @@
             }
         });
     </script>
+
 </body>
 </html>
