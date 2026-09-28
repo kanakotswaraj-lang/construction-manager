@@ -93,13 +93,13 @@
     </div>
 
     <script type="module">
-                import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         import { setupHeader } from './header.js';
 
         setupHeader('appHeader');
 
-        // ഭാഷ മാറ്റുമ്പോൾ പേജിലെ ടെക്സ്റ്റുകൾ അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
+        // ഭാഷ മാറ്റുമ്പോൾ പേജിലെ ടെക്സ്റ്റുകളും പ്ലേസ്‌ഹോൾഡറുകളും അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
         function updatePageLanguage(langCode) {
             if (typeof words !== 'undefined') {
                 document.querySelectorAll("[data-key]").forEach(el => {
@@ -118,7 +118,7 @@
             }
         }
 
-        // പേജ് ലോഡ് ആകുമ്പോൾ localStorage-ൽ ഉള്ള ഭാഷ എടുത്തു സെറ്റ് ചെയ്യുക
+        // പേജ് ലോഡ് ആകുമ്പോൾ ഒരൊറ്റ തവണ മാത്രം എക്സിക്യൂട്ട് ചെയ്യാൻ
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             updatePageLanguage(savedLang);
@@ -141,44 +141,6 @@
         });
 
         // ഹെഡറിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ ഈ ഈവെന്റ് വഴി പേജ് അപ്ഡേറ്റ് ആകും
-        window.addEventListener('languageChanged', (e) => {
-            const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
-            updatePageLanguage(newLang);
-        });
-
-        // പുറമെ നിന്ന് switchLanguage കോൾ ചെയ്യുമ്പോഴും ഇത് വർക്ക് ചെയ്യും
-        const originalSwitchLang = window.switchLanguage;
-        window.switchLanguage = function(langCode) {
-            if (typeof originalSwitchLang === 'function') {
-                originalSwitchLang(langCode);
-            }
-            updatePageLanguage(langCode);
-        };
-
-
-        // പേജ് ലോഡ് ആകുമ്പോൾ
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            updatePageLanguage(savedLang);
-
-            // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ
-            const pinModal = document.getElementById("pinLockModal");
-            const pinInput = document.getElementById("appPinInput");
-            const btnVerifyPin = document.getElementById("btnVerifyPin");
-            const savedPin = localStorage.getItem("appPin") || "1234";
-
-            btnVerifyPin.addEventListener("click", () => {
-                if (pinInput.value.trim() === savedPin) {
-                    pinModal.classList.add("hidden");
-                    pinModal.classList.remove("flex");
-                } else {
-                    alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
-                    pinInput.value = "";
-                }
-            });
-        });
-
-        // ഭാഷ മാറുന്ന ഈവെന്റ് ലിസൺ ചെയ്യാൻ
         window.addEventListener('languageChanged', (e) => {
             const newLang = (e && e.detail) ? e.detail : (localStorage.getItem('selectedLang') || 'ml');
             updatePageLanguage(newLang);
