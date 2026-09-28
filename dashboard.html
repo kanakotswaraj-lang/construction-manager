@@ -523,15 +523,15 @@
             <div class="glass-card p-4 rounded-2xl shadow-xl border-l-4 border-l-amber-500 bg-slate-900/90 border border-slate-700/60 text-center">
                 <div class="flex items-center justify-center gap-2 mb-2">
                     <span class="text-lg">🔐</span>
-                    <h4 class="text-base font-black text-amber-400 tracking-wide">ആപ്പ് പിൻ മാറ്റുക</h4>
+                    <h4 class="text-base font-black text-amber-400 tracking-wide" data-key="changePinTitle">ആപ്പ് പിൻ മാറ്റുക</h4>
                 </div>
-                <p class="text-xs text-slate-400 mb-3">ആപ്പിന്റെ സുരക്ഷയ്ക്കായി നിങ്ങളുടെ 4 അക്ക പിൻ മാറ്റുക.</p>
+                <p class="text-xs text-slate-400 mb-3" data-key="changePinSubtitle">ആപ്പിന്റെ സുരക്ഷയ്ക്കായി നിങ്ങളുടെ 4 അക്ക പിൻ മാറ്റുക.</p>
                 
                 <div class="space-y-2.5">
-                    <input type="password" id="oldPin" maxlength="4" placeholder="പഴയ പിൻ നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-center text-white text-xs focus:outline-none focus:border-amber-400">
-                    <input type="password" id="newPin" maxlength="4" placeholder="പുതിയ പിൻ (4 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-center text-white text-xs focus:outline-none focus:border-amber-400">
+                    <input type="password" id="oldPin" maxlength="4" placeholder="പഴയ പിൻ നൽകുക" data-key="oldPinPlaceholder" data-key-type="placeholder" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-center text-white text-xs focus:outline-none focus:border-amber-400">
+                    <input type="password" id="newPin" maxlength="4" placeholder="പുതിയ പിൻ (4 അക്കം)" data-key="newPinPlaceholder" data-key-type="placeholder" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-center text-white text-xs focus:outline-none focus:border-amber-400">
                     
-                    <button type="button" onclick="changeAppPin()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md hover:opacity-95">
+                    <button type="button" onclick="changeAppPin()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md hover:opacity-95" data-key="changePinBtn">
                         പിൻ മാറ്റാം
                     </button>
                 </div>
