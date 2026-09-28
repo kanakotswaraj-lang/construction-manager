@@ -532,8 +532,22 @@ window.calculateTotal = function() {
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        window.saveSiteData = async function(event) {
+        
+                        window.saveSiteData = async function(event) {
             event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                // ബട്ടൺ ഇതിനകം ഡിസേബിൾ ചെയ്തിട്ടുണ്ടെങ്കിൽ (രണ്ടാം തവണയാണ് ക്ലിക്ക് ചെയ്യുന്നതെങ്കിൽ)
+                if (submitBtn.disabled) {
+                    showCustomAlert("കണക്ക് ഇതിനകം സേവ് ചെയ്തുകൊണ്ടിരിക്കുന്നു, ദയവായി കാത്തിരിക്കുക!", "ശ്രദ്ധിക്കുക");
+                    return;
+                }
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.5';
+                submitBtn.innerText = 'സേവ് ചെയ്യുന്നു...';
+            }
+
             const siteName = document.getElementById('siteName').value.trim();
             const entryDate = document.getElementById('entryDate').value;
             const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
@@ -543,6 +557,11 @@ window.calculateTotal = function() {
 
             if (!siteName) {
                 showCustomAlert("സൈറ്റിന്റെ പേര് നൽകുക!", "ശ്രദ്ധിക്കുക");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.innerText = 'കണക്ക് സേവ് ചെയ്യുക';
+                }
                 return;
             }
 
@@ -643,8 +662,14 @@ window.calculateTotal = function() {
             } catch (error) {
                 console.error("സേവ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
                 showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.innerText = 'കണക്ക് സേവ് ചെയ്യുക';
+                }
             }
         };
+
     </script>
 
     <style>
