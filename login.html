@@ -132,8 +132,11 @@
 
         // പേജ് ലോഡ് ആകുമ്പോൾ നിലവിലെ ഭാഷ സെറ്റ് ചെയ്യുക
         document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            updatePageLanguage(savedLang);
+    const savedLang = localStorage.getItem('selectedLang') || 'ml';
+    if (typeof window.switchLanguage === 'function') {
+        window.switchLanguage(savedLang);
+    }
+});
 
             const pinModal = document.getElementById("pinLockModal");
             const pinInput = document.getElementById("appPinInput");
