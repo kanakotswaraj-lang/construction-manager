@@ -16,7 +16,6 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- ആപ്പ് ലോക്ക് / പിൻ വെരിഫിക്കേഷൻ മോഡൽ (ആപ്പ് തുറക്കുമ്പോൾ ആദ്യം കാണുന്നത്) -->
     <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
             
@@ -39,7 +38,6 @@
         <div id="appHeader" class="w-full"></div>
     </div>
 
-    <!-- ലോഗിൻ കാർഡ് -->
     <div class="w-full max-w-sm bg-slate-900/90 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
         
         <h2 class="text-xl font-bold text-white mb-1" data-key="login_heading">ലോഗിൻ ചെയ്യുക</h2>
@@ -76,21 +74,20 @@
         <a href="register.html" class="text-amber-400 font-bold hover:underline ml-1" data-key="link_register">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
     </div>
 
-<!-- പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ -->
-<div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
-        
-        <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
-        <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
-        
-        <input type="tel" id="forgotPhone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
-        
-        <div class="flex gap-2">
-            <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
-            <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_verify">പരിശോധിക്കുക</button>
+    <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+            
+            <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
+            <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
+            
+            <input type="tel" id="forgotPhone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
+            
+            <div class="flex gap-2">
+                <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
+                <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_verify">പരിശോധിക്കുക</button>
+            </div>
         </div>
     </div>
-</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -99,13 +96,18 @@
 
         setupHeader('appHeader');
 
+        // ഭാഷ മാറ്റാൻ സഹായിക്കുന്ന ഫങ്ഷൻ കോൾ (language.js ഫയലിൽ ഉള്ളതനുസരിച്ച്)
+        if (typeof updatePageLanguage === "function") {
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            updatePageLanguage(savedLang);
+        }
+
         // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ കോഡ്
         document.addEventListener("DOMContentLoaded", () => {
             const pinModal = document.getElementById("pinLockModal");
             const pinInput = document.getElementById("appPinInput");
             const btnVerifyPin = document.getElementById("btnVerifyPin");
 
-            // ഡിഫോൾട്ട് പിൻ '1234' (ആവശ്യമെങ്കിൽ പിന്നീട് യൂസർക്ക് മാറ്റാൻ കോഡ് സെറ്റ് ചെയ്യാം)
             const savedPin = localStorage.getItem("appPin") || "1234";
 
             btnVerifyPin.addEventListener("click", () => {
@@ -145,6 +147,7 @@
         const btnGetDetails = document.getElementById("btnGetDetails");
         const forgotPhone = document.getElementById("forgotPhone");
 
+        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനുമുള്ള ഫങ്ഷൻ
         togglePasswordBtn.addEventListener("click", () => {
             const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
             passwordInput.setAttribute("type", type);
@@ -152,6 +155,7 @@
             eyeIcon.classList.toggle("fa-eye-slash");
         });
 
+        // പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ ഓപ്പൺ/ക്ലോസ് ചെയ്യൽ
         btnForgotOpen.addEventListener("click", () => {
             forgotModal.classList.remove("hidden");
             forgotModal.classList.add("flex");
@@ -163,11 +167,7 @@
             forgotModal.classList.remove("flex");
         });
 
-        // ഒറിജിനലായി വർക്ക് ചെയ്തിരുന്ന ലോഗിൻ കോഡ്
-        const btnLogin = document.getElementById("btnLogin");
-        const usernameInput = document.getElementById("username");
-        const passwordInput = document.getElementById("password");
-
+        // ലോഗിൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ വർക്ക് ചെയ്യുന്ന ഭാഗം
         if (btnLogin) {
             btnLogin.addEventListener("click", async () => {
                 const userInput = usernameInput.value.trim();
@@ -219,7 +219,6 @@
                 }
             });
         }
-
     </script>
 
 </body>
