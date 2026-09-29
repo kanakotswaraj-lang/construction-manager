@@ -163,90 +163,63 @@
             forgotModal.classList.remove("flex");
         });
 
-        btnGetDetails.addEventListener("click", async () => {
-            const phone = forgotPhone.value.trim();
-            if (!phone || phone.length < 10) {
-                alert('ദയവായി ശരിയായ ഫോൺ നമ്പർ നൽകുക!');
-                return;
-            }
+        // ഒറിജിനലായി വർക്ക് ചെയ്തിരുന്ന ലോഗിൻ കോഡ്
+        const btnLogin = document.getElementById("btnLogin");
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
 
-            try {
-                const usersRef = ref(db, 'users');
-                const snapshot = await get(usersRef);
+        if (btnLogin) {
+            btnLogin.addEventListener("click", async () => {
+                const userInput = usernameInput.value.trim();
+                const passInput = passwordInput.value.trim();
 
-                if (snapshot.exists()) {
-                    let found = false;
-                    snapshot.forEach((childSnapshot) => {
-                        const userData = childSnapshot.val();
-                        if (userData && userData.phone && userData.phone.toString().trim() === phone) {
-                            const uName = userData.username || childSnapshot.key;
-                            const uPass = userData.password;
-                            alert("നിങ്ങളുടെ പേര്: " + uName + "\nപാസ്‌വേർഡ്: " + uPass);
-                            found = true;
-                        }
-                    });
-
-                    if (!found) {
-                        alert('ഈ ഫോൺ നമ്പറിൽ അക്കൗണ്ട് കണ്ടെത്താനായില്ല!');
-                    }
-                } else {
-                    alert('ഡാറ്റാബേസിൽ യൂസർമാരെ ലഭ്യമല്ല.');
+                if (!userInput || !passInput) {
+                    alert('ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!');
+                    return;
                 }
-            } catch (err) {
-                console.error(err);
-                alert("Firebase Error: " + err.message);
-            }
-        });
 
-        btnLogin.addEventListener("click", async () => {
-            const userInput = usernameInput.value.username ? usernameInput.value.trim() : usernameInput.value.trim();
-            const passInput = passwordInput.value.trim();
+                try {
+                    const usersRef = ref(db, 'users');
+                    const snapshot = await get(usersRef);
 
-            if (!userInput || !passInput) {
-                alert('ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!');
-                return;
-            }
+                    if (snapshot.exists()) {
+                        let matchedUserKey = null;
+                        let matchedUserData = null;
 
-            try {
-                const usersRef = ref(db, 'users');
-                const snapshot = await get(usersRef);
+                        snapshot.forEach((childSnapshot) => {
+                            const key = childSnapshot.key;
+                            const data = childSnapshot.val();
+                            const dbUsername = (data.username || key || "").toString().trim();
 
-                if (snapshot.exists()) {
-                    let matchedUserKey = null;
-                    let matchedUserData = null;
+                            if (dbUsername.toLowerCase() === userInput.toLowerCase()) {
+                                matchedUserKey = key;
+                                matchedUserData = data;
+                            }
+                        });
 
-                    snapshot.forEach((childSnapshot) => {
-                        const key = childSnapshot.key;
-                        const data = childSnapshot.val();
-                        const dbUsername = (data.username || key || "").toString().trim();
-
-                        if (dbUsername.toLowerCase() === userInput.toLowerCase()) {
-                            matchedUserKey = key;
-                            matchedUserData = data;
-                        }
-                    });
-
-                    if (matchedUserData) {
-                        if (matchedUserData.password === passInput) {
-                            alert('ലോഗിൻ വിജയകരമാണ്!');
-                            localStorage.setItem('userName', matchedUserKey);
-                            setTimeout(() => {
-                                window.location.href = "dashboard.html";
-                            }, 1000);
+                        if (matchedUserData) {
+                            if (matchedUserData.password === passInput) {
+                                alert('ലോഗിൻ വിജയകരമാണ്!');
+                                localStorage.setItem('userName', matchedUserKey);
+                                setTimeout(() => {
+                                    window.location.href = "dashboard.html";
+                                }, 1000);
+                            } else {
+                                alert('നൽകിയ പാസ്‌വേർഡ് തെറ്റാണ്!');
+                            }
                         } else {
-                            alert('നൽകിയ പാസ്‌വേർഡ് തെറ്റാണ്!');
+                            alert('ഈ പേരിൽ അക്കൗണ്ട് കണ്ടെത്താനായില്ല!');
                         }
                     } else {
-                        alert('ഈ പേരിൽ അക്കൗണ്ട് കണ്ടെത്താനായില്ല!');
+                        alert('അക്കൗണ്ടുകൾ ലഭ്യമല്ല.');
                     }
-                } else {
-                    alert('അക്കൗണ്ടുകൾ ലഭ്യമല്ല.');
+                } catch (err) {
+                    console.error(err);
+                    alert("Firebase Error: " + err.message);
                 }
-            } catch (err) {
-                console.error(err);
-                alert("Firebase Error: " + err.message);
-            }
-        });
+            });
+        }
+
     </script>
 
 </body>
