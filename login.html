@@ -96,30 +96,36 @@
 
         setupHeader('appHeader');
 
-        // ഭാഷ മാറ്റാൻ സഹായിക്കുന്ന ഫങ്ഷൻ കോൾ (language.js ഫയലിൽ ഉള്ളതനുസരിച്ച്)
-        if (typeof updatePageLanguage === "function") {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            updatePageLanguage(savedLang);
-        }
 
-        // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ കോഡ്
-        document.addEventListener("DOMContentLoaded", () => {
-            const pinModal = document.getElementById("pinLockModal");
-            const pinInput = document.getElementById("appPinInput");
-            const btnVerifyPin = document.getElementById("btnVerifyPin");
+// പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഒരേസമയം ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. ഭാഷ മാറ്റാനുള്ള കോഡ്
+    const savedLang = localStorage.getItem('selectedLang') || 'ml';
+    if (typeof window.switchLanguage === "function") {
+        window.switchLanguage(savedLang);
+    } else if (typeof updatePageLanguage === "function") {
+        updatePageLanguage(savedLang);
+    }
 
-            const savedPin = localStorage.getItem("appPin") || "1234";
+    // 2. പിൻ ലോക്ക് വെരിഫിക്കേഷൻ കോഡ്
+    const pinModal = document.getElementById("pinLockModal");
+    const pinInput = document.getElementById("appPinInput");
+    const btnVerifyPin = document.getElementById("btnVerifyPin");
 
-            btnVerifyPin.addEventListener("click", () => {
-                if (pinInput.value.trim() === savedPin) {
-                    pinModal.classList.add("hidden");
-                    pinModal.classList.remove("flex");
-                } else {
-                    alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
-                    pinInput.value = "";
-                }
-            });
+    const savedPin = localStorage.getItem("appPin") || "1234";
+
+    if (btnVerifyPin) {
+        btnVerifyPin.addEventListener("click", () => {
+            if (pinInput.value.trim() === savedPin) {
+                pinModal.classList.add("hidden");
+                pinModal.classList.remove("flex");
+            } else {
+                alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
+                pinInput.value = "";
+            }
         });
+    }
+});
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
