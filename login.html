@@ -16,6 +16,7 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
+    <!-- പിൻ ലോക്ക് മോഡൽ -->
     <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
             
@@ -26,7 +27,7 @@
             <h3 class="text-base font-bold text-white mb-1" data-key="pin_lock_title">സുരക്ഷിത ലോഗിൻ</h3>
             <p class="text-xs text-slate-400 mb-4" data-key="pin_lock_desc">തുടരാൻ നിങ്ങളുടെ 4 അക്ക പിൻ നമ്പർ നൽകുക</p>
             
-            <input type="password" id="appPinInput" maxlength="4" placeholder="••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center text-white text-lg tracking-widest focus:outline-none focus:border-amber-400 mb-4">
+            <input type="password" id="appPinInput" maxlength="4" data-key-placeholder="placeholder_pin" placeholder="••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center text-white text-lg tracking-widest focus:outline-none focus:border-amber-400 mb-4">
             
             <button type="button" id="btnVerifyPin" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-sm transition cursor-pointer shadow-lg" data-key="btn_open">
                 തുറക്കുക
@@ -34,10 +35,12 @@
         </div>
     </div>
 
+    <!-- ആപ്പ് ഹെഡർ -->
     <div class="w-full max-w-sm mx-auto mb-4">
         <div id="appHeader" class="w-full"></div>
     </div>
 
+    <!-- മെയിൻ ലോഗിൻ കാർഡ് -->
     <div class="w-full max-w-sm bg-slate-900/90 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
         
         <h2 class="text-xl font-bold text-white mb-1" data-key="login_heading">ലോഗിൻ ചെയ്യുക</h2>
@@ -46,13 +49,13 @@
         <div class="space-y-4">
             <div>
                 <label class="block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="label_username">യൂസർനെയിം (പേര്)</label>
-                <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
+                <input type="text" id="username" data-key-placeholder="placeholder_username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="label_password">പാസ്‌വേർഡ്</label>
                 <div class="relative">
-                    <input type="password" id="password" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
+                    <input type="password" id="password" data-key-placeholder="placeholder_password" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
                     <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2 cursor-pointer">
                         <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
                     </button>
@@ -69,18 +72,20 @@
         </div>
     </div>
 
+    <!-- രജിസ്റ്റർ ലിങ്ക് -->
     <div class="mt-6 text-center text-xs text-slate-400">
         <span data-key="no_account_text">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
         <a href="register.html" class="text-amber-400 font-bold hover:underline ml-1" data-key="link_register">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
     </div>
 
+    <!-- പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ -->
     <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
             
             <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
             <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
             
-            <input type="tel" id="forgotPhone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
+            <input type="tel" id="forgotPhone" data-key-placeholder="placeholder_phone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
             
             <div class="flex gap-2">
                 <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
@@ -89,6 +94,7 @@
         </div>
     </div>
 
+    <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
@@ -96,36 +102,35 @@
 
         setupHeader('appHeader');
 
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഒരേസമയം ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
+        document.addEventListener("DOMContentLoaded", () => {
+            // 1. ഭാഷ മാറ്റാനുള്ള കോഡ്
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === "function") {
+                window.switchLanguage(savedLang);
+            } else if (typeof updatePageLanguage === "function") {
+                updatePageLanguage(savedLang);
+            }
 
-// പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഒരേസമയം ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
-document.addEventListener("DOMContentLoaded", () => {
-    // 1. ഭാഷ മാറ്റാനുള്ള കോഡ്
-    const savedLang = localStorage.getItem('selectedLang') || 'ml';
-    if (typeof window.switchLanguage === "function") {
-        window.switchLanguage(savedLang);
-    } else if (typeof updatePageLanguage === "function") {
-        updatePageLanguage(savedLang);
-    }
+            // 2. പിൻ ലോക്ക് വെരിഫിക്കേഷൻ കോഡ്
+            const pinModal = document.getElementById("pinLockModal");
+            const pinInput = document.getElementById("appPinInput");
+            const btnVerifyPin = document.getElementById("btnVerifyPin");
 
-    // 2. പിൻ ലോക്ക് വെരിഫിക്കേഷൻ കോഡ്
-    const pinModal = document.getElementById("pinLockModal");
-    const pinInput = document.getElementById("appPinInput");
-    const btnVerifyPin = document.getElementById("btnVerifyPin");
+            const savedPin = localStorage.getItem("appPin") || "1234";
 
-    const savedPin = localStorage.getItem("appPin") || "1234";
-
-    if (btnVerifyPin) {
-        btnVerifyPin.addEventListener("click", () => {
-            if (pinInput.value.trim() === savedPin) {
-                pinModal.classList.add("hidden");
-                pinModal.classList.remove("flex");
-            } else {
-                alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
-                pinInput.value = "";
+            if (btnVerifyPin) {
+                btnVerifyPin.addEventListener("click", () => {
+                    if (pinInput.value.trim() === savedPin) {
+                        pinModal.classList.add("hidden");
+                        pinModal.classList.remove("flex");
+                    } else {
+                        alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
+                        pinInput.value = "";
+                    }
+                });
             }
         });
-    }
-});
 
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
@@ -189,7 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     const snapshot = await get(usersRef);
 
                     if (snapshot.exists()) {
-                        let matchedUserKey = null;
                         let matchedUserData = null;
 
                         snapshot.forEach((childSnapshot) => {
@@ -198,7 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             const dbUsername = (data.username || key || "").toString().trim();
 
                             if (dbUsername.toLowerCase() === userInput.toLowerCase()) {
-                                matchedUserKey = key;
                                 matchedUserData = data;
                             }
                         });
@@ -206,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (matchedUserData) {
                             if (matchedUserData.password === passInput) {
                                 alert('ലോഗിൻ വിജയകരമാണ്!');
-                                localStorage.setItem('userName', matchedUserKey);
+                                localStorage.setItem('userName', userInput);
                                 setTimeout(() => {
                                     window.location.href = "dashboard.html";
                                 }, 1000);
@@ -226,6 +229,5 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
     </script>
-
 </body>
 </html>
