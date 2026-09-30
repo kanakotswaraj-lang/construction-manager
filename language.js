@@ -271,8 +271,6 @@ const words = {
     },
 
 
-    // മറ്റ് പേജുകളിലെ സ്ക്രിപ്റ്റുകൾ അറിയാൻ വേണ്ടി കസ്റ്റം ഇവന്റ് ഫയർ ചെയ്യുന്നു
-    window.dispatchEvent(new CustomEvent('languageChanged', { 
 
     // ADDITIONAL MODULES & DASHBOARD
     materials: { ml: "മെറ്റീരിയൽസ്", en: "Materials", hi: "सामग्री", ta: "பொருட்கள்", kn: "ಸಾಮಗ್ರಿಗಳು", bn: "উপকরণ", as: "সামগ্ৰী" },
