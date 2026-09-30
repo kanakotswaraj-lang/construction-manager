@@ -93,29 +93,30 @@
         </div>
     </div>
 
-    <script type="module">
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-        import { setupHeader } from './header.js';
 
-        setupHeader('appHeader');
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof window.switchLanguage === "function") {
-                window.switchLanguage(savedLang);
-            } else if (typeof updatePageLanguage === "function") {
-                updatePageLanguage(savedLang);
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                const savedLang = localStorage.getItem('selectedLang') || 'ml';
+                if (typeof window.switchLanguage === "function") {
+                    window.switchLanguage(savedLang);
+                } else if (typeof updatePageLanguage === "function") {
+                    updatePageLanguage(savedLang);
+                }
+            } catch (e) {
+                console.error("Language switch error:", e);
             }
 
             const pinModal = document.getElementById("pinLockModal");
             const pinInput = document.getElementById("appPinInput");
             const btnVerifyPin = document.getElementById("btnVerifyPin");
-
             const savedPin = localStorage.getItem("appPin") || "1234";
 
-            if (btnVerifyPin) {
-                btnVerifyPin.addEventListener("click", function() {
+            if (btnVerifyPin && pinModal) {
+                btnVerifyPin.addEventListener("click", () => {
                     if (pinInput.value.trim() === savedPin) {
                         pinModal.classList.add("hidden");
                         pinModal.classList.remove("flex");
@@ -147,13 +148,8 @@
         const eyeIcon = document.getElementById("eyeIcon");
         const btnLogin = document.getElementById("btnLogin");
 
-        const btnForgotOpen = document.getElementById("btnForgotOpen");
-        const forgotModal = document.getElementById("forgotModal");
-        const btnForgotClose = document.getElementById("btnForgotClose");
-        const forgotPhone = document.getElementById("forgotPhone");
-
-        if (togglePasswordBtn) {
-            togglePasswordBtn.addEventListener("click", function() {
+        if (togglePasswordBtn && passwordInput && eyeIcon) {
+            togglePasswordBtn.addEventListener("click", () => {
                 const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
                 passwordInput.setAttribute("type", type);
                 eyeIcon.classList.toggle("fa-eye");
@@ -161,23 +157,8 @@
             });
         }
 
-        if (btnForgotOpen) {
-            btnForgotOpen.addEventListener("click", function() {
-                forgotModal.classList.remove("hidden");
-                forgotModal.classList.add("flex");
-                forgotPhone.value = "";
-            });
-        }
-
-        if (btnForgotClose) {
-            btnForgotClose.addEventListener("click", function() {
-                forgotModal.classList.add("hidden");
-                forgotModal.classList.remove("flex");
-            });
-        }
-
         if (btnLogin) {
-            btnLogin.addEventListener("click", async function() {
+            btnLogin.addEventListener("click", async () => {
                 const userInput = usernameInput.value.trim();
                 const passInput = passwordInput.value.trim();
 
@@ -224,6 +205,8 @@
                 }
             });
         }
+    </script>
+
     </script>
 </body>
 </html>
