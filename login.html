@@ -90,27 +90,29 @@
             </div>
         </div>
     </div>
-  <script type="module">
+  
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-        import { setupHeader } from './header.js';
-
-        // ഹെഡർ ലോഡ് ചെയ്യുന്നു
-        setupHeader('appHeader');
-
-        // ഭാഷ മാറ്റാനുള്ള കോഡ്
-        function applySavedLanguage() {
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(savedLang);
+  import { setupHeader } from './header.js';
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                const savedLang = localStorage.getItem('selectedLang') || 'ml';
+                if (typeof window.switchLanguage === "function") {
+                    window.switchLanguage(savedLang);
+                } else if (typeof updatePageLanguage === "function") {
+                    updatePageLanguage(savedLang);
+                }
+            } catch (e) {
+                console.error("Language switch error:", e);
             }
-        }
-        window.addEventListener('DOMContentLoaded', applySavedLanguage);
-        window.addEventListener('languageChanged', (e) => {
-            const newLang = (e && e.detail) ? e.detail : localStorage.getItem('selectedLang');
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(newLang);
-            
+
+            const pinModal = document.getElementById("pinLockModal");
+            const pinInput = document.getElementById("appPinInput");
+            const btnVerifyPin = document.getElementById("btnVerifyPin");
+            const savedPin = localStorage.getItem("appPin") || "1234";
+
             if (btnVerifyPin && pinModal) {
                 btnVerifyPin.addEventListener("click", () => {
                     if (pinInput.value.trim() === savedPin) {
