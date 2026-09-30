@@ -3683,19 +3683,7 @@ alertPinLength: {
         bn: "অ্যাকাউন্ট নেই? একটি নতুন অ্যাকাউন্ট তৈরি করুন",
         as: "একাউণ্ট নাই নেকি? এটা নতুন একাউণ্ট বনাওক"
     }
-
-
-          
 };
-
-
-
-
-
-
-
-
-
 
 // ==========================================
 // UNIVERSAL LANGUAGE SWITCHER (SAFE & SECURE)
@@ -3706,6 +3694,11 @@ window.switchLanguage = function(langCode) {
     }
     
     localStorage.setItem('selectedLang', langCode);
+
+    // മറ്റ് പേജുകളിലെ സ്ക്രിപ്റ്റുകൾ അറിയാൻ വേണ്ടി കസ്റ്റം ഇവന്റ് ഫയർ ചെയ്യുന്നു
+    window.dispatchEvent(new CustomEvent('languageChanged', { 
+        detail: { lang: langCode } 
+    }));
 
     if (typeof words !== 'undefined') {
         document.querySelectorAll('[data-key]').forEach(element => {
@@ -3771,3 +3764,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('selectedLang') || 'ml';
     window.switchLanguage(savedLang);
 });
+
+
+
+
+
+
+
+
+
