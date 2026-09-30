@@ -5,129 +5,245 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ലോഗിൻ - മേസ്ത്രി പ്രോ</title>
 
-    <!-- Eruda കൺസോൾ ടൂൾ -->
+    <!-- Eruda കോൺസോൾ ടൂൾ (ഫോണിലെ എററുകൾ പരിശോധിക്കാൻ) -->
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>
     
     <!-- Tailwind CSS & Icons -->
-    <script src="https://tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Language Script -->
-    <script src="language.js"></script>
-</head>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
     <!-- പിൻ ലോക്ക് മോഡൽ -->
-    <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
-            
-            <div class="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-400 text-xl">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-
-            <h3 class="text-base font-bold text-white mb-1" data-key="pin_lock_title">സുരക്ഷിത ലോഗിൻ</h3>
-            <p class="text-xs text-slate-400 mb-4" data-key="pin_lock_desc">തുടരാൻ നിങ്ങളുടെ 4 അക്ക പിൻ നമ്പർ നൽകുക</p>
-            
-            <input type="password" id="appPinInput" maxlength="4" data-key-placeholder="placeholder_pin" placeholder="••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center text-white text-lg tracking-widest focus:outline-none focus:border-amber-400 mb-4">
-            
-            <button type="button" id="btnVerifyPin" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-sm transition cursor-pointer shadow-lg" data-key="btn_open">
-                തുറക്കുക
-            </button>
+    <div id="pinLockModal" class="fixed inset-0 bg-slate-900/90 z-50 flex flex-col items-center justify-center p-4">
+        <div class="bg-slate-800 p-6 rounded-2xl shadow-xl w-full max-w-sm text-center border border-slate-700">
+            <h2 class="text-xl font-bold mb-2 text-white">സുരക്ഷിത ലോഗിൻ</h2>
+            <p class="text-slate-400 text-sm mb-4">തുടരാൻ നിങ്ങളുടെ 4 അക്ക പിൻ നമ്പർ നൽകുക</p>
+            <input type="password" id="appPinInput" maxlength="4" placeholder="....type pin" class="w-full bg-slate-900 border border-slate-700 text-white text-center text-2xl tracking-widest rounded-xl p-3 mb-4 focus:outline-none focus:border-amber-500">
+            <button id="btnVerifyPin" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition duration-200">തുറക്കുക</button>
         </div>
     </div>
 
-    <!-- ആപ്പ് ഹെഡർ -->
-    <div class="w-full max-w-sm mx-auto mb-4">
-        <div id="appHeader" class="w-full"></div>
-    </div>
-
-    <!-- മെയിൻ ലോഗിൻ കാർഡ് -->
-    <div class="w-full max-w-sm bg-slate-900/90 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
+    <!-- പ്രധാന കണ്ടന്റ് ബോക്സ് -->
+    <div class="w-full max-w-md bg-slate-800/50 backdrop-blur-md p-6 rounded-3xl border border-slate-700 shadow-2xl">
         
-        <h2 class="text-xl font-bold text-white mb-1" data-key="login_heading">ലോഗിൻ ചെയ്യുക</h2>
-        <p class="text-xs text-slate-400 mb-5" data-key="login_subheading">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
+        <!-- ആപ്പ് ലോഗോ / ഹെഡർ പേര് -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-slate-950 text-xl font-bold">
+                <i class="fa-solid fa-hard-hat"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-white" data-i18n="app_title">മേസ്ത്രി പ്രോ</h1>
+                <p class="text-xs text-slate-400" data-i18n="app_subtitle">സ്മാർട്ട് സൈറ്റ് മാനേജർ</p>
+            </div>
+        </div>
 
+        <!-- ഭാഷ മാറ്റാനുള്ള സെലക്ടർ -->
+        <div class="mb-6">
+            <label class="block text-xs font-semibold text-slate-400 mb-2">ഭാഷ തിരഞ്ഞെടുക്കുക / Select Language</label>
+            <select id="languageSelect" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
+                <option value="ml">മലയാളം</option>
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="ta">தமிழ்</option>
+                <option value="kn">ಕನ್ನಡ</option>
+                <option value="bn">বাংলা</option>
+                <option value="as">অসমীয়া</option>
+            </select>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-6 text-white" data-i18n="login_title">ലോഗിൻ ചെയ്യുക</h2>
+
+        <!-- ലോഗിൻ ഫോം -->
         <div class="space-y-4">
             <div>
-                <label class="block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="label_username">യൂസർനെയിം (പേര്)</label>
-                <input type="text" id="username" data-key-placeholder="placeholder_username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
+                <label class="block text-xs font-semibold text-slate-400 mb-1" data-i18n="username_label">യൂസർനെയിം (പേര്)</label>
+                <input type="text" id="username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500">
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="label_password">പാസ്‌വേർഡ്</label>
+                <label class="block text-xs font-semibold text-slate-400 mb-1" data-i18n="password_label">പാസ്‌വേർഡ്</label>
                 <div class="relative">
-                    <input type="password" id="password" data-key-placeholder="placeholder_password" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
-                    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2 cursor-pointer">
-                        <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
+                    <input type="password" id="password" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500 pr-10">
+                    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+                        <i id="eyeIcon" class="fa-solid fa-eye"></i>
                     </button>
                 </div>
             </div>
 
-            <button id="btnLogin" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition duration-200 text-sm cursor-pointer" data-key="btn_login">
-                ലോഗിൻ ചെയ്യാം
-            </button>
-        </div>
+            <button id="btnLogin" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-xl transition duration-200 shadow-lg shadow-amber-500/20" data-i18n="login_btn">ലോഗിൻ ചെയ്യാം</button>
 
-        <div class="mt-4 text-center">
-            <button type="button" id="btnForgotOpen" class="text-xs text-amber-400/90 hover:underline bg-transparent border-none cursor-pointer" data-key="btn_forgot">പാസ്‌വേർഡ് മറന്നുപോയോ?</button>
-        </div>
-    </div>
-
-    <!-- രജിസ്റ്റർ ലിങ്ക് -->
-    <div class="mt-6 text-center text-xs text-slate-400">
-        <span data-key="no_account_text">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
-        <a href="register.html" class="text-amber-400 font-bold hover:underline ml-1" data-key="link_register">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
-    </div>
-
-    <!-- പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ -->
-    <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
-            
-            <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
-            <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
-            
-            <input type="tel" id="forgotPhone" data-key-placeholder="placeholder_phone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
-            
-            <div class="flex gap-2">
-                <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
-                <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_verify">പരിശോധിക്കുക</button>
+            <div class="flex items-center justify-between pt-2 text-sm">
+                <button id="btnForgotOpen" class="text-amber-400 hover:underline" data-i18n="forgot_pass">പാസ്‌വേർഡ് മറന്നുപോയോ?</button>
+                <a href="register.html" class="text-slate-400 hover:text-white" data-i18n="register_link">അക്കൗണ്ട് ഇല്ലെങ്കിൽ? രജിസ്റ്റർ ചെയ്യുക</a>
             </div>
         </div>
     </div>
 
-    <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം -->
+    <!-- പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ -->
+    <div id="forgotModal" class="fixed inset-0 bg-slate-900/90 z-50 hidden flex flex-col items-center justify-center p-4">
+        <div class="bg-slate-800 p-6 rounded-2xl shadow-xl w-full max-w-sm border border-slate-700">
+            <h3 class="text-lg font-bold mb-2 text-white" data-i18n="forgot_modal_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
+            <p class="text-slate-400 text-xs mb-4" data-i18n="forgot_modal_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക.</p>
+            <input type="tel" id="forgotPhone" placeholder="ഫോൺ നമ്പർ (10 അക്കം)" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm mb-4 focus:outline-none focus:border-amber-500">
+            <div class="flex gap-2">
+                <button id="btnForgotClose" class="w-1/2 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-sm" data-i18n="close_btn">അടയ്ക്കുക</button>
+                <button id="btnGetDetails" class="w-1/2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-xl text-sm" data-i18n="verify_btn">പരിശോധിക്കുക</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ലാംഗ്വേജ് ഡാറ്റയും പ്രധാന ജാവാസ്ക്രിപ്റ്റ് കോഡും -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-        import { setupHeader } from './header.js';
 
-        setupHeader('appHeader');
+        // വിവിധ ഭാഷകളിലേക്കുള്ള വാക്കുകൾ (Translation Dictionary)
+        const translations = {
+            ml: {
+                app_title: "മേസ്ത്രി പ്രോ",
+                app_subtitle: "സ്മാർട്ട് സൈറ്റ് മാനേജർ",
+                login_title: "ലോഗിൻ ചെയ്യുക",
+                username_label: "യൂസർനെയിം (പേര്)",
+                password_label: "പാസ്‌വേർഡ്",
+                login_btn: "ലോഗിൻ ചെയ്യാം",
+                forgot_pass: "പാസ്‌വേർഡ് മറന്നുപോയോ?",
+                register_link: "അക്കൗണ്ട് ഇല്ലെങ്കിൽ? രജിസ്റ്റർ ചെയ്യുക",
+                forgot_modal_title: "പാസ്‌വേർഡ് വീണ്ടെടുക്കുക",
+                forgot_modal_desc: "നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക.",
+                close_btn: "അടയ്ക്കുക",
+                verify_btn: "പരിശോധിക്കുക"
+            },
+            en: {
+                app_title: "Mesthri Pro",
+                app_subtitle: "Smart Site Manager",
+                login_title: "Login",
+                username_label: "Username (Name)",
+                password_label: "Password",
+                login_btn: "Login Now",
+                forgot_pass: "Forgot Password?",
+                register_link: "No account? Register here",
+                forgot_modal_title: "Recover Password",
+                forgot_modal_desc: "Enter your registered phone number.",
+                close_btn: "Close",
+                verify_btn: "Verify"
+            },
+            hi: {
+                app_title: "मेस्त्री प्रो",
+                app_subtitle: "स्मार्ट साइट मैनेजर",
+                login_title: "लॉगिन करें",
+                username_label: "यूजरनेम (नाम)",
+                password_label: "पासवर्ड",
+                login_btn: "लॉगिन करें",
+                forgot_pass: "पासवर्ड भूल गए?",
+                register_link: "खाता नहीं है? रजिस्टर करें",
+                forgot_modal_title: "पासवर्ड पुनर्प्राप्त करें",
+                forgot_modal_desc: "अपना पंजीकृत फोन नंबर दर्ज करें।",
+                close_btn: "बंद करें",
+                verify_btn: "जांच करें"
+            },
+            ta: {
+                app_title: "மேஸ்திரி ப்ரோ",
+                app_subtitle: "ஸ்மார்ட் சைட் மேலாளர்",
+                login_title: "உள்நுழைக",
+                username_label: "பயனர் பெயர்",
+                password_label: "கடவுச்சொல்",
+                login_btn: "உள்நுழையவும்",
+                forgot_pass: "கடவுச்சொல் மறந்துவிட்டதா?",
+                register_link: "கணக்கு இல்லையா? பதிவு செய்க",
+                forgot_modal_title: "கடவுச்சொல்லை மீட்டெடுக்க",
+                forgot_modal_desc: "உங்கள் பதிவு செய்யப்பட்ட தொலைபேசி எண்ணை உள்ளிடவும்.",
+                close_btn: "மூடு",
+                verify_btn: "சரிபார்"
+            },
+            kn: {
+                app_title: "ಮೇಸ್ತ್ರಿ ಪ್ರೋ",
+                app_subtitle: "ಸ್ಮಾರ್ಟ್ ಸೈಟ್ ಮ್ಯಾನೇಜರ್",
+                login_title: "ಲಾಗಿನ್ ಮಾಡಿ",
+                username_label: "ಬಳಕೆದಾರ ಹೆಸರು",
+                password_label: "ಪಾಸ್‌ವರ್ಡ್",
+                login_btn: "ಲಾಗಿನ್",
+                forgot_pass: "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರುವಿರಾ?",
+                register_link: "ಖಾತೆ ಇಲ್ಲವೇ? ನೋಂದಾಯಿಸಿ",
+                forgot_modal_title: "ಪಾಸ್‌ವರ್ಡ್ ಮರುಪಡೆಯಿರಿ",
+                forgot_modal_desc: "ನಿಮ್ಮ ನೋಂದಾಯಿತ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.",
+                close_btn: "ಮುಚ್ಚಿ",
+                verify_btn: "ಪರಿಶೀಲಿಸಿ"
+            },
+            bn: {
+                app_title: "মেস্ত্রী প্রো",
+                app_subtitle: "স্মার্ট সাইট ম্যানেজার",
+                login_title: "লগইন করুন",
+                username_label: "ব্যবহারকারী নাম",
+                password_label: "পাসওয়ার্ড",
+                login_btn: "লগইন করুন",
+                forgot_pass: "পাসওয়ার্ড ভুলে গেছেন?",
+                register_link: "অ্যাকাউন্ট নেই? নিবন্ধন করুন",
+                forgot_modal_title: "পাসওয়ার্ড উদ্ধার করুন",
+                forgot_modal_desc: "আপনার নিবন্ধিত ফোন নম্বর লিখুন।",
+                close_btn: "বন্ধ করুন",
+                verify_btn: "যাচাই করুন"
+            },
+            as: {
+                app_title: "মেস্ত্ৰী প্ৰ’",
+                app_subtitle: "স্মাৰ্ট ছাইট মেনেজাৰ",
+                login_title: "লগইন কৰক",
+                username_label: "ব্যৱহাৰকাৰী নাম",
+                password_label: "পাছৱৰ্ড",
+                login_btn: "লগইন কৰক",
+                forgot_pass: "পাছৱৰ্ড পাহৰিলে?",
+                register_link: "একাউণ্ট নাই নেকি? পঞ্জীয়ন কৰক",
+                forgot_modal_title: "পাছৱৰ্ড উদ্ধাৰ কৰক",
+                forgot_modal_desc: "আপোনাৰ পঞ্জীভুক্ত ফোন নম্বৰটো দিয়ক।",
+                close_btn: "বন্ধ কৰক",
+                verify_btn: "যাচাই কৰক"
+            }
+        };
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഒരേസമയം ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
+        // ഭാഷ മാറ്റുന്ന ഫങ്ഷൻ
+        window.switchLanguage = function(lang) {
+            localStorage.setItem('selectedLang', lang);
+            const elements = document.querySelectorAll("[data-i18n]");
+            elements.forEach(el => {
+                const key = el.getAttribute("data-i18n");
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+        };
+
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
         document.addEventListener("DOMContentLoaded", () => {
-            // 1. ഭാഷ മാറ്റാനുള്ള കോഡ്
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof window.switchLanguage === "function") {
+            try {
+                const savedLang = localStorage.getItem('selectedLang') || 'ml';
+                const langSelect = document.getElementById("languageSelect");
+                if (langSelect) {
+                    langSelect.value = savedLang;
+                    langSelect.addEventListener("change", (e) => {
+                        window.switchLanguage(e.target.value);
+                    });
+                }
                 window.switchLanguage(savedLang);
-            } else if (typeof updatePageLanguage === "function") {
-                updatePageLanguage(savedLang);
+            } catch (e) {
+                console.error("Language switch error:", e);
             }
 
-            // 2. പിൻ ലോക്ക് വെരിഫിക്കേഷൻ കോഡ്
             const pinModal = document.getElementById("pinLockModal");
             const pinInput = document.getElementById("appPinInput");
             const btnVerifyPin = document.getElementById("btnVerifyPin");
-
             const savedPin = localStorage.getItem("appPin") || "1234";
 
-            if (btnVerifyPin) {
+            if (btnVerifyPin && pinModal) {
                 btnVerifyPin.addEventListener("click", () => {
                     if (pinInput.value.trim() === savedPin) {
                         pinModal.classList.add("hidden");
@@ -140,6 +256,7 @@
             }
         });
 
+        // Firebase കോൺഫിഗറേഷൻ & ലോഗിൻ ഫങ്ഷനുകൾ
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -163,30 +280,30 @@
         const btnForgotOpen = document.getElementById("btnForgotOpen");
         const forgotModal = document.getElementById("forgotModal");
         const btnForgotClose = document.getElementById("btnForgotClose");
-        const btnGetDetails = document.getElementById("btnGetDetails");
-        const forgotPhone = document.getElementById("forgotPhone");
 
-        // പാസ്‌വേർഡ് കാണാനും മറയ്ക്കാനുമുള്ള ഫങ്ഷൻ
-        togglePasswordBtn.addEventListener("click", () => {
-            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-            passwordInput.setAttribute("type", type);
-            eyeIcon.classList.toggle("fa-eye");
-            eyeIcon.classList.toggle("fa-eye-slash");
-        });
+        if (togglePasswordBtn && passwordInput && eyeIcon) {
+            togglePasswordBtn.addEventListener("click", () => {
+                const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+                passwordInput.setAttribute("type", type);
+                eyeIcon.classList.toggle("fa-eye");
+                eyeIcon.classList.toggle("fa-eye-slash");
+            });
+        }
 
-        // പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ ഓപ്പൺ/ക്ലോസ് ചെയ്യൽ
-        btnForgotOpen.addEventListener("click", () => {
-            forgotModal.classList.remove("hidden");
-            forgotModal.classList.add("flex");
-            forgotPhone.value = "";
-        });
+        if (btnForgotOpen && forgotModal) {
+            btnForgotOpen.addEventListener("click", () => {
+                forgotModal.classList.remove("hidden");
+                forgotModal.classList.add("flex");
+            });
+        }
 
-        btnForgotClose.addEventListener("click", () => {
-            forgotModal.classList.add("hidden");
-            forgotModal.classList.remove("flex");
-        });
+        if (btnForgotClose && forgotModal) {
+            btnForgotClose.addEventListener("click", () => {
+                forgotModal.classList.add("hidden");
+                forgotModal.classList.remove("flex");
+            });
+        }
 
-        // ലോഗിൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ വർക്ക് ചെയ്യുന്ന ഭാഗം
         if (btnLogin) {
             btnLogin.addEventListener("click", async () => {
                 const userInput = usernameInput.value.trim();
@@ -205,9 +322,8 @@
                         let matchedUserData = null;
 
                         snapshot.forEach((childSnapshot) => {
-                            const key = childSnapshot.key;
                             const data = childSnapshot.val();
-                            const dbUsername = (data.username || key || "").toString().trim();
+                            const dbUsername = (data.username || childSnapshot.key || "").toString().trim();
 
                             if (dbUsername.toLowerCase() === userInput.toLowerCase()) {
                                 matchedUserData = data;
