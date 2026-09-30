@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>മേസ്തിരി പ്രോ - ലോഗിൻ</title>
     
-    <!-- Eruda കോൺസോൾ ടൂൾ (ഫോണിലെ എററുകൾ പരിശോധിക്കാൻ) -->
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>
 
@@ -13,7 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- ഒറിജിനൽ ലാംഗ്വേജ് ഫയൽ -->
     <script src="language.js"></script>
 
     <style>
@@ -22,9 +20,8 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- പിൻ ലോക്ക് മോഡൽ -->
     <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
+        <div class="bg-slate-900 border border-slate-700/85 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
             
             <div class="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-400 text-xl">
                 <i class="fa-solid fa-lock"></i>
@@ -41,12 +38,10 @@
         </div>
     </div>
 
-    <!-- ആപ്പ് ഹെഡർ (ഒറിജിനൽ ഹെഡർ ഫയൽ വഴി ലോഡ് ആകുന്നത്) -->
     <div class="w-full max-w-sm mx-auto mb-4">
         <div id="appHeader" class="w-full"></div>
     </div>
 
-    <!-- മെയിൻ ലോഗിൻ കാർഡ് -->
     <div class="w-full max-w-sm bg-slate-900/90 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
         
         <h2 class="text-xl font-bold text-white mb-1" data-key="login_heading">ലോഗിൻ ചെയ്യുക</h2>
@@ -78,13 +73,11 @@
         </div>
     </div>
 
-    <!-- രജിസ്റ്റർ ലിങ്ക് -->
     <div class="mt-6 text-center text-xs text-slate-400">
         <span data-key="no_account_text">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
         <a href="register.html" class="text-amber-400 font-bold hover:underline ml-1" data-key="link_register">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
     </div>
 
-    <!-- പാസ്‌വേർഡ് വീണ്ടെടുക്കൽ മോഡൽ -->
     <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
             
@@ -100,17 +93,14 @@
         </div>
     </div>
 
-    <!-- ജാവാസ്ക്രിപ്റ്റ് ഭാഗം -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         import { setupHeader } from './header.js';
 
-        // ഒറിജിനൽ ഹെഡർ കോൾ ചെയ്യൽ
         setupHeader('appHeader');
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", function() {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === "function") {
                 window.switchLanguage(savedLang);
@@ -125,7 +115,7 @@
             const savedPin = localStorage.getItem("appPin") || "1234";
 
             if (btnVerifyPin) {
-                btnVerifyPin.addEventListener("click", () => {
+                btnVerifyPin.addEventListener("click", function() {
                     if (pinInput.value.trim() === savedPin) {
                         pinModal.classList.add("hidden");
                         pinModal.classList.remove("flex");
@@ -162,26 +152,32 @@
         const btnForgotClose = document.getElementById("btnForgotClose");
         const forgotPhone = document.getElementById("forgotPhone");
 
-        togglePasswordBtn.addEventListener("click", () => {
-            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-            passwordInput.setAttribute("type", type);
-            eyeIcon.classList.toggle("fa-eye");
-            eyeIcon.classList.toggle("fa-eye-slash");
-        });
+        if (togglePasswordBtn) {
+            togglePasswordBtn.addEventListener("click", function() {
+                const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+                passwordInput.setAttribute("type", type);
+                eyeIcon.classList.toggle("fa-eye");
+                eyeIcon.classList.toggle("fa-eye-slash");
+            });
+        }
 
-        btnForgotOpen.addEventListener("click", () => {
-            forgotModal.classList.remove("hidden");
-            forgotModal.classList.add("flex");
-            forgotPhone.value = "";
-        });
+        if (btnForgotOpen) {
+            btnForgotOpen.addEventListener("click", function() {
+                forgotModal.classList.remove("hidden");
+                forgotModal.classList.add("flex");
+                forgotPhone.value = "";
+            });
+        }
 
-        btnForgotClose.addEventListener("click", () => {
-            forgotModal.classList.add("hidden");
-            forgotModal.classList.remove("flex");
-        });
+        if (btnForgotClose) {
+            btnForgotClose.addEventListener("click", function() {
+                forgotModal.classList.add("hidden");
+                forgotModal.classList.remove("flex");
+            });
+        }
 
         if (btnLogin) {
-            btnLogin.addEventListener("click", async () => {
+            btnLogin.addEventListener("click", async function() {
                 const userInput = usernameInput.value.trim();
                 const passInput = passwordInput.value.trim();
 
@@ -198,9 +194,8 @@
                         let matchedUserData = null;
 
                         snapshot.forEach((childSnapshot) => {
-                            const key = childSnapshot.key;
                             const data = childSnapshot.val();
-                            const dbUsername = (data.username || key || "").toString().trim();
+                            const dbUsername = (data.username || childSnapshot.key || "").toString().trim();
 
                             if (dbUsername.toLowerCase() === userInput.toLowerCase()) {
                                 matchedUserData = data;
