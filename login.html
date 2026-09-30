@@ -110,8 +110,7 @@
             const newLang = (e && e.detail) ? e.detail : localStorage.getItem('selectedLang');
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(newLang);
-            }
-        });
+            
             if (btnVerifyPin && pinModal) {
                 btnVerifyPin.addEventListener("click", () => {
                     if (pinInput.value.trim() === savedPin) {
