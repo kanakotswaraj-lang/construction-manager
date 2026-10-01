@@ -100,16 +100,17 @@
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
         import { setupHeader } from './header.js';
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഹെഡ്ഡറും ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
+                // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഹെഡ്ഡറും ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
         document.addEventListener("DOMContentLoaded", () => {
-            // ഹെഡ്ഡർ ലോഡ് ചെയ്യുക
+            // ഹെഡ്ഡർ ലോഡ് ചെയ്യുക (appHeader എന്ന ID കൊടുക്കുക, സ്വാഗത ബോക്സ് വേണ്ടായതുകൊണ്ട് false നൽകുക)
             try {
                 if (typeof setupHeader === "function") {
-                    setupHeader();
+                    setupHeader('appHeader', false);
                 }
             } catch (err) {
                 console.error("Header load error:", err);
             }
+
 
             // ഭാഷ മാറ്റൽ
             try {
