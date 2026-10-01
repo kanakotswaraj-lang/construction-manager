@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>മേസ്തിരി പ്രോ - ലോഗിൻ</title>
     
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,6 +17,7 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
+    <!-- PIN Lock Modal -->
     <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-700/85 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
             
@@ -36,10 +36,12 @@
         </div>
     </div>
 
+    <!-- Header Container -->
     <div class="w-full max-w-sm mx-auto mb-4">
         <div id="appHeader" class="w-full"></div>
     </div>
 
+    <!-- Login Box -->
     <div class="w-full max-w-sm bg-slate-900/90 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
         
         <h2 class="text-xl font-bold text-white mb-1" data-key="login_heading">ലോഗിൻ ചെയ്യുക</h2>
@@ -76,6 +78,7 @@
         <a href="register.html" class="text-amber-400 font-bold hover:underline ml-1" data-key="link_register">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
     </div>
 
+    <!-- Forgot Password Modal -->
     <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
             
@@ -90,13 +93,25 @@
             </div>
         </div>
     </div>
-  
-        <script type="module">
+
+    <!-- Script Section -->
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-  import { setupHeader } from './header.js';
-        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
+        import { setupHeader } from './header.js';
+
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഹെഡ്ഡറും ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
         document.addEventListener("DOMContentLoaded", () => {
+            // ഹെഡ്ഡർ ലോഡ് ചെയ്യുക
+            try {
+                if (typeof setupHeader === "function") {
+                    setupHeader();
+                }
+            } catch (err) {
+                console.error("Header load error:", err);
+            }
+
+            // ഭാഷ മാറ്റൽ
             try {
                 const savedLang = localStorage.getItem('selectedLang') || 'ml';
                 if (typeof window.switchLanguage === "function") {
@@ -108,6 +123,7 @@
                 console.error("Language switch error:", e);
             }
 
+            // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ
             const pinModal = document.getElementById("pinLockModal");
             const pinInput = document.getElementById("appPinInput");
             const btnVerifyPin = document.getElementById("btnVerifyPin");
@@ -126,6 +142,7 @@
             }
         });
 
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
             authDomain: "mesthri-app.firebaseapp.com",
@@ -146,6 +163,7 @@
         const eyeIcon = document.getElementById("eyeIcon");
         const btnLogin = document.getElementById("btnLogin");
 
+        // പാസ്‌വേർഡ് ടോഗിൾ (Show/Hide)
         if (togglePasswordBtn && passwordInput && eyeIcon) {
             togglePasswordBtn.addEventListener("click", () => {
                 const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
@@ -155,6 +173,7 @@
             });
         }
 
+        // ലോഗിൻ ബട്ടൺ
         if (btnLogin) {
             btnLogin.addEventListener("click", async () => {
                 const userInput = usernameInput.value.trim();
@@ -204,7 +223,5 @@
             });
         }
     </script>
-
-    
 </body>
 </html>
