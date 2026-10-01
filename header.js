@@ -63,8 +63,8 @@ export function setupHeader(containerId, showWelcome = false, userName = "") {
 
 window.changeLanguageFromDropdown = function(selectedLang) {
     localStorage.setItem('selectedLang', selectedLang);
-    window.dispatchEvent(new CustomEvent('languageChanged', { detail: selectedLang }));
-    location.reload();
+    // പേജ് നിർബന്ധമായും റീലോഡ് ചെയ്ത് പുതിയ ഭാഷ കൊണ്ടുവരാൻ:
+    window.location.href = window.location.href; 
 };
 
 document.addEventListener("DOMContentLoaded", () => {
