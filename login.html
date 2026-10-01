@@ -94,54 +94,87 @@
         </div>
     </div>
 
-    <!-- Script Section -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-        import { setupHeader } from './header.js';
 
-                // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഹെഡ്ഡറും ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
-        document.addEventListener("DOMContentLoaded", () => {
-            // ഹെഡ്ഡർ ലോഡ് ചെയ്യുക (appHeader എന്ന ID കൊടുക്കുക, സ്വാഗത ബോക്സ് വേണ്ടായതുകൊണ്ട് false നൽകുക)
-            try {
-                if (typeof setupHeader === "function") {
-                    setupHeader('appHeader', false);
-                }
-            } catch (err) {
-                console.error("Header load error:", err);
-            }
+    
+<!-- Script Section -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { setupHeader } from './header.js';
 
-
-            // ഭാഷ മാറ്റൽ
-            try {
-                const savedLang = localStorage.getItem('selectedLang') || 'ml';
-                if (typeof window.switchLanguage === "function") {
-                    window.switchLanguage(savedLang);
-                } else if (typeof updatePageLanguage === "function") {
-                    updatePageLanguage(savedLang);
-                }
-            } catch (e) {
-                console.error("Language switch error:", e);
-            }
-
-            // പിൻ ലോക്ക് വെരിഫിക്കേഷൻ
-            const pinModal = document.getElementById("pinLockModal");
-            const pinInput = document.getElementById("appPinInput");
-            const btnVerifyPin = document.getElementById("btnVerifyPin");
-            const savedPin = localStorage.getItem("appPin") || "1234";
-
-            if (btnVerifyPin && pinModal) {
-                btnVerifyPin.addEventListener("click", () => {
-                    if (pinInput.value.trim() === savedPin) {
-                        pinModal.classList.add("hidden");
-                        pinModal.classList.remove("flex");
+    // ഭാഷ മാറുമ്പോൾ UI അപ്‌ഡേറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ
+    function updateLanguageUI() {
+        const savedLang = localStorage.getItem('selectedLang') || 'ml';
+        
+        // window.switchLanguage ഉണ്ടെങ്കിൽ അത് റൺ ചെയ്യുക
+        if (typeof window.switchLanguage === "function") {
+            window.switchLanguage(savedLang);
+        } else if (typeof updatePageLanguage === "function") {
+            updatePageLanguage(savedLang);
+        } 
+        // അല്ലാത്തപക്ഷം നേരിട്ട് data-key പ്രകാരം മാപ്പ് ചെയ്യുക
+        else if (typeof words !== 'undefined') {
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (words[key] && words[key][savedLang]) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = words[key][savedLang];
                     } else {
-                        alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
-                        pinInput.value = "";
+                        element.innerText = words[key][savedLang];
                     }
-                });
+                }
+            });
+            // Placeholder പ്രത്യേകമായി സെറ്റ് ചെയ്യാൻ
+            document.querySelectorAll('[data-key-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-key-placeholder');
+                if (words[key] && words[key][savedLang]) {
+                    element.placeholder = words[key][savedLang];
+                }
+            });
+        }
+    }
+
+    // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഹെഡ്ഡറും ഭാഷയും പിൻ ലോക്കും സെറ്റ് ചെയ്യാൻ
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1. ഹെഡ്ഡർ ലോഡ് ചെയ്യുക
+        try {
+            if (typeof setupHeader === "function") {
+                setupHeader('appHeader', false);
             }
+        } catch (err) {
+            console.error("Header load error:", err);
+        }
+
+        // 2. പേജ് ലോഡ് ആകുമ്പോൾ ഭാഷ മാറ്റൽ
+        try {
+            updateLanguageUI();
+        } catch (e) {
+            console.error("Language switch error:", e);
+        }
+
+        // 3. ഡ്രോപ്പ്ഡൗണിൽ നിന്ന് ഭാഷ മാറ്റുമ്പോൾ തത്സമയം UI അപ്‌ഡേറ്റ് ചെയ്യാൻ
+        window.addEventListener('languageChanged', () => {
+            updateLanguageUI();
         });
+
+        // 4. പിൻ ലോക്ക് വെരിഫിക്കേഷൻ
+        const pinModal = document.getElementById("pinLockModal");
+        const pinInput = document.getElementById("appPinInput");
+        const btnVerifyPin = document.getElementById("btnVerifyPin");
+        const savedPin = localStorage.getItem("appPin") || "1234";
+
+        if (btnVerifyPin && pinModal) {
+            btnVerifyPin.addEventListener("click", () => {
+                if (pinInput.value.trim() === savedPin) {
+                    pinModal.classList.add("hidden");
+                    pinModal.classList.remove("flex");
+                } else {
+                    alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
+                    pinInput.value = "";
+                }
+            });
+        }
+    });
 
         // Firebase Configuration
         const firebaseConfig = {
