@@ -347,72 +347,84 @@ function calculateTotalWithPrevious(prevIncome = 0, prevExpense = 0) {
             });
         };
 
-        window.calculateTotal = function() {
-            try {
-                let siteNameInput = document.getElementById('siteName');
-                let currentSite = siteNameInput ? siteNameInput.value.trim().toLowerCase() : 'default_site';
-                if (!currentSite) currentSite = 'default_site';
+   window.calculateTotal = function() {
+    try {
+        let siteNameInput = document.getElementById('siteName');
+        let currentSite = siteNameInput ? siteNameInput.value.trim().toLowerCase() : 'default_site';
+        if (!currentSite) currentSite = 'default_site';
 
-                let prevMeshtriBalance = parseFloat(localStorage.getItem('prev_balance_Meshtri_' + currentSite)) || 0;
-                let prevOwnerBalance = parseFloat(localStorage.getItem('prev_balance_Owner_' + currentSite)) || 0;
+        let prevMeshtriBalance = parseFloat(localStorage.getItem('prev_balance_Meshtri_' + currentSite)) || 0;
+        let prevOwnerBalance = parseFloat(localStorage.getItem('prev_balance_Owner_' + currentSite)) || 0;
 
-                let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : 0) || 0;
+        let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : 0) || 0;
 
-                const settleAdvanceInput = document.getElementById('settleAdvance');
-                const ownerAdvanceInput = document.getElementById('ownerAdvance');
-                const settleSelfSpentInput = document.getElementById('settleSelfSpent');
+        const settleAdvanceInput = document.getElementById('settleAdvance');
+        const ownerAdvanceInput = document.getElementById('ownerAdvance');
+        const settleSelfSpentInput = document.getElementById('settleSelfSpent');
 
-                let currentMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-                let currentOwnerAdvance = parseFloat(ownerAdvanceInput ? ownerAdvanceInput.value : 0) || 0;
-                let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
+        let currentMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
+        let currentOwnerAdvance = parseFloat(ownerAdvanceInput ? ownerAdvanceInput.value : 0) || 0;
+        let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
 
-                let todayOtherExp = 0;
-                document.querySelectorAll('.expense-amount').forEach(input => {
-                    todayOtherExp += parseFloat(input.value) || 0;
-                });
+        // 1. മറ്റു ചെലവുകൾ കൂട്ടുന്നു
+        let todayOtherExp = 0;
+        document.querySelectorAll('.expense-amount').forEach(input => {
+            todayOtherExp += parseFloat(input.value) || 0;
+        });
 
-                let todayWages = 0;
-                document.querySelectorAll('.worker-wage').forEach(input => {
-                    todayWages += parseFloat(input.value) || 0;
-                });
+        // 2. തൊഴിലാളി കൂലികൾ കൂട്ടുന്നു
+        let todayWages = 0;
+        document.querySelectorAll('.worker-wage').forEach(input => {
+            todayWages += parseFloat(input.value) || 0;
+        });
 
-                let totalSpentForSite = todayOtherExp + todayWages;
-                let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
+        // 3. ആകെ ചെലവും വരവും കണക്കാക്കുന്നു
+        let totalSpentForSite = todayOtherExp + todayWages;
+        let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
 
-                let netSiteBalance = todayIncome - totalExpenseWithSelf;
+        let netSiteBalance = todayIncome - totalExpenseWithSelf;
 
-                let meshtriSettlementBalance = prevMeshtriBalance + netSiteBalance;
-                let ownerSettlementBalance = prevOwnerBalance + currentOwnerAdvance;
+        // 4. മേസ്തിരിയുടെ ബാക്കി കണക്ക്: മേസ്തിരി തന്ന അഡ്വാൻസിൽ നിന്ന് ആകെ ചെലവുകൾ കുറയ്ക്കുന്നു
+        let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance) - totalExpenseWithSelf;
+        let ownerSettlementBalance = prevOwnerBalance + currentOwnerAdvance;
 
-                let settleBalanceDisplay = document.getElementById('settleBalanceText');
-                if (settleBalanceDisplay) {
-                    let textVal = meshtriSettlementBalance < 0 ? `₹ ${Math.abs(meshtriSettlementBalance)} (കൊടുക്കാനുള്ളത്)` : `₹ ${meshtriSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
-                    settleBalanceDisplay.innerText = textVal;
-                    settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
-                }
+        // മേസ്തിരി ബാലൻസ് കാണിപ്പാനുള്ള കോഡ്
+        let settleBalanceDisplay = document.getElementById('settleBalanceText');
+        if (settleBalanceDisplay) {
+            let textVal = meshtriSettlementBalance < 0 
+                ? `₹ ${Math.abs(meshtriSettlementBalance)} (കൊടുക്കാനുള്ളത്)` 
+                : `₹ ${meshtriSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
+            settleBalanceDisplay.innerText = textVal;
+            settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
+        }
 
-                let ownerBalanceDisplay = document.getElementById('ownerBalanceText');
-                if (ownerBalanceDisplay) {
-                    let textValOwner = ownerSettlementBalance < 0 ? `₹ ${Math.abs(ownerSettlementBalance)} (കൊടുക്കാനുള്ളത്)` : `₹ ${ownerSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
-                    ownerBalanceDisplay.innerText = textValOwner;
-                    ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
-                }
+        // മുതലാളി ബാലൻസ് കാണിപ്പാനുള്ള കോഡ്
+        let ownerBalanceDisplay = document.getElementById('ownerBalanceText');
+        if (ownerBalanceDisplay) {
+            let textValOwner = ownerSettlementBalance < 0 
+                ? `₹ ${Math.abs(ownerSettlementBalance)} (കൊടുക്കാനുള്ളത്)` 
+                : `₹ ${ownerSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
+            ownerBalanceDisplay.innerText = textValOwner;
+            ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
+        }
 
-                let displayIncomeEl = document.getElementById('displayIncome');
-                if(displayIncomeEl) displayIncomeEl.innerText = `₹ ${todayIncome}`;
+        // ആകെ വരവും ചെലവും അപ്ഡേറ്റ് ചെയ്യുന്നു
+        let displayIncomeEl = document.getElementById('displayIncome');
+        if(displayIncomeEl) displayIncomeEl.innerText = `₹ ${todayIncome}`;
 
-                let displayExpenseEl = document.getElementById('displayExpense');
-                if(displayExpenseEl) displayExpenseEl.innerText = `₹ ${totalExpenseWithSelf}`;
-                
-                let balanceText = document.getElementById('grandTotal');
-                if (balanceText) {
-                    balanceText.innerText = `₹ ${netSiteBalance}`;
-                    balanceText.className = netSiteBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-                }
-            } catch (err) {
-                console.error("Calculation Error:", err);
-            }
-        };
+        let displayExpenseEl = document.getElementById('displayExpense');
+        if(displayExpenseEl) displayExpenseEl.innerText = `₹ ${totalExpenseWithSelf}`;
+        
+        let balanceText = document.getElementById('grandTotal');
+        if (balanceText) {
+            balanceText.innerText = `₹ ${netSiteBalance}`;
+            balanceText.className = netSiteBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+        }
+    } catch (err) {
+        console.error("Calculation Error:", err);
+    }
+};
+
 
         window.saveSiteData = async function(event) {
             event.preventDefault();
