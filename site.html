@@ -110,9 +110,9 @@
         registeredWorkers = [];
         staffSnap.forEach(doc => registeredWorkers.push({ id: doc.id, ...doc.data() }));
 
-        // 2. Accounts ഫെച്ച് ചെയ്യുന്നു
-        const accQuery = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
-        const accSnap = await getDocs(accQuery);
+        // where ഫിൽട്ടർ മാറ്റി accounts-ലെ മുഴുവൻ ഡാറ്റയും എടുക്കുന്നു
+const accSnap = await getDocs(collection(db, "accounts"));
+
         allAccountsData = [];
         const siteSet = new Set();
         
