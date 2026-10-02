@@ -312,7 +312,12 @@ function calculateTotalWithPrevious(prevIncome = 0, prevExpense = 0) {
             const jobPh = (currentLang === 'en') ? "Job (e.g., Mason)" : "പണി (ഉദാ: മേസ്തിരി പണി)";
             const wagePh = (currentLang === 'en') ? "Wage (₹)" : "കൂലി (₹)";
 
-            const optionsHTML = registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
+                        // ഒരേ പേര് ഒന്നിലധികം തവണ വരുന്നത് ഒഴിവാക്കാൻ uniqueWorkers ഉണ്ടാക്കുന്നു
+            const uniqueWorkers = registeredWorkers.filter((w, index, self) =>
+                index === self.findIndex((t) => t.name.trim().toLowerCase() === w.name.trim().toLowerCase())
+            );
+
+            const optionsHTML = uniqueWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
 
             container.insertAdjacentHTML('beforeend', `
                 <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2 worker-row" id="row-${rowId}" data-worker="">
