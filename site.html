@@ -101,6 +101,54 @@
 
         let registeredWorkers = [];
         let allAccountsData = [];
+
+        window.toggleSection = function(sectionId) {
+            const section = document.getElementById(sectionId);
+            const icon = document.getElementById(sectionId + 'Icon');
+            
+            if (section) {
+                if (section.classList.contains('hidden')) {
+                    section.classList.remove('hidden');
+                    if (icon) icon.innerText = "▲";
+                } else {
+                    section.classList.add('hidden');
+                    if (icon) icon.innerText = "▼";
+                }
+            }
+        };
+
+        window.updateDashboardSummary = function() {
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            const currentUserClean = (typeof currentMeshtri !== 'undefined' && currentMeshtri) ? currentMeshtri.toString().trim().toLowerCase() : '';
+
+            if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
+                allAccountsData.forEach(item => {
+                    const owner = item.meshtriOwner ? item.meshtriOwner.toString().trim().toLowerCase() : '';
+                    
+                    if (!currentUserClean || owner === currentUserClean || owner.includes(currentUserClean) || currentUserClean.includes(owner)) {
+                        const amount = parseFloat(item.amount) || 0;
+                        if (item.type === 'income' || item.type === 'income_advance') {
+                            totalIncome += amount;
+                        } else if (item.type === 'expense' || item.type === 'wage' || item.type === 'advance' || item.type === 'other' || item.type === 'self_spent') {
+                            totalExpense += amount;
+                        }
+                    }
+                });
+            }
+
+            const netBalance = totalIncome - totalExpense;
+
+            const incomeEl = document.getElementById('dashIncome') || document.querySelector('.dash-income');
+            const expenseEl = document.getElementById('dashExpense') || document.querySelector('.dash-expense');
+            const balanceEl = document.getElementById('dashBalance') || document.querySelector('.dash-balance');
+
+            if (incomeEl) incomeEl.innerText = `₹ ${totalIncome.toLocaleString('en-IN')}`;
+            if (expenseEl) expenseEl.innerText = `₹ ${totalExpense.toLocaleString('en-IN')}`;
+            if (balanceEl) balanceEl.innerText = `₹ ${Math.abs(netBalance).toLocaleString('en-IN')}`;
+        };
+
 async function fetchData() {
     try {
         const currentUserClean = (typeof currentMeshtri !== 'undefined' && currentMeshtri) ? currentMeshtri.toString().trim().toLowerCase() : '';
@@ -403,14 +451,12 @@ window.calculateTotal = function() {
         let prevMeshtriBalance = parseFloat(localStorage.getItem('prev_balance_Meshtri_' + currentSite)) || 0;
         let prevOwnerBalance = parseFloat(localStorage.getItem('prev_balance_Owner_' + currentSite)) || 0;
 
-        // മുകളിൽ ലഭിച്ച വരവ് തുക എടുക്കുന്നു (ഉദാ: 1000)
         let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : 0) || 0;
 
         const settleAdvanceInput = document.getElementById('settleAdvance');
         const ownerAdvanceInput = document.getElementById('ownerAdvance');
         const settleSelfSpentInput = document.getElementById('settleSelfSpent');
 
-        // മേസ്ത്രി തന്നത് എന്ന കള്ളിയിൽ വരവ് തുക (1000) ഓട്ടോമാറ്റിക്കായി സെറ്റ് ചെയ്യുന്നു
         if (settleAdvanceInput) {
             settleAdvanceInput.value = todayIncome;
         }
@@ -436,10 +482,8 @@ window.calculateTotal = function() {
         let totalSpentForSite = todayOtherExp + todayWages;
         let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
 
-        // വരവും ചെലവും തമ്മിലുള്ള വ്യത്യാസം (1000 - 400 = 600)
         let netSiteBalance = todayIncome - totalExpenseWithSelf;
 
-        // മേസ്തിരി ബാലൻസ് കണക്കുകൂട്ടൽ (₹600 വരും)
         let meshtriSettlementBalance = prevMeshtriBalance + netSiteBalance;
         let ownerSettlementBalance = prevOwnerBalance + currentOwnerAdvance;
 
@@ -692,7 +736,7 @@ window.calculateTotal = function() {
                 showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
             }
         };
-        // 🟢 ഭാഷ മാറുമ്പോൾ ഡ്രോപ്പ്ഡൗൺ റീഫ്രഷ് ചെയ്യാനുള്ള കോഡ് ഇവിടെ ചേർക്കുക:
+
         window.addEventListener('languageChanged', () => {
             if (typeof updateLanguageUI === "function") {
                 updateLanguageUI();
@@ -804,19 +848,31 @@ window.calculateTotal = function() {
                 </button>
             </div>
 
+            <!-- മറ്റു ചെലവുകൾ (Collapsible) -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
-                <h3 class="text-sm font-black text-amber-400">മറ്റു ചെലവുകൾ (ഭക്ഷണം, വാഹനം, മെറ്റീരിയൽ)</h3>
-                <div id="expenseListContainer" class="space-y-2"></div>
-                <button type="button" onclick="addExpenseRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
+                <div onclick="toggleSection('otherExpenseSection')" class="flex justify-between items-center cursor-pointer select-none">
+                    <h3 class="text-sm font-black text-amber-400">മറ്റു ചെലവുകൾ (ഭക്ഷണം, വാഹനം, മെറ്റീരിയൽ)</h3>
+                    <span id="otherExpenseSectionIcon" class="text-amber-400 font-black text-sm">▼</span>
+                </div>
+                <div id="otherExpenseSection" class="space-y-3 hidden">
+                    <div id="expenseListContainer" class="space-y-2"></div>
+                    <button type="button" onclick="addExpenseRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
+                </div>
             </div>
 
+            <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ (Collapsible) -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
-                <h3 class="text-sm font-black text-amber-400">തൊഴിലാളികളുടെ വിവരങ്ങൾ (കൂലി)</h3>
-                <div id="workerListContainer" class="space-y-3"></div>
-                
-                <div class="grid grid-cols-2 gap-2 pt-2">
-                    <button type="button" onclick="addWorkerRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ തൊഴിലാളിയെ ചേർക്കുക</button>
-                    <a href="staff.html" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
+                <div onclick="toggleSection('workerListSection')" class="flex justify-between items-center cursor-pointer select-none">
+                    <h3 class="text-sm font-black text-amber-400">തൊഴിലാളികളുടെ വിവരങ്ങൾ (കൂലി)</h3>
+                    <span id="workerListSectionIcon" class="text-amber-400 font-black text-sm">▼</span>
+                </div>
+                <div id="workerListSection" class="space-y-3 hidden">
+                    <div id="workerListContainer" class="space-y-3"></div>
+                    
+                    <div class="grid grid-cols-2 gap-2 pt-2">
+                        <button type="button" onclick="addWorkerRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ തൊഴിലാളിയെ ചേർക്കുക</button>
+                        <a href="staff.html" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
+                    </div>
                 </div>
             </div>
 
