@@ -185,49 +185,106 @@
             }
         }
 
-        window.onSiteSelectChange = function() {
-            const selectedSite = document.getElementById('siteSelectDropdown').value;
-            const siteInput = document.getElementById('siteName');
-            
-            document.getElementById('settleAdvance').value = 0;
-            document.getElementById('ownerAdvance').value = 0;
-            document.getElementById('settleSelfSpent').value = 0;
-            document.getElementById('siteIncome').value = 0;
+window.onSiteSelectChange = function() {
+    const selectedSite = document.getElementById('siteSelectDropdown').value;
+    const siteInput = document.getElementById('siteName');
+    
+    // 1. ഇൻപുട്ട് ഫീൽഡുകൾ റീസെറ്റ് ചെയ്യുന്നു
+    document.getElementById('settleAdvance').value = 0;
+    document.getElementById('ownerAdvance').value = 0;
+    document.getElementById('settleSelfSpent').value = 0;
+    document.getElementById('siteIncome').value = 0;
 
-            if (selectedSite) {
-                siteInput.value = selectedSite;
-                siteInput.readOnly = true;
-                siteInput.classList.add('opacity-60');
+    // ഇൻപുട്ട് ബോക്സുകൾ ക്ലിയർ ചെയ്യുന്നു (പഴയ എൻട്രികളുടെ ലിസ്റ്റ് വരാതിരിക്കാൻ)
+    if (document.getElementById('expenseListContainer')) document.getElementById('expenseListContainer').innerHTML = '';
+    if (document.getElementById('workerListContainer')) document.getElementById('workerListContainer').innerHTML = '';
 
-                let currentSiteKey = selectedSite.trim().toLowerCase();
-                
-                let savedMeshtriAdv = localStorage.getItem('advance_Meshtri_' + currentSiteKey);
-                let savedOwnerAdv = localStorage.getItem('advance_Owner_' + currentSiteKey);
-                let savedSelfSpent = localStorage.getItem('selfspent_' + currentSiteKey);
-                let savedIncome = localStorage.getItem('income_' + currentSiteKey);
+    if (selectedSite) {
+        siteInput.value = selectedSite;
+        siteInput.readOnly = true;
+        siteInput.classList.add('opacity-60');
 
-                if (savedMeshtriAdv) document.getElementById('settleAdvance').value = savedMeshtriAdv;
-                if (savedOwnerAdv) document.getElementById('ownerAdvance').value = savedOwnerAdv;
-                if (savedSelfSpent) document.getElementById('settleSelfSpent').value = savedSelfSpent;
-                if (savedIncome) document.getElementById('siteIncome').value = savedIncome;
+        let currentSiteKey = selectedSite.trim().toLowerCase();
+        
+        // 2. അഡ്വാൻസ് തുകകൾ ലോഡ് ചെയ്യുന്നു
+        let savedMeshtriAdv = localStorage.getItem('advance_Meshtri_' + currentSiteKey);
+        let savedOwnerAdv = localStorage.getItem('advance_Owner_' + currentSiteKey);
+        let savedSelfSpent = localStorage.getItem('selfspent_' + currentSiteKey);
+        let savedIncome = localStorage.getItem('income_' + currentSiteKey);
 
-            } else {
-                siteInput.value = '';
-                siteInput.readOnly = false;
-                siteInput.classList.remove('opacity-60');
-            }
+        if (savedMeshtriAdv) document.getElementById('settleAdvance').value = savedMeshtriAdv;
+        if (savedOwnerAdv) document.getElementById('ownerAdvance').value = savedOwnerAdv;
+        if (savedSelfSpent) document.getElementById('settleSelfSpent').value = savedSelfSpent;
+        if (savedIncome) document.getElementById('siteIncome').value = savedIncome;
 
-            if (typeof calculateTotal === 'function') {
-                calculateTotal();
-            }
-        };
+        // 3. മുൻകാല ആകെ വരവും ചെലവും കാൽക്കുലേറ്റ് ചെയ്യുന്നു
+        let totalPreviousIncome = 0;
+        let totalPreviousExpense = 0;
 
-        window.onManualSiteInput = function() {
-            document.getElementById('settleAdvance').value = 0;
-            document.getElementById('ownerAdvance').value = 0;
-            document.getElementById('settleSelfSpent').value = 0;
-            calculateTotal();
-        };
+        if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
+            allAccountsData.forEach(acc => {
+                if (acc.site && acc.site.trim().toLowerCase() === currentSiteKey) {
+                    let amt = parseFloat(acc.amount) || 0;
+                    if (acc.type === 'income') {
+                        totalPreviousIncome += amt;
+                    } else if (acc.type === 'wage' || acc.type === 'other' || acc.type === 'expense') {
+                        totalPreviousExpense += amt;
+                    }
+                }
+            });
+        }
+
+        // പുതിയ ദിവസത്തെ എൻട്രിക്കായി ഓരോ റോ (Row) നൽകുന്നു
+        if (typeof addExpenseRow === 'function') addExpenseRow();
+        if (typeof addWorkerRow === 'function') addWorkerRow();
+
+        // 4. പഴയ തുക കൂടി കൂട്ടി ടോട്ടൽ കാണിപ്പാൻ ഫങ്ഷൻ വിളിക്കുന്നു
+        calculateTotalWithPrevious(totalPreviousIncome, totalPreviousExpense);
+
+    } else {
+        siteInput.value = '';
+        siteInput.readOnly = false;
+        siteInput.classList.remove('opacity-60');
+        
+        if (typeof addExpenseRow === 'function') addExpenseRow();
+        if (typeof addWorkerRow === 'function') addWorkerRow();
+        
+        if (typeof calculateTotal === 'function') calculateTotal();
+    }
+};
+
+// പഴയ ഡാറ്റയും പുതിയ എന്ററികളും ചേർത്ത് കണക്കാക്കുന്ന ഫങ്ഷൻ
+function calculateTotalWithPrevious(prevIncome = 0, prevExpense = 0) {
+    let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : 0) || 0;
+    
+    let todayOtherExp = 0;
+    document.querySelectorAll('.expense-amount').forEach(input => {
+        todayOtherExp += parseFloat(input.value) || 0;
+    });
+
+    let todayWages = 0;
+    document.querySelectorAll('.worker-wage').forEach(input => {
+        todayWages += parseFloat(input.value) || 0;
+    });
+
+    let currentInputSelfSpent = parseFloat(document.getElementById('settleSelfSpent') ? document.getElementById('settleSelfSpent').value : 0) || 0;
+
+    let finalIncome = prevIncome + todayIncome;
+    let finalExpense = prevExpense + todayOtherExp + todayWages + currentInputSelfSpent;
+    let netBalance = finalIncome - finalExpense;
+
+    let displayIncomeEl = document.getElementById('displayIncome');
+    if (displayIncomeEl) displayIncomeEl.innerText = `₹ ${finalIncome}`;
+
+    let displayExpenseEl = document.getElementById('displayExpense');
+    if (displayExpenseEl) displayExpenseEl.innerText = `₹ ${finalExpense}`;
+    
+    let balanceText = document.getElementById('grandTotal');
+    if (balanceText) {
+        balanceText.innerText = `₹ ${netBalance}`;
+        balanceText.className = netBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+    }
+}
 
         window.addExpenseRow = function() {
             const container = document.getElementById('expenseListContainer');
