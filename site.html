@@ -101,27 +101,33 @@
 
         let registeredWorkers = [];
         let allAccountsData = [];
-
-   async function fetchData() {
+async function fetchData() {
     try {
-        // 1. Staffs ഫെച്ച് ചെയ്യുന്നു
-        const staffQuery = query(collection(db, "staffs"), where("meshtriOwner", "==", currentMeshtri));
-        const staffSnap = await getDocs(staffQuery);
+        const currentUserClean = (typeof currentMeshtri !== 'undefined' && currentMeshtri) ? currentMeshtri.toString().trim().toLowerCase() : '';
+
+        // 1. Staffs ഫെച്ച് ചെയ്യുന്നു (തൊഴിലാളികളുടെ പേര് കൃത്യമായി വരാൻ Case-insensitive ആക്കുന്നു)
+        const staffSnap = await getDocs(collection(db, "staffs"));
         registeredWorkers = [];
-        staffSnap.forEach(doc => registeredWorkers.push({ id: doc.id, ...doc.data() }));
+        
+        staffSnap.forEach(doc => {
+            const sData = doc.data();
+            const sOwner = sData.meshtriOwner ? sData.meshtriOwner.toString().trim().toLowerCase() : '';
+            
+            // ലോഗിൻ ചെയ്ത ആളുടെ തൊഴിലാളികളെ മാത്രം എടുക്കുന്നു
+            if (!currentUserClean || sOwner === currentUserClean || sOwner.includes(currentUserClean) || currentUserClean.includes(sOwner)) {
+                registeredWorkers.push({ id: doc.id, ...sData });
+            }
+        });
 
         // 2. Accounts കളക്ഷനിൽ നിന്ന് ഫെച്ച് ചെയ്യുന്നു
         const accSnap = await getDocs(collection(db, "accounts"));
         allAccountsData = [];
         const siteSet = new Set();
-        
-        const currentUserClean = (typeof currentMeshtri !== 'undefined' && currentMeshtri) ? currentMeshtri.toString().trim().toLowerCase() : '';
 
         accSnap.forEach(doc => {
             const d = doc.data();
             const owner = d.meshtriOwner ? d.meshtriOwner.toString().trim().toLowerCase() : '';
             
-            // Swaraj / swaraj അല്ലെങ്കിൽ പേരിന്റെ ഭാഗമായി വരുന്നത് എല്ലാം മാച്ച് ചെയ്യും
             if (!currentUserClean || owner === currentUserClean || owner.includes(currentUserClean) || currentUserClean.includes(owner)) {
                 allAccountsData.push(d);
                 if (d.site && d.site.trim() !== "") {
@@ -147,7 +153,7 @@
             console.log("Sites fetch info:", err);
         }
 
-        // 4. ഡ്രോപ്പ്ഡൗൺ അപ്ഡേറ്റ് ചെയ്യുന്നു
+        // 4. സൈറ്റ് ഡ്രോപ്പ്ഡൗൺ അപ്ഡേറ്റ് ചെയ്യുന്നു
         const siteDropdown = document.getElementById('siteSelectDropdown');
         if (siteDropdown) {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
@@ -162,9 +168,11 @@
             siteDropdown.innerHTML = optionsHTML;
         }
 
-        // 5. പേജിലെ കണക്കുകൾ അപ്ഡേറ്റ് ചെയ്യുന്നു
+        // 5. തൊഴിലാളികളുടെ ഡ്രോപ്പ്ഡൗണും കണക്കുകളും അപ്ഡേറ്റ് ചെയ്യുന്നു
+        if (typeof updateWorkerDropdowns === "function") updateWorkerDropdowns();
         if (typeof updateAllDropdowns === "function") updateAllDropdowns();
         if (typeof calculateTotal === "function") calculateTotal();
+        if (typeof updateDashboardSummary === "function") updateDashboardSummary();
 
     } catch (e) {
         console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", e);
