@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>സൈറ്റ് മാനേജ്മെന്റ് - മേസ്തിരി പ്രോ</title>
     <!-- Eruda കോൺസോൾ ടൂൾ -->
-<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init();</script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="language.js"></script> 
@@ -14,7 +14,7 @@
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
         import { setupHeader } from './header.js';
 
         const firebaseConfig = {
@@ -33,16 +33,22 @@
         const currentMeshtri = localStorage.getItem('userName') || "പൊതുമേസ്തിരി";
 
         document.addEventListener("DOMContentLoaded", () => {
-            if (typeof setupHeader === 'function') {
-                setupHeader('appHeader', true, currentMeshtri);
-            }
+            try {
+                if (typeof setupHeader === 'function') {
+                    setupHeader('appHeader', true, currentMeshtri);
+                }
+            } catch(e) { console.error("Header setup error:", e); }
+
             const nameSpan = document.getElementById('loggedInMeshtri');
             if(nameSpan) nameSpan.innerText = `സ്വാഗതം, ${currentMeshtri}`;
             
-            document.getElementById('entryDate').valueAsDate = new Date();
+            const entryDateInput = document.getElementById('entryDate');
+            if(entryDateInput) entryDateInput.valueAsDate = new Date();
             
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            changePageLanguage(savedLang);
+            if (typeof changePageLanguage === 'function') {
+                changePageLanguage(savedLang);
+            }
 
             fetchData();
         });
@@ -61,7 +67,7 @@
                     }
                 }
             });
-        }
+        };
 
         function showCustomAlert(message, title = "ശ്രദ്ധിക്കുക", isConfirm = false, onConfirm = null) {
             const modal = document.getElementById('customModal');
@@ -102,268 +108,130 @@
         let registeredWorkers = [];
         let allAccountsData = [];
 
-        window.toggleSection = function(sectionId) {
-            const section = document.getElementById(sectionId);
-            const icon = document.getElementById(sectionId + 'Icon');
-            
-            if (section) {
-                if (section.classList.contains('hidden')) {
-                    section.classList.remove('hidden');
-                    if (icon) icon.innerText = "▲";
-                } else {
-                    section.classList.add('hidden');
-                    if (icon) icon.innerText = "▼";
-                }
-            }
-        };
+        async function fetchData() {
+            try {
+                const currentUserClean = (typeof currentMeshtri !== 'undefined' && currentMeshtri) ? currentMeshtri.toString().trim().toLowerCase() : '';
 
-        window.updateDashboardSummary = function() {
-            let totalIncome = 0;
-            let totalExpense = 0;
-
-            const currentUserClean = (typeof currentMeshtri !== 'undefined' && currentMeshtri) ? currentMeshtri.toString().trim().toLowerCase() : '';
-
-            if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
-                allAccountsData.forEach(item => {
-                    const owner = item.meshtriOwner ? item.meshtriOwner.toString().trim().toLowerCase() : '';
-                    
-                    if (!currentUserClean || owner === currentUserClean || owner.includes(currentUserClean) || currentUserClean.includes(owner)) {
-                        const amount = parseFloat(item.amount) || 0;
-                        if (item.type === 'income' || item.type === 'income_advance') {
-                            totalIncome += amount;
-                        } else if (item.type === 'expense' || item.type === 'wage' || item.type === 'advance' || item.type === 'other' || item.type === 'self_spent') {
-                            totalExpense += amount;
+                // 1. Staffs ഫെച്ച് ചെയ്യുന്നു
+                try {
+                    const staffSnap = await getDocs(collection(db, "staffs"));
+                    registeredWorkers = [];
+                    staffSnap.forEach(doc => {
+                        const sData = doc.data();
+                        const sOwner = sData.meshtriOwner ? sData.meshtriOwner.toString().trim().toLowerCase() : '';
+                        if (!currentUserClean || sOwner === currentUserClean || sOwner.includes(currentUserClean) || currentUserClean.includes(sOwner)) {
+                            registeredWorkers.push({ id: doc.id, ...sData });
                         }
-                    }
-                });
+                    });
+                } catch(err) { console.error("Staff fetch error:", err); }
+
+                // 2. Accounts ഫെച്ച് ചെയ്യുന്നു
+                const siteSet = new Set();
+                try {
+                    const accSnap = await getDocs(collection(db, "accounts"));
+                    allAccountsData = [];
+                    accSnap.forEach(doc => {
+                        const d = doc.data();
+                        const owner = d.meshtriOwner ? d.meshtriOwner.toString().trim().toLowerCase() : '';
+                        if (!currentUserClean || owner === currentUserClean || owner.includes(currentUserClean) || currentUserClean.includes(owner)) {
+                            allAccountsData.push(d);
+                            if (d.site && d.site.trim() !== "") {
+                                siteSet.add(d.site.trim());
+                            }
+                        }
+                    });
+                } catch(err) { console.error("Accounts fetch error:", err); }
+
+                // 3. Sites കളക്ഷൻ ഫെച്ച് ചെയ്യുന്നു
+                try {
+                    const siteSnap = await getDocs(collection(db, "sites"));
+                    siteSnap.forEach(doc => {
+                        const sData = doc.data();
+                        const sOwner = sData.meshtriOwner ? sData.meshtriOwner.toString().trim().toLowerCase() : '';
+                        if (!currentUserClean || sOwner === currentUserClean || sOwner.includes(currentUserClean) || currentUserClean.includes(sOwner)) {
+                            const siteName = sData.siteName || sData.name || sData.site;
+                            if (siteName && siteName.trim() !== "") {
+                                siteSet.add(siteName.trim());
+                            }
+                        }
+                    });
+                } catch (err) { console.log("Sites fetch info:", err); }
+
+                // 4. സൈറ്റ് ഡ്രോപ്പ്ഡൗൺ അപ്ഡേറ്റ് ചെയ്യുന്നു
+                const siteDropdown = document.getElementById('siteSelectDropdown');
+                if (siteDropdown) {
+                    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+                    const defaultText = (typeof words !== 'undefined' && words['newSiteType'] && words['newSiteType'][currentLang]) ? words['newSiteType'][currentLang] : "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക";
+
+                    let optionsHTML = `<option value="">${defaultText}</option>`;
+                    Array.from(siteSet).forEach(s => {
+                        optionsHTML += `<option value="${s}">${s}</option>`;
+                    });
+                    siteDropdown.innerHTML = optionsHTML;
+                }
+
+                // 5. പുതിയ ദിവസത്തെ എൻട്രിക്കുള്ള റോകൾ മാത്രം ചേർക്കുന്നു (പഴയ ഹിസ്റ്ററി കാണിച്ച് പേജ് നിറയ്ക്കില്ല)
+                if (document.getElementById('expenseListContainer') && document.getElementById('expenseListContainer').children.length === 0) {
+                    addExpenseRow();
+                }
+                if (document.getElementById('workerListContainer') && document.getElementById('workerListContainer').children.length === 0) {
+                    addWorkerRow();
+                }
+
+                if (typeof calculateTotal === "function") calculateTotal();
+
+            } catch (e) {
+                console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", e);
+            }
+        }
+
+        window.onSiteSelectChange = function() {
+            const selectedSite = document.getElementById('siteSelectDropdown').value;
+            const siteInput = document.getElementById('siteName');
+            
+            document.getElementById('settleAdvance').value = 0;
+            document.getElementById('ownerAdvance').value = 0;
+            document.getElementById('settleSelfSpent').value = 0;
+            document.getElementById('siteIncome').value = 0;
+
+            if (selectedSite) {
+                siteInput.value = selectedSite;
+                siteInput.readOnly = true;
+                siteInput.classList.add('opacity-60');
+
+                let currentSiteKey = selectedSite.trim().toLowerCase();
+                
+                let savedMeshtriAdv = localStorage.getItem('advance_Meshtri_' + currentSiteKey);
+                let savedOwnerAdv = localStorage.getItem('advance_Owner_' + currentSiteKey);
+                let savedSelfSpent = localStorage.getItem('selfspent_' + currentSiteKey);
+                let savedIncome = localStorage.getItem('income_' + currentSiteKey);
+
+                if (savedMeshtriAdv) document.getElementById('settleAdvance').value = savedMeshtriAdv;
+                if (savedOwnerAdv) document.getElementById('ownerAdvance').value = savedOwnerAdv;
+                if (savedSelfSpent) document.getElementById('settleSelfSpent').value = savedSelfSpent;
+                if (savedIncome) document.getElementById('siteIncome').value = savedIncome;
+
+            } else {
+                siteInput.value = '';
+                siteInput.readOnly = false;
+                siteInput.classList.remove('opacity-60');
             }
 
-            const netBalance = totalIncome - totalExpense;
-
-            const incomeEl = document.getElementById('dashIncome') || document.querySelector('.dash-income');
-            const expenseEl = document.getElementById('dashExpense') || document.querySelector('.dash-expense');
-            const balanceEl = document.getElementById('dashBalance') || document.querySelector('.dash-balance');
-
-            if (incomeEl) incomeEl.innerText = `₹ ${totalIncome.toLocaleString('en-IN')}`;
-            if (expenseEl) expenseEl.innerText = `₹ ${totalExpense.toLocaleString('en-IN')}`;
-            if (balanceEl) balanceEl.innerText = `₹ ${Math.abs(netBalance).toLocaleString('en-IN')}`;
+            if (typeof calculateTotal === 'function') {
+                calculateTotal();
+            }
         };
-
-async function fetchData() {
-    try {
-        const currentUserClean = (typeof currentMeshtri !== 'undefined' && currentMeshtri) ? currentMeshtri.toString().trim().toLowerCase() : '';
-
-        // 1. Staffs ഫെച്ച് ചെയ്യുന്നു (തൊഴിലാളികളുടെ പേര് കൃത്യമായി വരാൻ Case-insensitive ആക്കുന്നു)
-        const staffSnap = await getDocs(collection(db, "staffs"));
-        registeredWorkers = [];
-        
-        staffSnap.forEach(doc => {
-            const sData = doc.data();
-            const sOwner = sData.meshtriOwner ? sData.meshtriOwner.toString().trim().toLowerCase() : '';
-            
-            // ലോഗിൻ ചെയ്ത ആളുടെ തൊഴിലാളികളെ മാത്രം എടുക്കുന്നു
-            if (!currentUserClean || sOwner === currentUserClean || sOwner.includes(currentUserClean) || currentUserClean.includes(sOwner)) {
-                registeredWorkers.push({ id: doc.id, ...sData });
-            }
-        });
-
-        // 2. Accounts കളക്ഷനിൽ നിന്ന് ഫെച്ച് ചെയ്യുന്നു
-        const accSnap = await getDocs(collection(db, "accounts"));
-        allAccountsData = [];
-        const siteSet = new Set();
-
-        accSnap.forEach(doc => {
-            const d = doc.data();
-            const owner = d.meshtriOwner ? d.meshtriOwner.toString().trim().toLowerCase() : '';
-            
-            if (!currentUserClean || owner === currentUserClean || owner.includes(currentUserClean) || currentUserClean.includes(owner)) {
-                allAccountsData.push(d);
-                if (d.site && d.site.trim() !== "") {
-                    siteSet.add(d.site.trim());
-                }
-            }
-        });
-
-        // 3. 'sites' കളക്ഷനിൽ ഉള്ള പഴയ സൈറ്റുകളും ചേർക്കുന്നു
-        try {
-            const siteSnap = await getDocs(collection(db, "sites"));
-            siteSnap.forEach(doc => {
-                const sData = doc.data();
-                const sOwner = sData.meshtriOwner ? sData.meshtriOwner.toString().trim().toLowerCase() : '';
-                if (!currentUserClean || sOwner === currentUserClean || sOwner.includes(currentUserClean) || currentUserClean.includes(sOwner)) {
-                    const siteName = sData.siteName || sData.name || sData.site;
-                    if (siteName && siteName.trim() !== "") {
-                        siteSet.add(siteName.trim());
-                    }
-                }
-            });
-        } catch (err) {
-            console.log("Sites fetch info:", err);
-        }
-
-        // 4. സൈറ്റ് ഡ്രോപ്പ്ഡൗൺ അപ്ഡേറ്റ് ചെയ്യുന്നു
-        const siteDropdown = document.getElementById('siteSelectDropdown');
-        if (siteDropdown) {
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const defaultText = (typeof words !== 'undefined' && words['newSiteType'] && words['newSiteType'][currentLang]) ? words['newSiteType'][currentLang] : "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക";
-
-            let optionsHTML = `<option value="">${defaultText}</option>`;
-
-            Array.from(siteSet).forEach(s => {
-                optionsHTML += `<option value="${s}">${s}</option>`;
-            });
-
-            siteDropdown.innerHTML = optionsHTML;
-        }
-
-        // 5. തൊഴിലാളികളുടെ ഡ്രോപ്പ്ഡൗണും കണക്കുകളും അപ്ഡേറ്റ് ചെയ്യുന്നു
-        if (typeof updateWorkerDropdowns === "function") updateWorkerDropdowns();
-        if (typeof updateAllDropdowns === "function") updateAllDropdowns();
-        if (typeof calculateTotal === "function") calculateTotal();
-        if (typeof updateDashboardSummary === "function") updateDashboardSummary();
-
-    } catch (e) {
-        console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", e);
-    }
-}
-
-
-window.onSiteSelectChange = function() {
-    const selectedSite = document.getElementById('siteSelectDropdown').value;
-    const siteInput = document.getElementById('siteName');
-    
-    // ഫീൽഡുകൾ റീസെറ്റ് ചെയ്യുക
-    document.getElementById('settleAdvance').value = 0;
-    document.getElementById('ownerAdvance').value = 0;
-    document.getElementById('settleSelfSpent').value = 0;
-    document.getElementById('siteIncome').value = 0;
-
-    // ലിസ്റ്റുകൾ ക്ലിയർ ചെയ്യുക
-    if (document.getElementById('expenseListContainer')) document.getElementById('expenseListContainer').innerHTML = '';
-    if (document.getElementById('workerListContainer')) document.getElementById('workerListContainer').innerHTML = '';
-
-    if (selectedSite) {
-        siteInput.value = selectedSite;
-        siteInput.readOnly = true;
-        siteInput.classList.add('opacity-60');
-
-        let currentSiteKey = selectedSite.trim().toLowerCase();
-        
-        // 1. localStorage-ൽ നിന്ന് അഡ്വാൻസ് തുകയും വരവും എടുക്കുന്നു
-        let savedMeshtriAdv = localStorage.getItem('advance_Meshtri_' + currentSiteKey);
-        let savedOwnerAdv = localStorage.getItem('advance_Owner_' + currentSiteKey);
-        let savedSelfSpent = localStorage.getItem('selfspent_' + currentSiteKey);
-        let savedIncome = localStorage.getItem('income_' + currentSiteKey);
-
-        if (savedMeshtriAdv) document.getElementById('settleAdvance').value = savedMeshtriAdv;
-        if (savedOwnerAdv) document.getElementById('ownerAdvance').value = savedOwnerAdv;
-        if (savedSelfSpent) document.getElementById('settleSelfSpent').value = savedSelfSpent;
-        if (savedIncome) document.getElementById('siteIncome').value = savedIncome;
-
-        // 2. ഫയർബേസ് ഡാറ്റയിൽ നിന്ന് (allAccountsData) ഈ സൈറ്റിന്റെ കണക്കുകൾ ഫെച്ച് ചെയ്യുക
-        if (typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
-            const matchingAccounts = allAccountsData.filter(d => d.site && d.site.trim().toLowerCase() === currentSiteKey);
-            
-            matchingAccounts.forEach(acc => {
-                if (acc.type === 'income') {
-                    document.getElementById('siteIncome').value = acc.amount;
-                } else if (acc.type === 'advance_meshtri') {
-                    document.getElementById('settleAdvance').value = acc.amount;
-                } else if (acc.type === 'advance_owner') {
-                    document.getElementById('ownerAdvance').value = acc.amount;
-                } else if (acc.type === 'self_spent') {
-                    document.getElementById('settleSelfSpent').value = acc.amount;
-                } else if (acc.type === 'other') {
-                    const container = document.getElementById('expenseListContainer');
-                    if (container) {
-                        const expId = Date.now() + Math.random();
-                        container.insertAdjacentHTML('beforeend', `
-                            <div class="flex gap-2 items-center" id="exp-${expId}">
-                                <input type="text" value="${acc.name}" class="expense-desc w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
-                                <input type="number" value="${acc.amount}" class="expense-amount w-28 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="calculateTotal()">
-                                <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3 py-3 rounded-xl font-bold text-xs">X</button>
-                            </div>
-                        `);
-                    }
-                } else if (acc.type === 'wage') {
-                    const container = document.getElementById('workerListContainer');
-                    if (container) {
-                        const rowId = Date.now() + Math.random();
-                        const optionsHTML = typeof registeredWorkers !== 'undefined' ? registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}" ${w.id === acc.staffId ? 'selected' : ''}>${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('') : '';
-
-window.onSiteSelectChange = function() {
-    const selectedSite = document.getElementById('siteSelectDropdown').value;
-    const siteInput = document.getElementById('siteName');
-    
-    // ഫീൽഡുകൾ റീസെറ്റ് ചെയ്യുക
-    document.getElementById('settleAdvance').value = 0;
-    document.getElementById('ownerAdvance').value = 0;
-    document.getElementById('settleSelfSpent').value = 0;
-    document.getElementById('siteIncome').value = 0;
-
-    // പഴയ വലിയ ലിസ്റ്റുകൾ ക്ലിയർ ചെയ്ത്, പുതിയ എൻട്രിക്കുള്ള റോ മാത്രം നിലനിർത്തുന്നു
-    if (document.getElementById('expenseListContainer')) document.getElementById('expenseListContainer').innerHTML = '';
-    if (document.getElementById('workerListContainer')) document.getElementById('workerListContainer').innerHTML = '';
-
-    if (selectedSite) {
-        siteInput.value = selectedSite;
-        siteInput.readOnly = true;
-        siteInput.classList.add('opacity-60');
-
-        let currentSiteKey = selectedSite.trim().toLowerCase();
-        
-        // 1. അഡ്വാൻസ് തുകയും വരവും മാത്രം സെറ്റ് ചെയ്യുന്നു
-        let savedMeshtriAdv = localStorage.getItem('advance_Meshtri_' + currentSiteKey);
-        let savedOwnerAdv = localStorage.getItem('advance_Owner_' + currentSiteKey);
-        let savedSelfSpent = localStorage.getItem('selfspent_' + currentSiteKey);
-        let savedIncome = localStorage.getItem('income_' + currentSiteKey);
-
-        if (savedMeshtriAdv) document.getElementById('settleAdvance').value = savedMeshtriAdv;
-        if (savedOwnerAdv) document.getElementById('ownerAdvance').value = savedOwnerAdv;
-        if (savedSelfSpent) document.getElementById('settleSelfSpent').value = savedSelfSpent;
-        if (savedIncome) document.getElementById('siteIncome').value = savedIncome;
-
-        // പഴയ ലിസ്റ്റുകൾ ഫെച്ച് ചെയ്യുന്നത് ഇവിടെ നിന്ന് ഒഴിവാക്കി!
-        // പുതിയ ഡാറ്റ എൻട്രി ചെയ്യാൻ വേണ്ടി ഒരു വരി വീതം തനിയെ കാണിക്കും:
-        addExpenseRow();
-        addWorkerRow();
-
-    } else {
-        siteInput.value = '';
-        siteInput.readOnly = false;
-        siteInput.classList.remove('opacity-60');
-        
-        addExpenseRow();
-        addWorkerRow();
-    }
-
-    if (typeof calculateTotal === 'function') {
-        calculateTotal();
-    }
-}
-
 
         window.onManualSiteInput = function() {
             document.getElementById('settleAdvance').value = 0;
             document.getElementById('ownerAdvance').value = 0;
             document.getElementById('settleSelfSpent').value = 0;
             calculateTotal();
-        }
-
-        function updateAllDropdowns() {
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const defaultWorkerText = (typeof words !== 'undefined' && words['workerSelectDefault'] && words['workerSelectDefault'][currentLang]) ? words['workerSelectDefault'][currentLang] : "തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക";
-
-            document.querySelectorAll('.worker-select').forEach(select => {
-                let currentValue = select.value;
-                select.innerHTML = `<option value="">${defaultWorkerText}</option>` + 
-                    registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('');
-                select.value = currentValue;
-            });
-        }
+        };
 
         window.addExpenseRow = function() {
             const container = document.getElementById('expenseListContainer');
+            if(!container) return;
             const expId = Date.now();
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             const ph = (currentLang === 'en') ? "Description (e.g., Food, Vehicle)" : "വിവരം (ഉദാ: ഭക്ഷണം, വാഹനം, മെറ്റീരിയൽ)";
@@ -376,10 +244,11 @@ window.onSiteSelectChange = function() {
                     <button type="button" onclick="document.getElementById('exp-${expId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3 py-3 rounded-xl font-bold text-xs">X</button>
                 </div>
             `);
-        }
+        };
 
         window.addWorkerRow = function() {
             const container = document.getElementById('workerListContainer');
+            if(!container) return;
             const rowId = Date.now();
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             const defaultWorkerText = (typeof words !== 'undefined' && words['workerSelectDefault'] && words['workerSelectDefault'][currentLang]) ? words['workerSelectDefault'][currentLang] : "തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക";
@@ -390,27 +259,28 @@ window.onSiteSelectChange = function() {
 
             container.insertAdjacentHTML('beforeend', `
                 <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2 worker-row" id="row-${rowId}" data-worker="">
-                    <select class="worker-select w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" onchange="updateRowData(this, '${rowId}')" required>
+                    <select class="worker-select w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" onchange="updateRowData(this, '${rowId}')">
                         <option value="">${defaultWorkerText}</option>
                         ${optionsHTML}
                     </select>
                     <div class="flex gap-2">
-                        <input type="text" placeholder="${jobPh}" class="worker-job w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="updateRowData(this, '${rowId}')" required>
-                        <input type="number" placeholder="${wagePh}" class="worker-wage w-32 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()" required>
+                        <input type="text" placeholder="${jobPh}" class="worker-job w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="updateRowData(this, '${rowId}')">
+                        <input type="number" placeholder="${wagePh}" class="worker-wage w-32 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" value="0" oninput="calculateTotal()">
                         <button type="button" onclick="document.getElementById('row-${rowId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3.5 py-3 rounded-xl font-bold text-xs">X</button>
                     </div>
                 </div>
             `);
-        }
+        };
 
         window.updateRowData = function(element, rowId) {
             let row = document.getElementById(`row-${rowId}`);
+            if(!row) return;
             let selectVal = row.querySelector('.worker-select');
             let selectedOption = selectVal.options[selectVal.selectedIndex];
             let workerName = selectedOption ? selectedOption.getAttribute('data-name') : '';
             let jobVal = row.querySelector('.worker-job').value;
             row.setAttribute('data-worker', (workerName + ' ' + jobVal).toLowerCase());
-        }
+        };
 
         window.filterWorkers = function() {
             let queryVal = document.getElementById('searchBox').value.toLowerCase();
@@ -418,226 +288,73 @@ window.onSiteSelectChange = function() {
                 let data = row.getAttribute('data-worker') || '';
                 row.style.display = data.includes(queryVal) ? '' : 'none';
             });
-        }
-
-        window.resetSettlementCycle = function() {
-            let siteNameInput = document.getElementById('siteName');
-            let currentSite = siteNameInput ? siteNameInput.value.trim().toLowerCase() : '';
-
-            if (!currentSite) {
-                showCustomAlert("ദയവായി സൈറ്റ് തിരഞ്ഞെടുക്കുക!", "ശ്രദ്ധിക്കുക");
-                return;
-            }
-
-            let fundSource = document.getElementById('fundSourceSelect')?.value || 'Meshtri';
-            let keyName = 'prev_balance_' + fundSource + '_' + currentSite;
-
-            showCustomAlert("ഈ ഫണ്ട് സോഴ്സിന്റെ സെറ്റിൽമെന്റ് ക്ലോസ് ചെയ്ത് പുതിയ സൈക്കിൾ തുടങ്ങണമോ?", "ഉറപ്പാണോ?", true, (confirmed) => {
-                if (confirmed) {
-                    let balanceElemId = fundSource === 'Owner' ? 'ownerBalanceText' : 'settleBalanceText';
-                    let currentBalanceText = document.getElementById(balanceElemId)?.innerText || "0";
-                    let numericBalance = parseFloat(currentBalanceText.replace(/[^0-9.-]/g, '')) || 0;
-                    
-                    localStorage.setItem(keyName, numericBalance);
-                    localStorage.setItem('advance_' + fundSource + '_' + currentSite, 0);
-                    localStorage.setItem('selfspent_' + currentSite, 0);
-                    
-                    if(fundSource === 'Owner') {
-                        const ownerInput = document.getElementById('ownerAdvance');
-                        if(ownerInput) ownerInput.value = 0;
-                    } else {
-                        const settleAdvanceInput = document.getElementById('settleAdvance');
-                        if(settleAdvanceInput) settleAdvanceInput.value = 0;
-                    }
-                    const selfSpentInput = document.getElementById('settleSelfSpent');
-                    if(selfSpentInput) selfSpentInput.value = 0;
-
-                    showCustomAlert("സെറ്റിൽമെന്റ് ക്ലോസ് ചെയ്തു!", "വിജയം");
-                    calculateTotal();
-                }
-            });
-        }
-
-
-window.calculateTotal = function() {
-    try {
-        let siteNameInput = document.getElementById('siteName');
-        let currentSite = siteNameInput ? siteNameInput.value.trim().toLowerCase() : 'default_site';
-        if (!currentSite) currentSite = 'default_site';
-
-        let prevMeshtriBalance = parseFloat(localStorage.getItem('prev_balance_Meshtri_' + currentSite)) || 0;
-        let prevOwnerBalance = parseFloat(localStorage.getItem('prev_balance_Owner_' + currentSite)) || 0;
-
-        let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : 0) || 0;
-
-        const settleAdvanceInput = document.getElementById('settleAdvance');
-        const ownerAdvanceInput = document.getElementById('ownerAdvance');
-        const settleSelfSpentInput = document.getElementById('settleSelfSpent');
-
-        if (settleAdvanceInput) {
-            settleAdvanceInput.value = todayIncome;
-        }
-
-        let currentMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-        let currentOwnerAdvance = parseFloat(ownerAdvanceInput ? ownerAdvanceInput.value : 0) || 0;
-        let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
-
-        localStorage.setItem('advance_Meshtri_' + currentSite, currentMeshtriAdvance);
-        localStorage.setItem('advance_Owner_' + currentSite, currentOwnerAdvance);
-        localStorage.setItem('selfspent_' + currentSite, currentInputSelfSpent);
-
-        let todayOtherExp = 0;
-        document.querySelectorAll('.expense-amount').forEach(input => {
-            todayOtherExp += parseFloat(input.value) || 0;
-        });
-
-        let todayWages = 0;
-        document.querySelectorAll('.worker-wage').forEach(input => {
-            todayWages += parseFloat(input.value) || 0;
-        });
-
-        let totalSpentForSite = todayOtherExp + todayWages;
-        let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
-
-        let netSiteBalance = todayIncome - totalExpenseWithSelf;
-
-        let meshtriSettlementBalance = prevMeshtriBalance + netSiteBalance;
-        let ownerSettlementBalance = prevOwnerBalance + currentOwnerAdvance;
-
-        let settleBalanceDisplay = document.getElementById('settleBalanceText');
-        if (settleBalanceDisplay) {
-            let textVal = meshtriSettlementBalance < 0 ? `₹ ${Math.abs(meshtriSettlementBalance)} (കൊടുക്കാനുള്ളത്)` : `₹ ${meshtriSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
-            settleBalanceDisplay.innerText = textVal;
-            settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
-        }
-
-        let ownerBalanceDisplay = document.getElementById('ownerBalanceText');
-        if (ownerBalanceDisplay) {
-            let textValOwner = ownerSettlementBalance < 0 ? `₹ ${Math.abs(ownerSettlementBalance)} (കൊടുക്കാനുള്ളത്)` : `₹ ${ownerSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
-            ownerBalanceDisplay.innerText = textValOwner;
-            ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
-        }
-
-        let displayIncomeEl = document.getElementById('displayIncome');
-        if(displayIncomeEl) displayIncomeEl.innerText = `₹ ${todayIncome}`;
-
-        let displayExpenseEl = document.getElementById('displayExpense');
-        if(displayExpenseEl) displayExpenseEl.innerText = `₹ ${totalExpenseWithSelf}`;
-        
-        let balanceText = document.getElementById('grandTotal');
-        if (balanceText) {
-            balanceText.innerText = `₹ ${netSiteBalance}`;
-            balanceText.className = netSiteBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-        }
-    } catch (err) {
-        console.error("Calculation Error:", err);
-    }
-};
-
-        window.sendWhatsAppSettlement = function() {
-            let siteName = document.getElementById('siteName')?.value || 'സൈറ്റ്';
-            let fundSource = document.getElementById('fundSourceSelect')?.value || 'Meshtri';
-            let currentSite = siteName.trim().toLowerCase();
-
-            let sourceTitle = fundSource === 'Owner' ? "മുതലാളി (Owner)" : "മേസ്തിരി (Meshtri)";
-            let advance = fundSource === 'Owner' ? (document.getElementById('ownerAdvance')?.value || '0') : (document.getElementById('settleAdvance')?.value || '0');
-            let balance = fundSource === 'Owner' ? (document.getElementById('ownerBalanceText')?.innerText || '₹ 0') : (document.getElementById('settleBalanceText')?.innerText || '₹ 0');
-            let prevBalance = parseFloat(localStorage.getItem('prev_balance_' + fundSource + '_' + currentSite)) || 0;
-            let selfSpent = document.getElementById('settleSelfSpent')?.value || '0';
-
-            let message = `🏗️ *${sourceTitle} അഡ്വാൻസ് സെറ്റിൽമെന്റ്*\n` +
-                          `📍 സൈറ്റ്: ${siteName}\n` +
-                          `--------------------------------\n` +
-                          `📌 മുൻ ബാക്കി: ₹ ${prevBalance}\n` +
-                          `💰 തന്നത്: ₹ ${advance}\n` +
-                          `🛠️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n` +
-                          `--------------------------------\n` +
-                          `⚖️ ആകെ ബാക്കി തുക: ${balance}\n\n` +
-                          `- മേസ്തിരി പ്രോ ആപ്പ് വഴി അയച്ചത്`;
-
-            let encodedUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-            window.open(encodedUrl, '_blank');
         };
 
-        window.shareSiteWhatsApp = function() {
-            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
-            const entryDate = document.getElementById('entryDate').value;
-            const income = document.getElementById('siteIncome').value || 0;
-            
-            let details = "";
-            let otherExpTotal = 0;
-            
-            document.querySelectorAll('#expenseListContainer > div').forEach(row => {
-                let desc = row.querySelector('.expense-desc').value.trim();
-                let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
-                if (desc && amt > 0) {
-                    details += `➖ ${desc}: ₹ ${amt}\n`;
-                    otherExpTotal += amt;
+        window.calculateTotal = function() {
+            try {
+                let siteNameInput = document.getElementById('siteName');
+                let currentSite = siteNameInput ? siteNameInput.value.trim().toLowerCase() : 'default_site';
+                if (!currentSite) currentSite = 'default_site';
+
+                let prevMeshtriBalance = parseFloat(localStorage.getItem('prev_balance_Meshtri_' + currentSite)) || 0;
+                let prevOwnerBalance = parseFloat(localStorage.getItem('prev_balance_Owner_' + currentSite)) || 0;
+
+                let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : 0) || 0;
+
+                const settleAdvanceInput = document.getElementById('settleAdvance');
+                const ownerAdvanceInput = document.getElementById('ownerAdvance');
+                const settleSelfSpentInput = document.getElementById('settleSelfSpent');
+
+                let currentMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
+                let currentOwnerAdvance = parseFloat(ownerAdvanceInput ? ownerAdvanceInput.value : 0) || 0;
+                let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
+
+                let todayOtherExp = 0;
+                document.querySelectorAll('.expense-amount').forEach(input => {
+                    todayOtherExp += parseFloat(input.value) || 0;
+                });
+
+                let todayWages = 0;
+                document.querySelectorAll('.worker-wage').forEach(input => {
+                    todayWages += parseFloat(input.value) || 0;
+                });
+
+                let totalSpentForSite = todayOtherExp + todayWages;
+                let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
+
+                let netSiteBalance = todayIncome - totalExpenseWithSelf;
+
+                let meshtriSettlementBalance = prevMeshtriBalance + netSiteBalance;
+                let ownerSettlementBalance = prevOwnerBalance + currentOwnerAdvance;
+
+                let settleBalanceDisplay = document.getElementById('settleBalanceText');
+                if (settleBalanceDisplay) {
+                    let textVal = meshtriSettlementBalance < 0 ? `₹ ${Math.abs(meshtriSettlementBalance)} (കൊടുക്കാനുള്ളത്)` : `₹ ${meshtriSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
+                    settleBalanceDisplay.innerText = textVal;
+                    settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
                 }
-            });
 
-            let wagesTotal = 0;
-            document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
-            let selfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
-
-            let totalExp = otherExpTotal + wagesTotal + selfSpent;
-            let balance = income - totalExp;
-
-            let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
-            msg += `📅 തീയതി: ${entryDate}\n`;
-            msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `--------------------------------\n`;
-            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
-            msg += `💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
-            msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
-            if(selfSpent > 0) msg += `🛠️ കയ്യിൽ നിന്ന് മുടക്കിയത്: ₹ ${selfSpent}\n`;
-            msg += `--------------------------------\n`;
-            msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
-            msg += `💰 ബാലൻസ്: ₹ ${balance}\n`;
-            msg += `--------------------------------\n`;
-            msg += `👤 ${currentMeshtri}`;
-
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        window.shareWorkersWhatsApp = function() {
-            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
-            const entryDate = document.getElementById('entryDate').value;
-            
-            let workerDetails = "";
-            let totalWages = 0;
-            let index = 1;
-
-            document.querySelectorAll('.worker-row').forEach(row => {
-                let select = row.querySelector('.worker-select');
-                let opt = select.options[select.selectedIndex];
-                let wName = opt ? opt.getAttribute('data-name') : 'തൊഴിലാളി';
-                let job = row.querySelector('.worker-job').value || 'പണി';
-                let wage = parseFloat(row.querySelector('.worker-wage').value) || 0;
-
-                if(wage > 0) {
-                    workerDetails += `${index}. ${wName} (${job}) - ₹ ${wage}\n`;
-                    totalWages += wage;
-                    index++;
+                let ownerBalanceDisplay = document.getElementById('ownerBalanceText');
+                if (ownerBalanceDisplay) {
+                    let textValOwner = ownerSettlementBalance < 0 ? `₹ ${Math.abs(ownerSettlementBalance)} (കൊടുക്കാനുള്ളത്)` : `₹ ${ownerSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
+                    ownerBalanceDisplay.innerText = textValOwner;
+                    ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
                 }
-            });
 
-            if(totalWages === 0) {
-                showCustomAlert("തൊഴിലാളികളുടെ കൂലി വിവരങ്ങൾ ചേർത്തിട്ടില്ല!", "ശ്രദ്ധിക്കുക");
-                return;
+                let displayIncomeEl = document.getElementById('displayIncome');
+                if(displayIncomeEl) displayIncomeEl.innerText = `₹ ${todayIncome}`;
+
+                let displayExpenseEl = document.getElementById('displayExpense');
+                if(displayExpenseEl) displayExpenseEl.innerText = `₹ ${totalExpenseWithSelf}`;
+                
+                let balanceText = document.getElementById('grandTotal');
+                if (balanceText) {
+                    balanceText.innerText = `₹ ${netSiteBalance}`;
+                    balanceText.className = netSiteBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+                }
+            } catch (err) {
+                console.error("Calculation Error:", err);
             }
-
-            let msg = `👥 *തൊഴിലാളികളുടെ കൂലി കണക്ക്* 👥\n`;
-            msg += `📅 തീയതി: ${entryDate}\n`;
-            msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `--------------------------------\n`;
-            msg += workerDetails;
-            msg += `--------------------------------\n`;
-            msg += `💵 ആകെ തൊഴിലാളി കൂലി: ₹ ${totalWages}\n`;
-            msg += `--------------------------------\n`;
-            msg += `👤 ${currentMeshtri}`;
-
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
         window.saveSiteData = async function(event) {
@@ -753,16 +470,6 @@ window.calculateTotal = function() {
                 showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
             }
         };
-
-        window.addEventListener('languageChanged', () => {
-            if (typeof updateLanguageUI === "function") {
-                updateLanguageUI();
-            }
-            if (typeof fetchData === "function") {
-                fetchData();
-            }
-        });
-
     </script>
 
     <style>
@@ -774,6 +481,7 @@ window.calculateTotal = function() {
 
     <div class="max-w-md mx-auto space-y-4">
         
+        <!-- ഹെഡർ ഘടന കൃത്യമാക്കി -->
         <div id="appHeader" class="w-full"></div>
 
         <div class="bg-slate-900/90 border-2 border-amber-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm">
@@ -796,16 +504,14 @@ window.calculateTotal = function() {
             
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-4">
                 <div>
-                    
-                 <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="siteNameLabel">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
+                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase tracking-wide" data-key="siteNameLabel">സൈറ്റിന്റെ പേര് / സ്ഥലം:</label>
                     <div class="space-y-2">
                         <select id="siteSelectDropdown" onchange="onSiteSelectChange()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                             <option value="" data-key="newSiteType">+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക</option>
                         </select>
-                        <input type="text" id="siteName" oninput="onManualSiteInput()" required placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" data-key-placeholder="siteNamePlaceholder" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
+                        <input type="text" id="siteName" oninput="onManualSiteInput()" required placeholder="സൈറ്റ് പേര് ടൈപ്പ് ചെയ്യുക" class="w-full p-3.5 bg-slate-800/80 text-white rounded-2xl border border-slate-700 text-sm font-bold focus:outline-none focus:border-amber-400">
                     </div>
                 </div>
-
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -823,7 +529,7 @@ window.calculateTotal = function() {
                 <h3 class="text-amber-400 font-bold text-sm">⚖️ അഡ്വാൻസ് സെറ്റിൽമെന്റ് (മേസ്തിരി & മുതലാളി)</h3>
                 
                 <div>
-                    <label class="block text-xs font-black text-slate-400 mb-1">ഫണ്ട് നൽകിയ ആളെ തിരഞ്ഞെടുക്കുക (WhatsApp അയക്കാൻ):</label>
+                    <label class="block text-xs font-black text-slate-400 mb-1">ഫണ്ട് നൽകിയ ആളെ തിരഞ്ഞെടുക്കുക:</label>
                     <select id="fundSourceSelect" class="w-full p-2.5 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold">
                         <option value="Meshtri">മേസ്തിരി (Meshtri)</option>
                         <option value="Owner">മുതലാളി (Owner/Client)</option>
@@ -856,37 +562,25 @@ window.calculateTotal = function() {
                         <span id="ownerBalanceText" class="text-emerald-400 font-black text-sm">₹ 0</span>
                     </div>
                 </div>
-
-                <button type="button" onclick="resetSettlementCycle()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg mt-2 text-xs">
-                    🔄 സെറ്റിൽമെന്റ് ക്ലോസ് ചെയ്ത് പുതിയ സൈക്കിൾ തുടങ്ങുക
-                </button>
-                <button type="button" onclick="sendWhatsAppSettlement()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2">
-                    📱 തിരഞ്ഞെടുത്ത ഫണ്ട് സോഴ്സ് കണക്ക് WhatsApp അയക്കുക
-                </button>
             </div>
 
-                        <!-- മറ്റു ചെലവുകൾ (Always Open) -->
+            <!-- മറ്റു ചെലവുകൾ (നേരിട്ടുള്ള എൻട്രി ഫീൽഡ് മാത്രം) -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
                 <h3 class="text-sm font-black text-amber-400">മറ്റു ചെലവുകൾ (ഭക്ഷണം, വാഹനം, മെറ്റീരിയൽ)</h3>
-                <div id="otherExpenseSection" class="space-y-3">
-                    <div id="expenseListContainer" class="space-y-2"></div>
-                    <button type="button" onclick="addExpenseRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
-                </div>
+                <div id="expenseListContainer" class="space-y-2"></div>
+                <button type="button" onclick="addExpenseRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ ചെലവ് ചേർക്കുക</button>
             </div>
 
-            <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ (Always Open) -->
+            <!-- തൊഴിലാളികളുടെ വിവരങ്ങൾ (നേരിട്ടുള്ള എൻട്രി ഫീൽഡ് മാത്രം) -->
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-3">
-                <h3 class="text-sm font-black text-amber-400">തൊഴിലാളികളുടെ വിവരങ്ങൾ (കൂലി)</h3>
-                <div id="workerListSection" class="space-y-3">
-                    <div id="workerListContainer" class="space-y-3"></div>
-                    
-                    <div class="grid grid-cols-2 gap-2 pt-2">
-                        <button type="button" onclick="addWorkerRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ തൊഴിലാളിയെ ചേർക്കുക</button>
-                        <a href="staff.html" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
-                    </div>
+                <h3 class="text-sm font-black text-amber-400">തൊഴിലാളികളുടെ വിവരങ്ങൾ (కూലി)</h3>
+                <div id="workerListContainer" class="space-y-3"></div>
+                
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <button type="button" onclick="addWorkerRow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md">+ തൊഴിലാളിയെ ചേർക്കുക</button>
+                    <a href="staff.html" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl font-black text-xs transition shadow-md text-center flex items-center justify-center">+ പുതിയ ആളെ ചേർക്കുക</a>
                 </div>
             </div>
-
 
             <div class="bg-slate-900/90 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-2.5 text-sm">
                 <div class="flex justify-between font-bold text-slate-300">
@@ -901,15 +595,6 @@ window.calculateTotal = function() {
                     <span>ബാക്കി തുക / ബാലൻസ് (ലാഭം/നഷ്ടം):</span>
                     <span id="grandTotal" class="text-amber-400">₹ 0</span>
                 </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2.5 pt-1">
-                <button type="button" onclick="shareSiteWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg transition flex items-center justify-center gap-1.5 border border-emerald-400/30">
-                    💬 സൈറ്റ് കണക്ക് WhatsApp
-                </button>
-                <button type="button" onclick="shareWorkersWhatsApp()" class="w-full bg-teal-600 hover:bg-teal-700 text-white p-3.5 rounded-2xl font-black text-xs shadow-lg transition flex items-center justify-center gap-1.5 border border-teal-400/30">
-                    👥 തൊഴിലാളി കൂലി WhatsApp
-                </button>
             </div>
 
             <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-4 rounded-2xl font-black text-base shadow-xl shadow-amber-950/50 border border-white/20 transition">കണക്ക് സേവ് ചെയ്യുക</button>
