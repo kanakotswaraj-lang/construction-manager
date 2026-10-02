@@ -677,6 +677,16 @@ window.calculateTotal = function() {
                 showCustomAlert("കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!", "പിഴവ്");
             }
         };
+        // 🟢 ഭാഷ മാറുമ്പോൾ ഡ്രോപ്പ്ഡൗൺ റീഫ്രഷ് ചെയ്യാനുള്ള കോഡ് ഇവിടെ ചേർക്കുക:
+        window.addEventListener('languageChanged', () => {
+            if (typeof updateLanguageUI === "function") {
+                updateLanguageUI();
+            }
+            if (typeof fetchData === "function") {
+                fetchData();
+            }
+        });
+
     </script>
 
     <style>
