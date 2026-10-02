@@ -290,34 +290,51 @@ window.onSiteSelectChange = function() {
                     if (container) {
                         const rowId = Date.now() + Math.random();
                         const optionsHTML = typeof registeredWorkers !== 'undefined' ? registeredWorkers.map(w => `<option value="${w.id}" data-name="${w.name}" ${w.id === acc.staffId ? 'selected' : ''}>${w.name} (${w.job || 'പണിക്കാരൻ'})</option>`).join('') : '';
-                        
-                        let jobTitle = "പണി";
-                        if(acc.name && acc.name.includes("കൂലി - ")) {
-                            jobTitle = acc.name.split("കൂലി - ")[1].replace(")", "").trim();
-                        }
 
-                        container.insertAdjacentHTML('beforeend', `
-                            <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2 worker-row" id="row-${rowId}" data-worker="">
-                                <select class="worker-select w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" onchange="updateRowData(this, '${rowId}')" required>
-                                    <option value="">തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക</option>
-                                    ${optionsHTML}
-                                </select>
-                                <div class="flex gap-2">
-                                    <input type="text" value="${jobTitle}" placeholder="പണി" class="worker-job w-full p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="updateRowData(this, '${rowId}')" required>
-                                    <input type="number" value="${acc.amount}" placeholder="കൂലി (₹)" class="worker-wage w-32 p-3 bg-slate-800 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400" oninput="calculateTotal()" required>
-                                    <button type="button" onclick="document.getElementById('row-${rowId}').remove(); calculateTotal();" class="bg-red-600 text-white px-3.5 py-3 rounded-xl font-bold text-xs">X</button>
-                                </div>
-                            </div>
-                        `);
-                    }
-                }
-            });
-        }
+window.onSiteSelectChange = function() {
+    const selectedSite = document.getElementById('siteSelectDropdown').value;
+    const siteInput = document.getElementById('siteName');
+    
+    // ഫീൽഡുകൾ റീസെറ്റ് ചെയ്യുക
+    document.getElementById('settleAdvance').value = 0;
+    document.getElementById('ownerAdvance').value = 0;
+    document.getElementById('settleSelfSpent').value = 0;
+    document.getElementById('siteIncome').value = 0;
+
+    // പഴയ വലിയ ലിസ്റ്റുകൾ ക്ലിയർ ചെയ്ത്, പുതിയ എൻട്രിക്കുള്ള റോ മാത്രം നിലനിർത്തുന്നു
+    if (document.getElementById('expenseListContainer')) document.getElementById('expenseListContainer').innerHTML = '';
+    if (document.getElementById('workerListContainer')) document.getElementById('workerListContainer').innerHTML = '';
+
+    if (selectedSite) {
+        siteInput.value = selectedSite;
+        siteInput.readOnly = true;
+        siteInput.classList.add('opacity-60');
+
+        let currentSiteKey = selectedSite.trim().toLowerCase();
+        
+        // 1. അഡ്വാൻസ് തുകയും വരവും മാത്രം സെറ്റ് ചെയ്യുന്നു
+        let savedMeshtriAdv = localStorage.getItem('advance_Meshtri_' + currentSiteKey);
+        let savedOwnerAdv = localStorage.getItem('advance_Owner_' + currentSiteKey);
+        let savedSelfSpent = localStorage.getItem('selfspent_' + currentSiteKey);
+        let savedIncome = localStorage.getItem('income_' + currentSiteKey);
+
+        if (savedMeshtriAdv) document.getElementById('settleAdvance').value = savedMeshtriAdv;
+        if (savedOwnerAdv) document.getElementById('ownerAdvance').value = savedOwnerAdv;
+        if (savedSelfSpent) document.getElementById('settleSelfSpent').value = savedSelfSpent;
+        if (savedIncome) document.getElementById('siteIncome').value = savedIncome;
+
+        // പഴയ ലിസ്റ്റുകൾ ഫെച്ച് ചെയ്യുന്നത് ഇവിടെ നിന്ന് ഒഴിവാക്കി!
+        // പുതിയ ഡാറ്റ എൻട്രി ചെയ്യാൻ വേണ്ടി ഒരു വരി വീതം തനിയെ കാണിക്കും:
+        addExpenseRow();
+        addWorkerRow();
 
     } else {
         siteInput.value = '';
         siteInput.readOnly = false;
         siteInput.classList.remove('opacity-60');
+        
+        addExpenseRow();
+        addWorkerRow();
     }
 
     if (typeof calculateTotal === 'function') {
