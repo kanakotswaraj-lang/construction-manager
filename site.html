@@ -390,8 +390,11 @@ function calculateTotalWithPrevious(prevIncome = 0, prevExpense = 0) {
         let netSiteBalance = todayIncome - totalExpenseWithSelf;
 
         // 4. മേസ്തിരിയുടെ ബാക്കി കണക്ക്: മേസ്തിരി തന്ന അഡ്വാൻസിൽ നിന്ന് ആകെ ചെലവുകൾ കുറയ്ക്കുന്നു
-        let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance) - totalExpenseWithSelf;
-        let ownerSettlementBalance = prevOwnerBalance + currentOwnerAdvance;
+        // താഴെ കിട്ടുന്ന അതേ നെറ്റ് ബാലൻസ് (netSiteBalance = ₹ 600) മേസ്തിരി ബാലൻസിലേക്ക് കൊടുക്കുന്നു
+let meshtriSettlementBalance = netSiteBalance;
+
+        let ownerSettlementBalance = currentOwnerAdvance - totalExpenseWithSelf;
+
 
         // മേസ്തിരി ബാലൻസ് കാണിപ്പാനുള്ള കോഡ്
         let settleBalanceDisplay = document.getElementById('settleBalanceText');
@@ -626,14 +629,15 @@ function calculateTotalWithPrevious(prevIncome = 0, prevExpense = 0) {
                     <input type="number" id="settleSelfSpent" value="0" oninput="calculateTotal()" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white text-sm">
                 </div>
 
-                <div class="space-y-2 pt-2 border-t border-slate-800">
-                    <div class="bg-slate-800/60 p-2.5 rounded-xl flex justify-between items-center border border-slate-700">
-                        <span class="text-xs text-amber-300 font-bold">മേസ്തിരി ബാലൻസ്:</span>
-                        <span id="settleBalanceText" class="text-emerald-400 font-black text-sm">₹ 0</span>
-                    </div>
+                <div class="bg-slate-800/60 p-2.5 rounded-xl flex justify-between items-center border border-slate-700">
+    <span class="text-xs text-amber-300 font-bold">മേസ്തിരി ബാലൻസ്:</span>
+    <span id="settleBalanceText" class="text-emerald-400 font-black text-sm">₹ 0 (ബാക്കി / കയ്യിലുള്ളത്)</span>
+</div>
+
                     <div class="bg-slate-800/60 p-2.5 rounded-xl flex justify-between items-center border border-slate-700">
                         <span class="text-xs text-cyan-300 font-bold">മുതലാളി ബാലൻസ്:</span>
-                        <span id="ownerBalanceText" class="text-emerald-400 font-black text-sm">₹ 0</span>
+                        <span id="ownerBalanceText" class="text-emerald-400 font-black text-sm">₹ 0 (ബാക്കി / കയ്യിലുള്ളത്)</span>
+
                     </div>
                 </div>
             </div>
