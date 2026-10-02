@@ -141,19 +141,21 @@
 
         // 4. ഡ്രോപ്പ്ഡൗൺ അപ്ഡേറ്റ് ചെയ്യുന്നു
         const siteDropdown = document.getElementById('siteSelectDropdown');
-        if(siteDropdown) {
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            const defaultText = (typeof words !== 'undefined' && words['newSiteType'] && words['newSiteType'][currentLang]) ? words['newSiteType'][currentLang] : "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക";
+if(siteDropdown) {
+    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+    const defaultText = (typeof words !== 'undefined' && words['newSiteType'] && words['newSiteType'][currentLang]) ? words['newSiteType'][currentLang] : "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക";
+
+    // data-key="newSiteType" എന്നത് ഒഴിവാക്കുക
+    let optionsHTML = `<option value="">${defaultText}</option>`;
+
+    Array.from(siteSet).forEach(s => {
+        optionsHTML += `<option value="${s}">${s}</option>`;
+    });
+
+    siteDropdown.innerHTML = optionsHTML;
+}
+
             
-            let optionsHTML = `<option value="" data-key="newSiteType">${defaultText}</option>`;
-            
-            // എല്ലാ സൈറ്റുകളും ആൽഫബെറ്റിക്കൽ ക്രമത്തിൽ ഡ്രോപ്പ്ഡൗണിൽ കാണിക്കാൻ
-            Array.from(siteSet).sort().forEach(s => {
-                optionsHTML += `<option value="${s}">${s}</option>`;
-            });
-            
-            siteDropdown.innerHTML = optionsHTML;
-        }
 
         updateAllDropdowns();
         calculateTotal();
