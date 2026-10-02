@@ -106,24 +106,19 @@
 
 async function fetchData() {
     try {
-        // 1. Staffs ഫെച്ച് ചെയ്യുന്നു
-        const currentUserClean = (typeof currentMeshtri !== 'undefined' && currentMeshtri) ? currentMeshtri.toString().trim().toLowerCase() : '';
-        
-        const staffQuery = query(collection(db, "staffs"), where("meshtriOwner", "==", currentMeshtri));
-        const staffSnap = await getDocs(staffQuery);
-        registeredWorkers = [];
-        staffSnap.forEach(doc => registeredWorkers.push({ id: doc.id, ...doc.data() }));
-
-        // 2. Accounts കളക്ഷനിൽ നിന്ന് ലോഗിൻ ചെയ്ത യൂസറുടെ ഡാറ്റ മാത്രം എടുക്കുന്നു
+        // 1. ഫയർബേസിൽ നിന്ന് എല്ലാ accounts എടുക്കുന്നു
         const accSnap = await getDocs(collection(db, "accounts"));
         allAccountsData = [];
         const siteSet = new Set();
         
+        // ലോഗിൻ ചെയ്ത യൂസറുടെ പേര് (Small case-ലേക്ക് മാറ്റുന്നു)
+        const currentUserClean = (typeof currentMeshtri !== 'undefined' && currentMeshtri) ? currentMeshtri.toString().trim().toLowerCase() : '';
+
         accSnap.forEach(doc => {
             const d = doc.data();
             const owner = d.meshtriOwner ? d.meshtriOwner.toString().trim().toLowerCase() : '';
             
-            // ലോഗിൻ ചെയ്ത യൂസറുടെ കണക്കുകൾ മാത്രം ഫിൽട്ടർ ചെയ്യുന്നു (Case-insensitive)
+            // ലോഗിൻ ചെയ്ത യൂസറുടെ (Swaraj) കണക്കുകൾ മാത്രം ഇവിടെ ഫിൽട്ടർ ചെയ്യുന്നു
             if (owner === currentUserClean) {
                 allAccountsData.push(d);
                 if (d.site && d.site.trim() !== "") {
@@ -132,39 +127,22 @@ async function fetchData() {
             }
         });
 
-        // 3. 'sites' കളക്ഷനിൽ ഉള്ള സൈറ്റുകളും ഫെച്ച് ചെയ്ത് ചേർക്കുന്നു
-        try {
-            const siteSnap = await getDocs(collection(db, "sites"));
-            siteSnap.forEach(doc => {
-                const sData = doc.data();
-                const sOwner = sData.meshtriOwner ? sData.meshtriOwner.toString().trim().toLowerCase() : '';
-                if (sOwner === currentUserClean) {
-                    const siteName = sData.siteName || sData.name || sData.site;
-                    if (siteName && siteName.trim() !== "") {
-                        siteSet.add(siteName.trim());
-                    }
-                }
-            });
-        } catch (err) {
-            console.log("Sites collection fetch info:", err);
-        }
-
-        // 4. ഡ്രോപ്പ്ഡൗൺ അപ്ഡേറ്റ് ചെയ്യുന്നു
+        // 2. സൈറ്റ് ഡ്രോപ്പ്ഡൗൺ സെറ്റ് ചെയ്യുന്നു
         const siteDropdown = document.getElementById('siteSelectDropdown');
-        if (siteDropdown) {
+        if(siteDropdown) {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             const defaultText = (typeof words !== 'undefined' && words['newSiteType'] && words['newSiteType'][currentLang]) ? words['newSiteType'][currentLang] : "+ പുതിയ സൈറ്റ് ടൈപ്പ് ചെയ്യുക";
-
+            
             let optionsHTML = `<option value="">${defaultText}</option>`;
-
+            
             Array.from(siteSet).forEach(s => {
                 optionsHTML += `<option value="${s}">${s}</option>`;
             });
-
+            
             siteDropdown.innerHTML = optionsHTML;
         }
 
-        // 5. ഫങ്ഷനുകൾ അപ്ഡേറ്റ് ചെയ്യുന്നു
+        // 3. കണക്കുകളും ഡ്രോപ്പ്ഡൗണുകളും അപ്‌ഡേറ്റ് ചെയ്യുന്നു
         if (typeof updateAllDropdowns === "function") updateAllDropdowns();
         if (typeof calculateTotal === "function") calculateTotal();
 
