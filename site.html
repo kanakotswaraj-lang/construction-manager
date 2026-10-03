@@ -389,32 +389,32 @@ function calculateTotalWithPrevious(prevIncome = 0, prevExpense = 0) {
 
         let netSiteBalance = todayIncome - totalExpenseWithSelf;
 
-        // 4. മേസ്തിരിയുടെ ബാക്കി കണക്ക്: മേസ്തിരി തന്ന അഡ്വാൻസിൽ നിന്ന് ആകെ ചെലവുകൾ കുറയ്ക്കുന്നു
-        // താഴെ കിട്ടുന്ന അതേ നെറ്റ് ബാലൻസ് (netSiteBalance = ₹ 600) മേസ്തിരി ബാലൻസിലേക്ക് കൊടുക്കുന്നു
+        // 1. മേസ്തിരി ബാലൻസ് കണക്കാക്കുന്നു
 let meshtriSettlementBalance = netSiteBalance;
 
-        let ownerSettlementBalance = currentOwnerAdvance - totalExpenseWithSelf;
+// മേസ്തിരി ബാലൻസ് UI-ൽ കാണിക്കുന്നു
+let settleBalanceDisplay = document.getElementById('settleBalanceText');
+if (settleBalanceDisplay) {
+    let textVal = meshtriSettlementBalance < 0 
+        ? `₹ ${Math.abs(meshtriSettlementBalance)} (കൊടുക്കാനുള്ളത്)` 
+        : `₹ ${meshtriSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
+    settleBalanceDisplay.innerText = textVal;
+    settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
+}
 
+// 2. മുതലാളി (ഓണർ) ബാലൻസ് കണക്കാക്കുന്നു
+let ownerSettlementBalance = currentOwnerAdvance - totalExpenseWithSelf;
 
-        // മേസ്തിരി ബാലൻസ് കാണിപ്പാനുള്ള കോഡ്
-        let settleBalanceDisplay = document.getElementById('settleBalanceText');
-        if (settleBalanceDisplay) {
-            let textVal = meshtriSettlementBalance < 0 
-                ? `₹ ${Math.abs(meshtriSettlementBalance)} (കൊടുക്കാനുള്ളത്)` 
-                : `₹ ${meshtriSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
-            settleBalanceDisplay.innerText = textVal;
-            settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
-        }
+// മുതലാളി ബാലൻസ് UI-ൽ കാണിക്കുന്നു
+let ownerBalanceDisplay = document.getElementById('ownerBalanceText');
+if (ownerBalanceDisplay) {
+    let textValOwner = ownerSettlementBalance < 0 
+        ? `₹ ${Math.abs(ownerSettlementBalance)} (കൊടുക്കാനുള്ളത്)` 
+        : `₹ ${ownerSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
+    ownerBalanceDisplay.innerText = textValOwner;
+    ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
+}
 
-        // മുതലാളി ബാലൻസ് കാണിപ്പാനുള്ള കോഡ്
-        let ownerBalanceDisplay = document.getElementById('ownerBalanceText');
-        if (ownerBalanceDisplay) {
-            let textValOwner = ownerSettlementBalance < 0 
-                ? `₹ ${Math.abs(ownerSettlementBalance)} (കൊടുക്കാനുള്ളത്)` 
-                : `₹ ${ownerSettlementBalance} (ബാക്കി / കയ്യിലുള്ളത്)`;
-            ownerBalanceDisplay.innerText = textValOwner;
-            ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
-        }
 
         // ആകെ വരവും ചെലവും അപ്ഡേറ്റ് ചെയ്യുന്നു
         let displayIncomeEl = document.getElementById('displayIncome');
