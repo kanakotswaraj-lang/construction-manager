@@ -239,10 +239,11 @@
                     if (matchedUserData) {
                         if (matchedUserData.password === passInput) {
                             alert('ലോഗിൻ വിജയകരമാണ്!');
-                            localStorage.setItem('userName', userInput);
+                            localStorage.setItem('userName', userInput.toLowerCase());
+
                             setTimeout(() => {
                                 window.location.href = "dashboard.html";
-                            }, 1000);
+                            }, 500);
                         } else {
                             alert('നൽകിയ പാസ്‌വേർഡ് തെറ്റാണ്!');
                         }
