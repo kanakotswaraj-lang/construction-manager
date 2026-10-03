@@ -168,22 +168,6 @@ if (siteDropdown) {
         optionsHTML += `<option value="${s}">${s}</option>`;
     });
     siteDropdown.innerHTML = optionsHTML;
-
-    // --- ഇവിടെയാണ് പുതിയ മാറ്റം ചേർക്കേണ്ടത് ---
-    // ഡ്രോപ്പ്ഡൗണിൽ നിന്ന് സൈറ്റ് മാറുമ്പോൾ പഴയ കണക്കുകൾ എടുത്ത് calculateTotal അപ്ഡേറ്റ് ചെയ്യാൻ:
-    siteDropdown.onchange = function() {
-        let selectedSite = this.value;
-        if (selectedSite) {
-            let siteInput = document.getElementById('siteName');
-            if (siteInput) siteInput.value = selectedSite;
-            
-            // പഴയ ഡാറ്റ ലോഡ് ചെയ്യുന്ന ഫങ്ഷൻ നിലവിലുണ്ടെങ്കിൽ അത് വിളിക്കുന്നു
-            if (typeof loadSiteData === "function") {
-                loadSiteData(selectedSite);
-            }
-        }
-        if (typeof calculateTotal === "function") calculateTotal();
-    };
 }
 
 // 5. പുതിയ ദിവസത്തെ എൻട്രിക്കുള്ള റോകൾ മാത്രം ചേർക്കുന്നു (പഴയ ഹിസ്റ്ററി കാണിച്ച് പേജ് നിറയ്ക്കില്ല)
@@ -195,11 +179,6 @@ if (document.getElementById('workerListContainer') && document.getElementById('w
 }
 
 if (typeof calculateTotal === "function") calculateTotal();
-
-            } catch (e) {
-                console.error("ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിഴവ്:", e);
-            }
-        }
 
 window.onSiteSelectChange = function() {
     const selectedSite = document.getElementById('siteSelectDropdown').value;
