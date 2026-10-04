@@ -43,7 +43,7 @@
         } catch(e) { console.error("Header setup error:", e); }
 
         const nameSpan = document.getElementById('loggedInMeshtri');
-        if(nameSpan) nameSpan.innerText = `സ്വാഗതം, ${currentMeshtri}`;
+        if(nameSpan) nameSpan.innerText = `${currentMeshtri}`;
         
         const entryDateInput = document.getElementById('entryDate');
         if(entryDateInput) {
@@ -59,12 +59,11 @@
         fetchData();
     });
 
-    // 1. ഭാഷ മാറുമ്പോൾ പേജിലെ ലേബലുകളും പ്ലേസ്‌ഹോൾഡറുകളും മാറ്റാൻ
+    // ഭാഷ മാറ്റുമ്പോൾ എല്ലാ എലമെന്റുകളും അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
     window.changePageLanguage = function(lang) {
         localStorage.setItem('selectedLang', lang);
         if (typeof words === 'undefined') return;
 
-        // data-key ഉള്ള എലമെന്റുകൾ മാറ്റുന്നു
         document.querySelectorAll('[data-key]').forEach(element => {
             const key = element.getAttribute('data-key');
             if (words[key] && words[key][lang]) {
@@ -76,7 +75,6 @@
             }
         });
 
-        // data-key-placeholder ഉള്ള ഇൻപുട്ടുകൾ മാറ്റുന്നു
         document.querySelectorAll('[data-key-placeholder]').forEach(input => {
             const key = input.getAttribute('data-key-placeholder');
             if (words[key] && words[key][lang]) {
@@ -84,7 +82,6 @@
             }
         });
 
-        // വിവർത്തനം വീണ്ടും കണക്കാക്കാൻ
         if (typeof calculateTotal === 'function') calculateTotal();
     };
 
@@ -102,8 +99,8 @@
         modalMessage.innerText = message;
         modal.classList.remove('hidden');
 
-        const okText = (typeof words !== 'undefined' && words['okBtnText'] && words['okBtnText'][currentLang]) ? words['okBtnText'][currentLang] : "ശരി";
-        const cancelText = (typeof words !== 'undefined' && words['cancelBtnText'] && words['cancelBtnText'][currentLang]) ? words['cancelBtnText'][currentLang] : "വേണ്ട";
+        const okText = (typeof words !== 'undefined' && words['okBtnText'] && words['okBtnText'][currentLang]) ? words['okBtnText'][currentLang] : "OK";
+        const cancelText = (typeof words !== 'undefined' && words['cancelBtnText'] && words['cancelBtnText'][currentLang]) ? words['cancelBtnText'][currentLang] : "Cancel";
 
         if (isConfirm) {
             modalCancelBtn.classList.remove('hidden');
@@ -196,6 +193,9 @@
                 addWorkerRow();
             }
 
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            changePageLanguage(savedLang);
+
             if (typeof calculateTotal === "function") calculateTotal();
 
         } catch (e) {
@@ -244,10 +244,12 @@
             if (typeof addWorkerRow === 'function') addWorkerRow();
         }
 
+        const savedLang = localStorage.getItem('selectedLang') || 'ml';
+        changePageLanguage(savedLang);
+
         if (typeof calculateTotal === 'function') calculateTotal();
     };
 
-    // 2. ചെലവ് ചേർക്കുമ്പോൾ ഡൈനാമിക്കായി വരുന്ന പ്ലേസ്‌ഹോൾഡറുകൾ
     window.addExpenseRow = function() {
         const container = document.getElementById('expenseListContainer');
         if(!container) return;
@@ -271,7 +273,6 @@
         `);
     };
 
-    // 3. തൊഴിലാളിയെ ചേർക്കുമ്പോൾ ഡൈനാമിക്കായി വരുന്ന പ്ലേസ്‌ഹോൾഡറുകൾ
     window.addWorkerRow = function() {
         const container = document.getElementById('workerListContainer');
         if(!container) return;
@@ -329,7 +330,6 @@
         });
     };
 
-    // 4. മേസ്തിരി ബാലൻസും ആകെ തുകയും കൃത്യമായി കാണിക്കുന്ന ഫങ്ഷൻ
     window.calculateTotal = function() {
         try {
             let siteNameInput = document.getElementById('siteName');
@@ -338,7 +338,6 @@
             let prevMeshtriBalance = 0;
             let prevOwnerBalance = 0;
 
-            // ഫയർബേസ് അക്കൗണ്ട്സിൽ നിന്നുള്ള പഴയ അഡ്വാൻസ്/ചെലവുകൾ കൂട്ടുന്നു
             if (currentSite && Array.isArray(allAccountsData)) {
                 allAccountsData.forEach(acc => {
                     if (acc.site && acc.site.trim().toLowerCase() === currentSite) {
@@ -376,12 +375,10 @@
             let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
             let netSiteBalance = todayIncome - totalExpenseWithSelf;
 
-            // --- ഭാഷയ്ക്കനുസരിച്ച് വാക്കുകൾ മാറുന്നു ---
             let currentLang = localStorage.getItem('selectedLang') || 'ml';
             let inHandStr = (typeof words !== 'undefined' && words['inHandText'] && words['inHandText'][currentLang]) ? words['inHandText'][currentLang] : "(ബാക്കി / കയ്യിലുള്ളത്)";
             let toPayStr = (typeof words !== 'undefined' && words['toPayText'] && words['toPayText'][currentLang]) ? words['toPayText'][currentLang] : "(കൊടുക്കാനുള്ളത്)";
 
-            // മേസ്തിരി നൽകിയ തുകയിൽ നിന്നുള്ള ബാലൻസ്
             let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance) - totalExpenseWithSelf;
 
             let settleBalanceDisplay = document.getElementById('settleBalanceText');
@@ -393,7 +390,6 @@
                 settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
             }
 
-            // മുതലാളി നൽകിയ തുകയിൽ നിന്നുള്ള ബാലൻസ്
             let ownerSettlementBalance = (prevOwnerBalance + currentOwnerAdvance) - totalExpenseWithSelf;
 
             let ownerBalanceDisplay = document.getElementById('ownerBalanceText');
@@ -421,7 +417,6 @@
         }
     };
 
-    // 5. സേവ് ചെയ്യുമ്പോൾ അലേർട്ട് കൃത്യമായി ഭാഷ അനുസരിച്ച് വർക്ക് ചെയ്യാൻ
     window.saveSiteData = async function(event) {
         event.preventDefault();
         const currentLang = localStorage.getItem('selectedLang') || 'ml';
@@ -597,7 +592,7 @@
             </div>
 
             <div class="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-4 space-y-3 mt-4">
-                <h3 class="text-amber-400 font-bold text-sm" data-key="advanceSettlementTitle">⚖️ അഡ്വാൻസ് സെറ്റിൽമെന്റ് (മേസ്തിരി & മുതലാളി)</h3>
+                <h3 class="text-amber-400 font-bold text-sm" data-key="advanceSettlementTitle">⚖️️ അഡ്വാൻസ് സെറ്റിൽമെന്റ് (മേസ്തിരി & മുതലാളി)</h3>
                 
                 <div>
                     <label class="block text-xs font-black text-slate-400 mb-1" data-key="selectFundPayerLabel">ഫണ്ട് നൽകിയ ആളെ തിരഞ്ഞെടുക്കുക:</label>
@@ -679,10 +674,10 @@
             
             <div class="flex gap-3 pt-2">
                 <button id="modalCancelBtn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl font-black text-base transition border border-slate-700 hidden" data-key="cancelBtnText">
-                    വേണ്ട
+                    Cancel
                 </button>
                 <button id="modalOkBtn" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 p-3 rounded-2xl font-black text-base shadow-lg transition" data-key="okBtnText">
-                    ശരി
+                    OK
                 </button>
             </div>
         </div>
