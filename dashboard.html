@@ -75,8 +75,8 @@
                 dropdown.classList.add('hidden');
             }
 
-            if (typeof updateDateAndCalendar === 'function') {
-                updateDateAndCalendar();
+            if (typeof window.updateDateAndCalendar === 'function') {
+                window.updateDateAndCalendar();
             }
         };
 
@@ -110,6 +110,38 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // ഗ്ലോബൽ തീയതി അപ്‌ഡേറ്റ് ഫങ്ഷൻ
+        window.updateDateAndCalendar = function() {
+            const dateElement = document.getElementById('currentDashboardDate');
+            if(!dateElement) return;
+
+            const today = new Date();
+            const year = today.getFullYear();
+            const dayNum = today.getDate();
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+
+            const localeMap = {
+                'ml': 'ml-IN',
+                'en': 'en-IN',
+                'ta': 'ta-IN',
+                'hi': 'hi-IN',
+                'kn': 'kn-IN',
+                'as': 'as-IN',
+                'bn': 'bn-IN'
+            };
+
+            const locale = localeMap[currentLang] || 'ml-IN';
+
+            const dayName = today.toLocaleDateString(locale, { weekday: 'long' });
+            const monthName = today.toLocaleDateString(locale, { month: 'long' });
+
+            let todayText = (typeof words !== 'undefined' && words.today_label && words.today_label[currentLang]) 
+                            ? words.today_label[currentLang] 
+                            : 'ഇന്ന്';
+
+            dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
+        };
 
         // ഗ്ലോബൽ ലോഗ് ഔട്ട് ഫങ്ഷൻ
         window.logoutUser = function() {
@@ -174,19 +206,8 @@
                 console.log("Error loading photos:", error);
             }
             
-            updateDateAndCalendar();
-
-            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(savedLang);
-            }
-
-            if (typeof fetchDashboardData === 'function') {
-                fetchDashboardData(db, userName);
-            }
-        });
-  
-                    if (typeof window.updateDateAndCalendar === 'function') {
+            // തീയതി കാണിക്കുന്നു
+            if (typeof window.updateDateAndCalendar === 'function') {
                 window.updateDateAndCalendar();
             }
 
@@ -199,38 +220,6 @@
                 fetchDashboardData(db, userName);
             }
         });
-
-        window.updateDateAndCalendar = function() {
-            const dateElement = document.getElementById('currentDashboardDate');
-            if(!dateElement) return;
-
-            const today = new Date();
-            const year = today.getFullYear();
-            const dayNum = today.getDate();
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-
-            const localeMap = {
-                'ml': 'ml-IN',
-                'en': 'en-IN',
-                'ta': 'ta-IN',
-                'hi': 'hi-IN',
-                'kn': 'kn-IN',
-                'as': 'as-IN',
-                'bn': 'bn-IN'
-            };
-
-            const locale = localeMap[currentLang] || 'ml-IN';
-
-            const dayName = today.toLocaleDateString(locale, { weekday: 'long' });
-            const monthName = today.toLocaleDateString(locale, { month: 'long' });
-
-            let todayText = (typeof words !== 'undefined' && words.today_label && words.today_label[currentLang]) 
-                            ? words.today_label[currentLang] 
-                            : 'ഇന്ന്';
-
-            dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
-        };
-
 
         function setFallbackProfile(userName) {
             const savedPhoto = localStorage.getItem('profilePhoto');
