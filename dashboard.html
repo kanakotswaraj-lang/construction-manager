@@ -44,13 +44,24 @@
                     }
                 });
 
-                document.querySelectorAll('[data-key-placeholder]').forEach(input => {
+                                document.querySelectorAll('[data-key-placeholder]').forEach(input => {
                     const key = input.getAttribute('data-key-placeholder');
                     if (words[key] && words[key][langCode]) {
                         input.placeholder = words[key][langCode];
                     }
                 });
+
+                const oldPin = document.getElementById('oldPin');
+                const newPin = document.getElementById('newPin');
+                if (oldPin && words['oldPinPlaceholder'] && words['oldPinPlaceholder'][langCode]) {
+                    oldPin.placeholder = words['oldPinPlaceholder'][langCode];
+                }
+                if (newPin && words['newPinPlaceholder'] && words['newPinPlaceholder'][langCode]) {
+                    newPin.placeholder = words['newPinPlaceholder'][langCode];
+                }
+
             }
+
 
             document.querySelectorAll('.lang-option').forEach(btn => {
                 const onclickAttr = btn.getAttribute('onclick') || '';
@@ -102,7 +113,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        document.addEventListener("DOMContentLoaded", async () => {
+                document.addEventListener("DOMContentLoaded", async () => {
             if (typeof setupHeader === 'function') {
                 setupHeader('appHeader');
             }
@@ -125,7 +136,17 @@
 
             setFallbackProfile(userName);
 
+            // 🔴 കവർ ഫോട്ടോയും പ്രൊഫൈൽ ഫോട്ടോയും ഫ്രഷ് ആയി ലോഡ് ചെയ്യുന്ന ഭാഗം 🔴
             try {
+                const coverImg = document.getElementById('coverImage');
+                let localCover = localStorage.getItem('coverPhoto');
+                
+                // 1. ആദ്യം LocalStorage ഉണ്ടോ എന്ന് നോക്കുന്നു
+                if (localCover && coverImg) {
+                    coverImg.src = localCover;
+                }
+
+                // 2. ഫയർബേസിൽ നിന്ന് ഫ്രഷ് ഡാറ്റ എടുക്കുന്നു
                 const userDocRef = doc(db, "users", userName);
                 const userSnap = await getDoc(userDocRef);
                 
@@ -137,7 +158,6 @@
                         localStorage.setItem('profilePhoto', userData.profilePhoto);
                     }
                     if (userData.coverPhoto) {
-                        const coverImg = document.getElementById('coverImage');
                         if (coverImg) coverImg.src = userData.coverPhoto;
                         localStorage.setItem('coverPhoto', userData.coverPhoto);
                     }
@@ -155,6 +175,7 @@
 
             fetchDashboardData(db, userName);
         });
+
                 
         function updateDateAndCalendar() {
             const today = new Date();
@@ -201,8 +222,8 @@
             if (savedCover && coverImg) {
                 coverImg.src = savedCover;
             } else if (coverImg) {
-                coverImg.src = "https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop";
-            }
+                <img id="coverImage" src="https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop?v=2" class="w-full h-full object-cover opacity-90">
+     }
         }
 
         window.updateProfilePhoto = function(event) {
