@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="language.js"></script>
-        <style>
+    <style>
         body {
             background-color: #0d1117 !important;
             color: #f3f4f6 !important;
@@ -19,7 +19,7 @@
         
         /* മൊബൈൽ ഫോൺ ലുക്ക് നൽകുന്ന എമറാൾഡ് ഗ്രീൻ ഔട്ടർ ബോർഡർ */
         .max-w-md {
-            border: 3px solid #10b981; /* Emerald Green Color */
+            border: 3px solid #10b981;
             border-radius: 2.5rem;
             box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
             overflow: hidden;
@@ -44,7 +44,7 @@
                     }
                 });
 
-                                document.querySelectorAll('[data-key-placeholder]').forEach(input => {
+                document.querySelectorAll('[data-key-placeholder]').forEach(input => {
                     const key = input.getAttribute('data-key-placeholder');
                     if (words[key] && words[key][langCode]) {
                         input.placeholder = words[key][langCode];
@@ -59,9 +59,7 @@
                 if (newPin && words['newPinPlaceholder'] && words['newPinPlaceholder'][langCode]) {
                     newPin.placeholder = words['newPinPlaceholder'][langCode];
                 }
-
             }
-
 
             document.querySelectorAll('.lang-option').forEach(btn => {
                 const onclickAttr = btn.getAttribute('onclick') || '';
@@ -113,9 +111,17 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-                      document.addEventListener("DOMContentLoaded", async () => {
+        // ഗ്ലോബൽ ലോഗ് ഔട്ട് ഫങ്ഷൻ
+        window.logoutUser = function() {
+            localStorage.removeItem('userName');
+            localStorage.removeItem('profilePhoto');
+            localStorage.removeItem('coverPhoto');
+            window.location.href = "login.html";
+        };
+
+        document.addEventListener("DOMContentLoaded", async () => {
             if (typeof setupHeader === 'function') {
-                setupHeader('appHeader');
+                try { setupHeader('appHeader'); } catch(e) {}
             }
 
             let userName = localStorage.getItem('userName');
@@ -225,8 +231,8 @@
             if (savedCover && coverImg) {
                 coverImg.src = savedCover;
             } else if (coverImg) {
-                <img id="coverImage" src="https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop?v=2" class="w-full h-full object-cover opacity-90">
-     }
+                coverImg.src = "https://images.unsplash.com/photo-1541888946425-d0fbb18f17e2?q=80&w=1000&auto=format&fit=crop";
+            }
         }
 
         window.updateProfilePhoto = function(event) {
@@ -366,13 +372,6 @@
             document.getElementById('oldPin').value = "";
             document.getElementById('newPin').value = "";
         };
-
-        window.logoutUser = function() {
-            localStorage.removeItem('userName');
-            localStorage.removeItem('profilePhoto');
-            localStorage.removeItem('coverPhoto');
-            window.location.href = "login.html";
-        };
     </script>
 </head>
 <body class="text-white min-h-screen p-4 font-sans pb-16">
@@ -494,8 +493,6 @@
                 </div>
                 <span class="text-cyan-400 font-bold text-lg">→</span>
             </a>
-            
-            
 
             <a href="rentals.html" class="glass-card py-2.5 px-4 rounded-2xl shadow-xl flex items-center justify-between text-white hover:bg-slate-800/80 transition duration-300 border-l-4 border-l-emerald-500 group">
                 <div class="flex items-center gap-3.5">
@@ -542,7 +539,7 @@
             </a>
         </div>
 
-        <!-- ആപ്പ് പിൻ മാറ്റാനുള്ള പുതിയ സെക്ഷൻ (ഡാഷ്‌ബോർഡ് ലുക്കിന് അനുയോജ്യമായത്) -->
+        <!-- ആപ്പ് പിൻ മാറ്റാനുള്ള സെക്ഷൻ -->
         <div class="px-4 pt-2">
             <div class="glass-card p-4 rounded-2xl shadow-xl border-l-4 border-l-amber-500 bg-slate-900/90 border border-slate-700/60 text-center">
                 <div class="flex items-center justify-center gap-2 mb-2">
