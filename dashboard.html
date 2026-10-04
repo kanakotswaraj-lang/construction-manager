@@ -113,7 +113,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-                document.addEventListener("DOMContentLoaded", async () => {
+                      document.addEventListener("DOMContentLoaded", async () => {
             if (typeof setupHeader === 'function') {
                 setupHeader('appHeader');
             }
@@ -136,30 +136,32 @@
 
             setFallbackProfile(userName);
 
-            // 🔴 കവർ ഫോട്ടോയും പ്രൊഫൈൽ ഫോട്ടോയും ഫ്രഷ് ആയി ലോഡ് ചെയ്യുന്ന ഭാഗം 🔴
+            // ഫോട്ടോ ലോഡിംഗ് ഭാഗം
             try {
                 const coverImg = document.getElementById('coverImage');
+                const profileImg = document.getElementById('profileImage');
+                
                 let localCover = localStorage.getItem('coverPhoto');
+                let localProfile = localStorage.getItem('profilePhoto');
                 
-                // 1. ആദ്യം LocalStorage ഉണ്ടോ എന്ന് നോക്കുന്നു
-                if (localCover && coverImg) {
-                    coverImg.src = localCover;
-                }
+                if (localCover && coverImg) coverImg.src = localCover;
+                if (localProfile && profileImg) profileImg.src = localProfile;
 
-                // 2. ഫയർബേസിൽ നിന്ന് ഫ്രഷ് ഡാറ്റ എടുക്കുന്നു
-                const userDocRef = doc(db, "users", userName);
-                const userSnap = await getDoc(userDocRef);
-                
-                if (userSnap.exists()) {
-                    const userData = userSnap.data();
-                    if (userData.profilePhoto) {
-                        const profileImg = document.getElementById('profileImage');
-                        if (profileImg) profileImg.src = userData.profilePhoto;
-                        localStorage.setItem('profilePhoto', userData.profilePhoto);
-                    }
-                    if (userData.coverPhoto) {
-                        if (coverImg) coverImg.src = userData.coverPhoto;
-                        localStorage.setItem('coverPhoto', userData.coverPhoto);
+                // ഫയർബേസ് ഡാറ്റ ഫെച്ച് ചെയ്യുന്നു
+                if (typeof db !== 'undefined') {
+                    const userDocRef = doc(db, "users", userName);
+                    const userSnap = await getDoc(userDocRef);
+                    
+                    if (userSnap.exists()) {
+                        const userData = userSnap.data();
+                        if (userData.profilePhoto && profileImg) {
+                            profileImg.src = userData.profilePhoto;
+                            localStorage.setItem('profilePhoto', userData.profilePhoto);
+                        }
+                        if (userData.coverPhoto && coverImg) {
+                            coverImg.src = userData.coverPhoto;
+                            localStorage.setItem('coverPhoto', userData.coverPhoto);
+                        }
                     }
                 }
             } catch (error) {
@@ -173,10 +175,11 @@
                 window.switchLanguage(savedLang);
             }
 
-            fetchDashboardData(db, userName);
+            if (typeof fetchDashboardData === 'function') {
+                fetchDashboardData(db, userName);
+            }
         });
-
-                
+  
         function updateDateAndCalendar() {
             const today = new Date();
             const year = today.getFullYear();
