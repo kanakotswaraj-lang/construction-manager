@@ -186,7 +186,24 @@
             }
         });
   
-        function updateDateAndCalendar() {
+                    if (typeof window.updateDateAndCalendar === 'function') {
+                window.updateDateAndCalendar();
+            }
+
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
+            }
+
+            if (typeof fetchDashboardData === 'function') {
+                fetchDashboardData(db, userName);
+            }
+        });
+
+        window.updateDateAndCalendar = function() {
+            const dateElement = document.getElementById('currentDashboardDate');
+            if(!dateElement) return;
+
             const today = new Date();
             const year = today.getFullYear();
             const dayNum = today.getDate();
@@ -211,11 +228,9 @@
                             ? words.today_label[currentLang] 
                             : 'ഇന്ന്';
 
-            const dateElement = document.getElementById('currentDashboardDate');
-            if(dateElement) {
-                dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
-            }
-        }
+            dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
+        };
+
 
         function setFallbackProfile(userName) {
             const savedPhoto = localStorage.getItem('profilePhoto');
