@@ -554,38 +554,160 @@
                 if (staffId && String(staffId).trim() !== "" && wageAmount > 0) {
                     await addDoc(collection(db, "accounts"), {
                         meshtriOwner: activeMeshtri,
-                        staffId: String(staffId).trim(),
-                        workerName: workerName,
-                        name: workerName + ` (കൂലി - ${jobTitle})`,
-                        job: jobTitle,
-                        site: siteName,
-                        type: "wage",
-                        payment: "cash",
-                        amount: Number(wageAmount),
-                        date: entryDate,
-                        createdAt: new Date()
-                    });
-                }
-            }
+window.saveSiteData = async function(event) {
+    if (event) event.preventDefault();
 
-            const saveSuccessMsg = (typeof words !== 'undefined' && words['saveSuccessMsg'] && words['saveSuccessMsg'][currentLang]) ? words['saveSuccessMsg'][currentLang] : "സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!";
-            
-            if (typeof showCustomAlert === 'function') {
-                showCustomAlert(saveSuccessMsg, "successTitle", false, (confirmed) => {
-                    if (confirmed) location.reload();
-                });
-            } else {
-                alert(saveSuccessMsg);
-                location.reload();
-            }
+    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+    const siteNameInput = document.getElementById('siteName');
+    const siteName = siteNameInput ? siteNameInput.value.trim() : '';
+    const entryDate = document.getElementById('entryDate') ? document.getElementById('entryDate').value : '';
+    
+    const activeMeshtri = currentMeshtri || localStorage.getItem('loggedInUser') || 'Meshtri';
 
-        } catch (error) {
-            console.error("Save Error:", error);
-            const saveErrorMsg = (typeof words !== 'undefined' && words['saveErrorMsg'] && words['saveErrorMsg'][currentLang]) ? words['saveErrorMsg'][currentLang] : "കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!";
-            if (typeof showCustomAlert === 'function') showCustomAlert(saveErrorMsg, "errorTitle");
-            else alert(saveErrorMsg);
+    if (!siteName) {
+        const reqSiteMsg = (typeof words !== 'undefined' && words['reqSiteAlert'] && words['reqSiteAlert'][currentLang]) ? words['reqSiteAlert'][currentLang] : "സൈറ്റിന്റെ പേര് നൽകുക!";
+        if (typeof showCustomAlert === 'function') showCustomAlert(reqSiteMsg, "noticeTitle");
+        else alert(reqSiteMsg);
+        return;
+    }
+
+    try {
+        const siteIncome = parseFloat(document.getElementById('siteIncome')?.value) || 0;
+        const settleAdvance = parseFloat(document.getElementById('settleAdvance')?.value) || 0;
+        const ownerAdvance = parseFloat(document.getElementById('ownerAdvance')?.value) || 0;
+        const settleSelfSpent = parseFloat(document.getElementById('settleSelfSpent')?.value) || 0;
+
+        // 1. ക്ലയന്റ് വരവ്
+        if (siteIncome > 0) {
+            await addDoc(collection(db, "accounts"), {
+                meshtriOwner: activeMeshtri,
+                name: "ക്ലയന്റ് വരവ്",
+                site: siteName,
+                type: "income",
+                payment: "cash",
+                amount: Number(siteIncome),
+                date: entryDate,
+                createdAt: new Date()
+            });
         }
-    };
+
+        // 2. മേസ്തിരി അഡ്വാൻസ്
+        if (settleAdvance > 0) {
+            await addDoc(collection(db, "accounts"), {
+                meshtriOwner: activeMeshtri,
+                name: "മേസ്തിരി അഡ്വാൻസ്",
+                site: siteName,
+                type: "advance",
+                payerSource: "Meshtri",
+                payment: "cash",
+                amount: Number(settleAdvance),
+                date: entryDate,
+                createdAt: new Date()
+            });
+        }
+
+        // 3. മുതലാളി അഡ്വാൻസ്
+        if (ownerAdvance > 0) {
+            await addDoc(collection(db, "accounts"), {
+                meshtriOwner: activeMeshtri,
+                name: "മുതലാളി അഡ്വാൻസ്",
+                site: siteName,
+                type: "advance",
+                payerSource: "Owner",
+                payment: "cash",
+                amount: Number(ownerAdvance),
+                date: entryDate,
+                createdAt: new Date()
+            });
+        }
+
+        // 4. കയ്യിൽ നിന്ന് മുടക്കിയത്
+        if (settleSelfSpent > 0) {
+            await addDoc(collection(db, "accounts"), {
+                meshtriOwner: activeMeshtri,
+                name: "കയ്യിൽ നിന്ന് മുടക്കിയത്",
+                site: siteName,
+                type: "self_spent",
+                payment: "cash",
+                amount: Number(settleSelfSpent),
+                date: entryDate,
+                createdAt: new Date()
+            });
+        }
+
+        // 5. മറ്റു ചെലവുകൾ
+        const expRows = document.querySelectorAll('#expenseListContainer > div');
+        for (let r of expRows) {
+            const desc = r.querySelector('.expense-desc')?.value.trim() || '';
+            const amt = parseFloat(r.querySelector('.expense-amount')?.value) || 0;
+
+            if (desc && amt > 0) {
+                await addDoc(collection(db, "accounts"), {
+                    meshtriOwner: activeMeshtri,
+                    name: desc,
+                    site: siteName,
+                    type: "other",
+                    payment: "cash",
+                    amount: Number(amt),
+                    date: entryDate,
+                    createdAt: new Date()
+                });
+            }
+        }
+
+        // 6. തൊഴിലാളികളുടെ വിവരങ്ങളും കൂലിയും (Staff Page-ൽ ലിങ്ക് ആകുന്ന വിധം)
+        const workerRows = document.querySelectorAll('.worker-row');
+        for (let row of workerRows) {
+            const select = row.querySelector('.worker-select');
+            if (!select) continue;
+
+            let staffId = select.value;
+            const selectedOpt = select.options[select.selectedIndex];
+            
+            if ((!staffId || staffId === "") && selectedOpt) {
+                staffId = selectedOpt.getAttribute('value') || selectedOpt.getAttribute('data-id') || '';
+            }
+
+            const workerName = selectedOpt ? (selectedOpt.getAttribute('data-name') || selectedOpt.text.trim()) : '';
+            const jobTitle = row.querySelector('.worker-job')?.value.trim() || "പണി";
+            const wageAmount = parseFloat(row.querySelector('.worker-wage')?.value) || 0;
+
+            if (workerName && wageAmount > 0) {
+                await addDoc(collection(db, "accounts"), {
+                    meshtriOwner: activeMeshtri,
+                    staffId: String(staffId).trim(), // ജീവനക്കാരന്റെ Firestore ID
+                    workerName: workerName,          // ജീവനക്കാരന്റെ പേര്
+                    name: `${workerName} (${jobTitle})`,
+                    job: jobTitle,
+                    site: siteName,
+                    type: "wage",                   // ജീവനക്കാരന്റെ കൂലി
+                    payment: "cash",
+                    amount: Number(wageAmount),
+                    date: entryDate,
+                    createdAt: new Date()
+                });
+            }
+        }
+
+        const saveSuccessMsg = (typeof words !== 'undefined' && words['saveSuccessMsg'] && words['saveSuccessMsg'][currentLang]) ? words['saveSuccessMsg'][currentLang] : "സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!";
+        
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert(saveSuccessMsg, "successTitle", false, (confirmed) => {
+                if (confirmed) location.reload();
+            });
+        } else {
+            alert(saveSuccessMsg);
+            location.reload();
+        }
+
+    } catch (error) {
+        console.error("Save Error:", error);
+        const saveErrorMsg = (typeof words !== 'undefined' && words['saveErrorMsg'] && words['saveErrorMsg'][currentLang]) ? words['saveErrorMsg'][currentLang] : "കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!";
+        if (typeof showCustomAlert === 'function') showCustomAlert(saveErrorMsg, "errorTitle");
+        else alert(saveErrorMsg);
+    }
+};
+
     </script>
 
     <style>
