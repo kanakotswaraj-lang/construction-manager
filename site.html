@@ -457,126 +457,142 @@ window.calculateTotal = function() {
     }
 };
 
-    window.saveSiteData = async function(event) {
-        event.preventDefault();
-        const currentLang = localStorage.getItem('selectedLang') || 'ml';
-        const siteName = document.getElementById('siteName').value.trim();
-        const entryDate = document.getElementById('entryDate').value;
-        const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
-        const settleAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
-        const ownerAdvance = parseFloat(document.getElementById('ownerAdvance').value) || 0;
-        const settleSelfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
+ window.saveSiteData = async function(event) {
+    event.preventDefault();
+    const currentLang = localStorage.getItem('selectedLang') || 'ml';
+    const siteName = document.getElementById('siteName').value.trim();
+    const entryDate = document.getElementById('entryDate').value;
+    const siteIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
+    const settleAdvance = parseFloat(document.getElementById('settleAdvance').value) || 0;
+    const ownerAdvance = parseFloat(document.getElementById('ownerAdvance').value) || 0;
+    const settleSelfSpent = parseFloat(document.getElementById('settleSelfSpent').value) || 0;
 
-        if (!siteName) {
-            const reqSiteMsg = (typeof words !== 'undefined' && words['reqSiteAlert'] && words['reqSiteAlert'][currentLang]) ? words['reqSiteAlert'][currentLang] : "സൈറ്റിന്റെ പേര് നൽകുക!";
-            showCustomAlert(reqSiteMsg, "noticeTitle");
-            return;
-        }
+    if (!siteName) {
+        const reqSiteMsg = (typeof words !== 'undefined' && words['reqSiteAlert'] && words['reqSiteAlert'][currentLang]) ? words['reqSiteAlert'][currentLang] : "സൈറ്റിന്റെ പേര് നൽകുക!";
+        showCustomAlert(reqSiteMsg, "noticeTitle");
+        return;
+    }
 
-        try {
-            if (siteIncome > 0) {
-                await addDoc(collection(db, "accounts"), {
-                    meshtriOwner: currentMeshtri,
-                    name: "ക്ലയന്റ് വരവ്",
-                    site: siteName,
-                    type: "income",
-                    payment: "cash",
-                    amount: siteIncome,
-                    date: entryDate
-                });
-            }
-
-            if (settleAdvance > 0) {
-                await addDoc(collection(db, "accounts"), {
-                    meshtriOwner: currentMeshtri,
-                    name: "മേസ്തിരി അഡ്വാൻസ്",
-                    site: siteName,
-                    type: "advance",
-                    payerSource: "Meshtri",
-                    payment: "cash",
-                    amount: settleAdvance,
-                    date: entryDate
-                });
-            }
-
-            if (ownerAdvance > 0) {
-                await addDoc(collection(db, "accounts"), {
-                    meshtriOwner: currentMeshtri,
-                    name: "മുതലാളി അഡ്വാൻസ്",
-                    site: siteName,
-                    type: "advance",
-                    payerSource: "Owner",
-                    payment: "cash",
-                    amount: ownerAdvance,
-                    date: entryDate
-                });
-            }
-
-            if (settleSelfSpent > 0) {
-                await addDoc(collection(db, "accounts"), {
-                    meshtriOwner: currentMeshtri,
-                    name: "കയ്യിൽ നിന്ന് മുടക്കിയത്",
-                    site: siteName,
-                    type: "self_spent",
-                    payment: "cash",
-                    amount: settleSelfSpent,
-                    date: entryDate
-                });
-            }
-
-            const expRows = document.querySelectorAll('#expenseListContainer > div');
-            for (let r of expRows) {
-                const desc = r.querySelector('.expense-desc').value.trim();
-                const amt = parseFloat(r.querySelector('.expense-amount').value) || 0;
-                if (desc && amt > 0) {
-                    await addDoc(collection(db, "accounts"), {
-                        meshtriOwner: currentMeshtri,
-                        name: desc,
-                        site: siteName,
-                        type: "other",
-                        payment: "cash",
-                        amount: amt,
-                        date: entryDate
-                    });
-                }
-            }
-
-            const workerRows = document.querySelectorAll('.worker-row');
-            for (let row of workerRows) {
-                const select = row.querySelector('.worker-select');
-                const staffId = select.value;
-                const selectedOption = select.options[select.selectedIndex];
-                const workerName = selectedOption ? selectedOption.getAttribute('data-name') : 'തൊഴിലാളി';
-                const jobTitle = row.querySelector('.worker-job').value.trim() || "പണി";
-                const wageAmount = parseFloat(row.querySelector('.worker-wage').value) || 0;
-
-                if (staffId && wageAmount > 0) {
-                    await addDoc(collection(db, "accounts"), {
-                        meshtriOwner: currentMeshtri,
-                        staffId: staffId,
-                        name: workerName + ` (കൂലി - ${jobTitle})`,
-                        site: siteName,
-                        type: "wage",
-                        payment: "cash",
-                        amount: wageAmount,
-                        date: entryDate
-                    });
-                }
-            }
-
-            const saveSuccessMsg = (typeof words !== 'undefined' && words['saveSuccessMsg'] && words['saveSuccessMsg'][currentLang]) ? words['saveSuccessMsg'][currentLang] : "സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!";
-            
-            showCustomAlert(saveSuccessMsg, "successTitle", false, (confirmed) => {
-                if (confirmed) {
-                    location.reload();
-                }
+    try {
+        // 1. ലഭിച്ച വരവ് സേവ് ചെയ്യുന്നു
+        if (siteIncome > 0) {
+            await addDoc(collection(db, "accounts"), {
+                meshtriOwner: currentMeshtri,
+                name: "ക്ലയന്റ് വരവ്",
+                site: siteName,
+                type: "income",
+                payment: "cash",
+                amount: Number(siteIncome),
+                date: entryDate
             });
-        } catch (error) {
-            console.error("സേവ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
-            const saveErrorMsg = (typeof words !== 'undefined' && words['saveErrorMsg'] && words['saveErrorMsg'][currentLang]) ? words['saveErrorMsg'][currentLang] : "കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!";
-            showCustomAlert(saveErrorMsg, "errorTitle");
         }
-    };
+
+        // 2. മേസ്തിരി അഡ്വാൻസ് സേവ് ചെയ്യുന്നു
+        if (settleAdvance > 0) {
+            await addDoc(collection(db, "accounts"), {
+                meshtriOwner: currentMeshtri,
+                name: "മേസ്തിരി അഡ്വാൻസ്",
+                site: siteName,
+                type: "advance",
+                payerSource: "Meshtri",
+                payment: "cash",
+                amount: Number(settleAdvance),
+                date: entryDate
+            });
+        }
+
+        // 3. മുതലാളി അഡ്വാൻസ് സേവ് ചെയ്യുന്നു
+        if (ownerAdvance > 0) {
+            await addDoc(collection(db, "accounts"), {
+                meshtriOwner: currentMeshtri,
+                name: "മുതലാളി അഡ്വാൻസ്",
+                site: siteName,
+                type: "advance",
+                payerSource: "Owner",
+                payment: "cash",
+                amount: Number(ownerAdvance),
+                date: entryDate
+            });
+        }
+
+        // 4. കയ്യിൽ നിന്ന് മുടക്കിയത് സേവ് ചെയ്യുന്നു
+        if (settleSelfSpent > 0) {
+            await addDoc(collection(db, "accounts"), {
+                meshtriOwner: currentMeshtri,
+                name: "കയ്യിൽ നിന്ന് മുടക്കിയത്",
+                site: siteName,
+                type: "self_spent",
+                payment: "cash",
+                amount: Number(settleSelfSpent),
+                date: entryDate
+            });
+        }
+
+        // 5. മറ്റു ചെലവുകൾ സേവ് ചെയ്യുന്നു
+        const expRows = document.querySelectorAll('#expenseListContainer > div');
+        for (let r of expRows) {
+            const descInput = r.querySelector('.expense-desc');
+            const amtInput = r.querySelector('.expense-amount');
+            const desc = descInput ? descInput.value.trim() : '';
+            const amt = amtInput ? parseFloat(amtInput.value) || 0 : 0;
+
+            if (desc && amt > 0) {
+                await addDoc(collection(db, "accounts"), {
+                    meshtriOwner: currentMeshtri,
+                    name: desc,
+                    site: siteName,
+                    type: "other",
+                    payment: "cash",
+                    amount: Number(amt),
+                    date: entryDate
+                });
+            }
+        }
+
+        // 6. പ്രധാനപ്പെട്ട ഭാഗം: തൊഴിലാളികളുടെ കൂലി സേവ് ചെയ്യുന്നത്
+        const workerRows = document.querySelectorAll('.worker-row');
+        for (let row of workerRows) {
+            const select = row.querySelector('.worker-select');
+            const staffId = select ? select.value : '';
+            const selectedOption = select ? select.options[select.selectedIndex] : null;
+            const workerName = selectedOption ? (selectedOption.getAttribute('data-name') || selectedOption.text) : 'തൊഴിലാളി';
+            
+            const jobInput = row.querySelector('.worker-job');
+            const jobTitle = jobInput ? jobInput.value.trim() : "പണി";
+            
+            const wageInput = row.querySelector('.worker-wage');
+            const wageAmount = wageInput ? parseFloat(wageInput.value) || 0 : 0;
+
+            if (staffId && wageAmount > 0) {
+                await addDoc(collection(db, "accounts"), {
+                    meshtriOwner: currentMeshtri,
+                    staffId: String(staffId),        // 👈 സ്റ്റാഫ് ഐഡി കൃത്യമായി മാച്ച് ആകാൻ String ആയി നൽകുന്നു
+                    workerName: workerName,          // 👈 തൊഴിലാളിയുടെ പേര്
+                    name: workerName + ` (കൂലി - ${jobTitle})`,
+                    job: jobTitle,                   // 👈 പണി
+                    site: siteName,                  // 👈 സൈറ്റ് പേര്
+                    type: "wage",                    // 👈 type കൃത്യമായി "wage" എന്ന് നൽകുന്നു
+                    amount: Number(wageAmount),      // 👈 തുക കൂട്ടി എടുക്കാൻ കൃത്യമായി Number ആയി നൽകുന്നു
+                    date: entryDate,
+                    createdAt: new Date()
+                });
+            }
+        }
+
+        const saveSuccessMsg = (typeof words !== 'undefined' && words['saveSuccessMsg'] && words['saveSuccessMsg'][currentLang]) ? words['saveSuccessMsg'][currentLang] : "സൈറ്റ് കണക്ക് വിജയകരമായി സേവ് ചെയ്തു!";
+        
+        showCustomAlert(saveSuccessMsg, "successTitle", false, (confirmed) => {
+            if (confirmed) {
+                location.reload();
+            }
+        });
+    } catch (error) {
+        console.error("സേവ് ചെയ്യുന്നതിൽ പിഴവ്:", error);
+        const saveErrorMsg = (typeof words !== 'undefined' && words['saveErrorMsg'] && words['saveErrorMsg'][currentLang]) ? words['saveErrorMsg'][currentLang] : "കണക്ക് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല!";
+        showCustomAlert(saveErrorMsg, "errorTitle");
+    }
+};
+
 </script>
 
     <style>
