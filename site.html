@@ -330,8 +330,7 @@
         });
     };
 
-    // കൃത്യമായ കണക്കുകൂട്ടൽ ഫങ്ഷൻ
-window.calculateTotal = function() {
+    window.calculateTotal = function() {
     try {
         let siteNameInput = document.getElementById('siteName');
         let currentSite = siteNameInput ? siteNameInput.value.trim().toLowerCase() : '';
@@ -339,9 +338,10 @@ window.calculateTotal = function() {
         let prevMeshtriBalance = 0;
         let prevOwnerBalance = 0;
 
-        if (currentSite && Array.isArray(allAccountsData)) {
+        // പഴയ കണക്കുകളിൽ നിന്നുള്ള അഡ്വാൻസ് എടുക്കുന്നു
+        if (currentSite && typeof allAccountsData !== 'undefined' && Array.isArray(allAccountsData)) {
             allAccountsData.forEach(acc => {
-                if (acc.site && acc.site.trim().toLowerCase() === currentSite) {
+                if (acc && acc.site && acc.site.trim().toLowerCase() === currentSite) {
                     let amt = parseFloat(acc.amount) || 0;
                     if (acc.type === 'advance' && acc.payerSource === 'Meshtri') {
                         prevMeshtriBalance += amt;
@@ -352,16 +352,19 @@ window.calculateTotal = function() {
             });
         }
 
-        let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : (document.getElementById('incomeReceived') ? document.getElementById('incomeReceived').value : 0)) || 0;
+        // ഇന്നത്തെ ഇൻപുട്ടുകൾ
+        let incomeEl = document.getElementById('siteIncome') || document.getElementById('incomeReceived');
+        let todayIncome = parseFloat(incomeEl ? incomeEl.value : 0) || 0;
 
-        const settleAdvanceInput = document.getElementById('settleAdvance') || document.getElementById('meshtriAdvance');
-        const ownerAdvanceInput = document.getElementById('ownerAdvance');
-        const settleSelfSpentInput = document.getElementById('settleSelfSpent') || document.getElementById('outOfPocket');
+        let settleAdvEl = document.getElementById('settleAdvance') || document.getElementById('meshtriAdvance');
+        let ownerAdvEl = document.getElementById('ownerAdvance');
+        let selfSpentEl = document.getElementById('settleSelfSpent') || document.getElementById('outOfPocket');
 
-        let currentMeshtriAdvance = parseFloat(settleAdvanceInput ? settleAdvanceInput.value : 0) || 0;
-        let currentOwnerAdvance = parseFloat(ownerAdvanceInput ? ownerAdvanceInput.value : 0) || 0;
-        let currentInputSelfSpent = parseFloat(settleSelfSpentInput ? settleSelfSpentInput.value : 0) || 0;
+        let currentMeshtriAdvance = parseFloat(settleAdvEl ? settleAdvEl.value : 0) || 0;
+        let currentOwnerAdvance = parseFloat(ownerAdvEl ? ownerAdvEl.value : 0) || 0;
+        let currentInputSelfSpent = parseFloat(selfSpentEl ? selfSpentEl.value : 0) || 0;
 
+        // ചെലവുകളും കൂലിയും
         let todayOtherExp = 0;
         document.querySelectorAll('.expense-amount').forEach(input => {
             todayOtherExp += parseFloat(input.value) || 0;
@@ -372,20 +375,19 @@ window.calculateTotal = function() {
             todayWages += parseFloat(input.value) || 0;
         });
 
-        // ആകെ ചിലവുകൾ (മറ്റ് ചെലവ് + കൂലി)
         let totalSpentForSite = todayOtherExp + todayWages;
         let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
 
-        // അഡ്വാൻസ് തുക കൂടി വരവിലേക്ക് ചേർത്ത് ഫൈനൽ ബാലൻസ് കണക്കാക്കുന്നു
-        let totalAvailableIncome = todayIncome + currentMeshtriAdvance + currentOwnerAdvance;
+        // ആകെ വരവ് = പഴയ അഡ്വാൻസ് + ഇന്നത്തെ വരവും അഡ്വാൻസും
+        let totalAvailableIncome = prevMeshtriBalance + prevOwnerBalance + todayIncome + currentMeshtriAdvance + currentOwnerAdvance;
         let netSiteBalance = totalAvailableIncome - totalExpenseWithSelf;
 
         let currentLang = localStorage.getItem('selectedLang') || 'ml';
         let inHandStr = (typeof words !== 'undefined' && words['inHandText'] && words['inHandText'][currentLang]) ? words['inHandText'][currentLang] : "(ബാക്കി / കയ്യിലുള്ളത്)";
         let toPayStr = (typeof words !== 'undefined' && words['toPayText'] && words['toPayText'][currentLang]) ? words['toPayText'][currentLang] : "(കൊടുക്കാനുള്ളത്)";
 
-        // മേസ്തിരി ബാലൻസ്
-        let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance) - totalExpenseWithSelf;
+        // 1. മുകളിലെ അഡ്വാൻസ് സെറ്റിൽമെന്റ് ഡിസ്പ്ലേ (മേസ്തിരി)
+        let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance + todayIncome) - totalExpenseWithSelf;
         let settleBalanceDisplay = document.getElementById('settleBalanceText') || document.getElementById('meshtriBalanceDisplay');
         if (settleBalanceDisplay) {
             let textVal = meshtriSettlementBalance < 0 
@@ -395,7 +397,7 @@ window.calculateTotal = function() {
             settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
         }
 
-        // മുതലാളി ബാലൻസ്
+        // 2. മുകളിലെ അഡ്വാൻസ് സെറ്റിൽമെന്റ് ഡിസ്പ്ലേ (മുതലാളി)
         let ownerSettlementBalance = (prevOwnerBalance + currentOwnerAdvance) - totalExpenseWithSelf;
         let ownerBalanceDisplay = document.getElementById('ownerBalanceText') || document.getElementById('ownerBalanceDisplay');
         if (ownerBalanceDisplay) {
@@ -406,7 +408,7 @@ window.calculateTotal = function() {
             ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
         }
 
-        // --- വെള്ള വരയിട്ട സമ്മറി ബോക്സ് (Summary Display) ---
+        // 3. ഏറ്റവും താഴത്തെ ആകെ സമ്മറി ഡിസ്പ്ലേ
         let displayIncomeEl = document.getElementById('displayIncome') || document.getElementById('totalIncomeDisplay');
         if (displayIncomeEl) displayIncomeEl.innerText = `₹ ${totalAvailableIncome}`;
 
@@ -418,6 +420,7 @@ window.calculateTotal = function() {
             balanceText.innerText = `₹ ${netSiteBalance}`;
             balanceText.className = netSiteBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
+
     } catch (err) {
         console.error("Calculation Error:", err);
     }
