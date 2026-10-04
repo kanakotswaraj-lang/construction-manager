@@ -388,44 +388,7 @@ window.calculateTotal = function() {
         let toPayStr = (typeof words !== 'undefined' && words['toPayText'] && words['toPayText'][currentLang]) ? words['toPayText'][currentLang] : "(കൊടുക്കാനുള്ളത്)";
 
         // മേസ്തിരി ബാലൻസ് (നീല ബോക്സ്)
-        let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance) - totalExpenseWithSelf;
-        let settleBalanceDisplay = document.getElementById('settleBalanceText') || document.getElementById('meshtriBalanceDisplay');
-        if (settleBalanceDisplay) {
-            let textVal = meshtriSettlementBalance < 0 
-                ? `₹ ${Math.abs(meshtriSettlementBalance)} ${toPayStr}` 
-                : `₹ ${meshtriSettlementBalance} ${inHandStr}`;
-            settleBalanceDisplay.innerText = textVal;
-            settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
-        }
-
-        // മുതലാളി ബാലൻസ് (നീല ബോക്സ്)
-        let ownerSettlementBalance = (prevOwnerBalance + currentOwnerAdvance) - totalExpenseWithSelf;
-        let ownerBalanceDisplay = document.getElementById('ownerBalanceText') || document.getElementById('ownerBalanceDisplay');
-        if (ownerBalanceDisplay) {
-            let textValOwner = ownerSettlementBalance < 0 
-                ? `₹ ${Math.abs(ownerSettlementBalance)} ${toPayStr}` 
-                : `₹ ${ownerSettlementBalance} ${inHandStr}`;
-            ownerBalanceDisplay.innerText = textValOwner;
-            ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
-        }
-
-        // താഴെയുള്ള സമ്മറി ബോക്സ് (Summary Display) ലൈവായി അപ്ഡേറ്റ് ചെയ്യുന്നു
-        let displayIncomeEl = document.getElementById('displayIncome') || document.getElementById('totalIncomeDisplay');
-        if (displayIncomeEl) displayIncomeEl.innerText = `₹ ${totalAvailableIncome}`;
-
-        let displayExpenseEl = document.getElementById('displayExpense') || document.getElementById('totalExpenseDisplay');
-        if (displayExpenseEl) displayExpenseEl.innerText = `₹ ${totalExpenseWithSelf}`;
-        
-        let balanceText = document.getElementById('grandTotal') || document.getElementById('netBalanceDisplay');
-        if (balanceText) {
-            balanceText.innerText = `₹ ${netSiteBalance}`;
-            balanceText.className = netSiteBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-        }
-    } catch (err) {
-        console.error("Calculation Error:", err);
-    }
-};
-
+        let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance) - totalExpense
 
     window.saveSiteData = async function(event) {
         event.preventDefault();
