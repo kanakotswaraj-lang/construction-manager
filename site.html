@@ -405,26 +405,7 @@
                     ? `₹ ${Math.abs(ownerSettlementBalance)} ${toPayStr}` 
                     : `₹ ${ownerSettlementBalance} ${inHandStr}`;
                 ownerBalanceDisplay.innerText = textValOwner;
-                ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
-            }
 
-            // 3. ആകെ സമ്മറി ഡിസ്പ്ലേ
-            let displayIncomeEl = document.getElementById('displayIncome');
-            if (displayIncomeEl) displayIncomeEl.innerText = `₹ ${totalAvailableIncome}`;
-
-            let displayExpenseEl = document.getElementById('displayExpense');
-            if (displayExpenseEl) displayExpenseEl.innerText = `₹ ${totalExpenseWithSelf}`;
-            
-            let balanceText = document.getElementById('grandTotal');
-            if (balanceText) {
-                balanceText.innerText = `₹ ${netSiteBalance}`;
-                balanceText.className = netSiteBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
-            }
-
-        } catch (err) {
-            console.error("Calculation Error:", err);
-        }
-    };
 
     window.saveSiteData = async function(event) {
         event.preventDefault();
