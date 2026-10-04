@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>സൈറ്റ് മാനേജ്മെന്റ് - മേസ്തിരി പ്രോ</title>
-    <!-- Eruda കോൺസോൾ ടൂൾ -->
+    
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>
 
@@ -52,18 +52,17 @@
         }
         
         const savedLang = localStorage.getItem('selectedLang') || 'ml';
-        if (typeof changePageLanguage === 'function') {
-            changePageLanguage(savedLang);
-        }
+        changePageLanguage(savedLang);
 
         fetchData();
     });
 
-    // ഭാഷ മാറ്റുമ്പോൾ എല്ലാ എലമെന്റുകളും അപ്ഡേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
+    // ഭാഷ മാറ്റുമ്പോൾ സെർച്ച് ബോക്സും മറ്റ് പ്ലേസ്‌ഹോൾഡറുകളും മാറാനുള്ള ഫങ്ഷൻ
     window.changePageLanguage = function(lang) {
         localStorage.setItem('selectedLang', lang);
         if (typeof words === 'undefined') return;
 
+        // data-key വഴി ടെക്സ്റ്റുകൾ മാറ്റുന്നു
         document.querySelectorAll('[data-key]').forEach(element => {
             const key = element.getAttribute('data-key');
             if (words[key] && words[key][lang]) {
@@ -75,6 +74,7 @@
             }
         });
 
+        // Placeholder-കൾ അപ്ഡേറ്റ് ചെയ്യുന്നു (സെർച്ച് ബോക്സ് ഉൾപ്പെടെ)
         document.querySelectorAll('[data-key-placeholder]').forEach(input => {
             const key = input.getAttribute('data-key-placeholder');
             if (words[key] && words[key][lang]) {
@@ -330,6 +330,7 @@
         });
     };
 
+    // കൃത്യമായ കണക്കുകൂട്ടൽ ഫങ്ഷൻ
     window.calculateTotal = function() {
         try {
             let siteNameInput = document.getElementById('siteName');
@@ -371,16 +372,20 @@
                 todayWages += parseFloat(input.value) || 0;
             });
 
+            // ആകെ ചിലവുകൾ (മറ്റ് ചെലവ് + കൂലി)
             let totalSpentForSite = todayOtherExp + todayWages;
             let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
-            let netSiteBalance = todayIncome - totalExpenseWithSelf;
+
+            // അഡ്വാൻസ് തുക കൂടി വരവിലേക്ക് ചേർത്ത് ഫൈനൽ ബാലൻസ് കണക്കാക്കുന്നു
+            let totalAvailableIncome = todayIncome + currentMeshtriAdvance + currentOwnerAdvance;
+            let netSiteBalance = totalAvailableIncome - totalExpenseWithSelf;
 
             let currentLang = localStorage.getItem('selectedLang') || 'ml';
             let inHandStr = (typeof words !== 'undefined' && words['inHandText'] && words['inHandText'][currentLang]) ? words['inHandText'][currentLang] : "(ബാക്കി / കയ്യിലുള്ളത്)";
             let toPayStr = (typeof words !== 'undefined' && words['toPayText'] && words['toPayText'][currentLang]) ? words['toPayText'][currentLang] : "(കൊടുക്കാനുള്ളത്)";
 
+            // മേസ്തിരി ബാലൻസ്
             let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance) - totalExpenseWithSelf;
-
             let settleBalanceDisplay = document.getElementById('settleBalanceText');
             if (settleBalanceDisplay) {
                 let textVal = meshtriSettlementBalance < 0 
@@ -390,8 +395,8 @@
                 settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
             }
 
+            // മുതലാളി ബാലൻസ്
             let ownerSettlementBalance = (prevOwnerBalance + currentOwnerAdvance) - totalExpenseWithSelf;
-
             let ownerBalanceDisplay = document.getElementById('ownerBalanceText');
             if (ownerBalanceDisplay) {
                 let textValOwner = ownerSettlementBalance < 0 
@@ -401,8 +406,9 @@
                 ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
             }
 
+            // താഴെയുള്ള സമ്മറി ബോക്സ് (Summary Display) ലൈവായി അപ്ഡേറ്റ് ചെയ്യുന്നു
             let displayIncomeEl = document.getElementById('displayIncome');
-            if(displayIncomeEl) displayIncomeEl.innerText = `₹ ${todayIncome}`;
+            if(displayIncomeEl) displayIncomeEl.innerText = `₹ ${totalAvailableIncome}`;
 
             let displayExpenseEl = document.getElementById('displayExpense');
             if(displayExpenseEl) displayExpenseEl.innerText = `₹ ${totalExpenseWithSelf}`;
@@ -562,6 +568,7 @@
             </a>
         </div>
 
+        <!-- സെർച്ച് ബോക്സിൽ data-key-placeholder ചേർത്തിട്ടുണ്ട് -->
         <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
             <input type="text" id="searchBox" placeholder="🔍 തൊഴിലാളിയുടെ പേരിലോ പണിയിലോ സെർച്ച് ചെയ്യുക..." data-key-placeholder="searchWorkerPlaceholder" oninput="filterWorkers()" class="w-full p-3.5 bg-slate-800/80 text-white rounded-xl border border-slate-700 text-xs font-bold focus:outline-none focus:border-amber-400">
         </div>
@@ -592,7 +599,7 @@
             </div>
 
             <div class="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-4 space-y-3 mt-4">
-                <h3 class="text-amber-400 font-bold text-sm" data-key="advanceSettlementTitle">⚖️️ അഡ്വാൻസ് സെറ്റിൽമെന്റ് (മേസ്തിരി & മുതലാളി)</h3>
+                <h3 class="text-amber-400 font-bold text-sm" data-key="advanceSettlementTitle">⚖ അഡ്വാൻസ് സെറ്റിൽമെന്റ് (മേസ്തിരി & മുതലാളി)</h3>
                 
                 <div>
                     <label class="block text-xs font-black text-slate-400 mb-1" data-key="selectFundPayerLabel">ഫണ്ട് നൽകിയ ആളെ തിരഞ്ഞെടുക്കുക:</label>
