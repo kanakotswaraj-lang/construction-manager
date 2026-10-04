@@ -330,7 +330,6 @@
         });
     };
 
-    
     // കൃത്യമായ കണക്കുകൂട്ടൽ ഫങ്ഷൻ
 window.calculateTotal = function() {
     try {
@@ -353,9 +352,7 @@ window.calculateTotal = function() {
             });
         }
 
-        // ലഭിച്ച വരവ് (siteIncome അല്ലെങ്കിൽ incomeReceived)
-        let incomeEl = document.getElementById('incomeReceived') || document.getElementById('siteIncome');
-        let todayIncome = parseFloat(incomeEl ? incomeEl.value : 0) || 0;
+        let todayIncome = parseFloat(document.getElementById('siteIncome') ? document.getElementById('siteIncome').value : (document.getElementById('incomeReceived') ? document.getElementById('incomeReceived').value : 0)) || 0;
 
         const settleAdvanceInput = document.getElementById('settleAdvance') || document.getElementById('meshtriAdvance');
         const ownerAdvanceInput = document.getElementById('ownerAdvance');
@@ -375,7 +372,7 @@ window.calculateTotal = function() {
             todayWages += parseFloat(input.value) || 0;
         });
 
-        // ആകെ ചിലവുകൾ (മറ്റ് ചെലവ് + കൂലി + കയ്യിൽ നിന്ന് മുടക്കിയത്)
+        // ആകെ ചിലവുകൾ (മറ്റ് ചെലവ് + കൂലി)
         let totalSpentForSite = todayOtherExp + todayWages;
         let totalExpenseWithSelf = totalSpentForSite + currentInputSelfSpent;
 
@@ -387,8 +384,45 @@ window.calculateTotal = function() {
         let inHandStr = (typeof words !== 'undefined' && words['inHandText'] && words['inHandText'][currentLang]) ? words['inHandText'][currentLang] : "(ബാക്കി / കയ്യിലുള്ളത്)";
         let toPayStr = (typeof words !== 'undefined' && words['toPayText'] && words['toPayText'][currentLang]) ? words['toPayText'][currentLang] : "(കൊടുക്കാനുള്ളത്)";
 
-        // മേസ്തിരി ബാലൻസ് (നീല ബോക്സ്)
-        let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance) - totalExpense
+        // മേസ്തിരി ബാലൻസ്
+        let meshtriSettlementBalance = (prevMeshtriBalance + currentMeshtriAdvance) - totalExpenseWithSelf;
+        let settleBalanceDisplay = document.getElementById('settleBalanceText') || document.getElementById('meshtriBalanceDisplay');
+        if (settleBalanceDisplay) {
+            let textVal = meshtriSettlementBalance < 0 
+                ? `₹ ${Math.abs(meshtriSettlementBalance)} ${toPayStr}` 
+                : `₹ ${meshtriSettlementBalance} ${inHandStr}`;
+            settleBalanceDisplay.innerText = textVal;
+            settleBalanceDisplay.className = meshtriSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
+        }
+
+        // മുതലാളി ബാലൻസ്
+        let ownerSettlementBalance = (prevOwnerBalance + currentOwnerAdvance) - totalExpenseWithSelf;
+        let ownerBalanceDisplay = document.getElementById('ownerBalanceText') || document.getElementById('ownerBalanceDisplay');
+        if (ownerBalanceDisplay) {
+            let textValOwner = ownerSettlementBalance < 0 
+                ? `₹ ${Math.abs(ownerSettlementBalance)} ${toPayStr}` 
+                : `₹ ${ownerSettlementBalance} ${inHandStr}`;
+            ownerBalanceDisplay.innerText = textValOwner;
+            ownerBalanceDisplay.className = ownerSettlementBalance < 0 ? "text-red-400 font-black text-sm" : "text-emerald-400 font-black text-sm";
+        }
+
+        // --- വെള്ള വരയിട്ട സമ്മറി ബോക്സ് (Summary Display) ---
+        let displayIncomeEl = document.getElementById('displayIncome') || document.getElementById('totalIncomeDisplay');
+        if (displayIncomeEl) displayIncomeEl.innerText = `₹ ${totalAvailableIncome}`;
+
+        let displayExpenseEl = document.getElementById('displayExpense') || document.getElementById('totalExpenseDisplay');
+        if (displayExpenseEl) displayExpenseEl.innerText = `₹ ${totalExpenseWithSelf}`;
+        
+        let balanceText = document.getElementById('grandTotal') || document.getElementById('netBalanceDisplay');
+        if (balanceText) {
+            balanceText.innerText = `₹ ${netSiteBalance}`;
+            balanceText.className = netSiteBalance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
+        }
+    } catch (err) {
+        console.error("Calculation Error:", err);
+    }
+};
+
 
     window.saveSiteData = async function(event) {
         event.preventDefault();
