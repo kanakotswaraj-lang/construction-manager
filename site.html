@@ -257,37 +257,52 @@
         window.shareSiteWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
             const entryDate = document.getElementById('entryDate').value;
-            const income = document.getElementById('siteIncome').value || 0;
+            const income = parseFloat(document.getElementById('siteIncome').value) || 0;
             
-            let details = "";
+            let expenseDetails = "";
             let otherExpTotal = 0;
             
             document.querySelectorAll('#expenseListContainer > div').forEach(row => {
                 let desc = row.querySelector('.expense-desc').value.trim();
                 let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
                 if (desc && amt > 0) {
-                    details += `➖ ${desc}: ₹ ${amt}\n`;
+                    expenseDetails += `  • ${desc}: ₹ ${amt}\n`;
                     otherExpTotal += amt;
                 }
             });
 
+            let workerDetails = "";
             let wagesTotal = 0;
-            document.querySelectorAll('.worker-wage').forEach(input => { wagesTotal += parseFloat(input.value) || 0; });
+            document.querySelectorAll('.worker-row').forEach(row => {
+                let select = row.querySelector('.worker-select');
+                let opt = select.options[select.selectedIndex];
+                let wName = opt ? (opt.getAttribute('data-name') || opt.text.trim()) : '';
+                let job = row.querySelector('.worker-job').value.trim() || 'പണി';
+                let wage = parseFloat(row.querySelector('.worker-wage').value) || 0;
+
+                if (wage > 0) {
+                    let nameToShow = (wName && wName !== 'തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക') ? wName : 'തൊഴിലാളി';
+                    workerDetails += `  • ${nameToShow} (${job}): ₹ ${wage}\n`;
+                    wagesTotal += wage;
+                }
+            });
 
             let totalExp = otherExpTotal + wagesTotal;
             let balance = income - totalExp;
 
-            let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
+            let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n\n`;
             msg += `📅 തീയതി: ${entryDate}\n`;
             msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `--------------------------------\n`;
+            msg += `-----------------------------------\n`;
             msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
-            msg += `💸 *ചെലവുകൾ:*\n${details ? details : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
-            msg += `👥 തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
-            msg += `--------------------------------\n`;
+            
+            msg += `💸 *മറ്റു ചെലവുകൾ:*\n${expenseDetails ? expenseDetails : "  ചെലവുകൾ ഒന്നുമില്ല\n"}\n`;
+            msg += `👥 *തൊഴിലാളി കൂലി:*\n${workerDetails ? workerDetails : "  തൊഴിലാളി കൂലി വിവരങ്ങൾ ഇല്ല\n"}\n`;
+            
+            msg += `-----------------------------------\n`;
             msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
-            msg += `💰 ബാലൻസ്: ₹ ${balance}\n`;
-            msg += `--------------------------------\n`;
+            msg += `💵 ബാലൻസ്: ₹ ${balance}\n`;
+            msg += `-----------------------------------\n`;
             msg += `👤 ${currentMeshtri}`;
 
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
@@ -304,12 +319,13 @@
             document.querySelectorAll('.worker-row').forEach(row => {
                 let select = row.querySelector('.worker-select');
                 let opt = select.options[select.selectedIndex];
-                let wName = opt ? opt.getAttribute('data-name') : 'തൊഴിലാളി';
-                let job = row.querySelector('.worker-job').value || 'പണി';
+                let wName = opt ? (opt.getAttribute('data-name') || opt.text.trim()) : '';
+                let job = row.querySelector('.worker-job').value.trim() || 'പണി';
                 let wage = parseFloat(row.querySelector('.worker-wage').value) || 0;
 
                 if(wage > 0) {
-                    workerDetails += `${index}. ${wName} (${job}) - ₹ ${wage}\n`;
+                    let nameToShow = (wName && wName !== 'തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക') ? wName : 'തൊഴിലാളി';
+                    workerDetails += `${index}. ${nameToShow} (${job}) - ₹ ${wage}\n`;
                     totalWages += wage;
                     index++;
                 }
@@ -320,14 +336,14 @@
                 return;
             }
 
-            let msg = `👥 *തൊഴിലാളികളുടെ കൂലി കണക്ക്* 👥\n`;
+            let msg = `👥 *തൊഴിലാളികളുടെ കൂലി കണക്ക്* 👥\n\n`;
             msg += `📅 തീയതി: ${entryDate}\n`;
             msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `--------------------------------\n`;
+            msg += `-----------------------------------\n`;
             msg += workerDetails;
-            msg += `--------------------------------\n`;
+            msg += `-----------------------------------\n`;
             msg += `💵 ആകെ തൊഴിലാളി കൂലി: ₹ ${totalWages}\n`;
-            msg += `--------------------------------\n`;
+            msg += `-----------------------------------\n`;
             msg += `👤 ${currentMeshtri}`;
 
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
