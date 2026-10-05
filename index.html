@@ -7,106 +7,122 @@
     <meta name="google-site-verification" content="WvP2of_1eHX_ojBwxVwTwuBCz91hW4wpjX2znfmIqIA" />
     <link rel="manifest" href="manifest.json">
 
-    <!-- മലയാളത്തിലും ഇംഗ്ലീഷിലുമുള്ള ടൈറ്റിൽ -->
-    <title>നിർമ്മാണ മാനേജർ - Meshtri Pro | Smart Site Manager</title>
+    <title>മേസ്തിരി പ്രോ - പ്രവേശനം</title>
     
-    <!-- മലയാളത്തിലും ഇംഗ്ലീഷിലുമുള്ള വിവരണം (Meta Description) -->
-    <meta name="description" content="മേസ്തിരി പ്രോ Smart Site Manager. നിർമ്മാണ മാനേജർ, പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ. Construction site management app for tracking worker wages and daily accounts.">
-
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
   
     <!-- language.js ഫയൽ ഇവിടെ ഹെഡറിൽ നൽകുന്നു -->
     <script src="language.js"></script>
 
     <style>
-        body { font-family: 'Manjari', sans-serif; }
+        body { 
+            font-family: 'Manjari', sans-serif; 
+            background-color: #0d1117 !important; 
+            color: #ffffff !important; 
+        }
+        .max-w-md {
+            border: 3px solid #10b981;
+            border-radius: 2.5rem;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+            background-color: #0d1117;
+        }
     </style>
+
+    <!-- ലാംഗ്വേജ് മാറ്റുന്നതിനുള്ള സ്ക്രിപ്റ്റ് -->
+    <script>
+        window.switchLanguage = function(langCode) {
+            if (!langCode) {
+                langCode = localStorage.getItem('selectedLang') || 'ml';
+            }
+            localStorage.setItem('selectedLang', langCode);
+
+            if (typeof words !== 'undefined') {
+                document.querySelectorAll('[data-key]').forEach(element => {
+                    const key = element.getAttribute('data-key');
+                    if (words[key] && words[key][langCode]) {
+                        element.innerText = words[key][langCode];
+                    }
+                });
+
+                document.querySelectorAll('[data-key-placeholder]').forEach(input => {
+                    const key = input.getAttribute('data-key-placeholder');
+                    if (words[key] && words[key][langCode]) {
+                        input.placeholder = words[key][langCode];
+                    }
+                });
+            }
+        };
+
+        window.changeLanguage = window.switchLanguage;
+    </script>
 </head>
 
-<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- ടോപ്പ് ഹെഡർ (header.js വഴി ഇവിടെ ലോഗോ വരും) -->
-    <div class="text-center pt-6 max-w-sm mx-auto w-full">
-        <div id="appHeader" class="w-full"></div>
+    <div class="max-w-md w-full p-6 space-y-6 text-center shadow-2xl">
         
-        <h1 class="lang text-4xl font-black mt-5 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400" data-key="mainTitle">
-            നിർമ്മാണ മാനേജർ
-        </h1>
-        <p class="lang text-base text-blue-200 mt-1 font-bold" data-key="appSubtitle">പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ</p>
-    </div>
+        <!-- ഒറിജിനൽ ഹെഡറും ലോഗോയും (header.js വഴി) -->
+        <div id="appHeader" class="w-full flex justify-center"></div>
 
-    <!-- കാർഡുകൾ -->
-    <div class="space-y-4 my-4 max-w-sm mx-auto w-full">
-        <div class="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-blue-500/30 flex items-center gap-4 shadow-xl hover:border-amber-400/50 transition">
-            <div class="bg-amber-500/20 p-3.5 rounded-xl text-amber-400 text-2xl font-bold">👥</div>
-            <div>
-                <h3 class="lang font-black text-base text-white" data-key="workersWageTitle">തൊഴിലാളികളുടെ കൂലി</h3>
-                <p class="lang text-sm text-slate-300 font-medium mt-0.5" data-key="workersWageDesc">ഫുൾ ഡേ, ഹാഫ് ഡേ, ഓവർടൈം കണക്കുകൾ.</p>
-            </div>
+        <!-- ഹെഡർ ടൈറ്റിൽ & സബ്‌ടൈറ്റിൽ -->
+        <div class="space-y-2">
+            <h1 class="lang text-2xl font-black text-amber-400" data-key="pinLoginTitle">മേസ്തിരി പ്രവേശനം</h1>
+            <p class="lang text-xs text-slate-400 font-medium" data-key="pinLoginSubtitle">തുടരുന്നതിനായി നിങ്ങളുടെ 4 അക്ക പിൻ നൽകുക</p>
         </div>
-        <div class="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-blue-500/30 flex items-center gap-4 shadow-xl hover:border-amber-400/50 transition">
-            <div class="bg-blue-500/20 p-3.5 rounded-xl text-blue-400 text-2xl font-bold">🏠</div>
-            <div>
-                <h3 class="lang font-black text-base text-white" data-key="siteHistoryTitle">സൈറ്റ് ഹിസ്റ്ററി</h3>
-                <p class="lang text-sm text-slate-300 font-medium mt-0.5" data-key="siteHistoryDesc">ഓരോ തൊഴിലാളിയും ഏത് സൈറ്റിൽ.</p>
-            </div>
+
+        <!-- പിൻ ഇൻപുട്ട് ബോക്സ് -->
+        <div class="space-y-4">
+            <input type="password" id="userPinInput" maxlength="4" placeholder="••••" data-key-placeholder="pinPlaceholder" class="w-48 bg-slate-900 border-2 border-slate-700 rounded-2xl px-4 py-3 text-center text-2xl tracking-widest text-amber-400 focus:outline-none focus:border-amber-400 mx-auto block shadow-inner">
+
+            <button onclick="verifyPin()" class="lang w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black py-3.5 rounded-2xl text-sm shadow-xl hover:opacity-95 transition cursor-pointer" data-key="unlockBtn">
+                അൺലോക്ക് ചെയ്യുക
+            </button>
         </div>
-        <div class="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-blue-500/30 flex items-center gap-4 shadow-xl hover:border-amber-400/50 transition">
-            <div class="bg-emerald-500/20 p-3.5 rounded-xl text-emerald-400 text-2xl font-bold">📱</div>
-            <div>
-                <h3 class="lang font-black text-base text-white" data-key="whatsappShareTitle">വാട്സാപ്പ് ഷെയറിങ്</h3>
-                <p class="lang text-sm text-slate-300 font-medium mt-0.5" data-key="whatsappShareDesc">കണക്കുകൾ ഒറ്റക്ലിക്കിൽ അയക്കാം.</p>
-            </div>
+
+        <!-- താഴെയുള്ള ഓപ്ഷനുകൾ -->
+        <div class="flex items-center justify-between text-xs pt-4 border-t border-slate-800">
+            <a href="#" onclick="resetPinPrompt()" class="lang text-slate-400 hover:text-amber-400 transition" data-key="resetPinText">പിൻ മാറ്റുക (Reset to 1234)</a>
+            <a href="login.html" class="lang text-amber-400 font-bold hover:underline" data-key="otherAccountText">മറ്റൊരു അക്കൗണ്ട്? (Login)</a>
         </div>
     </div>
 
-    <!-- ബട്ടണുകൾ -->
-    <div class="max-w-sm mx-auto w-full space-y-3.5 pb-4">
-        <a href="login.html" class="lang block w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/40 transition" data-key="loginBtn">
-            ലോഗിൻ ചെയ്യാം
-        </a>
-        <a href="register.html" data-key="indexNewRegBtn" class="block w-full bg-slate-900/90 hover:bg-slate-800 text-blue-300 border-2 border-blue-500/50 text-center p-4 rounded-2xl font-bold text-base transition">
-    പുതിയ രജിസ്ട്രേഷൻ
-</a>
-
-        <p class="lang text-center text-xs text-slate-400 font-bold pt-2" data-key="footerCredit">
-            മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
-        </p>
-    </div>
-
-    <!-- ജാവാസ്ക്രിപ്റ്റ് വഴി ഹെഡറും മോഡലും ലോഡ് ചെയ്യുന്നു ഒപ്പം ഭാഷ സെറ്റ് ചെയ്യാനും -->
+    <!-- പിൻ വെരിഫിക്കേഷനും ലാംഗ്വേജ് ലോഡിംഗും -->
     <script type="module">
         import { setupHeader } from './header.js';
-        import { setupModal } from './modal.js';
 
-        setupHeader('appHeader');
-        setupModal();
+        // ഹെഡർ ലോഡ് ചെയ്യുന്നു
+        try {
+            setupHeader('appHeader');
+        } catch(e) {
+            console.log("Header load error:", e);
+        }
 
-        // പേജ് ലോഡ് ചെയ്യുമ്പോഴും ഭാഷ മാറ്റുമ്പോഴും വർക്ക് ചെയ്യാൻ
-        function applySavedLanguage() {
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ ഭാഷ സെറ്റ് ചെയ്യുന്നു
+        document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(savedLang);
             }
-        }
-
-        window.addEventListener('DOMContentLoaded', applySavedLanguage);
-
-        window.addEventListener('languageChanged', (e) => {
-            const newLang = (e && e.detail) ? e.detail : localStorage.getItem('selectedLang');
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(newLang);
-            }
         });
 
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'selectedLang') {
-                if (typeof window.switchLanguage === 'function') {
-                    window.switchLanguage(e.newValue || 'ml');
-                }
+        // പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
+        window.verifyPin = function() {
+            const enteredPin = document.getElementById('userPinInput').value.trim();
+            const savedPin = localStorage.getItem('appPin') || "1234"; // ഡിഫോൾട്ട് പിൻ 1234
+
+            if (enteredPin === savedPin) {
+                window.location.href = "Dashboard.html";
+            } else {
+                alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്. ദയവായി വീണ്ടും ശ്രമിക്കുക.");
+                document.getElementById('userPinInput').value = "";
             }
-        });
+        };
+
+        window.resetPinPrompt = function() {
+            localStorage.setItem('appPin', "1234");
+            alert("പിൻ നമ്പർ വിജയകരമായി '1234' എന്ന് റീസെറ്റ് ചെയ്തിരിക്കുന്നു!");
+        };
     </script>
 </body>
 </html>
