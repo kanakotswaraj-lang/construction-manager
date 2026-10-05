@@ -250,80 +250,93 @@
             balanceText.innerText = `₹ ${balance}`;
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
+window.shareSiteWhatsApp = function() {
+    const siteInput = document.getElementById('siteName');
+    const siteName = siteInput ? siteInput.value.trim() : "സൈറ്റ്";
+    
+    // തീയതി DD/MM/YYYY ഫോർമാറ്റിലേക്ക് മാറ്റുന്നു
+    const rawDate = document.getElementById('entryDate').value;
+    const entryDate = rawDate ? rawDate.split('-').reverse().join('/') : "";
+    
+    const todayIncome = parseFloat(document.getElementById('siteIncome').value) || 0;
+    
+    // ഡാറ്റാബേസിൽ നിന്നുള്ള മുൻകാല കണക്കുകൾ കൂട്ടുന്നു
+    let pastIncome = 0;
+    let pastExpense = 0;
+    let currentSiteLower = siteName.toLowerCase();
 
-        window.shareSiteWhatsApp = function() {
-            const siteInput = document.getElementById('siteName');
-            const siteName = siteInput ? siteInput.value.trim() : "സൈറ്റ്";
-            
-            const entryDateInput = document.getElementById('entryDate');
-            const entryDate = entryDateInput ? entryDateInput.value : "";
-            
-            const incomeInput = document.getElementById('siteIncome');
-            const income = incomeInput ? (parseFloat(incomeInput.value) || 0) : 0;
-            
-            let expenseDetails = "";
-            let otherExpTotal = 0;
-            
-            const expRows = document.querySelectorAll('#expenseListContainer > div');
-            expRows.forEach(row => {
-                const descInput = row.querySelector('.expense-desc');
-                const amtInput = row.querySelector('.expense-amount');
-                
-                const desc = descInput ? descInput.value.trim() : "";
-                const amt = amtInput ? (parseFloat(amtInput.value) || 0) : 0;
-                
-                if (desc && amt > 0) {
-                    expenseDetails += `➖ ${desc}: ₹ ${amt}\n`;
-                    otherExpTotal += amt;
-                }
-            });
-
-            let workerDetails = "";
-            let wagesTotal = 0;
-
-            const workerRows = document.querySelectorAll('.worker-row');
-            workerRows.forEach(row => {
-                const select = row.querySelector('.worker-select');
-                const opt = select && select.selectedIndex >= 0 ? select.options[select.selectedIndex] : null;
-                
-                let wName = opt ? (opt.getAttribute('data-name') || opt.text.trim()) : '';
-                if (!wName || wName.includes('തിരഞ്ഞെടുക്കുക')) {
-                    wName = 'തൊഴിലാളി';
-                }
-
-                const jobInput = row.querySelector('.worker-job');
-                const job = jobInput ? (jobInput.value.trim() || 'പണി') : 'പണി';
-
-                const wageInput = row.querySelector('.worker-wage');
-                const wage = wageInput ? (parseFloat(wageInput.value) || 0) : 0;
-
-                if (wage > 0) {
-                    workerDetails += `👥 ${wName} (${job}): ₹ ${wage}\n`;
-                    wagesTotal += wage;
-                }
-            });
-
-            const totalExp = otherExpTotal + wagesTotal;
-            const balance = income - totalExp;
-
-            let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
-            msg += `📅 തീയതി: ${entryDate}\n`;
-            msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `--------------------------------\n`;
-            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
-            msg += `💸 *ചെലവുകൾ:*\n${expenseDetails ? expenseDetails : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
-            if (workerDetails) {
-                msg += `\n${workerDetails}`;
+    if (currentSiteLower) {
+        allAccountsData.forEach(d => {
+            if ((d.site || '').toLowerCase() === currentSiteLower) {
+                if (d.type === 'income') pastIncome += parseFloat(d.amount) || 0;
+                else pastExpense += parseFloat(d.amount) || 0;
             }
-            msg += `\n👥 ആകെ തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
-            msg += `--------------------------------\n`;
-            msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
-            msg += `💰 ബാലൻസ്: ₹ ${balance}\n`;
-            msg += `--------------------------------\n`;
-            msg += `👤 ${typeof currentMeshtri !== 'undefined' ? currentMeshtri : 'മേസ്തിരി'}`;
+        });
+    }
 
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        };
+    let expenseDetails = "";
+    let todayOtherExp = 0;
+    
+    const expRows = document.querySelectorAll('#expenseListContainer > div');
+    expRows.forEach(row => {
+        const descInput = row.querySelector('.expense-desc');
+        const amtInput = row.querySelector('.expense-amount');
+        
+        const desc = descInput ? descInput.value.trim() : "";
+        const amt = amtInput ? (parseFloat(amtInput.value) || 0) : 0;
+        
+        if (desc && amt > 0) {
+            expenseDetails += `➖ ${desc}: ₹ ${amt}\n`;
+            todayOtherExp += amt;
+        }
+    });
+
+    let workerDetails = "";
+    let todayWages = 0;
+
+    const workerRows = document.querySelectorAll('.worker-row');
+    workerRows.forEach(row => {
+        const select = row.querySelector('.worker-select');
+        const opt = select && select.selectedIndex >= 0 ? select.options[select.selectedIndex] : null;
+        
+        let wName = opt ? (opt.getAttribute('data-name') || opt.text.trim()) : '';
+        if (!wName || wName.includes('തിരഞ്ഞെടുക്കുക')) {
+            wName = 'തൊഴിലാളി';
+        }
+
+        const jobInput = row.querySelector('.worker-job');
+        const job = jobInput ? (jobInput.value.trim() || 'പണി') : 'പണി';
+
+        const wageInput = row.querySelector('.worker-wage');
+        const wage = wageInput ? (parseFloat(wageInput.value) || 0) : 0;
+
+        if (wage > 0) {
+            workerDetails += `👥 ${wName} (${job}): ₹ ${wage}\n`;
+            todayWages += wage;
+        }
+    });
+
+    const totalIncome = pastIncome + todayIncome;
+    const totalExpense = pastExpense + todayOtherExp + todayWages;
+    const balance = totalIncome - totalExpense;
+
+    let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
+    msg += `📅 തീയതി: ${entryDate}\n`;
+    msg += `📍 സൈറ്റ്: ${siteName}\n`;
+    msg += `--------------------------------\n`;
+    msg += `💰 ആകെ ലഭിച്ച വരവ്: ₹ ${totalIncome}\n\n`;
+    msg += `💸 *ഇന്നത്തെ ചെലവുകൾ:*\n${expenseDetails ? expenseDetails : "മറ്റു ചെലവുകൾ ഒന്നുമില്ല\n"}`;
+    if (workerDetails) {
+        msg += `\n${workerDetails}`;
+    }
+    msg += `\n--------------------------------\n`;
+    msg += `📉 ആകെ ചെലവ്: ₹ ${totalExpense}\n`;
+    msg += `💰 ബാലൻസ് (ലാഭം/നഷ്ടം): ₹ ${balance}\n`;
+    msg += `--------------------------------\n`;
+    msg += `👤 ${typeof currentMeshtri !== 'undefined' ? currentMeshtri : 'മേസ്തിരി'}`;
+
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+};
 
         window.shareWorkersWhatsApp = function() {
             const siteInput = document.getElementById('siteName');
