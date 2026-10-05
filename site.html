@@ -254,59 +254,140 @@
             balanceText.className = balance < 0 ? "text-red-400 font-black text-base" : "text-amber-400 font-black text-base";
         }
 
-        window.shareSiteWhatsApp = function() {
-            const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
-            const entryDate = document.getElementById('entryDate').value;
-            const income = parseFloat(document.getElementById('siteIncome').value) || 0;
-            
-            let expenseDetails = "";
-            let otherExpTotal = 0;
-            
-            document.querySelectorAll('#expenseListContainer > div').forEach(row => {
-                let desc = row.querySelector('.expense-desc').value.trim();
-                let amt = parseFloat(row.querySelector('.expense-amount').value) || 0;
-                if (desc && amt > 0) {
-                    expenseDetails += `  • ${desc}: ₹ ${amt}\n`;
-                    otherExpTotal += amt;
-                }
-            });
+         window.shareSiteWhatsApp = function() {
+    // 1. ഇൻപുട്ട് ഫീൽഡുകളിൽ നിന്നുള്ള ലൈവ് വിവരങ്ങൾ എടുക്കുന്നു
+    const siteInput = document.getElementById('siteName');
+    const siteName = siteInput ? siteInput.value.trim() : "സൈറ്റ്";
+    
+    const entryDateInput = document.getElementById('entryDate');
+    const entryDate = entryDateInput ? entryDateInput.value : "";
+    
+    const incomeInput = document.getElementById('siteIncome');
+    const income = incomeInput ? (parseFloat(incomeInput.value) || 0) : 0;
+    
+    let expenseDetails = "";
+    let otherExpTotal = 0;
+    
+    // മറ്റു ചെലവുകളുടെ ലൈവ് ഇൻപുട്ടുകൾ എടുക്കുന്നു
+    const expRows = document.querySelectorAll('#expenseListContainer > div');
+    expRows.forEach(row => {
+        const descInput = row.querySelector('.expense-desc');
+        const amtInput = row.querySelector('.expense-amount');
+        
+        const desc = descInput ? descInput.value.trim() : "";
+        const amt = amtInput ? (parseFloat(amtInput.value) || 0) : 0;
+        
+        if (desc && amt > 0) {
+            expenseDetails += `➖ ${desc}: ₹ ${amt}\n`;
+            otherExpTotal += amt;
+        }
+    });
 
-            let workerDetails = "";
-            let wagesTotal = 0;
-            document.querySelectorAll('.worker-row').forEach(row => {
-                let select = row.querySelector('.worker-select');
-                let opt = select.options[select.selectedIndex];
-                let wName = opt ? (opt.getAttribute('data-name') || opt.text.trim()) : '';
-                let job = row.querySelector('.worker-job').value.trim() || 'പണി';
-                let wage = parseFloat(row.querySelector('.worker-wage').value) || 0;
+    let workerDetails = "";
+    let wagesTotal = 0;
 
-                if (wage > 0) {
-                    let nameToShow = (wName && wName !== 'തൊഴിലാളിയെ തിരഞ്ഞെടുക്കുക') ? wName : 'തൊഴിലാളി';
-                    workerDetails += `  • ${nameToShow} (${job}): ₹ ${wage}\n`;
-                    wagesTotal += wage;
-                }
-            });
+    // തൊഴിലാളി കൂലിയുടെ ലൈവ് ഇൻപുട്ടുകൾ എടുക്കുന്നു
+    const workerRows = document.querySelectorAll('.worker-row');
+    workerRows.forEach(row => {
+        const select = row.querySelector('.worker-select');
+        const opt = select && select.selectedIndex >= 0 ? select.options[select.selectedIndex] : null;
+        
+        let wName = opt ? (opt.getAttribute('data-name') || opt.text.trim()) : '';
+        if (!wName || wName.includes('തിരഞ്ഞെടുക്കുക')) {
+            wName = 'തൊഴിലാളി';
+        }
 
-            let totalExp = otherExpTotal + wagesTotal;
-            let balance = income - totalExp;
+        const jobInput = row.querySelector('.worker-job');
+        const job = jobInput ? (jobInput.value.trim() || 'പണി') : 'പണി';
 
-            let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n\n`;
-            msg += `📅 തീയതി: ${entryDate}\n`;
-            msg += `📍 സൈറ്റ്: ${siteName}\n`;
-            msg += `-----------------------------------\n`;
-            msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
-            
-            msg += `💸 *മറ്റു ചെലവുകൾ:*\n${expenseDetails ? expenseDetails : "  ചെലവുകൾ ഒന്നുമില്ല\n"}\n`;
-            msg += `👥 *തൊഴിലാളി കൂലി:*\n${workerDetails ? workerDetails : "  തൊഴിലാളി കൂലി വിവരങ്ങൾ ഇല്ല\n"}\n`;
-            
-            msg += `-----------------------------------\n`;
-            msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
-            msg += `💵 ബാലൻസ്: ₹ ${balance}\n`;
-            msg += `-----------------------------------\n`;
-            msg += `👤 ${currentMeshtri}`;
+        const wageInput = row.querySelector('.worker-wage');
+        const wage = wageInput ? (parseFloat(wageInput.value) || 0) : 0;
 
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        };
+        if (wage > 0) {
+            workerDetails += `👥 ${wName} (${job}): ₹ ${wage}\n`;
+            wagesTotal += wage;
+        }
+    });
+
+    const totalExp = otherExpTotal + wagesTotal;
+    const balance = income - totalExp;
+
+    // മെസ്സേജ് ടെക്സ്റ്റ് തയാറാക്കുന്നു
+    let msg = `🏗️ *മേസ്തിരി പ്രോ - സൈറ്റ് കണക്ക്* 🏗️\n`;
+    msg += `📅 തീയതി: ${entryDate}\n`;
+    msg += `📍 സൈറ്റ്: ${siteName}\n`;
+    msg += `--------------------------------\n`;
+    msg += `💰 ലഭിച്ച വരവ്: ₹ ${income}\n\n`;
+    msg += `💸 *ചെലവുകൾ:*\n${expenseDetails ? expenseDetails : "ചെലവുകൾ ഒന്നുമില്ല\n"}`;
+    if (workerDetails) {
+        msg += `\n${workerDetails}`;
+    }
+    msg += `\n👥 ആകെ തൊഴിലാളി കൂലി: ₹ ${wagesTotal}\n`;
+    msg += `--------------------------------\n`;
+    msg += `📉 ആകെ ചെലവ്: ₹ ${totalExp}\n`;
+    msg += `💰 ബാലൻസ്: ₹ ${balance}\n`;
+    msg += `--------------------------------\n`;
+    msg += `👤 ${typeof currentMeshtri !== 'undefined' ? currentMeshtri : 'മേസ്തിരി'}`;
+
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+};
+
+window.shareWorkersWhatsApp = function() {
+    const siteInput = document.getElementById('siteName');
+    const siteName = siteInput ? siteInput.value.trim() : "സൈറ്റ്";
+    
+    const entryDateInput = document.getElementById('entryDate');
+    const entryDate = entryDateInput ? entryDateInput.value : "";
+    
+    let workerDetails = "";
+    let totalWages = 0;
+    let index = 1;
+
+    const workerRows = document.querySelectorAll('.worker-row');
+    workerRows.forEach(row => {
+        const select = row.querySelector('.worker-select');
+        const opt = select && select.selectedIndex >= 0 ? select.options[select.selectedIndex] : null;
+        
+        let wName = opt ? (opt.getAttribute('data-name') || opt.text.trim()) : '';
+        if (!wName || wName.includes('തിരഞ്ഞെടുക്കുക')) {
+            wName = 'തൊഴിലാളി';
+        }
+
+        const jobInput = row.querySelector('.worker-job');
+        const job = jobInput ? (jobInput.value.trim() || 'പണി') : 'പണി';
+
+        const wageInput = row.querySelector('.worker-wage');
+        const wage = wageInput ? (parseFloat(wageInput.value) || 0) : 0;
+
+        if (wage > 0) {
+            workerDetails += `${index}. ${wName} (${job}) - ₹ ${wage}\n`;
+            totalWages += wage;
+            index++;
+        }
+    });
+
+    if (totalWages === 0) {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert("വാട്സാപ്പിൽ അയക്കാൻ തൊഴിലാളികളുടെ കൂലി വിവരങ്ങൾ നൽകിയിട്ടില്ല!", "ശ്രദ്ധിക്കുക");
+        } else {
+            alert("വാട്സാപ്പിൽ അയക്കാൻ തൊഴിലാളികളുടെ കൂലി വിവരങ്ങൾ നൽകിയിട്ടില്ല!");
+        }
+        return;
+    }
+
+    let msg = `👥 *തൊഴിലാളികളുടെ കൂലി കണക്ക്* 👥\n`;
+    msg += `📅 തീയതി: ${entryDate}\n`;
+    msg += `📍 സൈറ്റ്: ${siteName}\n`;
+    msg += `--------------------------------\n`;
+    msg += workerDetails;
+    msg += `--------------------------------\n`;
+    msg += `💵 ആകെ തൊഴിലാളി കൂലി: ₹ ${totalWages}\n`;
+    msg += `--------------------------------\n`;
+    msg += `👤 ${typeof currentMeshtri !== 'undefined' ? currentMeshtri : 'മേസ്തിരി'}`;
+
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+};
+
 
         window.shareWorkersWhatsApp = function() {
             const siteName = document.getElementById('siteName').value.trim() || "സൈറ്റ്";
