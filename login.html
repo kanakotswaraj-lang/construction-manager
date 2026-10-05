@@ -3,131 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മേസ്ത്രി പ്രോ - സുരക്ഷിത പ്രവേശനം</title>
+    <title>മേസ്തിരി പ്രോ - ലോഗിൻ</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="language.js"></script>
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; }
+    </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex flex-col justify-between relative overflow-x-hidden">
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- 1. Splash Screen (Logo Animation) -->
-    <div id="splashScreen" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center transition-opacity duration-700">
-        <div class="relative flex flex-col items-center">
-            <div class="w-24 h-24 bg-amber-500/10 border-2 border-amber-500 rounded-3xl flex items-center justify-center mb-4 shadow-2xl shadow-amber-500/30 animate-pulse">
-                <i class="fa-solid fa-hard-hat text-amber-400 text-4xl"></i>
-            </div>
-            <h1 class="text-2xl font-bold tracking-wider text-amber-400 mb-1">മേസ്ത്രി പ്രോ</h1>
-            <p class="text-xs text-slate-400 tracking-widest uppercase">Smart Site Manager</p>
-        </div>
-    </div>
-
-    <!-- Main Content Area -->
-    <div class="flex-grow flex items-center justify-center p-4">
-        <div class="text-center">
-            <i class="fa-solid fa-helmet-safety text-amber-400 text-5xl mb-3 animate-bounce"></i>
-            <h2 class="text-xl font-bold text-amber-400">മേസ്ത്രി പ്രോ</h2>
-            <p class="text-sm text-slate-400">സുരക്ഷിത ഡാഷ്‌ബോർഡിലേക്ക് സ്വാഗതം...</p>
-        </div>
-    </div>
-
-    <!-- 2. Modern PIN Lock Modal -->
-    <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-40">
-        <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-amber-500/30 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl relative overflow-hidden">
-            <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-amber-400 text-2xl">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-1">മേസ്ത്രി പ്രവേശനം</h3>
-            <p class="text-xs text-slate-400 mb-6">തുടരുന്നതിനായി നിങ്ങളുടെ 4 അക്ക പിൻ നൽകുക</p>
+    <!-- PIN Lock Modal -->
+    <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-700/85 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
             
-            <div class="relative mb-6">
-                <input type="password" id="appPinInput" maxlength="6" class="w-full bg-slate-900/80 border border-slate-700/80 rounded-2xl px-4 py-3.5 text-center text-3xl tracking-[1em] text-amber-400 placeholder-slate-600 focus:outline-none focus:border-amber-500 transition" placeholder="••••">
+            <div class="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-400 text-xl">
+                <i class="fa-solid fa-lock"></i>
             </div>
 
-            <button type="button" id="btnVerifyPin" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-2xl transition shadow-lg shadow-amber-500/20 mb-3">
-                അൺലോക്ക് ചെയ്യുക
+            <h3 class="text-base font-bold text-white mb-1" data-key="pin_lock_title">സുരക്ഷിത ലോഗിൻ</h3>
+            <p class="text-xs text-slate-400 mb-4" data-key="pin_lock_desc">തുടരാൻ നിങ്ങളുടെ 4 അക്ക പിൻ നമ്പർ നൽകുക</p>
+            
+            <input type="password" id="appPinInput" maxlength="4" data-key-placeholder="placeholder_pin" placeholder="••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center text-white text-lg tracking-widest focus:outline-none focus:border-amber-400 mb-4">
+            
+            <button type="button" id="btnVerifyPin" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-sm transition cursor-pointer shadow-lg" data-key="btn_open">
+                തുറക്കുക
             </button>
+        </div>
+    </div>
 
-            <!-- Forgot / Reset PIN & Full Login Switch -->
-            <div class="flex justify-between items-center text-xs mt-2 px-1">
-                <button type="button" id="btnResetPinQuick" class="text-slate-400 hover:text-amber-400 underline transition">
-                    പിൻ മാറ്റുക (Reset to 1234)
-                </button>
-                <button type="button" id="btnSwitchLogin" class="text-amber-400 hover:underline transition">
-                    മറ്റൊരു അക്കൗണ്ട്? (Login)
-                </button>
+    <!-- Header Container -->
+    <div class="w-full max-w-sm mx-auto mb-4">
+        <div id="appHeader" class="w-full"></div>
+    </div>
+
+    <!-- Login Box -->
+    <div class="w-full max-w-sm bg-slate-900/90 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
+        
+        <h2 class="text-xl font-bold text-white mb-1" data-key="login_heading">ലോഗിൻ ചെയ്യുക</h2>
+        <p class="text-xs text-slate-400 mb-5" data-key="login_subheading">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
+
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="label_username">യൂസർനെയിം (പേര്)</label>
+                <input type="text" id="username" data-key-placeholder="placeholder_username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="label_password">പാസ്‌വേർഡ്</label>
+                <div class="relative">
+                    <input type="password" id="password" data-key-placeholder="placeholder_password" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
+                    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2 cursor-pointer">
+                        <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button id="btnLogin" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition duration-200 text-sm cursor-pointer" data-key="btn_login">
+                ലോഗിൻ ചെയ്യാം
+            </button>
+        </div>
+
+        <div class="mt-4 text-center">
+            <button type="button" id="btnForgotOpen" class="text-xs text-amber-400/90 hover:underline bg-transparent border-none cursor-pointer" data-key="btn_forgot">പാസ്‌വേർഡ് മറന്നുപോയോ?</button>
+        </div>
+    </div>
+
+    <div class="mt-6 text-center text-xs text-slate-400">
+        <span data-key="no_account_text">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
+        <a href="register.html" class="text-amber-400 font-bold hover:underline ml-1" data-key="link_register">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+            
+            <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
+            <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
+            
+            <input type="tel" id="forgotPhone" data-key-placeholder="placeholder_phone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
+            
+            <div class="flex gap-2">
+                <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
+                <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_verify">പരിശോധിക്കുക</button>
             </div>
         </div>
     </div>
 
-    <!-- Script -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const splashScreen = document.getElementById("splashScreen");
+<!-- Script Section -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { setupHeader } from './header.js';
+
+    function updateLanguageUI() {
+        const savedLang = localStorage.getItem('selectedLang') || 'ml';
+        
+        if (typeof updatePageLanguage === "function") {
+            updatePageLanguage(savedLang);
+        } else if (typeof window.switchLanguage === "function") {
+            window.switchLanguage(savedLang);
+        }
+
+        if (typeof words !== 'undefined') {
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (words[key] && words[key][savedLang]) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = words[key][savedLang];
+                    } else {
+                        element.innerText = words[key][savedLang];
+                    }
+                }
+            });
+
+            document.querySelectorAll('[data-key-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-key-placeholder');
+                if (words[key] && words[key][savedLang]) {
+                    element.placeholder = words[key][savedLang];
+                }
+            });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        try {
+            if (typeof setupHeader === "function") {
+                setupHeader('appHeader', false);
+            }
+        } catch (err) {
+            console.error("Header Error:", err);
+        }
+
+        try {
+            updateLanguageUI();
+        } catch (err) {
+            console.error("Language Error:", err);
+        }
+
+        window.addEventListener('languageChanged', () => {
+            updateLanguageUI();
+        });
+
+        // PIN Lock logic
+        try {
             const pinModal = document.getElementById("pinLockModal");
             const pinInput = document.getElementById("appPinInput");
             const btnVerifyPin = document.getElementById("btnVerifyPin");
-            const btnResetPinQuick = document.getElementById("btnResetPinQuick");
-            const btnSwitchLogin = document.getElementById("btnSwitchLogin");
+            const savedPin = localStorage.getItem("appPin") || "1234";
 
-            // Hide splash screen after 1.2 seconds
-            setTimeout(() => {
-                if (splashScreen) {
-                    splashScreen.style.opacity = "0";
-                    setTimeout(() => {
-                        splashScreen.style.display = "none";
-                    }, 500);
-                }
-            }, 1200);
-
-            // Quick Reset PIN
-            if (btnResetPinQuick) {
-                btnResetPinQuick.onclick = () => {
-                    localStorage.setItem("appPin", "1234");
-                    alert("പിൻ നമ്പർ വിജയകരമായി '1234' എന്ന് മാറ്റിയിരിക്കുന്നു!");
-                    if (pinInput) pinInput.value = "1234";
-                };
-            }
-
-            // Switch to full login page if user wants to change account
-            if (btnSwitchLogin) {
-                btnSwitchLogin.onclick = () => {
-                    window.location.href = "login_full.html"; // നിങ്ങളുടെ പഴയ ഫുൾ ലോഗിൻ പേജ് ഫയൽ നെയിം ഇവിടെ നൽകാം
-                };
-            }
-
-            // Verify PIN and enter Dashboard while maintaining Owner/Meshtri context
-            const verifyAndEnter = () => {
-                const inputVal = pinInput.value.trim();
-                const savedPin = localStorage.getItem("appPin") || "1234";
-
-                if (inputVal === "1234" || inputVal === savedPin) {
-                    pinModal.classList.add("hidden");
-                    pinModal.classList.remove("flex");
-                    
-                    // മേസ്ത്രി/ഓണർ പ്രൊഫൈൽ സെറ്റ് ചെയ്തിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുന്നു
-                    const savedUser = localStorage.getItem('userName');
-                    
-                    if (!savedUser) {
-                        // ആദ്യമായിട്ടാണ് വരുന്നതെങ്കിൽ ലോഗിൻ പേജിലേക്ക് വിടാം
-                        window.location.href = "login_full.html";
+            if (btnVerifyPin && pinModal && pinInput) {
+                btnVerifyPin.addEventListener("click", () => {
+                    if (pinInput.value.trim() === savedPin) {
+                        pinModal.classList.add("hidden");
+                        pinModal.classList.remove("flex");
                     } else {
-                        // നിലവിലെ മേസ്ത്രി പ്രൊഫൈൽ നിലനിർത്തിക്കൊണ്ട് നേരെ ഡാഷ്‌ബോർഡിലേക്ക്
-                        window.location.href = "dashboard.html";
+                        alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
+                        pinInput.value = "";
                     }
-                } else {
-                    alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
-                    pinInput.value = "";
-                }
-            };
-
-            if (btnVerifyPin) {
-                btnVerifyPin.addEventListener("click", verifyAndEnter);
-            }
-            if (pinInput) {
-                pinInput.addEventListener("keypress", (e) => {
-                    if (e.key === "Enter") verifyAndEnter();
                 });
             }
+        } catch (err) {
+            console.error("PIN Lock Error:", err);
+        }
+
+        // --- പാസ്‌വേർഡ് മറന്നുപോയോ (Forgot Password Modal) ലോജിക് ---
+        const forgotModal = document.getElementById("forgotModal");
+        const btnForgotOpen = document.getElementById("btnForgotOpen");
+        const btnForgotClose = document.getElementById("btnForgotClose");
+        const btnGetDetails = document.getElementById("btnGetDetails");
+        const forgotPhoneInput = document.getElementById("forgotPhone");
+
+        if (btnForgotOpen && forgotModal) {
+            btnForgotOpen.addEventListener("click", () => {
+                forgotModal.classList.remove("hidden");
+                forgotModal.classList.add("flex");
+            });
+        }
+
+        if (btnForgotClose && forgotModal) {
+            btnForgotClose.addEventListener("click", () => {
+                forgotModal.classList.add("hidden");
+                forgotModal.classList.remove("flex");
+            });
+        }
+
+        if (btnGetDetails) {
+            btnGetDetails.addEventListener("click", async () => {
+                const phone = forgotPhoneInput.value.trim();
+                if (!phone) {
+                    alert("ദയവായി നിങ്ങളുടെ ഫോൺ നമ്പർ നൽകുക!");
+                    return;
+                }
+
+                try {
+                    const usersRef = ref(db, 'users');
+                    const snapshot = await get(usersRef);
+
+                    if (snapshot.exists()) {
+                        let userFound = false;
+
+                        snapshot.forEach((childSnapshot) => {
+                            const data = childSnapshot.val();
+                            const userPhone = (data.phone || data.mobile || "").toString().trim();
+
+                            if (userPhone === phone) {
+                                userFound = true;
+                                
+                                // 1. നിലവിൽ തിരഞ്ഞെടുത്ത ഭാഷ ലൊക്കേഷൻ സ്റ്റോറേജിൽ നിന്ന് എടുക്കുന്നു
+                                const savedLang = localStorage.getItem('selectedLang') || 'ml';
+
+                                // 2. തത്സമയ ഭാഷയ്ക്കനുസരിച്ച് വാക്കുകൾ എടുക്കുന്നു
+                                const headerTxt = (typeof words !== 'undefined' && words.alert_login_details && words.alert_login_details[savedLang]) ? words.alert_login_details[savedLang] : "നിങ്ങളുടെ ലോഗിൻ വിവരങ്ങൾ:";
+                                const userTxt = (typeof words !== 'undefined' && words.label_user_text && words.label_user_text[savedLang]) ? words.label_user_text[savedLang] : "യൂസർനെയിം";
+                                const passTxt = (typeof words !== 'undefined' && words.label_pass_text && words.label_pass_text[savedLang]) ? words.label_pass_text[savedLang] : "പാസ്‌വേർഡ്";
+
+                                // 3. തത്സമയ ഭാഷയിലുള്ള Alert കാണിക്കുന്നു
+                                alert(`${headerTxt}\n${userTxt}: ${data.username || childSnapshot.key}\n${passTxt}: ${data.password}`);
+
+                                forgotModal.classList.add("hidden");
+                                forgotModal.classList.remove("flex");
+                            }
+                        });
+
+                        if (!userFound) {
+                            alert("ഈ ഫോൺ നമ്പറിൽ അക്കൗണ്ട് ഒന്നും കണ്ടെത്തിയില്ല!");
+                        }
+                    } else {
+                        alert("ഡാറ്റാബേസിൽ വിവരങ്ങൾ ലഭ്യമല്ല.");
+                    }
+                } catch (err) {
+                    console.error("Forgot Pass Error:", err);
+                    alert("പിശക് സംഭവിച്ചു: " + err.message);
+                }
+            });
+        }
+    });
+
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
+        authDomain: "mesthri-app.firebaseapp.com",
+        databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
+        projectId: "mesthri-app",
+        storageBucket: "mesthri-app.firebasestorage.app",
+        messagingSenderId: "1060617901864",
+        appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
+        measurementId: "G-J9Y5TW9D7T"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const togglePasswordBtn = document.getElementById("togglePassword");
+    const eyeIcon = document.getElementById("eyeIcon");
+    const btnLogin = document.getElementById("btnLogin");
+
+    if (togglePasswordBtn && passwordInput && eyeIcon) {
+        togglePasswordBtn.addEventListener("click", () => {
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+            eyeIcon.classList.toggle("fa-eye");
+            eyeIcon.classList.toggle("fa-eye-slash");
         });
-    </script>
+    }
+
+    if (btnLogin) {
+        btnLogin.addEventListener("click", async () => {
+            const userInput = usernameInput.value.trim();
+            const passInput = passwordInput.value.trim();
+
+            if (!userInput || !passInput) {
+                alert('ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!');
+                return;
+            }
+
+            try {
+                const usersRef = ref(db, 'users');
+                const snapshot = await get(usersRef);
+
+                if (snapshot.exists()) {
+                    let matchedUserData = null;
+
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        const dbUsername = (data.username || childSnapshot.key || "").toString().trim();
+
+                        if (dbUsername.toLowerCase() === userInput.toLowerCase()) {
+                            matchedUserData = data;
+                        }
+                    });
+
+                    if (matchedUserData) {
+                        if (matchedUserData.password === passInput) {
+                            // 1. നിലവിൽ തിരഞ്ഞെടുത്ത ഭാഷ localstorage-ൽ നിന്ന് എടുക്കുന്നു
+                            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+                            
+                            // 2. language.js-ൽ നിന്ന് അതിനുള്ള തർജ്ജിമ എടുക്കുന്നു (ലഭ്യമല്ലെങ്കിൽ മലയാളം കാണിക്കും)
+                            const alertMessage = (typeof words !== 'undefined' && words.alert_login_success && words.alert_login_success[savedLang]) 
+                                ? words.alert_login_success[savedLang] 
+                                : "ലോഗിൻ വിജയകരമാണ്!";
+
+                            // 3. തത്സമയ ഭാഷയിലുള്ള Alert കാണിക്കുന്നു
+                            alert(alertMessage);
+
+                            localStorage.setItem('userName', userInput.toLowerCase());
+
+                            setTimeout(() => {
+                                window.location.href = "dashboard.html";
+                            }, 500);
+                        } else {
+                            alert('നൽകിയ പാസ്‌വേർഡ് തെറ്റാണ്!');
+                        }
+                    } else {
+                        alert('ഈ പേരിൽ അക്കൗണ്ട് കണ്ടെത്താനായില്ല!');
+                    }
+                } else {
+                    alert('അക്കൗണ്ടുകൾ ലഭ്യമല്ല.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Firebase Error: " + err.message);
+            }
+        });
+    }
+</script>
 </body>
 </html>
