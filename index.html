@@ -44,13 +44,13 @@
         <div class="space-y-3 pt-2">
             <input type="password" id="userPinInput" maxlength="4" placeholder="••••" class="w-40 bg-slate-900/90 border-2 border-slate-700 rounded-2xl px-4 py-3 text-center text-2xl tracking-widest text-amber-400 focus:outline-none focus:border-amber-400 mx-auto block shadow-inner">
 
-            <button onclick="verifyPin()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black py-3 rounded-2xl text-base shadow-xl transition cursor-pointer">
+            <button type="button" onclick="verifyPin()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black py-3 rounded-2xl text-base shadow-xl transition cursor-pointer">
                 അൺലോക്ക് ചെയ്യുക
             </button>
         </div>
 
         <div class="flex items-center justify-between text-xs pt-3 border-t border-slate-800">
-            <a href="#" onclick="resetPinPrompt()" class="text-slate-400 hover:text-amber-400 transition">പിൻ റീസെറ്റ് ചെയ്യുക (1234)</a>
+            <a href="#" onclick="resetPinPrompt(); return false;" class="text-slate-400 hover:text-amber-400 transition">പിൻ റീസെറ്റ് ചെയ്യുക (1234)</a>
             <a href="login.html" class="text-amber-400 font-bold hover:underline">യൂസർനെയിം/പാസ്‌വേർഡ് ലോഗിൻ</a>
         </div>
     </div>
@@ -63,23 +63,24 @@
     </div>
 
     <script>
-        window.verifyPin = function() {
-            const enteredPin = document.getElementById('userPinInput').value.trim();
+        function verifyPin() {
+            const pinInput = document.getElementById('userPinInput');
+            const enteredPin = pinInput.value.trim();
             const savedPin = localStorage.getItem('appPin') || "1234";
 
             if (enteredPin === savedPin) {
                 sessionStorage.setItem('isUnlocked', 'true');
                 window.location.href = "dashboard.html";
             } else {
-                alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്. ദയവായി വീണ്ടും ശ്രമിക്കുക.");
-                document.getElementById('userPinInput').value = "";
+                alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്. (സ്ഥിരമായ പിൻ: 1234)");
+                pinInput.value = "";
             }
-        };
+        }
 
-        window.resetPinPrompt = function() {
+        function resetPinPrompt() {
             localStorage.setItem('appPin', "1234");
             alert("പിൻ നമ്പർ വിജയകരമായി '1234' എന്ന് റീസെറ്റ് ചെയ്തിരിക്കുന്നു!");
-        };
+        }
     </script>
 </body>
 </html>
