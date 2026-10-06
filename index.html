@@ -29,7 +29,7 @@
 
 <body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col items-center justify-between p-6">
 
-    <!-- മുകളിൽ മേസ്തിരി പ്രോ ലോഗോ (വലിപ്പം കൂട്ടിയതും മിന്നുന്നതുമായ എഫക്റ്റ്) -->
+    <!-- മുകളിൽ മേസ്തിരി പ്രോ ലോഗോ -->
     <div class="pt-12">
         <div class="w-36 h-36 bg-amber-500/20 border-2 border-amber-500/60 rounded-3xl mx-auto flex items-center justify-center overflow-hidden shadow-2xl p-2 animate-glow">
             <img src="icon.png" alt="Meshtri Pro" class="w-full h-full object-cover rounded-2xl">
@@ -39,7 +39,7 @@
     <!-- സെന്ററിൽ പിൻ ലോക്ക് / ലോഗിൻ ബോക്സ് -->
     <div class="space-y-4 max-w-sm w-full bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 shadow-xl text-center my-auto">
         <h3 class="font-black text-xl text-white">മേസ്തിരി പ്രോ സുരക്ഷാ ലോഗിൻ</h3>
-        <p class="text-xs text-slate-300 font-medium">തുടരുന്നതിനായി നിങ്ങളുടെ 4 അക്ക പിൻ നൽകുക അല്ലെങ്കിൽ ലോഗിൻ ചെയ്യുക</p>
+        <p class="text-xs text-slate-300 font-medium">തുടരുന്നതിനായി നിങ്ങളുടെ 4 അക്ക പിൻ നൽകുക</p>
         
         <div class="space-y-3 pt-2">
             <input type="password" id="userPinInput" maxlength="4" placeholder="••••" class="w-40 bg-slate-900/90 border-2 border-slate-700 rounded-2xl px-4 py-3 text-center text-2xl tracking-widest text-amber-400 focus:outline-none focus:border-amber-400 mx-auto block shadow-inner">
@@ -50,8 +50,8 @@
         </div>
 
         <div class="flex items-center justify-between text-xs pt-3 border-t border-slate-800">
-            <a href="#" onclick="resetPinPrompt(); return false;" class="text-slate-400 hover:text-amber-400 transition">പിൻ റീസെറ്റ് ചെയ്യുക (1234)</a>
-            <a href="login.html" class="text-amber-400 font-bold hover:underline">യൂസർനെയിം/പാസ്‌വേർഡ് ലോഗിൻ</a>
+            <a href="#" onclick="resetPinPrompt(); return false;" class="text-slate-400 hover:text-amber-400 transition">പിൻ റീസെറ്റ് (1234)</a>
+            <a href="login.html" class="text-amber-400 font-bold hover:underline">യൂസർനെയിം ലോഗിൻ</a>
         </div>
     </div>
 
@@ -63,6 +63,15 @@
     </div>
 
     <script>
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ യൂസർ ലോഗൗട്ട് ചെയ്തിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുക
+        window.onload = function() {
+            const isLoggedOut = localStorage.getItem('isLoggedOut');
+            if (isLoggedOut === 'true') {
+                // ലോഗൗട്ട് ചെയ്തിട്ടുണ്ടെങ്കിൽ നേരെ login.html-ലേക്ക് വിടുക
+                window.location.href = "login.html";
+            }
+        };
+
         function verifyPin() {
             const pinInput = document.getElementById('userPinInput');
             const enteredPin = pinInput.value.trim();
@@ -70,6 +79,7 @@
 
             if (enteredPin === savedPin) {
                 sessionStorage.setItem('isUnlocked', 'true');
+                localStorage.removeItem('isLoggedOut'); // ലോഗൗട്ട് സ്റ്റാറ്റസ് മാറ്റുക
                 window.location.href = "dashboard.html";
             } else {
                 alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്. (സ്ഥിരമായ പിൻ: 1234)");
@@ -84,3 +94,4 @@
     </script>
 </body>
 </html>
+എം
