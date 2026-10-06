@@ -148,14 +148,18 @@ if (!sessionStorage.getItem('isUnlocked')) {
     window.location.href = "index.html";
 }
 
-// ലോഗ് ഔട്ട് ഫങ്ഷൻ അപ്ഡേറ്റ് ചെയ്യുക
+// ലോഗ് ഔട്ട് ഫങ്ഷൻ
 window.logoutUser = function() {
     sessionStorage.removeItem('isUnlocked');
     localStorage.removeItem('userName');
     localStorage.removeItem('profilePhoto');
     localStorage.removeItem('coverPhoto');
+    
+    // ഈ രണ്ട് വരികൾ തീർച്ചയായും ഉണ്ടെന്ന് ഉറപ്പുവരുത്തുക:
     localStorage.setItem('isLoggedOut', 'true');
-window.location.href = 'login.html';
+    window.location.href = "login.html";
+};
+
 
 // പേജിൽ നിന്ന് പുറത്തുപോകുമ്പോൾ അല്ലെങ്കിൽ ആപ്പ് ക്ലോസ് ചെയ്യുമ്പോൾ സെഷൻ ലോക്ക് ചെയ്യുക
 window.addEventListener('beforeunload', () => {
