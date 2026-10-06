@@ -157,6 +157,10 @@ window.logoutUser = function() {
     window.location.href = "index.html";
 };
 
+// പേജിൽ നിന്ന് പുറത്തുപോകുമ്പോൾ അല്ലെങ്കിൽ ആപ്പ് ക്ലോസ് ചെയ്യുമ്പോൾ സെഷൻ ലോക്ക് ചെയ്യുക
+window.addEventListener('beforeunload', () => {
+    sessionStorage.removeItem('isUnlocked');
+});
 
         document.addEventListener("DOMContentLoaded", async () => {
             if (typeof setupHeader === 'function') {
