@@ -10,7 +10,6 @@
     <style>
         body { font-family: 'Manjari', sans-serif; }
         
-        /* മിന്നിമറയുന്ന/ഗ്ലോ ചെയ്യുന്ന എഫക്റ്റിനുള്ള ആനിമേഷൻ */
         @keyframes pulseGlow {
             0%, 100% {
                 transform: scale(1);
@@ -29,19 +28,20 @@
 
 <body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col items-center justify-between p-6">
 
-    <!-- മുകളിൽ മേസ്തിരി പ്രോ ലോഗോ -->
+    <!-- ലോഗോ ഭാഗം -->
     <div class="pt-12">
         <div class="w-36 h-36 bg-amber-500/20 border-2 border-amber-500/60 rounded-3xl mx-auto flex items-center justify-center overflow-hidden shadow-2xl p-2 animate-glow">
             <img src="icon.png" alt="Meshtri Pro" class="w-full h-full object-cover rounded-2xl">
         </div>
     </div>
 
-    <!-- സെന്ററിൽ പിൻ ലോക്ക് / ലോഗിൻ ബോക്സ് -->
+    <!-- പിൻ ലോക്ക് ബോക്സ് -->
     <div class="space-y-4 max-w-sm w-full bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 shadow-xl text-center my-auto">
-        <h3 class="font-black text-xl text-white">മേസ്തിരി പ്രോ സുരക്ഷാ ലോഗിൻ</h3>
+        <h3 class="font-black text-xl text-white">സുരക്ഷാ പിൻ ലോക്ക്</h3>
         <p class="text-xs text-slate-300 font-medium">തുടരുന്നതിനായി നിങ്ങളുടെ 4 അക്ക പിൻ നൽകുക</p>
         
         <div class="space-y-3 pt-2">
+            <!-- പ്രധാനപ്പെട്ട മാറ്റം: ID 'userPinInput' എന്ന് കൃത്യമായി നൽകിയിരിക്കുന്നു -->
             <input type="password" id="userPinInput" maxlength="4" placeholder="••••" class="w-40 bg-slate-900/90 border-2 border-slate-700 rounded-2xl px-4 py-3 text-center text-2xl tracking-widest text-amber-400 focus:outline-none focus:border-amber-400 mx-auto block shadow-inner">
 
             <button type="button" onclick="verifyPin()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black py-3 rounded-2xl text-base shadow-xl transition cursor-pointer">
@@ -50,8 +50,8 @@
         </div>
 
         <div class="flex items-center justify-between text-xs pt-3 border-t border-slate-800">
-            <a href="#" onclick="resetPinPrompt(); return false;" class="text-slate-400 hover:text-amber-400 transition">പിൻ റീസെറ്റ് (1234)</a>
-            <a href="login.html" class="text-amber-400 font-bold hover:underline">യൂസർനെയിം ലോഗിൻ</a>
+            <a href="#" onclick="resetPinPrompt(); return false;" class="text-slate-400 hover:text-amber-400 transition">പിൻ റീസെറ്റ് ചെയ്യുക (1234)</a>
+            <a href="login.html" class="text-amber-400 font-bold hover:underline">മറ്റൊരു അക്കൗണ്ട്?</a>
         </div>
     </div>
 
@@ -67,31 +67,33 @@
         window.onload = function() {
             const isLoggedOut = localStorage.getItem('isLoggedOut');
             if (isLoggedOut === 'true') {
-                // ലോഗൗട്ട് ചെയ്തിട്ടുണ്ടെങ്കിൽ നേരെ login.html-ലേക്ക് വിടുക
                 window.location.href = "login.html";
             }
         };
 
+        // പിൻ വെരിഫൈ ചെയ്യുന്ന ഫങ്ഷൻ
         function verifyPin() {
             const pinInput = document.getElementById('userPinInput');
+            if (!pinInput) return;
+            
             const enteredPin = pinInput.value.trim();
             const savedPin = localStorage.getItem('appPin') || "1234";
 
             if (enteredPin === savedPin) {
                 sessionStorage.setItem('isUnlocked', 'true');
-                localStorage.removeItem('isLoggedOut'); // ലോഗൗട്ട് സ്റ്റാറ്റസ് മാറ്റുക
+                localStorage.removeItem('isLoggedOut'); // ലോഗൗട്ട് സ്റ്റാറ്റസ് ഒഴിവാക്കുക
                 window.location.href = "dashboard.html";
             } else {
-                alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്. (സ്ഥിരമായ പിൻ: 1234)");
+                alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്! (സ്ഥിരമായ പിൻ: 1234)");
                 pinInput.value = "";
             }
         }
 
+        // പിൻ റീസെറ്റ് ചെയ്യാനുള്ള ഫങ്ഷൻ
         function resetPinPrompt() {
             localStorage.setItem('appPin', "1234");
-            alert("പിൻ നമ്പർ വിജയകരമായി '1234' എന്ന് റീസെറ്റ് ചെയ്തിരിക്കുന്നു!");
+            alert("പിൻ നമ്പർ വിജയകരമായി '1234' എന്ന് റീസെറ്റ് ചെയ്തിരിക്കുന്നു! ഇപ്പോൾ ഈ പിൻ ഉപയോഗിച്ച് അൺലോക്ക് ചെയ്യാം.");
         }
     </script>
 </body>
 </html>
-എം
