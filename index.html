@@ -9,22 +9,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Manjari', sans-serif; }
+        
+        /* മിന്നിമറയുന്ന/ഗ്ലോ ചെയ്യുന്ന എഫക്റ്റിനുള്ള ആനിമേഷൻ */
+        @keyframes pulseGlow {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(245, 158, 11, 0.8);
+            }
+        }
+        .animate-glow {
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
     </style>
 </head>
 
 <body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col items-center justify-between p-6">
 
-    <!-- മുകളിൽ ലോഗോ മാത്രം -->
-    <div class="pt-6">
-        <div class="w-28 h-28 bg-amber-500/20 border border-amber-500/40 rounded-2xl mx-auto flex items-center justify-center overflow-hidden shadow-lg p-1">
-            <img src="icon.png" alt="Meshtri Pro" class="w-full h-full object-cover rounded-xl">
+    <!-- മുകളിൽ മേസ്തിരി പ്രോ ലോഗോ (വലിപ്പം കൂട്ടിയതും മിന്നുന്നതുമായ എഫക്റ്റ്) -->
+    <div class="pt-12">
+        <div class="w-36 h-36 bg-amber-500/20 border-2 border-amber-500/60 rounded-3xl mx-auto flex items-center justify-center overflow-hidden shadow-2xl p-2 animate-glow">
+            <img src="icon.png" alt="Meshtri Pro" class="w-full h-full object-cover rounded-2xl">
         </div>
     </div>
 
-    <!-- സെന്ററിൽ പിൻ ലോക്ക് ബോക്സ് മാത്രം -->
+    <!-- സെന്ററിൽ പിൻ ലോക്ക് / ലോഗിൻ ബോക്സ് -->
     <div class="space-y-4 max-w-sm w-full bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 shadow-xl text-center my-auto">
-        <h3 class="font-black text-xl text-white">സുരക്ഷാ പിൻ ലോക്ക്</h3>
-        <p class="text-xs text-slate-300 font-medium">തുടരുന്നതിനായി നിങ്ങളുടെ 4 അക്ക പിൻ നൽകുക</p>
+        <h3 class="font-black text-xl text-white">മേസ്തിരി പ്രോ സുരക്ഷാ ലോഗിൻ</h3>
+        <p class="text-xs text-slate-300 font-medium">തുടരുന്നതിനായി നിങ്ങളുടെ 4 അക്ക പിൻ നൽകുക അല്ലെങ്കിൽ ലോഗിൻ ചെയ്യുക</p>
         
         <div class="space-y-3 pt-2">
             <input type="password" id="userPinInput" maxlength="4" placeholder="••••" class="w-40 bg-slate-900/90 border-2 border-slate-700 rounded-2xl px-4 py-3 text-center text-2xl tracking-widest text-amber-400 focus:outline-none focus:border-amber-400 mx-auto block shadow-inner">
@@ -36,7 +51,7 @@
 
         <div class="flex items-center justify-between text-xs pt-3 border-t border-slate-800">
             <a href="#" onclick="resetPinPrompt()" class="text-slate-400 hover:text-amber-400 transition">പിൻ റീസെറ്റ് ചെയ്യുക (1234)</a>
-            <a href="login.html" class="text-amber-400 font-bold hover:underline">മറ്റൊരു അക്കൗണ്ട്?</a>
+            <a href="login.html" class="text-amber-400 font-bold hover:underline">യൂസർനെയിം/പാസ്‌വേർഡ് ലോഗിൻ</a>
         </div>
     </div>
 
