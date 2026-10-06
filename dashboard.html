@@ -341,21 +341,51 @@ window.addEventListener('beforeunload', () => {
         };
 
         function fetchDashboardData(db, currentMeshtri) {
-            const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
-            
-            onSnapshot(q, (snapshot) => {
-                let totalInc = 0;
-                let totalExp = 0;
+    const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
+    
+    onSnapshot(q, (snapshot) => {
+        let totalInc = 0;
+        let totalExp = 0;
 
-                snapshot.forEach(docSnap => {
-                    const d = docSnap.data();
-                    let amount = parseFloat(d.amount) || 0;
-                    if (d.type === 'income') {
-                        totalInc += amount;
-                    } else {
-                        totalExp += amount;
-                    }
-                });
+        snapshot.forEach(docSnap => {
+            const d = docSnap.data();
+            let amount = parseFloat(d.amount) || 0;
+            
+            // ടൈപ്പ് പരിശോധിച്ചു വരുമാനവും ചെലവും കൃത്യമായി തിരിക്കുന്നു
+            if (d.type === 'income') {
+                totalInc += amount;
+            } else if (d.type === 'expense' || d.type === 'other' || d.type === 'wage') {
+                totalExp += amount;
+            }
+        });
+
+        let net = totalInc - totalExp;
+        
+        const incEl = document.getElementById('statIncome');
+        const expEl = document.getElementById('statExpense');
+        const netEl = document.getElementById('statNet');
+
+        if (incEl) incEl.innerText = totalInc.toLocaleString('en-IN');
+        if (expEl) expEl.innerText = totalExp.toLocaleString('en-IN');
+        
+        if (netEl) {
+            netEl.innerText = Math.abs(net).toLocaleString('en-IN');
+            
+            const netCard = document.getElementById('netCard');
+            const netTitle = netCard ? netCard.querySelector('.lang') : null;
+            
+            // ലാഭമാണോ നഷ്ടമാണോ എന്ന് നോക്കി ഡിസ്പ്ലേ മാറ്റുന്നു
+            if (net >= 0) {
+                netEl.className = "text-sm font-black text-emerald-300";
+                if(netTitle) netTitle.innerText = "ലാഭം";
+            } else {
+                netEl.className = "text-sm font-black text-amber-300";
+                if(netTitle) netTitle.innerText = "നഷ്ടം";
+            }
+        }
+    });
+}
+
 
                 let net = totalInc - totalExp;
                 const incEl = document.getElementById('statIncome');
