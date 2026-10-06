@@ -36,46 +36,40 @@
         <p class="lang text-base text-blue-200 mt-1 font-bold" data-key="appSubtitle">പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ</p>
     </div>
 
-    <!-- കാർഡുകൾ -->
-    <div class="space-y-4 my-4 max-w-sm mx-auto w-full">
-        <div class="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-blue-500/30 flex items-center gap-4 shadow-xl hover:border-amber-400/50 transition">
-            <div class="bg-amber-500/20 p-3.5 rounded-xl text-amber-400 text-2xl font-bold">👥</div>
-            <div>
-                <h3 class="lang font-black text-base text-white" data-key="workersWageTitle">തൊഴിലാളികളുടെ കൂലി</h3>
-                <p class="lang text-sm text-slate-300 font-medium mt-0.5" data-key="workersWageDesc">ഫുൾ ഡേ, ഹാഫ് ഡേ, ഓവർടൈം കണക്കുകൾ.</p>
-            </div>
+    <!-- പ്രധാന പിൻ ലോക്ക് ബോക്സ് (സുരക്ഷാ പിൻ നൽകാൻ) -->
+    <div class="space-y-4 my-4 max-w-sm mx-auto w-full bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 shadow-xl text-center">
+        <div class="w-12 h-12 bg-amber-500/20 border border-amber-500/40 rounded-xl mx-auto flex items-center justify-center text-2xl shadow-lg">
+            🛡️
         </div>
-        <div class="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-blue-500/30 flex items-center gap-4 shadow-xl hover:border-amber-400/50 transition">
-            <div class="bg-blue-500/20 p-3.5 rounded-xl text-blue-400 text-2xl font-bold">🏠</div>
-            <div>
-                <h3 class="lang font-black text-base text-white" data-key="siteHistoryTitle">സൈറ്റ് ഹിസ്റ്ററി</h3>
-                <p class="lang text-sm text-slate-300 font-medium mt-0.5" data-key="siteHistoryDesc">ഓരോ തൊഴിലാളിയും ഏത് സൈറ്റിൽ.</p>
-            </div>
-        </div>
-        <div class="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-blue-500/30 flex items-center gap-4 shadow-xl hover:border-amber-400/50 transition">
-            <div class="bg-emerald-500/20 p-3.5 rounded-xl text-emerald-400 text-2xl font-bold">📱</div>
-            <div>
-                <h3 class="lang font-black text-base text-white" data-key="whatsappShareTitle">വാട്സാപ്പ് ഷെയറിങ്</h3>
-                <p class="lang text-sm text-slate-300 font-medium mt-0.5" data-key="whatsappShareDesc">കണക്കുകൾ ഒറ്റക്ലിക്കിൽ അയക്കാം.</p>
-            </div>
+        <h3 class="lang font-black text-lg text-white" data-key="pinLockHeading">സുരക്ഷാ പിൻ ലോക്ക്</h3>
+        <p class="lang text-xs text-slate-300 font-medium" data-key="pinLockDesc">തുടരുന്നതിനായി നിങ്ങളുടെ 4 അക്ക പിൻ നൽകുക</p>
+        
+        <div class="space-y-3 pt-2">
+            <input type="password" id="userPinInput" maxlength="4" placeholder="••••" class="w-40 bg-slate-900/90 border-2 border-slate-700 rounded-2xl px-4 py-3 text-center text-2xl tracking-widest text-amber-400 focus:outline-none focus:border-amber-400 mx-auto block shadow-inner">
+
+            <button onclick="verifyPin()" class="lang w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black py-3 rounded-2xl text-base shadow-xl transition cursor-pointer" data-key="unlockBtn">
+                അൺലോക്ക് ചെയ്യുക
+            </button>
         </div>
     </div>
 
-    <!-- ബട്ടണുകൾ -->
+    <!-- മറ്റ് ഓപ്ഷനുകൾ (രജിസ്ട്രേഷനും ലോഗിനും) -->
     <div class="max-w-sm mx-auto w-full space-y-3.5 pb-4">
-        <a href="login.html" class="lang block w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-center p-4 rounded-2xl font-black text-lg shadow-xl shadow-amber-950/40 transition" data-key="loginBtn">
-            ലോഗിൻ ചെയ്യാം
+        <div class="flex items-center justify-between text-xs px-1">
+            <a href="#" onclick="resetPinPrompt()" class="lang text-slate-400 hover:text-amber-400 transition" data-key="resetPinText">പിൻ റീസെറ്റ് ചെയ്യുക (1234)</a>
+            <a href="login.html" class="lang text-amber-400 font-bold hover:underline" data-key="otherAccountText">മറ്റൊരു അക്കൗണ്ട്? (Login)</a>
+        </div>
+
+        <a href="register.html" data-key="indexNewRegBtn" class="block w-full bg-slate-900/90 hover:bg-slate-800 text-blue-300 border-2 border-blue-500/50 text-center p-3.5 rounded-2xl font-bold text-sm transition">
+            പുതിയ രജിസ്ട്രേഷൻ
         </a>
-        <a href="register.html" data-key="indexNewRegBtn" class="block w-full bg-slate-900/90 hover:bg-slate-800 text-blue-300 border-2 border-blue-500/50 text-center p-4 rounded-2xl font-bold text-base transition">
-    പുതിയ രജിസ്ട്രേഷൻ
-</a>
 
         <p class="lang text-center text-xs text-slate-400 font-bold pt-2" data-key="footerCredit">
             മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
         </p>
     </div>
 
-    <!-- ജാവാസ്ക്രിപ്റ്റ് വഴി ഹെഡറും മോഡലും ലോഡ് ചെയ്യുന്നു ഒപ്പം ഭാഷ സെറ്റ് ചെയ്യാനും -->
+    <!-- ജാവാസ്ക്രിപ്റ്റ് വഴി ഹെഡറും മോഡലും ലോഡ് ചെയ്യുന്നു ഒപ്പം പിൻ വെരിഫിക്കേഷനും -->
     <script type="module">
         import { setupHeader } from './header.js';
         import { setupModal } from './modal.js';
@@ -107,6 +101,24 @@
                 }
             }
         });
+
+        // പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
+        window.verifyPin = function() {
+            const enteredPin = document.getElementById('userPinInput').value.trim();
+            const savedPin = localStorage.getItem('appPin') || "1234"; // ഡിഫോൾട്ട് പിൻ 1234
+
+            if (enteredPin === savedPin) {
+                window.location.href = "dashboard.html";
+            } else {
+                alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്. ദയവായി വീണ്ടും ശ്രമിക്കുക.");
+                document.getElementById('userPinInput').value = "";
+            }
+        };
+
+        window.resetPinPrompt = function() {
+            localStorage.setItem('appPin', "1234");
+            alert("പിൻ നമ്പർ വിജയകരമായി '1234' എന്ന് റീസെറ്റ് ചെയ്തിരിക്കുന്നു!");
+        };
     </script>
 </body>
 </html>
