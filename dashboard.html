@@ -154,8 +154,8 @@ window.logoutUser = function() {
     localStorage.removeItem('userName');
     localStorage.removeItem('profilePhoto');
     localStorage.removeItem('coverPhoto');
-    window.location.href = "index.html";
-};
+    localStorage.setItem('isLoggedOut', 'true');
+window.location.href = 'login.html';
 
 // പേജിൽ നിന്ന് പുറത്തുപോകുമ്പോൾ അല്ലെങ്കിൽ ആപ്പ് ക്ലോസ് ചെയ്യുമ്പോൾ സെഷൻ ലോക്ക് ചെയ്യുക
 window.addEventListener('beforeunload', () => {
