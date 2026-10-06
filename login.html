@@ -3,336 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മേസ്തിരി പ്രോ - ലോഗിൻ</title>
-    
+    <meta name="google-site-verification" content="WvP2of_1eHX_ojBwxVwTwuBCz91hW4wpjX2znfmIqIA" />
+    <link rel="manifest" href="manifest.json">
+    <title>നിർമ്മാണ മാനേജർ - Meshtri Pro | Smart Site Manager</title>
+    <meta name="description" content="മേസ്തിരി പ്രോ Smart Site Manager. നിർമ്മാണ മാനേജർ, പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ.">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <script src="language.js"></script>
-
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; }
+        body { font-family: 'Manjari', sans-serif; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- PIN Lock Modal -->
-    <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-700/85 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
-            
-            <div class="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-400 text-xl">
-                <i class="fa-solid fa-lock"></i>
-            </div>
+<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
 
-            <h3 class="text-base font-bold text-white mb-1" data-key="pin_lock_title">സുരക്ഷിത ലോഗിൻ</h3>
-            <p class="text-xs text-slate-400 mb-4" data-key="pin_lock_desc">തുടരാൻ നിങ്ങളുടെ 4 അക്ക പിൻ നമ്പർ നൽകുക</p>
-            
-            <input type="password" id="appPinInput" maxlength="4" data-key-placeholder="placeholder_pin" placeholder="••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center text-white text-lg tracking-widest focus:outline-none focus:border-amber-400 mb-4">
-            
-            <button type="button" id="btnVerifyPin" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-sm transition cursor-pointer shadow-lg" data-key="btn_open">
-                തുറക്കുക
-            </button>
-        </div>
-    </div>
-
-    <!-- Header Container -->
-    <div class="w-full max-w-sm mx-auto mb-4">
+    <div class="text-center pt-4 max-w-sm mx-auto w-full">
         <div id="appHeader" class="w-full"></div>
+        
+        <h1 class="lang text-3xl font-black mt-3 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400" data-key="mainTitle">
+            നിർമ്മാണ മാനേജർ
+        </h1>
+        <p class="lang text-xs text-blue-200 mt-1 font-bold" data-key="appSubtitle">പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ</p>
     </div>
 
-    <!-- Login Box -->
-    <div class="w-full max-w-sm bg-slate-900/90 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md">
+    <!-- പ്രധാന പിൻ ലോക്ക് ബോക്സ് മാത്രം (അധിക ബട്ടണുകൾ ഒഴിവാക്കിയത്) -->
+    <div class="space-y-3 my-auto max-w-sm mx-auto w-full bg-white/5 backdrop-blur-md p-5 rounded-3xl border border-blue-500/30 shadow-xl text-center">
+        <!-- മേസ്തിരി ഫോൺ പിടിച്ചിരിക്കുന്ന ലോഗോ/ചിത്രം -->
+        <div class="w-16 h-16 bg-amber-500/20 border border-amber-500/40 rounded-2xl mx-auto flex items-center justify-center overflow-hidden shadow-lg p-1">
+            <img src="path_to_your_meshtri_image.png" alt="Meshtri Pro" class="w-full h-full object-cover rounded-xl animate-pulse">
+        </div>
         
-        <h2 class="text-xl font-bold text-white mb-1" data-key="login_heading">ലോഗിൻ ചെയ്യുക</h2>
-        <p class="text-xs text-slate-400 mb-5" data-key="login_subheading">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സ്വാഗതം</p>
+        <h3 class="lang font-black text-base text-white" data-key="pinLockHeading">സുരക്ഷാ പിൻ ലോക്ക്</h3>
+        <p class="lang text-xs text-slate-300 font-medium" data-key="pinLockDesc">തുടരുന്നതിനായി നിങ്ങളുടെ 4 അക്ക പിൻ നൽകുക</p>
+        
+        <div class="space-y-3 pt-1">
+            <input type="password" id="userPinInput" maxlength="4" placeholder="••••" class="w-36 bg-slate-900/90 border-2 border-slate-700 rounded-2xl px-4 py-2 text-center text-xl tracking-widest text-amber-400 focus:outline-none focus:border-amber-400 mx-auto block shadow-inner">
 
-        <div class="space-y-4">
-            <div>
-                <label class="block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="label_username">യൂസർനെയിം (പേര്)</label>
-                <input type="text" id="username" data-key-placeholder="placeholder_username" placeholder="നിങ്ങളുടെ പേര് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="label_password">പാസ്‌വേർഡ്</label>
-                <div class="relative">
-                    <input type="password" id="password" data-key-placeholder="placeholder_password" placeholder="പാസ്‌വേർഡ് നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white text-sm focus:outline-none focus:border-amber-400">
-                    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 p-2 cursor-pointer">
-                        <i class="fa-solid fa-eye text-base" id="eyeIcon"></i>
-                    </button>
-                </div>
-            </div>
-
-            <button id="btnLogin" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:from-amber-400 hover:to-orange-400 transition duration-200 text-sm cursor-pointer" data-key="btn_login">
-                ലോഗിൻ ചെയ്യാം
+            <button onclick="verifyPin()" class="lang w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black py-2.5 rounded-2xl text-sm shadow-xl transition cursor-pointer" data-key="unlockBtn">
+                അൺലോക്ക് ചെയ്യുക
             </button>
         </div>
 
-        <div class="mt-4 text-center">
-            <button type="button" id="btnForgotOpen" class="text-xs text-amber-400/90 hover:underline bg-transparent border-none cursor-pointer" data-key="btn_forgot">പാസ്‌വേർഡ് മറന്നുപോയോ?</button>
+        <div class="flex items-center justify-between text-xs px-2 pt-2 border-t border-slate-800">
+            <a href="#" onclick="resetPinPrompt()" class="lang text-slate-400 hover:text-amber-400 transition" data-key="resetPinText">പിൻ റീസെറ്റ് ചെയ്യുക (1234)</a>
+            <a href="login.html" class="lang text-amber-400 font-bold hover:underline" data-key="otherAccountText">മറ്റൊരു അക്കൗണ്ട്?</a>
         </div>
     </div>
 
-    <div class="mt-6 text-center text-xs text-slate-400">
-        <span data-key="no_account_text">അക്കൗണ്ട് ഇല്ലെങ്കിൽ?</span> 
-        <a href="register.html" class="text-amber-400 font-bold hover:underline ml-1" data-key="link_register">പുതിയതായി രജിസ്റ്റർ ചെയ്യുക</a>
+    <div class="max-w-sm mx-auto w-full pb-2">
+        <p class="lang text-center text-xs text-slate-400 font-bold" data-key="footerCredit">
+            മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
+        </p>
     </div>
 
-    <!-- Forgot Password Modal -->
-    <div id="forgotModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
-            
-            <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
-            <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
-            
-            <input type="tel" id="forgotPhone" data-key-placeholder="placeholder_phone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
-            
-            <div class="flex gap-2">
-                <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
-                <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_verify">പരിശോധിക്കുക</button>
-            </div>
-        </div>
-    </div>
+    <script type="module">
+        import { setupHeader } from './header.js';
+        import { setupModal } from './modal.js';
 
-<!-- Script Section -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-    import { setupHeader } from './header.js';
+        setupHeader('appHeader');
+        setupModal();
 
-    function updateLanguageUI() {
-        const savedLang = localStorage.getItem('selectedLang') || 'ml';
-        
-        if (typeof updatePageLanguage === "function") {
-            updatePageLanguage(savedLang);
-        } else if (typeof window.switchLanguage === "function") {
-            window.switchLanguage(savedLang);
-        }
-
-        if (typeof words !== 'undefined') {
-            document.querySelectorAll('[data-key]').forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (words[key] && words[key][savedLang]) {
-                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                        element.placeholder = words[key][savedLang];
-                    } else {
-                        element.innerText = words[key][savedLang];
-                    }
-                }
-            });
-
-            document.querySelectorAll('[data-key-placeholder]').forEach(element => {
-                const key = element.getAttribute('data-key-placeholder');
-                if (words[key] && words[key][savedLang]) {
-                    element.placeholder = words[key][savedLang];
-                }
-            });
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        try {
-            if (typeof setupHeader === "function") {
-                setupHeader('appHeader', false);
+        function applySavedLanguage() {
+            const savedLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(savedLang);
             }
-        } catch (err) {
-            console.error("Header Error:", err);
         }
 
-        try {
-            updateLanguageUI();
-        } catch (err) {
-            console.error("Language Error:", err);
-        }
-
-        window.addEventListener('languageChanged', () => {
-            updateLanguageUI();
+        window.addEventListener('DOMContentLoaded', () => {
+            applySavedLanguage();
         });
 
-        // PIN Lock logic
-        try {
-            const pinModal = document.getElementById("pinLockModal");
-            const pinInput = document.getElementById("appPinInput");
-            const btnVerifyPin = document.getElementById("btnVerifyPin");
-            const savedPin = localStorage.getItem("appPin") || "1234";
+        window.verifyPin = function() {
+            const enteredPin = document.getElementById('userPinInput').value.trim();
+            const savedPin = localStorage.getItem('appPin') || "1234";
 
-            if (btnVerifyPin && pinModal && pinInput) {
-                btnVerifyPin.addEventListener("click", () => {
-                    if (pinInput.value.trim() === savedPin) {
-                        pinModal.classList.add("hidden");
-                        pinModal.classList.remove("flex");
-                    } else {
-                        alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
-                        pinInput.value = "";
-                    }
-                });
+            if (enteredPin === savedPin) {
+                sessionStorage.setItem('isUnlocked', 'true');
+                window.location.href = "dashboard.html";
+            } else {
+                alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്. ദയവായി വീണ്ടും ശ്രമിക്കുക.");
+                document.getElementById('userPinInput').value = "";
             }
-        } catch (err) {
-            console.error("PIN Lock Error:", err);
-        }
+        };
 
-        // --- പാസ്‌വേർഡ് മറന്നുപോയോ (Forgot Password Modal) ലോജിക് ---
-        const forgotModal = document.getElementById("forgotModal");
-        const btnForgotOpen = document.getElementById("btnForgotOpen");
-        const btnForgotClose = document.getElementById("btnForgotClose");
-        const btnGetDetails = document.getElementById("btnGetDetails");
-        const forgotPhoneInput = document.getElementById("forgotPhone");
-
-        if (btnForgotOpen && forgotModal) {
-            btnForgotOpen.addEventListener("click", () => {
-                forgotModal.classList.remove("hidden");
-                forgotModal.classList.add("flex");
-            });
-        }
-
-        if (btnForgotClose && forgotModal) {
-            btnForgotClose.addEventListener("click", () => {
-                forgotModal.classList.add("hidden");
-                forgotModal.classList.remove("flex");
-            });
-        }
-
-        if (btnGetDetails) {
-            btnGetDetails.addEventListener("click", async () => {
-                const phone = forgotPhoneInput.value.trim();
-                if (!phone) {
-                    alert("ദയവായി നിങ്ങളുടെ ഫോൺ നമ്പർ നൽകുക!");
-                    return;
-                }
-
-                try {
-                    const usersRef = ref(db, 'users');
-                    const snapshot = await get(usersRef);
-
-                    if (snapshot.exists()) {
-                        let userFound = false;
-
-                        snapshot.forEach((childSnapshot) => {
-                            const data = childSnapshot.val();
-                            const userPhone = (data.phone || data.mobile || "").toString().trim();
-
-                            if (userPhone === phone) {
-                                userFound = true;
-                                
-                                // 1. നിലവിൽ തിരഞ്ഞെടുത്ത ഭാഷ ലൊക്കേഷൻ സ്റ്റോറേജിൽ നിന്ന് എടുക്കുന്നു
-                                const savedLang = localStorage.getItem('selectedLang') || 'ml';
-
-                                // 2. തത്സമയ ഭാഷയ്ക്കനുസരിച്ച് വാക്കുകൾ എടുക്കുന്നു
-                                const headerTxt = (typeof words !== 'undefined' && words.alert_login_details && words.alert_login_details[savedLang]) ? words.alert_login_details[savedLang] : "നിങ്ങളുടെ ലോഗിൻ വിവരങ്ങൾ:";
-                                const userTxt = (typeof words !== 'undefined' && words.label_user_text && words.label_user_text[savedLang]) ? words.label_user_text[savedLang] : "യൂസർനെയിം";
-                                const passTxt = (typeof words !== 'undefined' && words.label_pass_text && words.label_pass_text[savedLang]) ? words.label_pass_text[savedLang] : "പാസ്‌വേർഡ്";
-
-                                // 3. തത്സമയ ഭാഷയിലുള്ള Alert കാണിക്കുന്നു
-                                alert(`${headerTxt}\n${userTxt}: ${data.username || childSnapshot.key}\n${passTxt}: ${data.password}`);
-
-                                forgotModal.classList.add("hidden");
-                                forgotModal.classList.remove("flex");
-                            }
-                        });
-
-                        if (!userFound) {
-                            alert("ഈ ഫോൺ നമ്പറിൽ അക്കൗണ്ട് ഒന്നും കണ്ടെത്തിയില്ല!");
-                        }
-                    } else {
-                        alert("ഡാറ്റാബേസിൽ വിവരങ്ങൾ ലഭ്യമല്ല.");
-                    }
-                } catch (err) {
-                    console.error("Forgot Pass Error:", err);
-                    alert("പിശക് സംഭവിച്ചു: " + err.message);
-                }
-            });
-        }
-    });
-
-    // Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyAJw47JuihhalCFvFAyrX_beM0iZZ0XltA",
-        authDomain: "mesthri-app.firebaseapp.com",
-        databaseURL: "https://mesthri-app-default-rtdb.firebaseio.com",
-        projectId: "mesthri-app",
-        storageBucket: "mesthri-app.firebasestorage.app",
-        messagingSenderId: "1060617901864",
-        appId: "1:1060617901864:web:5ffb9378cf36bd6d35221d",
-        measurementId: "G-J9Y5TW9D7T"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    const usernameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
-    const togglePasswordBtn = document.getElementById("togglePassword");
-    const eyeIcon = document.getElementById("eyeIcon");
-    const btnLogin = document.getElementById("btnLogin");
-
-    if (togglePasswordBtn && passwordInput && eyeIcon) {
-        togglePasswordBtn.addEventListener("click", () => {
-            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-            passwordInput.setAttribute("type", type);
-            eyeIcon.classList.toggle("fa-eye");
-            eyeIcon.classList.toggle("fa-eye-slash");
-        });
-    }
-
-    if (btnLogin) {
-        btnLogin.addEventListener("click", async () => {
-            const userInput = usernameInput.value.trim();
-            const passInput = passwordInput.value.trim();
-
-            if (!userInput || !passInput) {
-                alert('ദയവായി യൂസർനെയിമും പാസ്‌വേർഡും നൽകുക!');
-                return;
-            }
-
-            try {
-                const usersRef = ref(db, 'users');
-                const snapshot = await get(usersRef);
-
-                if (snapshot.exists()) {
-                    let matchedUserData = null;
-
-                    snapshot.forEach((childSnapshot) => {
-                        const data = childSnapshot.val();
-                        const dbUsername = (data.username || childSnapshot.key || "").toString().trim();
-
-                        if (dbUsername.toLowerCase() === userInput.toLowerCase()) {
-                            matchedUserData = data;
-                        }
-                    });
-
-                    if (matchedUserData) {
-                        if (matchedUserData.password === passInput) {
-                            // 1. നിലവിൽ തിരഞ്ഞെടുത്ത ഭാഷ localstorage-ൽ നിന്ന് എടുക്കുന്നു
-                            const savedLang = localStorage.getItem('selectedLang') || 'ml';
-                            
-                            // 2. language.js-ൽ നിന്ന് അതിനുള്ള തർജ്ജിമ എടുക്കുന്നു (ലഭ്യമല്ലെങ്കിൽ മലയാളം കാണിക്കും)
-                            const alertMessage = (typeof words !== 'undefined' && words.alert_login_success && words.alert_login_success[savedLang]) 
-                                ? words.alert_login_success[savedLang] 
-                                : "ലോഗിൻ വിജയകരമാണ്!";
-
-                            // 3. തത്സമയ ഭാഷയിലുള്ള Alert കാണിക്കുന്നു
-                            alert(alertMessage);
-
-                            localStorage.setItem('userName', userInput.toLowerCase());
-
-                            setTimeout(() => {
-                                window.location.href = "dashboard.html";
-                            }, 500);
-                        } else {
-                            alert('നൽകിയ പാസ്‌വേർഡ് തെറ്റാണ്!');
-                        }
-                    } else {
-                        alert('ഈ പേരിൽ അക്കൗണ്ട് കണ്ടെത്താനായില്ല!');
-                    }
-                } else {
-                    alert('അക്കൗണ്ടുകൾ ലഭ്യമല്ല.');
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Firebase Error: " + err.message);
-            }
-        });
-    }
-</script>
+        window.resetPinPrompt = function() {
+            localStorage.setItem('appPin', "1234");
+            alert("പിൻ നമ്പർ വിജയകരമായി '1234' എന്ന് റീസെറ്റ് ചെയ്തിരിക്കുന്നു!");
+        };
+    </script>
 </body>
 </html>
