@@ -69,7 +69,6 @@
     </div>
 
     <script>
-        // ഭാഷ സെറ്റ് ചെയ്യാൻ
         function applySavedLanguage() {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
@@ -83,18 +82,17 @@
             const userName = localStorage.getItem('userName');
             const isLoggedOut = localStorage.getItem('isLoggedOut');
 
-            // ലോജിക്: യൂസർ നെയിം ഇല്ലെങ്കിലോ അല്ലെങ്കിൽ ലോഗൗട്ട് ചെയ്തിട്ടുണ്ടെങ്കിലോ ലോഗിൻ സെക്ഷൻ കാണിക്കുക
+            // യൂസർ നെയിം ഇല്ലെങ്കിലോ അല്ലെങ്കിൽ ലോഗൗട്ട് ചെയ്തിട്ടുണ്ടെങ്കിലോ ലോഗിൻ ഫോം കാണിക്കുക
             if (!userName || isLoggedOut === 'true') {
                 document.getElementById('loginSection').classList.remove('hidden');
                 document.getElementById('pinLockSection').classList.add('hidden');
             } else {
-                // ഇല്ലെങ്കിൽ പിൻ ലോക്ക് സെക്ഷൻ കാണിക്കുക
+                // ഇല്ലെങ്കിൽ പിൻ ലോക്ക് കാണിക്കുക
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('pinLockSection').classList.remove('hidden');
             }
         });
 
-        // പുതിയ യൂസർ പേര് സേവ് ചെയ്ത് ഡാഷ്‌ബോർഡിലേക്ക് പോകുമ്പോൾ
         function saveUserAndProceed() {
             const nameInput = document.getElementById('userNameInput').value.trim();
             if (!nameInput) {
@@ -102,12 +100,11 @@
                 return;
             }
             localStorage.setItem('userName', nameInput);
-            localStorage.removeItem('isLoggedOut'); // ലോഗൗട്ട് ഫ്ലാഗ് ഒഴിവാക്കുന്നു
+            localStorage.removeItem('isLoggedOut');
             sessionStorage.setItem('isUnlocked', 'true');
             window.location.href = "dashboard.html";
         }
 
-        // പിൻ വെരിഫൈ ചെയ്യുന്ന ഫങ്ഷൻ
         function verifyPin() {
             const enteredPin = document.getElementById('userPinInput').value.trim();
             const savedPin = localStorage.getItem('appPin') || "1234";
@@ -122,13 +119,11 @@
             }
         }
 
-        // പിൻ റീസെറ്റ് ചെയ്യാൻ
         function resetPinPrompt() {
             localStorage.setItem('appPin', "1234");
             alert("പിൻ നമ്പർ '1234' എന്ന് റീസെറ്റ് ചെയ്തിരിക്കുന്നു!");
         }
 
-        // മറ്റൊരു അക്കൗണ്ടിലേക്ക് (ലോഗിൻ പേജിലേക്ക്) മാറാൻ
         function switchToLogin() {
             localStorage.setItem('isLoggedOut', 'true');
             document.getElementById('pinLockSection').classList.add('hidden');
