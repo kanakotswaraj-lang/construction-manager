@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="WvP2of_1eHX_ojBwxVwTwuBCz91hW4wpjX2znfmIqIA" />
     <link rel="manifest" href="manifest.json">
-    <title>നിർമ്മാണ മാനേജർ - Meshtri Pro | Smart Site Manager</title>
-    <meta name="description" content="മേസ്തിരി പ്രോ Smart Site Manager. നിർമ്മാണ മാനേജർ, പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ.">
+    <title>സുരക്ഷാ പിൻ ലോക്ക് - Meshtri Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
     <script src="language.js"></script>
@@ -15,54 +13,42 @@
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col justify-between p-5">
+<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col items-center justify-between p-6">
 
-    <div class="text-center pt-4 max-w-sm mx-auto w-full">
-        <div id="appHeader" class="w-full"></div>
-        
-        <h1 class="lang text-3xl font-black mt-3 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-amber-400" data-key="mainTitle">
-            നിർമ്മാണ മാനേജർ
-        </h1>
-        <p class="lang text-xs text-blue-200 mt-1 font-bold" data-key="appSubtitle">പണികളും കണക്കുകളും ഇനി വിരൽത്തുമ്പിൽ</p>
+    <!-- മുകളിൽ ലോഗോ മാത്രം -->
+    <div class="pt-6">
+        <div class="w-16 h-16 bg-amber-500/20 border border-amber-500/40 rounded-2xl mx-auto flex items-center justify-center overflow-hidden shadow-lg p-1">
+            <img src="path_to_your_meshtri_image.png" alt="Meshtri Pro" class="w-full h-full object-cover rounded-xl">
+        </div>
     </div>
 
-    <!-- പ്രധാന പിൻ ലോക്ക് ബോക്സ് മാത്രം (അധിക ബട്ടണുകൾ ഒഴിവാക്കിയത്) -->
-    <div class="space-y-3 my-auto max-w-sm mx-auto w-full bg-white/5 backdrop-blur-md p-5 rounded-3xl border border-blue-500/30 shadow-xl text-center">
-        <!-- മേസ്തിരി ഫോൺ പിടിച്ചിരിക്കുന്ന ലോഗോ/ചിത്രം -->
-        <div class="w-16 h-16 bg-amber-500/20 border border-amber-500/40 rounded-2xl mx-auto flex items-center justify-center overflow-hidden shadow-lg p-1">
-            <img src="icon.png" alt="Meshtri Pro" class="w-full h-full object-cover rounded-xl animate-pulse">
-        </div>
-        
-        <h3 class="lang font-black text-base text-white" data-key="pinLockHeading">സുരക്ഷാ പിൻ ലോക്ക്</h3>
+    <!-- സെന്ററിൽ പിൻ ലോക്ക് ബോക്സ് മാത്രം -->
+    <div class="space-y-4 max-w-sm w-full bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-blue-500/30 shadow-xl text-center my-auto">
+        <h3 class="lang font-black text-xl text-white" data-key="pinLockHeading">സുരക്ഷാ പിൻ ലോക്ക്</h3>
         <p class="lang text-xs text-slate-300 font-medium" data-key="pinLockDesc">തുടരുന്നതിനായി നിങ്ങളുടെ 4 അക്ക പിൻ നൽകുക</p>
         
-        <div class="space-y-3 pt-1">
-            <input type="password" id="userPinInput" maxlength="4" placeholder="••••" class="w-36 bg-slate-900/90 border-2 border-slate-700 rounded-2xl px-4 py-2 text-center text-xl tracking-widest text-amber-400 focus:outline-none focus:border-amber-400 mx-auto block shadow-inner">
+        <div class="space-y-3 pt-2">
+            <input type="password" id="userPinInput" maxlength="4" placeholder="••••" class="w-40 bg-slate-900/90 border-2 border-slate-700 rounded-2xl px-4 py-3 text-center text-2xl tracking-widest text-amber-400 focus:outline-none focus:border-amber-400 mx-auto block shadow-inner">
 
-            <button onclick="verifyPin()" class="lang w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black py-2.5 rounded-2xl text-sm shadow-xl transition cursor-pointer" data-key="unlockBtn">
+            <button onclick="verifyPin()" class="lang w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black py-3 rounded-2xl text-base shadow-xl transition cursor-pointer" data-key="unlockBtn">
                 അൺലോക്ക് ചെയ്യുക
             </button>
         </div>
 
-        <div class="flex items-center justify-between text-xs px-2 pt-2 border-t border-slate-800">
+        <div class="flex items-center justify-between text-xs pt-3 border-t border-slate-800">
             <a href="#" onclick="resetPinPrompt()" class="lang text-slate-400 hover:text-amber-400 transition" data-key="resetPinText">പിൻ റീസെറ്റ് ചെയ്യുക (1234)</a>
             <a href="login.html" class="lang text-amber-400 font-bold hover:underline" data-key="otherAccountText">മറ്റൊരു അക്കൗണ്ട്?</a>
         </div>
     </div>
 
-    <div class="max-w-sm mx-auto w-full pb-2">
+    <!-- ഫൂട്ടർ -->
+    <div class="pb-4">
         <p class="lang text-center text-xs text-slate-400 font-bold" data-key="footerCredit">
             മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
         </p>
     </div>
 
     <script type="module">
-        import { setupHeader } from './header.js';
-        import { setupModal } from './modal.js';
-
-        setupHeader('appHeader');
-        setupModal();
-
         function applySavedLanguage() {
             const savedLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof window.switchLanguage === 'function') {
