@@ -143,13 +143,20 @@
             dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
         };
 
-        // ഗ്ലോബൽ ലോഗ് ഔട്ട് ഫങ്ഷൻ
-        window.logoutUser = function() {
-            localStorage.removeItem('userName');
-            localStorage.removeItem('profilePhoto');
-            localStorage.removeItem('coverPhoto');
-            window.location.href = "login.html";
-        };
+        // ഡാഷ്‌ബോർഡ് ലോഡ് ചെയ്യുമ്പോൾ സെഷൻ പരിശോധിക്കുക
+if (!sessionStorage.getItem('isUnlocked')) {
+    window.location.href = "index.html";
+}
+
+// ലോഗ് ഔട്ട് ഫങ്ഷൻ അപ്ഡേറ്റ് ചെയ്യുക
+window.logoutUser = function() {
+    sessionStorage.removeItem('isUnlocked');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('profilePhoto');
+    localStorage.removeItem('coverPhoto');
+    window.location.href = "index.html";
+};
+
 
         document.addEventListener("DOMContentLoaded", async () => {
             if (typeof setupHeader === 'function') {
