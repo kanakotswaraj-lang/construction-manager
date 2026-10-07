@@ -339,8 +339,7 @@ window.addEventListener('beforeunload', () => {
                 reader.readAsDataURL(file);
             }
         };
-
-        function fetchDashboardData(db, currentMeshtri) {
+function fetchDashboardData(db, currentMeshtri) {
     const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
     
     onSnapshot(q, (snapshot) => {
