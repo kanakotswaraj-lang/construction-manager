@@ -143,28 +143,13 @@
             dateElement.innerText = `${todayText}: ${dayName}, ${dayNum} ${monthName}, ${year}`;
         };
 
-        // ഡാഷ്‌ബോർഡ് ലോഡ് ചെയ്യുമ്പോൾ സെഷൻ പരിശോധിക്കുക
-if (!sessionStorage.getItem('isUnlocked')) {
-    window.location.href = "index.html";
-}
-
-// ലോഗ് ഔട്ട് ഫങ്ഷൻ
-window.logoutUser = function() {
-    sessionStorage.removeItem('isUnlocked');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('profilePhoto');
-    localStorage.removeItem('coverPhoto');
-    
-    // ഈ രണ്ട് വരികൾ തീർച്ചയായും ഉണ്ടെന്ന് ഉറപ്പുവരുത്തുക:
-    localStorage.setItem('isLoggedOut', 'true');
-    window.location.href = "index.html";
-};
-
-
-// പേജിൽ നിന്ന് പുറത്തുപോകുമ്പോൾ അല്ലെങ്കിൽ ആപ്പ് ക്ലോസ് ചെയ്യുമ്പോൾ സെഷൻ ലോക്ക് ചെയ്യുക
-window.addEventListener('beforeunload', () => {
-    sessionStorage.removeItem('isUnlocked');
-});
+        // ഗ്ലോബൽ ലോഗ് ഔട്ട് ഫങ്ഷൻ
+        window.logoutUser = function() {
+            localStorage.removeItem('userName');
+            localStorage.removeItem('profilePhoto');
+            localStorage.removeItem('coverPhoto');
+            window.location.href = "login.html";
+        };
 
         document.addEventListener("DOMContentLoaded", async () => {
             if (typeof setupHeader === 'function') {
@@ -340,58 +325,24 @@ window.addEventListener('beforeunload', () => {
             }
         };
 
-    function fetchDashboardData(db) {
-    // ആപ്പിൽ ലോഗിൻ ചെയ്ത യഥാർത്ഥ യൂസറുടെ പേര് ലോക്കൽ സ്റ്റോറേജിൽ നിന്ന് നേരിട്ട് എടുക്കുന്നു
-    const currentMeshtri = localStorage.getItem('userName') || localStorage.getItem('currentUser') || localStorage.getItem('meshtriOwner');
-    
-    if (!currentMeshtri) {
-        console.log("User not logged in or username not found in localStorage");
-        return;
-    }
-
-    const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
-    
-    onSnapshot(q, (snapshot) => {
-        let totalInc = 0;
-        let totalExp = 0;
-
-        snapshot.forEach(docSnap => {
-            const d = docSnap.data();
-            let amount = parseFloat(d.amount) || 0;
+        function fetchDashboardData(db, currentMeshtri) {
+            const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
             
-            if (d.type === 'income') {
-                totalInc += amount;
-            } else if (d.type === 'expense' || d.type === 'other' || d.type === 'wage') {
-                totalExp += amount;
-            }
-        });
+            onSnapshot(q, (snapshot) => {
+                let totalInc = 0;
+                let totalExp = 0;
 
-        let net = totalInc - totalExp;
-        
-        const incEl = document.getElementById('statIncome');
-        const expEl = document.getElementById('statExpense');
-        const netEl = document.getElementById('statNet');
+                snapshot.forEach(docSnap => {
+                    const d = docSnap.data();
+                    let amount = parseFloat(d.amount) || 0;
+                    if (d.type === 'income') {
+                        totalInc += amount;
+                    } else {
+                        totalExp += amount;
+                    }
+                });
 
-        if (incEl) incEl.innerText = totalInc.toLocaleString('en-IN');
-        if (expEl) expEl.innerText = totalExp.toLocaleString('en-IN');
-        
-        if (netEl) {
-            netEl.innerText = Math.abs(net).toLocaleString('en-IN');
-            
-            const netCard = document.getElementById('netCard');
-            const netTitle = netCard ? netCard.querySelector('.lang') : null;
-            
-            if (net >= 0) {
-                netEl.className = "text-sm font-black text-emerald-300";
-                if(netTitle) netTitle.innerText = "ലാഭം";
-            } else {
-                netEl.className = "text-sm font-black text-amber-300";
-                if(netTitle) netTitle.innerText = "നഷ്ടം";
-            }
-        }
-    });
-}
-            let net = totalInc - totalExp;
+                let net = totalInc - totalExp;
                 const incEl = document.getElementById('statIncome');
                 const expEl = document.getElementById('statExpense');
                 if (incEl) incEl.innerText = totalInc.toLocaleString('en-IN');
