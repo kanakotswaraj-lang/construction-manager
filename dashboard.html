@@ -339,7 +339,16 @@ window.addEventListener('beforeunload', () => {
                 reader.readAsDataURL(file);
             }
         };
-function fetchDashboardData(db, currentMeshtri) {
+
+    function fetchDashboardData(db) {
+    // ആപ്പിൽ ലോഗിൻ ചെയ്ത യഥാർത്ഥ യൂസറുടെ പേര് ലോക്കൽ സ്റ്റോറേജിൽ നിന്ന് നേരിട്ട് എടുക്കുന്നു
+    const currentMeshtri = localStorage.getItem('userName') || localStorage.getItem('currentUser') || localStorage.getItem('meshtriOwner');
+    
+    if (!currentMeshtri) {
+        console.log("User not logged in or username not found in localStorage");
+        return;
+    }
+
     const q = query(collection(db, "accounts"), where("meshtriOwner", "==", currentMeshtri));
     
     onSnapshot(q, (snapshot) => {
@@ -350,7 +359,6 @@ function fetchDashboardData(db, currentMeshtri) {
             const d = docSnap.data();
             let amount = parseFloat(d.amount) || 0;
             
-            // ടൈപ്പ് പരിശോധിച്ചു വരുമാനവും ചെലവും കൃത്യമായി തിരിക്കുന്നു
             if (d.type === 'income') {
                 totalInc += amount;
             } else if (d.type === 'expense' || d.type === 'other' || d.type === 'wage') {
@@ -373,7 +381,6 @@ function fetchDashboardData(db, currentMeshtri) {
             const netCard = document.getElementById('netCard');
             const netTitle = netCard ? netCard.querySelector('.lang') : null;
             
-            // ലാഭമാണോ നഷ്ടമാണോ എന്ന് നോക്കി ഡിസ്പ്ലേ മാറ്റുന്നു
             if (net >= 0) {
                 netEl.className = "text-sm font-black text-emerald-300";
                 if(netTitle) netTitle.innerText = "ലാഭം";
@@ -384,9 +391,7 @@ function fetchDashboardData(db, currentMeshtri) {
         }
     });
 }
-
-
-                let net = totalInc - totalExp;
+            let net = totalInc - totalExp;
                 const incEl = document.getElementById('statIncome');
                 const expEl = document.getElementById('statExpense');
                 if (incEl) incEl.innerText = totalInc.toLocaleString('en-IN');
