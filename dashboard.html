@@ -220,8 +220,6 @@
                 fetchDashboardData(db, userName);
             }
         });
-        
-        
 
         function setFallbackProfile(userName) {
             const savedPhoto = localStorage.getItem('profilePhoto');
@@ -358,65 +356,33 @@
         }
 
         // പിൻ നമ്പർ മാറ്റുന്നതിനുള്ള ഫങ്ഷൻ
-        
-        // 1. ആപ്പ് ലോഡ് ചെയ്യുമ്പോഴും ബാക്ക്ഗ്രൗണ്ടിൽ നിന്ന് വരുമ്പോഴും പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
+        window.changeAppPin = function() {
+            const oldPinInput = document.getElementById('oldPin').value.trim();
+            const newPinInput = document.getElementById('newPin').value.trim();
+            const currentSavedPin = localStorage.getItem("appPin") || "1234";
+
+            if (oldPinInput !== currentSavedPin) {
+                alert("നൽകിയ പഴയ പിൻ നമ്പർ തെറ്റാണ്!");
+                return;
+            }
+
+            if (newPinInput.length !== 4 || isNaN(newPinInput)) {
+                alert("പുതിയ പിൻ കൃത്യം 4 അക്ക സംഖ്യ ആയിരിക്കണം!");
+                return;
+            }
+
+            localStorage.setItem("appPin", newPinInput);
+            alert("പിൻ നമ്പർ വിജയകരമായി മാറ്റിയിരിക്കുന്നു!");
+            document.getElementById('oldPin').value = "";
+            document.getElementById('newPin').value = "";
+        };
+                // 1. ആപ്പ് ലോഡ് ചെയ്യുമ്പോഴും ബാക്ക്ഗ്രൗണ്ടിൽ നിന്ന് വരുമ്പോഴും പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
         function checkAppSecurityPin() {
             const savedPin = localStorage.getItem("appPin") || "1234"; 
             showPinLockScreen(savedPin);
         }
 
-        // 2. പിൻ ലോക്ക് സ്ക്രീൻ കാണിക്കുന്നതും സാവധാനം പൊന്തിവരുന്ന ആനിമേഷനും ഉള്ള ഭാഗം
-        function showPinLockScreen(correctPin) {
-            // നിലവിൽ വേറെയെങ്കിലും പിൻ മോഡൽ ഉണ്ടെങ്കിൽ അത് ഒഴിവാക്കുന്നു
-            const existingModal = document.getElementById('pinLockModal');
-            if (existingModal) existingModal.remove();
-
-            const lockScreenHtml = `
-                <div id="pinLockModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d1117; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Manjari', sans-serif; opacity: 0; transition: opacity 0.4s ease-in-out;">
-                    
-                    <!-- മേസ്ത്രി പ്രോ ഐക്കൺ (PNG) -->
-                    <div style="margin-bottom: 20px; text-align: center; transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="pinCardContent">
-                        <img src="icon.png" alt="Meshtri Pro Icon" style="width: 150px; height: 150px; margin: 0 auto; border-radius: 20px; object-fit: cover; box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3); border: 2px solid rgba(245, 158, 11, 0.4);" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=MP&background=f59e0b&color=000&bold=true';" />
-                        <h2 style="margin-top: 12px; font-size: 22px; font-weight: bold; color: #f3f4f6;">Mesthiri Pro</h2>
-                    </div
-
-                    <p style="margin-bottom: 20px; font-size: 16px; color: #cbd5e1;">സുരക്ഷാ പിൻ നമ്പർ നൽകുക</p>
-                    
-                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <input type="password" id="enteredPin" maxlength="4" style="width: 160px; padding: 12px; font-size: 24px; text-align: center; border-radius: 12px; border: 1px solid #475569; background-color: #1e293b; color: white; letter-spacing: 8px;" placeholder="****" autofocus />
-                    </div>
-                    
-                    <button type="button" id="verifyPinBtn" style="padding: 12px 35px; background-color: #f59e0b; color: #000; font-weight: bold; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); transition: transform 0.2s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">തുറക്കുക</button>
-                    
-                    <p id="pinErrorMsg" style="color: #ef4444; margin-top: 15px; font-size: 14px; display: none;">തെറ്റായ പിൻ നമ്പർ! വീണ്ടും ശ്രമിക്കുക.</p>
-                </div>
-            `;
-            
-            const div = document.createElement('div');
-            div.innerHTML = lockScreenHtml;
-            document.body.appendChild(div);
-
-            // സാവധാനം പൊന്തിവരുന്ന (Fade-in & Scale up) ആനിമേഷൻ പ്രവർത്തിപ്പിക്കാൻ
-            setTimeout(() => {
-                const modal = document.getElementById('pinLockModal');
-                const card = document.getElementById('pinCardContent');
-                if (modal) modal.style.opacity = '1';
-                if (card) card.style.transform = 'scale(1)';
-                
-                const pinInput = document.getElementById('enteredPin');
-                if (pinInput) pinInput.focus();
-            }, 50);
-
-            // ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ ശരിയാണോ എന്ന് പരിശോധിക്കാൻ
-            document.getElementById('verifyPinBtn').addEventListener('click', () => {
-
-        // 1. ആപ്പ് ലോഡ് ചെയ്യുമ്പോഴും ബാക്ക്ഗ്രൗണ്ടിൽ നിന്ന് വരുമ്പോഴും പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
-        function checkAppSecurityPin() {
-            const savedPin = localStorage.getItem("appPin") || "1234"; 
-            showPinLockScreen(savedPin);
-        }
-
-        // 2. മൾട്ടി-ലാംഗ്വേജ് സപ്പോർട്ടുള്ള പിൻ ലോക്ക് സ്ക്രീൻ കോഡ്
+        // 2. പൂർണ്ണ സുരക്ഷയോടെ സ്ക്രീൻ ലോക്ക് ചെയ്യുന്ന കോഡ്
         function showPinLockScreen(correctPin) {
             const existingModal = document.getElementById('pinLockModal');
             if (existingModal) existingModal.remove();
@@ -424,10 +390,10 @@
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
 
             const lockScreenHtml = `
-                <div id="pinLockModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d1117; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Manjari', sans-serif; font-weight: 700; opacity: 0; transition: opacity 0.4s ease-in-out;">
+                <div id="pinLockModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d1117 !important; z-index: 2147483647; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Manjari', sans-serif; font-weight: 700;">
                     
                     <!-- മേസ്ത്രി പ്രോ ഐക്കൺ -->
-                    <div style="margin-bottom: 25px; text-align: center; transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="pinCardContent">
+                    <div style="margin-bottom: 25px; text-align: center;">
                         <img src="icon.png" alt="Meshtri Pro Icon" style="width: 200px; height: 200px; margin: 0 auto; border-radius: 26px; object-fit: cover; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35); border: 2.5px solid rgba(245, 158, 11, 0.5);" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=MP&background=f59e0b&color=000&bold=true';" />
                         <h2 style="margin-top: 14px; font-size: 26px; font-weight: 900; color: #f3f4f6; letter-spacing: 0.5px;">മേസ്ത്രി പ്രോ</h2>
                     </div>
@@ -438,7 +404,7 @@
                         <input type="password" id="enteredPin" maxlength="4" style="width: 160px; padding: 12px; font-size: 24px; font-weight: 900; text-align: center; border-radius: 12px; border: 1.5px solid #64748b; background-color: #1e293b; color: white; letter-spacing: 8px;" placeholder="****" autofocus />
                     </div>
                     
-                    <button type="button" id="verifyPinBtn" style="padding: 12px 35px; background-color: #f59e0b; color: #000; font-weight: 900; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); transition: transform 0.2s;" class="lang" data-key="openBtn" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">തുറക്കുക</button>
+                    <button type="button" id="verifyPinBtn" style="padding: 12px 35px; background-color: #f59e0b; color: #000; font-weight: 900; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);" class="lang" data-key="openBtn">തുറക്കുക</button>
                     
                     <p id="pinErrorMsg" style="color: #ef4444; font-weight: 700; margin-top: 15px; font-size: 14px; display: none;" class="lang" data-key="wrongPinError">തെറ്റായ പിൻ നമ്പർ! വീണ്ടും ശ്രമിക്കുക.</p>
                 </div>
@@ -448,17 +414,11 @@
             div.innerHTML = lockScreenHtml;
             document.body.appendChild(div);
 
-            // നിലവിലെ ഭാഷ അപ്‌ഡേറ്റ് ചെയ്യാൻ
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(currentLang);
             }
 
             setTimeout(() => {
-                const modal = document.getElementById('pinLockModal');
-                const card = document.getElementById('pinCardContent');
-                if (modal) modal.style.opacity = '1';
-                if (card) card.style.transform = 'scale(1)';
-                
                 const pinInput = document.getElementById('enteredPin');
                 if (pinInput) pinInput.focus();
             }, 50);
@@ -469,10 +429,7 @@
                 
                 if (userEnteredPin === correctPin) {
                     const modal = document.getElementById('pinLockModal');
-                    if (modal) {
-                        modal.style.opacity = '0';
-                        setTimeout(() => modal.remove(), 400);
-                    }
+                    if (modal) modal.remove();
                 } else {
                     if (errorMsg) errorMsg.style.display = 'block';
                     document.getElementById('enteredPin').value = '';
