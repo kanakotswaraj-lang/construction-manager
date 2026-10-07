@@ -161,56 +161,6 @@
                 window.location.href = "login.html";
                 return;
             }
-            // ആപ്പ് ലോഡ് ചെയ്യുമ്പോൾ പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
-function checkAppSecurityPin() {
-    const savedPin = localStorage.getItem('appPin') || "1234"; // ഡിഫോൾട്ട് പിൻ 1234 ആയിരിക്കും
-    showPinLockScreen(savedPin);
-}
-
-// പിൻ ലോക്ക് സ്ക്രീൻ കാണിക്കുന്നതും ഐക്കൺ ഉൾപ്പെടുത്തുന്നതുമായ ഭാഗം
-function showPinLockScreen(correctPin) {
-    const lockScreenHtml = `
-        <div id="pinLockModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0d1117; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Manjari', sans-serif;">
-            
-            <!-- മേസ്ത്രി പ്രോ ഐക്കൺ -->
-            <div style="margin-bottom: 20px; text-align: center;">
-                <div style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(to bottom right, #f59e0b, #d97706); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
-                    <span style="font-size: 35px;">🏗️</span>
-                </div>
-                <h2 style="margin-top: 10px; font-size: 22px; font-weight: bold; color: #f3f4f6;">മേസ്ത്രി പ്രോ</h2>
-            </div>
-
-            <p style="margin-bottom: 20px; font-size: 16px; color: #cbd5e1;">സുരക്ഷാ പിൻ നമ്പർ നൽകുക</p>
-            
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <input type="password" id="enteredPin" maxlength="4" style="width: 160px; padding: 12px; font-size: 24px; text-align: center; border-radius: 12px; border: 1px solid #475569; background-color: #1e293b; color: white; letter-spacing: 8px;" placeholder="****" autofocus />
-            </div>
-            
-            <button onclick="verifyPin('${correctPin}')" style="padding: 12px 35px; background-color: #f59e0b; color: #000; font-weight: bold; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);">തുറക്കുക</button>
-            
-            <p id="pinErrorMsg" style="color: #ef4444; margin-top: 15px; font-size: 14px; display: none;">തെറ്റായ പിൻ നമ്പർ! വീണ്ടും ശ്രമിക്കുക.</p>
-        </div>
-    `;
-    
-    const div = document.createElement('div');
-    div.innerHTML = lockScreenHtml;
-    document.body.appendChild(div);
-}
-
-// പിൻ ശരിയാണോ എന്ന് പരിശോധിക്കുന്ന ഫങ്ഷൻ
-window.verifyPin = function(correctPin) {
-    const userEnteredPin = document.getElementById('enteredPin').value.trim();
-    const errorMsg = document.getElementById('pinErrorMsg');
-    
-    if (userEnteredPin === correctPin) {
-        const modal = document.getElementById('pinLockModal');
-        if (modal) modal.remove();
-    } else {
-        if (errorMsg) errorMsg.style.display = 'block';
-        document.getElementById('enteredPin').value = '';
-    }
-}
-
             
             const nameElement = document.getElementById('loggedInMeshtri');
             if (nameElement) {
@@ -270,6 +220,60 @@ window.verifyPin = function(correctPin) {
                 fetchDashboardData(db, userName);
             }
         });
+        
+        // 1. ആപ്പ് ലോഡ് ചെയ്യുമ്പോൾ പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
+        function checkAppSecurityPin() {
+            const savedPin = localStorage.getItem("appPin") || "1234"; 
+            showPinLockScreen(savedPin);
+        }
+
+        // 2. പിൻ ലോക്ക് സ്ക്രീൻ കാണിക്കുന്നതും ഐക്കൺ ഉൾപ്പെടുത്തുന്നതുമായ ഭാഗം
+        function showPinLockScreen(correctPin) {
+            // നിലവിൽ എന്തെങ്കിലും ലോക്ക് ഉണ്ടെങ്കിൽ അത് ഒഴിവാക്കുന്നു
+            const existingModal = document.getElementById('pinLockModal');
+            if (existingModal) existingModal.remove();
+
+            const lockScreenHtml = `
+                <div id="pinLockModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0d1117; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Manjari', sans-serif;">
+                    
+                    <!-- മേസ്ത്രി പ്രോ ഐക്കൺ -->
+                    <div style="margin-bottom: 20px; text-align: center;">
+                        <div style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(to bottom right, #f59e0b, #d97706); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
+                            <span style="font-size: 35px;">🏗️</span>
+                        </div>
+                        <h2 style="margin-top: 10px; font-size: 22px; font-weight: bold; color: #f3f4f6;">മേസ്ത്രി പ്രോ</h2>
+                    </div>
+
+                    <p style="margin-bottom: 20px; font-size: 16px; color: #cbd5e1;">സുരക്ഷാ പിൻ നമ്പർ നൽകുക</p>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="password" id="enteredPin" maxlength="4" style="width: 160px; padding: 12px; font-size: 24px; text-align: center; border-radius: 12px; border: 1px solid #475569; background-color: #1e293b; color: white; letter-spacing: 8px;" placeholder="****" autofocus />
+                    </div>
+                    
+                    <button type="button" id="verifyPinBtn" style="padding: 12px 35px; background-color: #f59e0b; color: #000; font-weight: bold; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);">തുറക്കുക</button>
+                    
+                    <p id="pinErrorMsg" style="color: #ef4444; margin-top: 15px; font-size: 14px; display: none;">തെറ്റായ പിൻ നമ്പർ! വീണ്ടും ശ്രമിക്കുക.</p>
+                </div>
+            `;
+            
+            const div = document.createElement('div');
+            div.innerHTML = lockScreenHtml;
+            document.body.appendChild(div);
+
+            // ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ വർക്ക് ചെയ്യാൻ ഇന്റർനാഷണൽ ഇവന്റ് ലിスナー കൊടുക്കുന്നു
+            document.getElementById('verifyPinBtn').addEventListener('click', () => {
+                const userEnteredPin = document.getElementById('enteredPin').value.trim();
+                const errorMsg = document.getElementById('pinErrorMsg');
+                
+                if (userEnteredPin === correctPin) {
+                    const modal = document.getElementById('pinLockModal');
+                    if (modal) modal.remove();
+                } else {
+                    if (errorMsg) errorMsg.style.display = 'block';
+                    document.getElementById('enteredPin').value = '';
+                }
+            });
+        }
 
         function setFallbackProfile(userName) {
             const savedPhoto = localStorage.getItem('profilePhoto');
