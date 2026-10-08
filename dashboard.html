@@ -377,12 +377,14 @@
             document.getElementById('newPin').value = "";
         };
                         // 1. ആപ്പ് ലോഡ് ചെയ്യുമ്പോഴും ബാക്ക്ഗ്രൗണ്ടിൽ നിന്ന് വരുമ്പോഴും പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
+        
+        // 1. ആപ്പ് ലോഡ് ചെയ്യുമ്പോഴും ബാക്ക്ഗ്രൗണ്ടിൽ നിന്ന് വരുമ്പോഴും പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
         function checkAppSecurityPin() {
             const savedPin = localStorage.getItem("appPin") || "1234"; 
             showPinLockScreen(savedPin);
         }
 
-        // 2. സാവധാനം ഫേഡ് ആയി (Smooth Fade-in) തുറന്നുവരുന്ന പിൻ ലോക്ക് സ്ക്രീൻ കോഡ്
+        // 2. നേവി ബ്ലൂ തീമും സ്മൂത്ത് ആനിമേഷനുമുള്ള പിൻ ലോക്ക് സ്ക്രീൻ കോഡ്
         function showPinLockScreen(correctPin) {
             const existingModal = document.getElementById('pinLockModal');
             if (existingModal) existingModal.remove();
@@ -392,10 +394,10 @@
             const lockScreenHtml = `
                 <div id="pinLockModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d1117 !important; z-index: 2147483647; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Manjari', sans-serif; font-weight: 700; opacity: 0; transition: opacity 0.5s ease-in-out;">
                     
-                    <!-- മേസ്ത്രി പ്രോ ഐക്കൺ & ഹെഡിങ് (സാവധാനം വലുതായി വരുന്ന ആനിമേഷൻ) -->
-                    <div style="margin-bottom: 25px; text-align: center; transform: scale(0.7); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="pinCardContent">
-                        <img src="icon.png" alt="Meshtri Pro Icon" style="width: 200px; height: 200px; margin: 0 auto; border-radius: 26px; object-fit: cover; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35); border: 2.5px solid rgba(245, 158, 11, 0.5);" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=MP&background=f59e0b&color=000&bold=true';" />
-                        <h2 style="margin-top: 14px; font-size: 26px; font-weight: 900; color: #f3f4f6; letter-spacing: 0.5px;">Mesthiri Pro</h2>
+                    <!-- മേസ്ത്രി പ്രോ ഐക്കൺ & ഹെഡിങ് -->
+                    <div style="margin-bottom: 25px; text-align: center; transform: scale(0.12); transition: transform 0.10s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="pinCardContent">
+                        <img src="icon.png" alt="Meshtri Pro Icon" style="width: 225px; height: 225px; margin: 0 auto; border-radius: 26px; object-fit: cover; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35); border: 2.5px solid rgba(245, 158, 11, 0.5);" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=MP&background=f59e0b&color=000&bold=true';" />
+                        <h2 style="margin-top: 14px; font-size: 26px; font-weight: 900; color: #f3f4f6; letter-spacing: 0.5px;">മേസ്ത്രി പ്രോ</h2>
                     </div>
 
                     <p style="margin-bottom: 20px; font-size: 18px; font-weight: 700; color: #e2e8f0;" class="lang" data-key="enterPinTitle">സുരക്ഷാ പിൻ നമ്പർ നൽകുക</p>
@@ -418,7 +420,7 @@
                 window.switchLanguage(currentLang);
             }
 
-            // പേജ് ലോഡ് ആയ ഉടനെ സാവധാനം ഫേഡ് ആയി തെളിയുന്ന ആനിമേഷൻ ട്രിഗർ ചെയ്യുന്നു
+            // സ്മൂത്തായി ഫേഡ് ആയി തെളിയുന്ന ആനിമേഷൻ
             setTimeout(() => {
                 const modal = document.getElementById('pinLockModal');
                 const card = document.getElementById('pinCardContent');
@@ -436,7 +438,7 @@
                 if (userEnteredPin === correctPin) {
                     const modal = document.getElementById('pinLockModal');
                     if (modal) {
-                        modal.style.opacity = '0'; // മനോഹരമായി ഫേഡ് ഔട്ട് ആയി പോകാൻ
+                        modal.style.opacity = '0';
                         setTimeout(() => modal.remove(), 500);
                     }
                 } else {
