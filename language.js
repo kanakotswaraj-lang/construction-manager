@@ -2700,6 +2700,285 @@ label_pass_text: {
         kn: "ತಪ್ಪು ಪಿನ್! ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.",
         bn: "ভুল পিন! আবার চেষ্টা করুন.",
         as: "ভুল পিন! ξনৌ চেষ্টা কৰক."
+    },
+        workersAccountsTitle: {
+        ml: "തൊഴിലാളികളുടെ കണക്കുകൾ",
+        en: "Workers' Accounts",
+        hi: "कामगारों का हिसाब",
+        ta: "தொழிலாளர்களின் கணக்குகள்",
+        kn: "ಕೆಲಸಗಾರರ ಲೆಕ್ಕಗಳು",
+        bn: "শ্রমিকদের হিসাব",
+        as: "শ্ৰমিকসকলৰ হিচাপ"
+    },
+
+    addWorkerBtn: {
+        ml: "➕ പുതിയ തൊഴിലാളിയെ ചേർക്കുക",
+        en: "➕ Add New Worker",
+        hi: "➕ नया कामगार जोड़ें",
+        ta: "➕ புதிய தொழிலாளியை சேர்க்கவும்",
+        kn: "➕ ಹೊಸ ಕೆಲಸಗಾರರನ್ನು ಸೇರಿಸಿ",
+        bn: "➕ নতুন শ্রমিক যোগ করুন",
+        as: "➕ নতুন শ্ৰমিক যোগ কৰক"
+    },
+
+    addTodayWageBtn: {
+        ml: "➕ ഇന്നത്തെ കൂലി ചേർക്കുക",
+        en: "➕ Add Today's Wage",
+        hi: "➕ आज की मजदूरी जोड़ें",
+        ta: "➕ இன்றைய கூலியை சேர்க்கவும்",
+        kn: "➕ ಇಂದಿನ ಕೂಲಿಯನ್ನು ಸೇರಿಸಿ",
+        bn: "➕ আজকের মজুরি যোগ করুন",
+        as: "➕ আজিৰ মজুৰি যোগ কৰক"
+    },
+
+    advancePaymentDetails: {
+        ml: "💸 അഡ്വാൻസ് കൊടുത്ത വിവരങ്ങൾ:",
+        en: "💸 Advance Payment Details:",
+        hi: "💸 एडवांस भुगतान विवरण:",
+        ta: "💸 முன் பண விவரங்கள்:",
+        kn: "💸 ಮುಂಗಡ ಪಾವತಿ ವಿವರಗಳು:",
+        bn: "💸 অগ্রিম প্রদানের বিবরণ:",
+        as: "💸 অগ্রিম পৰিশোধৰ বিৱৰণ:"
+    },
+
+    addAdvanceBtn: {
+        ml: "+ അഡ്വാൻസ്",
+        en: "+ Advance",
+        hi: "+ एडवांस",
+        ta: "+ முன்பணம்",
+        kn: "+ ಮುಂಗಡ",
+        bn: "+ অগ্রিম",
+        as: "+ অগ্রিম"
+    },
+
+    workingDaysLabel: {
+        ml: "പണി ദിവസം",
+        en: "Working Days",
+        hi: "काम का दिन",
+        ta: "வேலை நாள்",
+        kn: "ಕೆಲಸದ ದಿನ",
+        bn: "কাজের দিন",
+        as: "কামৰ দিন"
+    },
+
+    totalWageLabel: {
+        ml: "ആകെ കൂലി:",
+        en: "Total Wage:",
+        hi: "कुल मजदूरी:",
+        ta: "மொத்த கூலி:",
+        kn: "ಒಟ್ಟು ಕೂಲಿ:",
+        bn: "মোট মজুরি:",
+        as: "মুঠ মজুৰি:"
+    },
+
+    settledPaymentBtn: {
+        ml: "💸 പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്ലിൽ തുടങ്ങുക)",
+        en: "💸 Settled Payment (Reset / Start New Cycle)",
+        hi: "💸 भुगतान चुकता किया (रीसेट / नया चक्र शुरू करें)",
+        ta: "💸 பணம் கொடுத்து முடிக்கப்பட்டது (ரீசெட் / புதிய சுழற்சியைத் தொடங்குக)",
+        kn: "💸 ಹಣ ಪಾವತಿ ಪೂರ್ಣಗೊಂಡಿದೆ (ರೀಸೆಟ್ / ಹೊಸ ಚಕ್ರವನ್ನು ಪ್ರಾರಂಭಿಸಿ)",
+        bn: "💸 পেমেন্ট পরিশোধ করা হয়েছে (রিসেট / নতুন চক্র শুরু করুন)",
+        as: "💸 টকা পৰিশোধ সম্পূৰ্ণ হ'ল (ৰীছেট / নতুন চক্ৰ আৰম্ভ কৰক)"
+    },
+
+    workInfoTitle: {
+        ml: "📐 പണിയുടെ വിവരങ്ങൾ നൽകുക",
+        en: "📐 Enter Work Details",
+        hi: "📐 काम का विवरण दर्ज करें",
+        ta: "📐 வேலை விவரங்களை உள்ளிடவும்",
+        kn: "📐 ಕೆಲಸದ ವಿವರಗಳನ್ನು ನಮूदಿಸಿ",
+        bn: "📐 কাজের বিবরণ লিখুন",
+        as: "📐 কামৰ বিৱৰণ প্ৰবিষ্ট কৰক"
+    },
+
+    workCategoryLabel: {
+        ml: "പണിയുടെ തരം (Work Category)",
+        en: "Work Category",
+        hi: "काम की श्रेणी (Work Category)",
+        ta: "வேலை வகை (Work Category)",
+        kn: "ಕೆಲಸದ ವರ್ಗ (Work Category)",
+        bn: "কাজের বিভাগ (Work Category)",
+        as: "কামৰ শ্ৰেণী (Work Category)"
+    },
+
+    rccSlabOption: {
+        ml: "സ്ലാബ് വാർപ്പ് (RCC Slab)",
+        en: "RCC Slab",
+        hi: "आरसीसी स्लैब (RCC Slab)",
+        ta: "RCC ஸ்லாப்",
+        kn: "ಆರ್‌ಸಿಸಿ ಸ್ಲ್ಯಾಬ್ (RCC Slab)",
+        bn: "আরসিসি স্ল্যাব (RCC Slab)",
+        as: "আৰচিচি শ্লেৱ (RCC Slab)"
+    },
+
+    roofBeamOption: {
+        ml: "ബീം വാർപ്പ് (Roof Beam)",
+        en: "Roof Beam",
+        hi: "रूफ बीम (Roof Beam)",
+        ta: "ரூஃப் பீம் (Roof Beam)",
+        kn: "ರೂಫ್ ಬೀಮ್ (Roof Beam)",
+        bn: "রুফ বিম (Roof Beam)",
+        as: "ৰুফ বীম (Roof Beam)"
+    },
+
+    lintelOption: {
+        ml: "ലിന്റൽ വാർപ്പ് (Lintel)",
+        en: "Lintel",
+        hi: "लिंटेल (Lintel)",
+        ta: "லிண்டெல் (Lintel)",
+        kn: "ಲಿಂಟೆಲ್ (Lintel)",
+        bn: "লেন্টেল (Lintel)",
+        as: "লিন্টেল (Lintel)"
+    },
+
+    lateriteStoneOption: {
+        ml: "വെട്ടുകല്ല് കെട്ടൽ (Laterite Stone)",
+        en: "Laterite Stone Work",
+        hi: "लैटेराइट स्टोन वर्क (Laterite Stone)",
+        ta: "செங்கற்கள் / வெட்டுக்கல் வேலை",
+        kn: "laterite ಕಲ್ಲು ನಿರ್ಮಾಣ",
+        bn: "ল্যাটেরাইট পাথর (Laterite Stone)",
+        as: "লেটেৰাইট πέτρι কাম (Laterite Stone)"
+    },
+
+    plasteringOption: {
+        ml: "പ്ലാസ്റ്റിംഗ് (Plastering)",
+        en: "Plastering",
+        hi: "प्लास्टरिंग (Plastering)",
+        ta: "பிளாஸ்டரிங் (Plastering)",
+        kn: "ಪ್ಲಾಸ್ಟರಿಂಗ್ (Plastering)",
+        bn: "প্লাস্টারং (Plastering)",
+        as: "প্লাষ্টাৰিং (Plastering)"
+    },
+
+    workAreaLabel: {
+        ml: "പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)",
+        en: "Work Area (Square Feet - Sq.Ft)",
+        hi: "कार्य क्षेत्र (Square Feet - Sq.Ft)",
+        ta: "வேலை செய்யும் பகுதி (Square Feet - Sq.Ft)",
+        kn: "ಕೆಲಸದ ಪ್ರದೇಶ (Square Feet - Sq.Ft)",
+        bn: "কাজের ক্ষেত্র (Square Feet - Sq.Ft)",
+        as: "কামৰ স্থান (Square Feet - Sq.Ft)"
+    },
+
+    slabThicknessLabel: {
+        ml: "വാർപ്പിന്റെ കനം (Slab Thickness)",
+        en: "Slab Thickness",
+        hi: "स्लैब मोटाई (Slab Thickness)",
+        ta: "ஸ்லாப் தடிமன் (Slab Thickness)",
+        kn: "ಸ್ಲ್ಯಾಬ್ ದಪ್ಪ (Slab Thickness)",
+        bn: "স্ল্যাবের পুরুত্ব (Slab Thickness)",
+        as: "শ্লেৱৰ ডাঠ (Slab Thickness)"
+    },
+
+    thickness45: {
+        ml: "4.5 ഇഞ്ച്",
+        en: "4.5 Inches",
+        hi: "4.5 इंच",
+        ta: "4.5 அங்குலம்",
+        kn: "4.5 ಇಂಚುಗಳು",
+        bn: "৪.৫ ইঞ্চি",
+        as: "৪.৫ ইঞ্চি"
+    },
+
+    thickness5Standard: {
+        ml: "5 ഇഞ്ച് - സ്റ്റാൻഡേർഡ്",
+        en: "5 Inches - Standard",
+        hi: "5 इंच - मानक (Standard)",
+        ta: "5 அங்குலம் - நிலையானது",
+        kn: "5 ಇಂಚುಗಳು - ಪ್ರಮಾಣಿತ",
+        bn: "৫ ইঞ্চি - আদর্শ (Standard)",
+        as: "৫ ইঞ্চি - মানক"
+    },
+
+    thickness6: {
+        ml: "6 ഇഞ്ച്",
+        en: "6 Inches",
+        hi: "6 इंच",
+        ta: "6 அங்குலம்",
+        kn: "6 ಇಂಚುಗಳು",
+        bn: "৬ ইঞ্চি",
+        as: "৬ ইঞ্চি"
+    },
+
+    masonSteelHeader: {
+        ml: "🛠️ മേസ്തിരി നിർദ്ദേശിക്കുന്ന സ്ലാബ് കമ്പി കണക്കുകൾ",
+        en: "🛠️ Mason's Recommended Slab Steel Calculations",
+        hi: "🛠️ मिस्त्री द्वारा सुझाई गई स्लैब स्टील गणना",
+        ta: "🛠️ மேஸ்திரி பரிந்துரைக்கும் ஸ்லாப் ஸ்டீல் கணக்கீடுகள்",
+        kn: "🛠️ ಮೇಸ್ತ್ರಿ ಸೂಚಿಸಿದ ಸ್ಲ್ಯಾಬ್ ಸ್ಟೀಲ್ ಲೆಕ್ಕಾಚಾರಗಳು",
+        bn: "🛠️ মিস্ত্রি কর্তৃক প্রস্তাবিত স্ল্যাব স্টিল হিসাব",
+        as: "🛠️ মিস্ত্ৰীয়ে আগবঢ়োৱা শ্লেৱ ষ্টীলৰ হিচাপ"
+    },
+
+    mainSteelSizeLabel: {
+        ml: "മെയിൻ കമ്പി സൈസ്",
+        en: "Main Steel Size",
+        hi: "मुख्य स्टील आकार (Main Steel Size)",
+        ta: "மெயின் ஸ்டீல் அளவு",
+        kn: "ಮುಖ್ಯ ಸ್ಟೀಲ್ ಗಾತ್ರ",
+        bn: "প্রধান স্টিল সাইজ",
+        as: "মুখ্য ষ্টীল আকাৰ"
+    },
+
+    size12mm: {
+        ml: "12 mm",
+        en: "12 mm",
+        hi: "12 mm",
+        ta: "12 mm",
+        kn: "12 mm",
+        bn: "12 mm",
+        as: "12 mm"
+    },
+
+    size10mm: {
+        ml: "10 mm",
+        en: "10 mm",
+        hi: "10 mm",
+        ta: "10 mm",
+        kn: "10 mm",
+        bn: "10 mm",
+        as: "10 mm"
+    },
+
+    distributionSteelLabel: {
+        ml: "ഡിസ്ട്രിബ്യൂഷൻ കമ്പി",
+        en: "Distribution Steel",
+        hi: "वितरण स्टील (Distribution Steel)",
+        ta: "டிஸ்ட்ரிபியூஷன் ஸ்டீல்",
+        kn: "ಡಿಸ್ಟ್ರಿಬ್ಯೂಷನ್ ಸ್ಟೀಲ್",
+        bn: "ডিসট্রিবিউশন স্টিল",
+        as: "বিতৰণ ষ্টীল"
+    },
+
+    size8mm: {
+        ml: "8 mm",
+        en: "8 mm",
+        hi: "8 mm",
+        ta: "8 mm",
+        kn: "8 mm",
+        bn: "8 mm",
+        as: "8 mm"
+    },
+
+    manualMasonCountLabel: {
+        ml: "മേസ്തിരിമാരുടെ എണ്ണം (Manual Mason Count)",
+        en: "Manual Mason Count",
+        hi: "मिस्त्रियों की संख्या (Manual Mason Count)",
+        ta: "மேஸ்திரிகளின் எண்ணிக்கை",
+        kn: "ಮೇಸ್ತ್ರಿಗಳ ಸಂಖ್ಯೆ",
+        bn: "মিস্ত্রির সংখ্যা",
+        as: "মিস্ত্ৰীৰ সংখ্যা"
+    },
+
+    calculateBtnText: {
+        ml: "കണക്കുകൂട്ടുക (Calculate)",
+        en: "Calculate",
+        hi: "गणना करें (Calculate)",
+        ta: "கணக்கிடு (Calculate)",
+        kn: "ಲೆಕ್ಕಹಾಕಿ (Calculate)",
+        bn: "গণনা করুন (Calculate)",
+        as: "গণনা কৰক (Calculate)"
     }
 
 
