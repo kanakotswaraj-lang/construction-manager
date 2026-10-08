@@ -296,11 +296,17 @@ window.showAlert = function(message, type = 'success') {
         });
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            document.querySelectorAll('#staffList > div').forEach(div => {
-                div.style.display = div.innerText.toLowerCase().includes(val) ? '' : 'none';
-            });
-        });
+    const val = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('#staffList > div').forEach(div => {
+        const textContent = div.innerText.toLowerCase();
+        if (val === "" || textContent.includes(val)) {
+            div.style.display = "";
+        } else {
+            div.style.display = "none";
+        }
+    });
+});
+
 
         async function loadStaffAndAccounts() {
             const list = document.getElementById('staffList');
