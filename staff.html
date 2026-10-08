@@ -203,27 +203,30 @@
             return fallback;
         }
 
-        window.showAlert = function(message, type = 'success') {
-            const alertBox = document.getElementById('customAlert');
-            if (!alertBox) {
-                alert(message);
-                return;
-            }
-            alertBox.innerText = message;
-            alertBox.classList.remove('hidden');
-            
-            const baseClass = "toast-animate fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-4 rounded-2xl z-[9999] font-bold text-center shadow-2xl border-2 backdrop-blur-md max-w-xs w-full ";
 
-            if (type === 'success') {
-                alertBox.className = baseClass + "bg-emerald-900/95 border-emerald-500 text-emerald-200 shadow-emerald-500/20";
-            } else {
-                alertBox.className = baseClass + "bg-red-900/95 border-red-500 text-red-200 shadow-red-500/20";
-            }
+window.showAlert = function(message, type = 'success') {
+    const alertBox = document.getElementById('customAlert');
+    if (!alertBox) {
+        alert(message);
+        return;
+    }
+    alertBox.innerText = message;
+    
+    // സെന്റർ ആയി വരാൻ fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto ഉപയോഗിക്കുക
+    let baseClassName = "toast-animate fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto z-[9999] px-6 py-4 rounded-2xl font-bold text-center shadow-2xl border-2 backdrop-blur-md max-w-xs ";
+    
+    if (type === 'success') {
+        alertBox.className = baseClassName + "bg-emerald-900/95 border-emerald-500 text-emerald-200 shadow-emerald-500/20";
+    } else {
+        alertBox.className = baseClassName + "bg-red-900/95 border-red-500 text-red-200 shadow-red-500/20";
+    }
 
-            setTimeout(() => {
-                alertBox.classList.add('hidden');
-            }, 2500);
-        };
+    alertBox.classList.remove('hidden');
+
+    setTimeout(() => {
+        alertBox.classList.add('hidden');
+    }, 2500);
+};
 
         const getTodayDate = () => {
             const d = new Date();
@@ -757,6 +760,14 @@
         };
 
         loadStaffAndAccounts();
+        // നിലവിൽ സെർച്ച് ബോക്സിൽ എന്തെങ്കിലും എഴുതിയിട്ടുണ്ടെങ്കിൽ അത് വീണ്ടും ഫിൽട്ടർ ചെയ്യാൻ
+const searchVal = document.getElementById('searchInput').value.toLowerCase();
+if (searchVal) {
+    document.querySelectorAll('#staffList > div').forEach(div => {
+        div.style.display = div.innerText.toLowerCase().includes(searchVal) ? '' : 'none';
+    });
+}
+
     </script>
 </body>
 </html>
