@@ -378,78 +378,20 @@
         };
                         // 1. ആപ്പ് ലോഡ് ചെയ്യുമ്പോഴും ബാക്ക്ഗ്രൗണ്ടിൽ നിന്ന് വരുമ്പോഴും പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
         
-                // 1. ആപ്പ് ആദ്യം തുറക്കുമ്പോൾ അല്ലെങ്കിൽ പുതിയ സെഷനിൽ മാത്രം പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
-        function checkAppSecurityPin() {
-            // സെഷൻ സ്റ്റോറേജ് വഴി ഈ സെഷനിൽ ഇതിനകം പിൻ കൊടുത്തോ എന്ന് പരിശോധിക്കുന്നു
-            const isSessionUnlocked = sessionStorage.getItem("appUnlockedThisSession");
-            
-            if (!isSessionUnlocked) {
-                const savedPin = localStorage.getItem("appPin") || "1234"; 
-                showPinLockScreen(savedPin);
-            }
-        }
-
-        // 2. പിൻ ലോക്ക് സ്ക്രീൻ കാണിക്കുന്ന കോഡ്
-        function showPinLockScreen(correctPin) {
-            const existingModal = document.getElementById('pinLockModal');
-            if (existingModal) existingModal.remove();
-
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-
-            const lockScreenHtml = `
-                <div id="pinLockModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d1117 !important; z-index: 2147483647; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Manjari', sans-serif; font-weight: 700; opacity: 0; transition: opacity 0.5s ease-in-out;">
-                    
-                    <!-- മേസ്ത്രി പ്രോ ഐക്കൺ & ഹെഡിങ് -->
-                    <div style="margin-bottom: 25px; text-align: center; transform: scale(0.7); transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="pinCardContent">
-                        <img src="icon.png" alt="Meshtri Pro Icon" style="width: 225px; height: 225px; margin: 0 auto; border-radius: 26px; object-fit: cover; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35); border: 2.5px solid rgba(245, 158, 11, 0.5);" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=MP&background=f59e0b&color=000&bold=true';" />
-                        <h2 style="margin-top: 14px; font-size: 26px; font-weight: 900; color: #f3f4f6; letter-spacing: 0.5px;">മേസ്ത്രി പ്രോ</h2>
-                    </div>
-
-                    <p style="margin-bottom: 20px; font-size: 18px; font-weight: 700; color: #e2e8f0;" class="lang" data-key="enterPinTitle">സുരക്ഷാ പിൻ നമ്പർ നൽകുക</p>
-                    
-                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <input type="password" id="enteredPin" maxlength="4" style="width: 160px; padding: 12px; font-size: 24px; font-weight: 900; text-align: center; border-radius: 12px; border: 1.5px solid #64748b; background-color: #1e293b; color: white; letter-spacing: 8px;" placeholder="****" autofocus />
-                    </div>
-                    
-                    <button type="button" id="verifyPinBtn" style="padding: 12px 35px; background-color: #f59e0b; color: #000; font-weight: 900; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); transition: transform 0.2s;" class="lang" data-key="openBtn" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">തുറക്കുക</button>
-                    
-                    <p id="pinErrorMsg" style="color: #ef4444; font-weight: 700; margin-top: 15px; font-size: 14px; display: none;" class="lang" data-key="wrongPinError">തെറ്റായ പിൻ നമ്പർ! വീണ്ടും ശ്രമിക്കുക.</p>
-                </div>
-            `;
-            
-            const div = document.createElement('div');
-            div.innerHTML = lockScreenHtml;
-            document.body.appendChild(div);
-
-            if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(currentLang);
-            }
-
-            setTimeout(() => {
-                const modal = document.getElementById('pinLockModal');
-                const card = document.getElementById('pinCardContent');
-                if (modal) modal.style.opacity = '1';
-                if (card) card.style.transform = 'scale(1)';
                 
-                const pinInput = document.getElementById('enteredPin');
-                if (pinInput) pinInput.focus();
-            }, 60);
-
-            document.getElementById('verifyPinBtn').addEventListener('click', () => {
-                verifyAndUnlock(correctPin);
-            });
-
-        // 1. ആപ്പ് ലോഡ് ചെയ്യുമ്പോഴും ബാക്ക്ഗ്രൗണ്ടിൽ നിന്ന് വരുമ്പോഴും പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
-        function checkAppSecurityPin() {
-            const isSessionUnlocked = sessionStorage.getItem("appUnlockedThisSession");
             
-            if (!isSessionUnlocked) {
+        // 1. ആപ്പ് ഓപ്പൺ ചെയ്യുമ്പോൾ പിൻ പരിശോധിക്കുന്ന ഫങ്ഷൻ
+        function checkAppSecurityPin() {
+            // ആപ്പ് ക്ലോസ് ചെയ്താൽ തീരുന്ന സെഷൻ സ്റ്റോറേജ് പരിശോധിക്കുന്നു
+            const isUnlocked = sessionStorage.getItem("appUnlocked");
+            
+            if (!isUnlocked) {
                 const savedPin = localStorage.getItem("appPin") || "1234"; 
                 showPinLockScreen(savedPin);
             }
         }
 
-        // 2. നേവി ബ്ലൂ ബാക്ക്ഗ്രൗണ്ടുള്ള പിൻ ലോക്ക് സ്ക്രീൻ കോഡ്
+        // 2. നേവി ബ്ലൂ തീമും സ്മൂത്ത് ആനിമേഷനുമുള്ള പിൻ ലോക്ക് സ്ക്രീൻ
         function showPinLockScreen(correctPin) {
             const existingModal = document.getElementById('pinLockModal');
             if (existingModal) existingModal.remove();
@@ -457,7 +399,7 @@
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
 
             const lockScreenHtml = `
-                <div id="pinLockModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d1117 !important; z-index: 2147483647; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Manjari', sans-serif; font-weight: 700; opacity: 0; transition: opacity 0.5s ease-in-out;">
+                <div id="pinLockModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d1117 !important; z-index: 2147483647; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Manjari', sans-serif; font-weight: 700; opacity: 0; transition: opacity 0.4s ease-in-out;">
                     
                     <!-- മേസ്ത്രി പ്രോ ഐക്കൺ & ഹെഡിങ് -->
                     <div style="margin-bottom: 25px; text-align: center; transform: scale(0.7); transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="pinCardContent">
@@ -485,6 +427,7 @@
                 window.switchLanguage(currentLang);
             }
 
+            // സ്മൂത്ത് ആനിമേഷൻ
             setTimeout(() => {
                 const modal = document.getElementById('pinLockModal');
                 const card = document.getElementById('pinCardContent');
@@ -493,7 +436,7 @@
                 
                 const pinInput = document.getElementById('enteredPin');
                 if (pinInput) pinInput.focus();
-            }, 60);
+            }, 50);
 
             document.getElementById('verifyPinBtn').addEventListener('click', () => {
                 verifyAndUnlock(correctPin);
@@ -506,17 +449,19 @@
             });
         }
 
+        // പിൻ ശരിയാണോ എന്ന് പരിശോധിക്കുന്ന ഫങ്ഷൻ
         function verifyAndUnlock(correctPin) {
             const userEnteredPin = document.getElementById('enteredPin').value.trim();
             const errorMsg = document.getElementById('pinErrorMsg');
             
             if (userEnteredPin === correctPin) {
-                sessionStorage.setItem("appUnlockedThisSession", "true");
+                // ഈ ബ്രൗസർ സെഷനിൽ അൺലോക്ക് ആയതായി സെറ്റ് ചെയ്യുന്നു
+                sessionStorage.setItem("appUnlocked", "true");
                 
                 const modal = document.getElementById('pinLockModal');
                 if (modal) {
                     modal.style.opacity = '0';
-                    setTimeout(() => modal.remove(), 500);
+                    setTimeout(() => modal.remove(), 400);
                 }
             } else {
                 if (errorMsg) errorMsg.style.display = 'block';
@@ -524,12 +469,14 @@
             }
         }
 
+        // പേജ് ലോഡ് ആകുമ്പോൾ ഇത് റൺ ചെയ്യാൻ
         document.addEventListener("DOMContentLoaded", () => {
             let userName = localStorage.getItem('userName');
             if (userName) {
                 checkAppSecurityPin();
             }
         });
+
 
 
     </script>
