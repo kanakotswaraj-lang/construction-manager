@@ -62,11 +62,18 @@
                 </div>
                 <p class="lang text-[11px] text-slate-400 mt-1.5" data-key="passwordNote">ശ്രദ്ധിക്കുക: പാസ്‌വേർഡിൽ കുറഞ്ഞത് 6 അക്കങ്ങളോ അക്ഷരങ്ങളോ ഉണ്ടായിരിക്കണം.</p>
             </div>
-                        <!-- രഹസ്യ ചോദ്യം (Security Question) -->
-            <div>
-                <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="secQuestionLabel">രഹസ്യ ചോദ്യം (ഉദാ: നിങ്ങളുടെ പ്രിയപ്പെട്ട നിറം?)</label>
-                <input type="text" id="secQuestion" class="lang-placeholder w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400" data-key-placeholder="secQuestionPlaceholder" placeholder="പാസ്‌വേർഡ് റിക്കവറിക്കുള്ള ചോദ്യം">
-            </div>
+                        <!-- രഹസ്യ ചോദ്യം (Security Question Dropdown) -->
+<div>
+    <label class="lang block text-xs font-semibold text-amber-300/90 mb-1.5" data-key="secQuestionLabel">രഹസ്യ ചോദ്യം തിരഞ്ഞെടുക്കുക</label>
+    <select id="secQuestion" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
+        <option value="" disabled selected class="lang" data-key="selectQuestionOption">ഒരു ചോദ്യം തിരഞ്ഞെടുക്കുക</option>
+        <option value="നിങ്ങളുടെ പ്രിയപ്പെട്ട നിറം ഏത്?" class="lang" data-key="qColor">നിങ്ങളുടെ പ്രിയപ്പെട്ട നിറം ഏത്?</option>
+        <option value="നിങ്ങളുടെ ആദ്യത്തെ സ്കൂളിന്റെ പേര് എന്താണ്?" class="lang" data-key="qSchool">നിങ്ങളുടെ ആദ്യത്തെ സ്കൂളിന്റെ പേര് എന്താണ്?</option>
+        <option value="നിങ്ങളുടെ പ്രിയപ്പെട്ട വിഭവം ഏതാണ്?" class="lang" data-key="qFood">നിങ്ങളുടെ പ്രിയപ്പെട്ട വിഭവം ഏതാണ്?</option>
+        <option value="നിങ്ങളുടെ ജന്മനാട് ഏതാണ്?" class="lang" data-key="qHometown">നിങ്ങളുടെ ജന്മനാട് ഏതാണ്?</option>
+    </select>
+</div>
+
 
             <!-- രഹസ്യ ഉത്തരം (Security Answer) -->
             <div>
@@ -102,6 +109,7 @@
         മേസ്തിരിമാർക്കായി നിർമ്മിച്ചത് ❤️ കേരളം
     </div>
 
+    
     <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -204,8 +212,10 @@
                 const phone = phoneInput.value.trim();
                 const pin = securityPinInput.value.trim();
                 const pass = passwordInput.value.trim();
+                const question = document.getElementById("secQuestion").value.trim();
+                const answer = document.getElementById("secAnswer").value.trim().toLowerCase();
 
-                if (!user || !phone || !pin || !pass) {
+                if (!user || !phone || !pin || !pass || !question || !answer) {
                     return showCustomAlert('alertFillAll', false);
                 }
 
@@ -220,62 +230,37 @@
                 if (pass.length < 6) {
                     return showCustomAlert('alertPassLength', false);
                 }
-                          const question = document.getElementById("secQuestion").value.trim();
-          const answer = document.getElementById("secAnswer").value.trim().toLowerCase();
 
-          if (!user || !phone || !pin || !pass || !question || !answer) {
-              return showCustomAlert('alertFillAll', false);
-          }
+                try {
+                    await set(ref(db, 'users/' + user), {
+                        username: user,
+                        phone: phone,
+                        securityPin: pin,
+                        password: pass,
+                        securityQuestion: question,
+                        securityAnswer: answer
+                    });
 
-          try {
-              await set(ref(db, 'users/' + user), {
-                  username: user,
-                  phone: phone,
-                  securityPin: pin,
-                  password: pass,
-                  securityQuestion: question,
-                  securityAnswer: answer
-              });
+                    showCustomAlert('alertRegSuccess', true);
+                    localStorage.setItem('userName', user);
 
-              showCustomAlert('alertRegSuccess', true);
-              localStorage.setItem('userName', user);
-              setTimeout(() => {
-                  window.location.href = "dashboard.html";
-              }, 1500);
+                    // അഡ്മിൻ വാട്സാപ്പിലേക്ക് നോട്ടിഫിക്കേഷൻ അയക്കാനുള്ള ലിങ്ക്
+                    const adminPhone = "916238020523";
+                    const notificationMessage = `പുതിയ മേസ്തിരി രജിസ്റ്റർ ചെയ്തു!%0Aപേര്: ${user}%0Aഫോൺ: ${phone}`;
+                    const whatsappUrl = `https://wa.me/${adminPhone}?text=${notificationMessage}`;
 
-          } catch (error) {
-              console.error(error);
-              showCustomAlert('alertError', false);
-          }
+                    setTimeout(() => {
+                        window.location.href = whatsappUrl;
+                    }, 1500);
 
-try {
-    await set(ref(db, 'users/' + user), {
-        username: user,
-        phone: phone,
-        securityPin: pin,
-        password: pass,
-        securityQuestion: question,
-        securityAnswer: answer
-    });
+                } catch (error) {
+                    console.error(error);
+                    showCustomAlert('alertError', false);
+                }
+            });
+        }
+    </script>
 
-    showCustomAlert('alertRegSuccess', true);
-    localStorage.setItem('userName', user);
-
-    // നിങ്ങളുടെ (അഡ്മിന്റെ) വാട്സാപ്പ് നമ്പറിലേക്ക് പുതിയ മേസ്തിരിയുടെ വിവരങ്ങൾ അയക്കാനുള്ള ലിങ്ക്
-    const adminPhone = "916238020523"; // നിങ്ങളുടെ വാട്സാപ്പ് നമ്പർ
-    const notificationMessage = `പുതിയ മേസ്തിരി രജിസ്റ്റർ ചെയ്തു!%0Aപേര്: ${user}%0Aഫോൺ: ${phone}`;
-    const whatsappUrl = `https://wa.me/${adminPhone}?text=${notificationMessage}`;
-
-    setTimeout(() => {
-        // രജിസ്ട്രേഷൻ കഴിഞ്ഞയുടനെ നിങ്ങളുടെ വാട്സാപ്പ് ചാറ്റ് ഓപ്പൺ ആയി ആ നോട്ടിഫിക്കേഷൻ മെസ്സേജ് വരും.
-        // അതിനുശേഷം നിങ്ങൾക്ക് തിരിച്ച് അവർക്ക് സ്വാഗതം പറയാവുന്നതാണ്.
-        window.location.href = whatsappUrl;
-    }, 1500);
-
-} catch (error) {
-    console.error(error);
-    showCustomAlert('alertError', false);
-}
 
     </script>
 
