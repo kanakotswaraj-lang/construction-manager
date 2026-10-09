@@ -155,7 +155,7 @@
         </div>
     </div>
 
-    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ (പൂർണ്ണമായി പരിഹരിച്ചത്) -->
+    <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -168,7 +168,6 @@
                 else { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
             } catch (e) { document.getElementById('appHeader').innerHTML = `<h2 class="text-amber-400 font-black text-sm">മേസ്തിരി പ്രോ</h2>`; }
             
-            // ഭാഷ സെറ്റ് ചെയ്യുക
             if (typeof window.switchLanguage === 'function') {
                 window.switchLanguage(localStorage.getItem('selectedLang') || 'ml');
             }
@@ -189,12 +188,7 @@
         const db = getFirestore(app);
 
         let currentMeshtri = localStorage.getItem('userName') || localStorage.getItem('meshtriName') || localStorage.getItem('name') || "മേസ്തിരി";
-        const loggedElement = document.getElementById('loggedInMeshtri');
-        if (loggedElement) {
-            loggedElement.innerText = "സ്വാഗതം, " + currentMeshtri;
-        }
 
-        // Helper function to get translation safely
         function getWord(key, fallback) {
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             if (typeof words !== 'undefined' && words[key] && words[key][currentLang]) {
@@ -203,29 +197,22 @@
             return fallback;
         }
 
-
-window.showAlert = function(message, type = 'success') {
-    const alertBox = document.getElementById('customAlert');
-    if (!alertBox) {
-        alert(message);
-        return;
-    }
-    alertBox.innerText = message;
-    
-    let baseClassName = "toast-animate fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto z-[9999] px-6 py-4 rounded-2xl font-bold text-center shadow-2xl border-2 backdrop-blur-md max-w-xs ";
-    
-    if (type === 'success') {
-        alertBox.className = baseClassName + "bg-emerald-900/95 border-emerald-500 text-emerald-200 shadow-emerald-500/20";
-    } else {
-        alertBox.className = baseClassName + "bg-red-900/95 border-red-500 text-red-200 shadow-red-500/20";
-    }
-
-    alertBox.classList.remove('hidden');
-
-    setTimeout(() => {
-        alertBox.classList.add('hidden');
-    }, 2500);
-};
+        window.showAlert = function(message, type = 'success') {
+            const alertBox = document.getElementById('customAlert');
+            if (!alertBox) {
+                alert(message);
+                return;
+            }
+            alertBox.innerText = message;
+            let baseClassName = "toast-animate fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto z-[9999] px-6 py-4 rounded-2xl font-bold text-center shadow-2xl border-2 backdrop-blur-md max-w-xs ";
+            if (type === 'success') {
+                alertBox.className = baseClassName + "bg-emerald-900/95 border-emerald-500 text-emerald-200 shadow-emerald-500/20";
+            } else {
+                alertBox.className = baseClassName + "bg-red-900/95 border-red-500 text-red-200 shadow-red-500/20";
+            }
+            alertBox.classList.remove('hidden');
+            setTimeout(() => { alertBox.classList.add('hidden'); }, 2500);
+        };
 
         const getTodayDate = () => {
             const d = new Date();
@@ -235,29 +222,24 @@ window.showAlert = function(message, type = 'success') {
             return `${year}-${month}-${day}`;
         };
 
-   function getMalayalamDay(dateString) {
-    try {
-        if (!dateString) return "";
-        const d = new Date(dateString);
-        if (isNaN(d.getTime())) return ""; 
-        
-        const dayIndex = d.getDay(); 
-        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-        const currentKey = dayKeys[dayIndex];
-        
-        const currentLang = localStorage.getItem('selectedLang') || 'ml';
-        
-        if (typeof words !== 'undefined' && words[currentKey] && words[currentKey][currentLang]) {
-            return words[currentKey][currentLang];
+        function getMalayalamDay(dateString) {
+            try {
+                if (!dateString) return "";
+                const d = new Date(dateString);
+                if (isNaN(d.getTime())) return ""; 
+                const dayIndex = d.getDay(); 
+                const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+                const currentKey = dayKeys[dayIndex];
+                const currentLang = localStorage.getItem('selectedLang') || 'ml';
+                if (typeof words !== 'undefined' && words[currentKey] && words[currentKey][currentLang]) {
+                    return words[currentKey][currentLang];
+                }
+                const malayalamDays = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"];
+                return malayalamDays[dayIndex] || "";
+            } catch (e) {
+                return "";
+            }
         }
-        
-        const malayalamDays = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"];
-        return malayalamDays[dayIndex] || "";
-    } catch (e) {
-        console.error("Day translation error:", e);
-        return "";
-    }
-}
 
         document.getElementById('saveStaffBtn').addEventListener('click', async () => {
             const name = document.getElementById('staffName').value.trim();
@@ -287,7 +269,6 @@ window.showAlert = function(message, type = 'success') {
                 document.getElementById('addStaffModal').classList.add('hidden');
                 loadStaffAndAccounts();
             } catch (err) {
-                console.error(err);
                 showAlert("സേവ് ചെയ്യുന്നതിൽ തടസ്സം നേരിട്ടു!", "error");
             }
         });
@@ -318,7 +299,6 @@ window.showAlert = function(message, type = 'success') {
                     return;
                 }
 
-                // Translated UI Labels
                 const siteLabelStr = getWord('site', 'സൈറ്റ്');
                 const primarySiteStr = getWord('primary_site', 'പ്രാഥമിക സൈറ്റ്');
                 const wageStr = getWord('total_wage', 'കൂലി');
@@ -348,7 +328,10 @@ window.showAlert = function(message, type = 'success') {
                     const s = d.data();
                     const staffId = d.id;
                     const div = document.createElement('div');
-                    div.className = "bg-slate-900/90 text-white p-5 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm mb-4 space-y-3";
+                    // തൊഴിലാളിയുടെ പേര് സെർച്ച് ചെയ്യാൻ എളുപ്പമാകാൻ data-name വെക്കുന്നു
+                    div.className = "staff-card bg-slate-900/90 text-white p-5 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm mb-4 space-y-3";
+                    div.setAttribute('data-name', (s.name || '').toLowerCase());
+
                     const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
                     const today = getTodayDate();
 
@@ -423,13 +406,12 @@ window.showAlert = function(message, type = 'success') {
                     const workedSitesList = workedSitesSet.size > 0 ? Array.from(workedSitesSet).join(', ') : (s.site || defaultSiteStr);
                     let rawBalance = (totalEarned + totalExtra) - totalAdvance;
                     if (rawBalance < 0) rawBalance = 0;
-
                     let finalBalanceForWa = rawBalance;
 
                     div.innerHTML = `
                         <div class="flex justify-between items-center mb-3">
                             <div>
-                                <h3 class="font-black text-base text-amber-400">${s.name} <span class="text-xs font-normal text-slate-400">(${s.job || defaultJobStr})</span></h3>
+                                <h3 class="font-black text-base text-amber-400"><span class="staff-name-text">${s.name}</span> <span class="text-xs font-normal text-slate-400">(${s.job || defaultJobStr})</span></h3>
                                 <p class="text-xs text-slate-400 font-bold mt-1"><span data-key="primary_site">${primarySiteStr}</span>: <span class="text-cyan-300">${s.site || defaultSiteStr}</span> | <span class="text-amber-400 text-sm font-black"><span data-key="total_wage">${wageStr}</span>: ₹${s.wage || 0}</span></p>
                                 <p class="text-[11px] text-blue-300 font-bold mt-1">📍 <span data-key="worked_sites">${workedSitesStr}</span>: ${workedSitesList}</p>
                                 ${s.phone ? `<p class="text-[11px] text-emerald-300 mt-1">Ph: ${s.phone}</p>` : ''}
@@ -545,7 +527,6 @@ window.showAlert = function(message, type = 'success') {
                         const currentLang = localStorage.getItem('selectedLang') || 'ml';
                         const confirmMsg = (typeof words !== 'undefined' && words.settlement_confirm && words.settlement_confirm[currentLang]) ? words.settlement_confirm[currentLang] : `തീർച്ചയായും ${s.name}-നുള്ള കണക്ക് തീർക്കണോ?\n(ഹാജർ കണക്കുകൾ റിപ്പോർട്ട് പേജിൽ നഷ്ടപ്പെടാതെ സേവ് ചെയ്യപ്പെടും)`;
                         if (confirm(confirmMsg)) {
-                            
                             if (rawBalance > 0) {
                                 await addDoc(collection(db, "accounts"), {
                                     meshtriOwner: currentMeshtri,
@@ -588,7 +569,6 @@ window.showAlert = function(message, type = 'success') {
                 }
 
             } catch (err) {
-                console.error(err);
                 list.innerHTML = '<p class="text-center text-xs text-rose-400 font-bold py-4">ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിശക് സംഭവിച്ചു.</p>';
             }
         }
@@ -669,7 +649,6 @@ window.showAlert = function(message, type = 'success') {
             }
 
             await updateDoc(doc(db, 'accounts', logId), updateData);
-
             showAlert("വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു! ✅", "success");
             closeEditLogModal();
             loadStaffAndAccounts();
@@ -757,13 +736,14 @@ window.showAlert = function(message, type = 'success') {
 
         loadStaffAndAccounts();
         
+        // 🔍 സെർച്ച് ലോജിക്: തൊഴിലാളിയുടെ പേര് മാത്രം നോക്കി ആദ്യത്തെ അക്ഷരം മുതൽ ഫിൽട്ടർ ചെയ്യാൻ
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const val = e.target.value.toLowerCase().trim();
-            const staffCards = document.querySelectorAll('#staffList > div');
+            const staffCards = document.querySelectorAll('.staff-card');
             
             staffCards.forEach(div => {
-                const textContent = div.innerText.toLowerCase();
-                if (val === "" || textContent.includes(val)) {
+                const staffName = div.getAttribute('data-name') || "";
+                if (val === "" || staffName.includes(val)) {
                     div.style.display = ""; 
                 } else {
                     div.style.display = "none"; 
