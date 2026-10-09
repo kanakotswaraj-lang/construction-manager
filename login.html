@@ -17,25 +17,6 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- PIN Lock Modal -->
-    <div id="pinLockModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-700/85 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
-            
-            <div class="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-400 text-xl">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-
-            <h3 class="text-base font-bold text-white mb-1" data-key="pin_lock_title">സുരക്ഷിത ലോഗിൻ</h3>
-            <p class="text-xs text-slate-400 mb-4" data-key="pin_lock_desc">തുടരാൻ നിങ്ങളുടെ 4 അക്ക പിൻ നമ്പർ നൽകുക</p>
-            
-            <input type="password" id="appPinInput" maxlength="4" data-key-placeholder="placeholder_pin" placeholder="••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center text-white text-lg tracking-widest focus:outline-none focus:border-amber-400 mb-4">
-            
-            <button type="button" id="btnVerifyPin" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-sm transition cursor-pointer shadow-lg" data-key="btn_open">
-                തുറക്കുക
-            </button>
-        </div>
-    </div>
-
     <!-- Header Container -->
     <div class="w-full max-w-sm mx-auto mb-4">
         <div id="appHeader" class="w-full"></div>
@@ -181,28 +162,6 @@
             updateLanguageUI();
         });
 
-        // PIN Lock logic
-        try {
-            const pinModal = document.getElementById("pinLockModal");
-            const pinInput = document.getElementById("appPinInput");
-            const btnVerifyPin = document.getElementById("btnVerifyPin");
-            const savedPin = localStorage.getItem("appPin") || "1234";
-
-            if (btnVerifyPin && pinModal && pinInput) {
-                btnVerifyPin.addEventListener("click", () => {
-                    if (pinInput.value.trim() === savedPin) {
-                        pinModal.classList.add("hidden");
-                        pinModal.classList.remove("flex");
-                    } else {
-                        alert("നൽകിയ പിൻ നമ്പർ തെറ്റാണ്!");
-                        pinInput.value = "";
-                    }
-                });
-            }
-        } catch (err) {
-            console.error("PIN Lock Error:", err);
-        }
-
         // --- പാസ്‌വേർഡ് മറന്നുപോയോ (Forgot Password Modal) ലോജിക് ---
         const forgotModal = document.getElementById("forgotModal");
         const btnForgotOpen = document.getElementById("btnForgotOpen");
@@ -267,7 +226,7 @@
                             if (questionContainer.classList.contains("hidden")) {
                                 displayQuestionText.innerText = "ചോദ്യം: " + foundUserDataForReset.securityQuestion;
                                 questionContainer.classList.remove("hidden");
-                                alert("ഫോൺ നമ്പർ സ്ഥിരീകരിച്ചു! ദയവായി നിങ്ങളുടെ രഹസ്യ ഉത്തരമ നൽകി വീണ്ടും പരിശോധിക്കുക അമർത്തുക.");
+                                alert("ഫോൺ നമ്പർ സ്ഥിരീകരിച്ചു! ദയവായി നിങ്ങളുടെ രഹസ്യ ഉത്തരം നൽകി വീണ്ടും പരിശോധിക്കുക അമർത്തുക.");
                             } else {
                                 const enteredAnswer = forgotAnswerInput.value.trim().toLowerCase();
                                 const savedAnswer = (foundUserDataForReset.securityAnswer || "").toLowerCase();
