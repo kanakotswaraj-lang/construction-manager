@@ -587,6 +587,11 @@ window.showAlert = function(message, type = 'success') {
                         }
                     };
                 });
+                // ഡാറ്റകൾ ലോഡ് ചെയ്തു കഴിഞ്ഞ ഉടൻ നിലവിലുള്ള ഭാഷ വീണ്ടും അപ്ഡേറ്റ് ചെയ്യാൻ
+if (typeof window.switchLanguage === 'function') {
+    window.switchLanguage(localStorage.getItem('selectedLang') || 'ml');
+}
+
             } catch (err) {
                 console.error(err);
                 list.innerHTML = '<p class="text-center text-xs text-rose-400 font-bold py-4">ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പിശക് സംഭവിച്ചു.</p>';
