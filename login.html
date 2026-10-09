@@ -83,10 +83,16 @@
         <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
             
             <h3 class="text-lg font-bold text-white mb-2" data-key="forgot_title">പാസ്‌വേർഡ് വീണ്ടെടുക്കുക</h3>
-            <p class="text-xs text-slate-400 mb-4" data-key="forgot_desc">നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
+            <p class="text-xs text-slate-400 mb-3" data-key="forgot_desc">രജിസ്റ്റർ ചെയ്ത ഫോൺ നമ്പർ നൽകുക:</p>
             
-            <input type="tel" id="forgotPhone" data-key-placeholder="placeholder_phone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-4">
+            <input type="tel" id="forgotPhone" data-key-placeholder="placeholder_phone" placeholder="ഫോൺ നമ്പർ നൽകുക (10 അക്കം)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400 mb-3">
             
+            <!-- ചോദ്യം കാണിക്കാനുള്ള ഭാഗം -->
+            <div id="questionContainer" class="hidden mb-3">
+                <p id="displayQuestionText" class="text-xs text-amber-300 font-bold mb-1"></p>
+                <input type="text" id="forgotAnswer" placeholder="രഹസ്യ ഉത്തരം നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-400">
+            </div>
+
             <div class="flex gap-2">
                 <button type="button" id="btnForgotClose" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_close">അടയ്ക്കുക</button>
                 <button type="button" id="btnGetDetails" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm transition cursor-pointer" data-key="btn_verify">പരിശോധിക്കുക</button>
@@ -94,10 +100,36 @@
         </div>
     </div>
 
+    <!-- Security Update Modal (നിലവിലുള്ളവർക്കായി) -->
+    <div id="securityUpdateModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-slate-900 border border-amber-500/50 rounded-2xl p-6 w-full max-w-sm shadow-2xl text-center">
+            <div class="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-400 text-xl">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">സുരക്ഷാ വിവരങ്ങൾ ചേർക്കുക</h3>
+            <p class="text-xs text-slate-400 mb-4">നിങ്ങളുടെ അക്കൗണ്ട് സുരക്ഷിതമാക്കാൻ രഹസ്യ ചോദ്യവും ഉത്തരവും നൽകുക.</p>
+            
+            <div class="space-y-3 text-left mb-4">
+                <div>
+                    <label class="block text-xs font-semibold text-amber-300/90 mb-1">രഹസ്യ ചോദ്യം</label>
+                    <input type="text" id="updateSecQuestion" placeholder="ഉദാ: നിങ്ങളുടെ പ്രിയപ്പെട്ട നിറം?" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-amber-300/90 mb-1">രഹസ്യ ഉത്തരം</label>
+                    <input type="text" id="updateSecAnswer" placeholder="ഉത്തരം നൽകുക" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-400">
+                </div>
+            </div>
+
+            <button type="button" id="btnSaveSecurity" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-sm transition cursor-pointer shadow-lg">
+                സേവ് ചെയ്ത് തുടരുക
+            </button>
+        </div>
+    </div>
+
 <!-- Script Section -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
     import { setupHeader } from './header.js';
 
     function updateLanguageUI() {
@@ -177,11 +209,20 @@
         const btnForgotClose = document.getElementById("btnForgotClose");
         const btnGetDetails = document.getElementById("btnGetDetails");
         const forgotPhoneInput = document.getElementById("forgotPhone");
+        const questionContainer = document.getElementById("questionContainer");
+        const displayQuestionText = document.getElementById("displayQuestionText");
+        const forgotAnswerInput = document.getElementById("forgotAnswer");
+
+        let foundUserDataForReset = null;
 
         if (btnForgotOpen && forgotModal) {
             btnForgotOpen.addEventListener("click", () => {
                 forgotModal.classList.remove("hidden");
                 forgotModal.classList.add("flex");
+                questionContainer.classList.add("hidden");
+                forgotPhoneInput.value = "";
+                forgotAnswerInput.value = "";
+                foundUserDataForReset = null;
             });
         }
 
@@ -213,24 +254,44 @@
 
                             if (userPhone === phone) {
                                 userFound = true;
-                                
-                                // 1. നിലവിൽ തിരഞ്ഞെടുത്ത ഭാഷ ലൊക്കേഷൻ സ്റ്റോറേജിൽ നിന്ന് എടുക്കുന്നു
-                                const savedLang = localStorage.getItem('selectedLang') || 'ml';
-
-                                // 2. തത്സമയ ഭാഷയ്ക്കനുസരിച്ച് വാക്കുകൾ എടുക്കുന്നു
-                                const headerTxt = (typeof words !== 'undefined' && words.alert_login_details && words.alert_login_details[savedLang]) ? words.alert_login_details[savedLang] : "നിങ്ങളുടെ ലോഗിൻ വിവരങ്ങൾ:";
-                                const userTxt = (typeof words !== 'undefined' && words.label_user_text && words.label_user_text[savedLang]) ? words.label_user_text[savedLang] : "യൂസർനെയിം";
-                                const passTxt = (typeof words !== 'undefined' && words.label_pass_text && words.label_pass_text[savedLang]) ? words.label_pass_text[savedLang] : "പാസ്‌വേർഡ്";
-
-                                // 3. തത്സമയ ഭാഷയിലുള്ള Alert കാണിക്കുന്നു
-                                alert(`${headerTxt}\n${userTxt}: ${data.username || childSnapshot.key}\n${passTxt}: ${data.password}`);
-
-                                forgotModal.classList.add("hidden");
-                                forgotModal.classList.remove("flex");
+                                foundUserDataForReset = data;
                             }
                         });
 
-                        if (!userFound) {
+                        if (userFound) {
+                            if (!foundUserDataForReset.securityQuestion) {
+                                alert("ഈ അക്കൗണ്ടിൽ സുരക്ഷാ ചോദ്യം സജ്ജീകരിച്ചിട്ടില്ല. അഡ്മിനെ ബന്ധപ്പെടുക.");
+                                return;
+                            }
+
+                            if (questionContainer.classList.contains("hidden")) {
+                                displayQuestionText.innerText = "ചോദ്യം: " + foundUserDataForReset.securityQuestion;
+                                questionContainer.classList.remove("hidden");
+                                alert("ഫോൺ നമ്പർ സ്ഥിരീകരിച്ചു! ദയവായി നിങ്ങളുടെ രഹസ്യ ഉത്തരമ നൽകി വീണ്ടും പരിശോധിക്കുക അമർത്തുക.");
+                            } else {
+                                const enteredAnswer = forgotAnswerInput.value.trim().toLowerCase();
+                                const savedAnswer = (foundUserDataForReset.securityAnswer || "").toLowerCase();
+
+                                if (!enteredAnswer) {
+                                    alert("ദയവായി രഹസ്യ ഉത്തരം നൽകുക!");
+                                    return;
+                                }
+
+                                if (enteredAnswer === savedAnswer) {
+                                    const savedLang = localStorage.getItem('selectedLang') || 'ml';
+                                    const headerTxt = "നിങ്ങളുടെ ലോഗിൻ വിവരങ്ങൾ:";
+                                    const userTxt = "യൂസർനെയിം";
+                                    const passTxt = "പാസ്‌വേർഡ്";
+
+                                    alert(`${headerTxt}\n${userTxt}: ${foundUserDataForReset.username}\n${passTxt}: ${foundUserDataForReset.password}`);
+
+                                    forgotModal.classList.add("hidden");
+                                    forgotModal.classList.remove("flex");
+                                } else {
+                                    alert("നൽകിയ ഉത്തരം തെറ്റാണ്!");
+                                }
+                            }
+                        } else {
                             alert("ഈ ഫോൺ നമ്പറിൽ അക്കൗണ്ട് ഒന്നും കണ്ടെത്തിയില്ല!");
                         }
                     } else {
@@ -302,22 +363,51 @@
 
                     if (matchedUserData) {
                         if (matchedUserData.password === passInput) {
-                            // 1. നിലവിൽ തിരഞ്ഞെടുത്ത ഭാഷ localstorage-ൽ നിന്ന് എടുക്കുന്നു
-                            const savedLang = localStorage.getItem('selectedLang') || 'ml';
                             
-                            // 2. language.js-ൽ നിന്ന് അതിനുള്ള തർജ്ജിമ എടുക്കുന്നു (ലഭ്യമല്ലെങ്കിൽ മലയാളം കാണിക്കും)
-                            const alertMessage = (typeof words !== 'undefined' && words.alert_login_success && words.alert_login_success[savedLang]) 
-                                ? words.alert_login_success[savedLang] 
-                                : "ലോഗിൻ വിജയകരമാണ്!";
+                            // സുരക്ഷാ ചോദ്യം സെറ്റ് ചെയ്തിട്ടില്ലെങ്കിൽ പോപ്പ്-അപ്പ് കാണിക്കുക
+                            if (!matchedUserData.securityQuestion || !matchedUserData.securityAnswer) {
+                                const secModal = document.getElementById("securityUpdateModal");
+                                secModal.classList.remove("hidden");
+                                secModal.classList.add("flex");
 
-                            // 3. തത്സമയ ഭാഷയിലുള്ള Alert കാണിക്കുന്നു
-                            alert(alertMessage);
+                                document.getElementById("btnSaveSecurity").onclick = async () => {
+                                    const newQ = document.getElementById("updateSecQuestion").value.trim();
+                                    const newA = document.getElementById("updateSecAnswer").value.trim().toLowerCase();
 
-                            localStorage.setItem('userName', userInput.toLowerCase());
+                                    if (!newQ || !newA) {
+                                        alert("ദയവായി ചോദ്യവും ഉത്തരവും നൽകുക!");
+                                        return;
+                                    }
 
-                            setTimeout(() => {
-                                window.location.href = "dashboard.html";
-                            }, 500);
+                                    try {
+                                        await update(ref(db, 'users/' + userInput.toLowerCase()), {
+                                            securityQuestion: newQ,
+                                            securityAnswer: newA
+                                        });
+
+                                        alert("സുരക്ഷാ വിവരങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു!");
+                                        secModal.classList.add("hidden");
+                                        
+                                        localStorage.setItem('userName', userInput.toLowerCase());
+                                        window.location.href = "dashboard.html";
+                                    } catch (err) {
+                                        alert("പിശക് സംഭവിച്ചു: " + err.message);
+                                    }
+                                };
+                            } else {
+                                const savedLang = localStorage.getItem('selectedLang') || 'ml';
+                                const alertMessage = (typeof words !== 'undefined' && words.alert_login_success && words.alert_login_success[savedLang]) 
+                                    ? words.alert_login_success[savedLang] 
+                                    : "ലോഗിൻ വിജയകരമാണ്!";
+
+                                alert(alertMessage);
+
+                                localStorage.setItem('userName', userInput.toLowerCase());
+
+                                setTimeout(() => {
+                                    window.location.href = "dashboard.html";
+                                }, 500);
+                            }
                         } else {
                             alert('നൽകിയ പാസ്‌വേർഡ് തെറ്റാണ്!');
                         }
