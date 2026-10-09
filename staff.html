@@ -738,18 +738,20 @@
         
         // 🔍 സെർച്ച് ലോജിക്: തൊഴിലാളിയുടെ പേര് മാത്രം നോക്കി ആദ്യത്തെ അക്ഷരം മുതൽ ഫിൽട്ടർ ചെയ്യാൻ
         document.getElementById('searchInput').addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase().trim();
-            const staffCards = document.querySelectorAll('.staff-card');
-            
-            staffCards.forEach(div => {
-                const staffName = div.getAttribute('data-name') || "";
-                if (val === "" || staffName.includes(val)) {
-                    div.style.display = ""; 
-                } else {
-                    div.style.display = "none"; 
-                }
-            });
-        });
+    const val = e.target.value.toLowerCase().trim();
+    const staffCards = document.querySelectorAll('#staffList > div');
+    
+    staffCards.forEach(div => {
+        // കാർഡിന്റെ അകത്തുള്ള മുഴുവൻ ടെക്സ്റ്റും അല്ലെങ്കിൽ പേര് മാത്രം പരിശോധിക്കുക
+        const cardText = div.innerText.toLowerCase();
+        if (val === "" || cardText.includes(val)) {
+            div.style.display = ""; 
+        } else {
+            div.style.display = "none"; 
+        }
+    });
+});
+
     </script>
 </body>
 </html>
