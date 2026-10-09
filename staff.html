@@ -272,14 +272,6 @@
                 showAlert("സേവ് ചെയ്യുന്നതിൽ തടസ്സം നേരിട്ടു!", "error");
             }
         });
-                function getWord(key, fallback) {
-            const currentLang = localStorage.getItem('selectedLang') || 'ml';
-            if (typeof words !== 'undefined' && words[key] && words[key][currentLang]) {
-                return words[key][currentLang];
-            }
-            return fallback;
-        }
-
 
         async function loadStaffAndAccounts() {
             const list = document.getElementById('staffList');
@@ -307,157 +299,7 @@
                     return;
                 }
 
-                const siteLabelStr = getWord('site', 'സൈറ്റ്');
-                const primarySiteStr = getWord('primary_site', 'പ്രാഥമിക സൈറ്റ്');
-                const wageStr = getWord('total_wage', 'കൂലി');
-                const workedSitesStr = getWord('worked_sites', 'പണിയെടുത്ത സൈറ്റുകൾ');
-                const workDaysCycleStr = getWord('work_days_cycle', 'ഈ സൈക്ലിലെ പണി ദിവസങ്ങൾ:');
-                const noEntriesStr = getWord('no_entries', 'കണക്കുകൾ ഒന്നും ചേർത്തിട്ടില്ല');
-                const advanceGivenStr = getWord('advance_given', 'അഡ്വാൻസ് കൊടുത്ത വിവരങ്ങൾ:');
-                const noAdvanceStr = getWord('no_advance', 'അഡ്വാൻസ് വിവരങ്ങൾ ഇല്ല');
-                const extraPaymentStr = getWord('extra_payment', 'അധികത്തുക (Extra Payment):');
-                const noExtraStr = getWord('no_extra', 'അധികത്തുക വിവരങ്ങൾ ഇല്ല');
-                const workDayLabelStr = getWord('work_day_label', 'പണി ദിവസം');
-                const totalGivenLabelStr = getWord('total_given', 'ആകെ കൊടുത്തത്');
-                const extraLabelStr = getWord('extra_label', 'അധികത്തുക');
-                const totalWageLabelStr = getWord('total_wage_label', 'ആകെ കൂലി:');
-                const balanceLabelStr = getWord('balance_label', 'നൽകാനുള്ള ബാക്കി:');
-                const settleBtnText = getWord('settle_btn_text', '💸 പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്ലിൽ തുടങ്ങുക)');
-                const whatsappBtnText = getWord('whatsapp_btn', 'WhatsApp അയക്കുക');
-                const deleteBtnText = getWord('delete_btn', 'Delete');
-                const addAdvBtnText = getWord('add_advance_btn', '+ അഡ്വാൻസ്');
-                const addExtraBtnText = getWord('add_extra_btn', '+ അധികത്തുക');
-                const editBtnText = getWord('edit_btn', 'Edit');
-                const delBtnText = getWord('del_btn', 'Del');
-                const defaultJobStr = getWord('worker', 'പണിക്കാരൻ');
-                const defaultSiteStr = getWord('main_site', 'പ്രധാന സൈറ്റ്');
-
                 staffsSnapshot.forEach((d) => {
-                    const s = d.data();
-                    const staffId = d.id;
-                    const div = document.createElement('div');
-                    // തൊഴിലാളിയുടെ പേര് സെർച്ച് ചെയ്യാൻ എളുപ്പമാകാൻ data-name വെക്കുന്നു
-                    div.className = "staff-card bg-slate-900/90 text-white p-5 rounded-3xl border border-slate-800 shadow-xl backdrop-blur-sm mb-4 space-y-3";
-                    div.setAttribute('data-name', (s.name || '').toLowerCase());
-
-                    const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
-                    const today = getTodayDate();
-
-                    const staffLogs = allAccounts.filter(acc => {
-                        if (acc.isDeleted === true || acc.isSettled === true) return false;
-                        if (acc.staffId === staffId) return true;
-                        if (!acc.staffId && acc.name && s.name) {
-                            const accNameClean = acc.name.split('(')[0].trim().toLowerCase();
-                            const staffNameClean = s.name.trim().toLowerCase();
-                            return accNameClean === staffNameClean;
-                        }
-                        return false;
-                    });
-                    
-                    let totalEarned = 0;
-                    let totalWorkedDays = 0;
-                    let totalAdvance = 0;
-                    let totalExtra = 0;
-                    let workedSitesSet = new Set();
-                    let logsHtml = '';
-                    let advLogsHtml = '';
-                    let extraLogsHtml = '';
-
-                    staffLogs.forEach(log => {
-                        const dayName = getMalayalamDay(log.date);
-                        const displayDateStr = dayName ? `${log.date} (${dayName})` : log.date;
-
-                        if (log.type === "wage") {
-                            totalEarned += parseFloat(log.amount) || 0;
-                            const wagePerDay = s.wage || 1200;
-                            let daysThisLog = parseFloat(log.days) || (parseFloat(log.amount) / wagePerDay);
-                            totalWorkedDays += daysThisLog;
-
-                            if (log.site) {
-                                workedSitesSet.add(log.site);
-                            }
-
-                            logsHtml += `
-                                <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-blue-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || siteLabelStr} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
-                                    <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', 'wage', '${log.site || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">${editBtnText}</button>
-                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">${delBtnText}</button>
-                                    </div>
-                                </div>
-                            `;
-                        } else if (log.type === "advance") {
-                            totalAdvance += parseFloat(log.amount) || 0;
-                            advLogsHtml += `
-                                <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-purple-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | ${getWord('advance', 'അഡ്വാൻസ്')}: <span class="text-purple-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
-                                    <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', 'advance', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">${editBtnText}</button>
-                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">${delBtnText}</button>
-                                    </div>
-                                </div>
-                            `;
-                        } else if (log.type === "extra") {
-                            totalExtra += parseFloat(log.amount) || 0;
-                            extraLogsHtml += `
-                                <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-rose-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | ${getWord('extra', 'അധികത്തുക')}: <span class="text-rose-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
-                                    <div class="flex gap-1.5">
-                                        <button onclick="openEditLog('${log.id}', 'extra', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">${editBtnText}</button>
-                                        <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">${delBtnText}</button>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    });
-
-                    const workedSitesList = workedSitesSet.size > 0 ? Array.from(workedSitesSet).join(', ') : (s.site || defaultSiteStr);
-                    let rawBalance = (totalEarned + totalExtra) - totalAdvance;
-                    if (rawBalance < 0) rawBalance = 0;
-                    let finalBalanceForWa = rawBalance;
-
-                    div.innerHTML = `
-                        <div class="flex justify-between items-center mb-3">
-                            <div>
-                                <h3 class="font-black text-base text-amber-400"><span class="staff-name-text">${s.name}</span> <span class="text-xs font-normal text-slate-400">(${s.job || defaultJobStr})</span></h3>
-                                <p class="text-xs text-slate-400 font-bold mt-1"><span data-key="primary_site">${primarySiteStr}</span>: <span class="text-cyan-300">${s.site || defaultSiteStr}</span> | <span class="text-amber-400 text-sm font-black"><span data-key="total_wage">${wageStr}</span>: ₹${s.wage || 0}</span></p>
-                                <p class="text-[11px] text-blue-300 font-bold mt-1">📍 <span data-key="worked_sites">${workedSitesStr}</span>: ${workedSitesList}</p>
-                                ${s.phone ? `<p class="text-[11px] text-emerald-300 mt-1">Ph: ${s.phone}</p>` : ''}
-                                ${s.bank ? `<p class="text-[11px] text-slate-400 mt-1">GPay/Bank: ${s.bank}</p>` : ''}
-                            </div>
-                            <div class="flex gap-1.5">
-                                <button id="del-${staffId}" data-key="delete_btn" class="text-red-400 text-xs font-bold px-3 py-2 bg-red-950/60 border border-red-800/50 rounded-xl transition hover:bg-red-900/60">${deleteBtnText}</button>
-                            </div>
-                        </div>
-
-                        <button id="openModalBtn-${staffId}" data-key="add_today_wage" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black shadow-lg shadow-amber-500/10 transition mb-3">
-                            ➕ ${getWord('add_today_wage', 'ഇന്നത്തെ കൂലി ചേർക്കുക')}
-                        </button>
-
-                        <div class="bg-slate-800/50 border border-blue-500/30 p-3.5 rounded-2xl mb-3">
-                            <p class="text-xs font-black text-amber-400 mb-2">📋 <span data-key="work_days_cycle">${workDaysCycleStr}</span></p>
-                            <div class="max-h-32 overflow-y-auto space-y-1">
-                                ${logsHtml || `<p data-key="no_entries" class="text-xs text-slate-400 text-center py-2">${noEntriesStr}</p>`}
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-800/50 border border-purple-500/30 p-3.5 rounded-2xl mb-3">
-                            <div class="flex justify-between items-center mb-2">
-                                <p class="text-xs font-black text-purple-300">💸 <span data-key="advance_given">${advanceGivenStr}</span></p>
-                                <button id="openAdvModalBtn-${staffId}" data-key="add_advance_btn" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition">${addAdvBtnText}</button>
-                            </div>
-                            <div class="max-h-28 overflow-y-auto space-y-1">
-                                ${advLogsHtml || `<p data-key="no_advance" class="text-xs text-slate-400 text-center py-1">${noAdvanceStr}</p>`}
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-800/50 border border-rose-500/30 p-3.5 rounded-2xl mb-3">
-                            <div class="flex justify-between items-center mb-2">
-                                <p class="text-xs font-black text-rose-300">⚡ <span data-key="extra_payment">${extraPaymentStr}</span></p>
-                                <button id="openExtraModalBtn-${staffId}" data-key="add_extra_btn" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition">${addExtraBtnText}</button>
-                            </div>
-
-                                    staffsSnapshot.forEach((d) => {
                     const s = d.data();
                     const staffId = d.id;
                     const div = document.createElement('div');
@@ -540,7 +382,6 @@
                     if (rawBalance < 0) rawBalance = 0;
                     let finalBalanceForWa = rawBalance;
 
-                    // വേരിയബിളുകൾ വഴി ഭാഷ മാറ്റങ്ങൾ നേരിട്ട് നൽകിയ കാർഡ് എച്ച്ടിഎംഎൽ
                     div.innerHTML = `
                         <div class="flex justify-between items-center mb-3">
                             <div>
@@ -625,7 +466,6 @@
                     `;
                     
                     list.appendChild(div);
-
 
                     document.getElementById(`openModalBtn-${staffId}`).onclick = () => {
                         document.getElementById('modalStaffId').value = staffId;
@@ -870,23 +710,20 @@
 
         loadStaffAndAccounts();
         
-        // 🔍 സെർച്ച് ലോജിക്: തൊഴിലാളിയുടെ പേര് മാത്രം നോക്കി ആദ്യത്തെ അക്ഷരം മുതൽ ഫിൽട്ടർ ചെയ്യാൻ
+        // 🔍 സെർച്ച് ലോജിക്
         document.getElementById('searchInput').addEventListener('input', (e) => {
-    const val = e.target.value.toLowerCase().trim();
-    const staffCards = document.querySelectorAll('#staffList > div');
-    
-    staffCards.forEach(div => {
-        const staffName = div.getAttribute('data-name') || "";
-        // തൊഴിലാളിയുടെ പേര് ആ typed ചെയ്ത അക്ഷരത്തിൽ തുടങ്ങിയാലോ ആ പേരിൽ ആ അക്ഷരം ഉണ്ടെങ്കിലോ മാത്രം കാണിക്കുക
-        if (val === "" || staffName.includes(val)) {
-            div.style.display = ""; 
-        } else {
-            div.style.display = "none"; 
-        }
-    });
-});
-
-
+            const val = e.target.value.toLowerCase().trim();
+            const staffCards = document.querySelectorAll('#staffList > div');
+            
+            staffCards.forEach(div => {
+                const staffName = div.getAttribute('data-name') || "";
+                if (val === "" || staffName.includes(val)) {
+                    div.style.display = ""; 
+                } else {
+                    div.style.display = "none"; 
+                }
+            });
+        });
     </script>
 </body>
 </html>
