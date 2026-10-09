@@ -261,15 +261,15 @@ try {
     showCustomAlert('alertRegSuccess', true);
     localStorage.setItem('userName', user);
 
-    // അഡ്മിൻ വാട്സാപ്പിലേക്ക് നോട്ടിഫിക്കേഷൻ അയക്കാനുള്ള സന്ദേശം തയ്യാറാക്കുന്നു
-    const adminPhone = "916238020523";
-    const whatsappMessage = `പുതിയ മേസ്തിരി രജിസ്റ്റർ ചെയ്തു!%0Aപേര്: ${user}%0Aഫോൺ: ${phone}`;
-    const whatsappUrl = `https://wa.me/${adminPhone}?text=${whatsappMessage}`;
+    // നിങ്ങളുടെ (അഡ്മിന്റെ) വാട്സാപ്പ് നമ്പറിലേക്ക് പുതിയ മേസ്തിരിയുടെ വിവരങ്ങൾ അയക്കാനുള്ള ലിങ്ക്
+    const adminPhone = "916238020523"; // നിങ്ങളുടെ വാട്സാപ്പ് നമ്പർ
+    const notificationMessage = `പുതിയ മേസ്തിരി രജിസ്റ്റർ ചെയ്തു!%0Aപേര്: ${user}%0Aഫോൺ: ${phone}`;
+    const whatsappUrl = `https://wa.me/${adminPhone}?text=${notificationMessage}`;
 
     setTimeout(() => {
-        // വാട്സാപ്പ് ചാറ്റ് ഓപ്പൺ ആയ ശേഷം ഡാഷ്‌ബോർഡിലേക്ക് പോകും (അല്ലെങ്കിൽ ഉപയോക്താവിന് വാട്സാപ്പ് വഴി അഡ്മിനെ ബന്ധപ്പെടാം)
-        window.open(whatsappUrl, '_blank');
-        window.location.href = "dashboard.html";
+        // രജിസ്ട്രേഷൻ കഴിഞ്ഞയുടനെ നിങ്ങളുടെ വാട്സാപ്പ് ചാറ്റ് ഓപ്പൺ ആയി ആ നോട്ടിഫിക്കേഷൻ മെസ്സേജ് വരും.
+        // അതിനുശേഷം നിങ്ങൾക്ക് തിരിച്ച് അവർക്ക് സ്വാഗതം പറയാവുന്നതാണ്.
+        window.location.href = whatsappUrl;
     }, 1500);
 
 } catch (error) {
