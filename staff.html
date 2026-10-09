@@ -272,6 +272,14 @@
                 showAlert("സേവ് ചെയ്യുന്നതിൽ തടസ്സം നേരിട്ടു!", "error");
             }
         });
+                function getWord(key, fallback) {
+            const currentLang = localStorage.getItem('selectedLang') || 'ml';
+            if (typeof words !== 'undefined' && words[key] && words[key][currentLang]) {
+                return words[key][currentLang];
+            }
+            return fallback;
+        }
+
 
         async function loadStaffAndAccounts() {
             const list = document.getElementById('staffList');
