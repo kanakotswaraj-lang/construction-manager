@@ -742,15 +742,16 @@
     const staffCards = document.querySelectorAll('#staffList > div');
     
     staffCards.forEach(div => {
-        // കാർഡിന്റെ അകത്തുള്ള മുഴുവൻ ടെക്സ്റ്റും അല്ലെങ്കിൽ പേര് മാത്രം പരിശോധിക്കുക
-        const cardText = div.innerText.toLowerCase();
-        if (val === "" || cardText.includes(val)) {
+        const staffName = div.getAttribute('data-name') || "";
+        // തൊഴിലാളിയുടെ പേര് ആ typed ചെയ്ത അക്ഷരത്തിൽ തുടങ്ങിയാലോ ആ പേരിൽ ആ അക്ഷരം ഉണ്ടെങ്കിലോ മാത്രം കാണിക്കുക
+        if (val === "" || staffName.includes(val)) {
             div.style.display = ""; 
         } else {
             div.style.display = "none"; 
         }
     });
 });
+
 
     </script>
 </body>
