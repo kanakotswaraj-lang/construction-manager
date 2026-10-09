@@ -768,9 +768,9 @@ if (typeof window.switchLanguage === 'function') {
     staffCards.forEach(div => {
         const textContent = div.innerText.toLowerCase();
         if (val === "" || textContent.includes(val)) {
-            div.style.display = ""; // കാണിക്കുക
+            div.style.display = ""; 
         } else {
-            div.style.display = "none"; // മറയ്ക്കുക
+            div.style.display = "none"; 
         }
     });
 });
