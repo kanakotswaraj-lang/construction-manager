@@ -519,35 +519,38 @@ window.showAlert = function(message, type = 'success') {
                     list.appendChild(div);
 
                     document.getElementById(`openModalBtn-${staffId}`).onclick = () => {
-                        document.getElementById('modalStaffId').value = staffId;
-                        document.getElementById('modalStaffName').value = s.name;
-                        document.getElementById('modalDefaultWage').value = s.wage || 0;
-                        document.getElementById('modalWorkerTitle').innerText = `${s.name} - ഇന്നത്തെ കണക്ക്`;
-                        document.getElementById('displayTodayText').innerText = today + ` (${getMalayalamDay(today)})`;
-                        document.getElementById('modalSiteName').value = s.site || "";
-                        document.getElementById('modalDayAmount').value = "1";
-                        document.getElementById('modalWageAmount').value = s.wage || 0;
-                        document.getElementById('wageModal').classList.remove('hidden');
-                    };
+    document.getElementById('modalStaffId').value = staffId;
+    document.getElementById('modalStaffName').value = s.name;
+    document.getElementById('modalDefaultWage').value = s.wage || 0;
+    document.getElementById('modalWorkerTitle').innerText = s.name + " - " + getWord('add_today_wage', 'ഇന്നത്തെ കണക്ക്');
+    document.getElementById('displayTodayText').innerText = today + ` (${getMalayalamDay(today)})`;
+    document.getElementById('modalSiteName').value = s.site || "";
+    document.getElementById('modalDayAmount').value = "1";
+    document.getElementById('modalWageAmount').value = s.wage || 0;
+    document.getElementById('wageModal').classList.remove('hidden');
+};
+
 
                     document.getElementById(`openAdvModalBtn-${staffId}`).onclick = () => {
-                        document.getElementById('advModalStaffId').value = staffId;
-                        document.getElementById('advModalTitle').innerText = `${s.name} - അഡ്വാൻസ് നൽകിയത് ചേർക്കുക`;
-                        document.getElementById('advDate').value = today;
-                        document.getElementById('advAmount').value = '';
-                        document.getElementById('advNote').value = '';
-                        document.getElementById('advanceModal').classList.remove('hidden');
-                    };
+    document.getElementById('advModalStaffId').value = staffId;
+    // ഇവിടെ ഹാർഡ്കോഡ് ചെയ്ത ടെക്സ്റ്റിന് പകരം ലാംഗ്വേജ് കീ ഫെച്ച് ചെയ്യുകയോ അല്ലെങ്കിൽ ഡാറ്റ കീ നിലനിർത്തുകയോ ചെയ്യുക
+    document.getElementById('advModalTitleinnerText = s.name + " - " + getWord('advance_given', 'അഡ്വാൻസ് നൽകിയത് ചേർക്കുക');
+    document.getElementById('advDate').value = today;
+    document.getElementById('advAmount').value = '';
+    document.getElementById('advNote').value = '';
+    document.getElementById('advanceModal').classList.remove('hidden');
+};
 
-                    document.getElementById(`openExtraModalBtn-${staffId}`).onclick = () => {
-                        document.getElementById('extraModalStaffId').value = staffId;
-                        document.getElementById('extraModalTitle').innerText = `${s.name} - അധികത്തുക ചേർക്കുക`;
-                        document.getElementById('extraDate').value = today;
-                        document.getElementById('extraAmount').value = '';
-                        document.getElementById('extraNote').value = '';
-                        document.getElementById('extraModal').classList.remove('hidden');
-                    };
 
+         document.getElementById(`openExtraModalBtn-${staffId}`).onclick = () => {
+    document.getElementById('extraModalStaffId').value = staffId;
+    document.getElementById('extraModalTitle').innerText = s.name + " - " + getWord('extra_amount_title', 'അധികത്തുക ചേർക്കുക');
+    document.getElementById('extraDate').value = today;
+    document.getElementById('extraAmount').value = '';
+    document.getElementById('extraNote').value = '';
+    document.getElementById('extraModal').classList.remove('hidden');
+};
+           
                     document.getElementById(`settleBtn-${staffId}`).onclick = async () => {
                         const currentLang = localStorage.getItem('selectedLang') || 'ml';
                         const confirmMsg = (typeof words !== 'undefined' && words.settlement_confirm && words.settlement_confirm[currentLang]) ? words.settlement_confirm[currentLang] : `തീർച്ചയായും ${s.name}-നുള്ള കണക്ക് തീർക്കണോ?\n(ഹാജർ കണക്കുകൾ റിപ്പോർട്ട് പേജിൽ നഷ്ടപ്പെടാതെ സേവ് ചെയ്യപ്പെടും)`;
