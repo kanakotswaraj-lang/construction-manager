@@ -3244,6 +3244,97 @@ label_pass_text: {
         kn: "ಪಾಸ್‌ವರ್ಡ್ (6 ಅಂಕಿಗಳಿಗಿಂತ ಹೆಚ್ಚು)",
         bn: "পাসওয়ার্ড (৬টির বেশি সংখ্যা)",
         as: "পাছৱৰ্ড (৬ টা সংখ্যাতকৈ অধিক)"
+    },
+    
+    work_details_title: {
+        ml: "📐 പണിയുടെ വിവരങ്ങൾ നൽകുക",
+        en: "📐 Enter Work Details",
+        hi: "📐 काम का विवरण दर्ज करें",
+        ta: "📐 வேலை விவரங்களை உள்ளிடவும்",
+        kn: "📐 ಕೆಲಸದ ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ",
+        bn: "📐 কাজের বিবরণ লিখুন",
+        as: "📐 কামৰ বিৱৰণ দিয়ক"
+    },
+    area_label: {
+        ml: "പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)",
+        en: "Area to Work (Square Feet - Sq.Ft)",
+        hi: "कार्यक्षेत्र (Square Feet - Sq.Ft)",
+        ta: "பணியிட பரப்பளவு (Square Feet - Sq.Ft)",
+        kn: "ಕೆಲಸದ ವಿಸ್ತೀರ್ಣ (Square Feet - Sq.Ft)",
+        bn: "কাজের ক্ষেত্র (Square Feet - Sq.Ft)",
+        as: "কামৰ কালি (Square Feet - Sq.Ft)"
+    },
+    slab_thickness_label: {
+        ml: "വാർപ്പിന്റെ കനം (Slab Thickness)",
+        en: "Slab Thickness",
+        hi: "स्लैब की मोटाई (Slab Thickness)",
+        ta: "ஸ்லாப் தடிமன் (Slab Thickness)",
+        kn: "ಸ್ಲ್ಯಾಬ್ ದಪ್ಪ (Slab Thickness)",
+        bn: "স্লাবের পুরুত্ব (Slab Thickness)",
+        as: "শ্লেবৰ ডাঠ (Slab Thickness)"
+    },
+    thickness_4_5: {
+        ml: "4.5 ഇഞ്ച്",
+        en: "4.5 Inches",
+        hi: "4.5 इंच",
+        ta: "4.5 அங்குலம்",
+        kn: "4.5 ಇಂಚುಗಳು",
+        bn: "৪.৫ ইঞ্চি",
+        as: "৪.৫ ইঞ্চি"
+    },
+    thickness_5: {
+        ml: "5 ഇഞ്ച് - സ്റ്റാൻഡേർഡ്",
+        en: "5 Inches - Standard",
+        hi: "5 इंच - मानक",
+        ta: "5 அங்குலம் - தரநிலை",
+        kn: "5 ಇಂಚುಗಳು - ಮಾನದಂಡ",
+        bn: "৫ ইঞ্চি - স্ট্যান্ডার্ড",
+        as: "৫ ইঞ্চি - মানক"
+    },
+    thickness_6: {
+        ml: "6 ഇഞ്ച്",
+        en: "6 Inches",
+        hi: "6 इंच",
+        ta: "6 அங்குலம்",
+        kn: "6 ಇಂಚುಗಳು",
+        bn: "৬ ইঞ্চি",
+        as: "৬ ইঞ্চি"
+    },
+    slab_steel_title: {
+        ml: "🛠️ മേസ്തിരി നിർദ്ദേശിക്കുന്ന സ്ലാബ് കമ്പി കണക്കുകൾ",
+        en: "🛠️ Mesthri Recommended Slab Steel Calculation",
+        hi: "🛠️ मेस्त्री अनुशंसित स्लैब स्टील गणना",
+        ta: "🛠️ மேஸ்திரி பரிந்துரைக்கப்பட்ட ஸ்லாப் கம்பி கணக்கீடு",
+        kn: "🛠️ ಮೇಷ್ಟ್ರಿ ಶಿಫಾರಸು ಮಾಡಿದ ಸ್ಲ್ಯಾಬ್ ಸ್ಟೀಲ್ ಲೆಕ್ಕಾಚಾರ",
+        bn: "🛠️ মিস্ত্রি প্রস্তাবিত স্লাব স্টিল হিসাব",
+        as: "🛠️ মিস্ত্ৰী পৰামৰ্শ শ্লেব ষ্টিল হিচাপ"
+    },
+    main_bar_size: {
+        ml: "മെയിൻ കമ്പി സൈസ്",
+        en: "Main Bar Size",
+        hi: "मुख्य छड़ का आकार",
+        ta: "முக்கிய கம்பி அளவு",
+        kn: "ಮುಖ್ಯ ಕಂಬಿ ಗಾತ್ರ",
+        bn: "প্রধান রডের সাইজ",
+        as: "মুখ্য দাদৰ আকাৰ"
+    },
+    dist_bar_size: {
+        ml: "ഡിസ്ട്രിബ്യൂഷൻ കമ്പി",
+        en: "Distribution Bar",
+        hi: "वितरण छड़",
+        ta: "விநியோக கம்பி",
+        kn: "ವಿತರಣಾ ಕಂಬಿ",
+        bn: "ডিস্ট্রিবিউশন রড",
+        as: "বিতৰণ দাদ"
+    },
+    mason_count_label: {
+        ml: "മേസ്തിരിമാരുടെ എണ്ണം (Manual Mason Count)",
+        en: "Manual Mason Count",
+        hi: "मेस्ट्रियों की संख्या (Manual Mason Count)",
+        ta: "மேஸ்திரிகளின் எண்ணிக்கை (Manual Mason Count)",
+        kn: "ಮೇಷ್ತ್ರಿಗಳ ಸಂಖ್ಯೆ (Manual Mason Count)",
+        bn: "মিস্ত্রির সংখ্যা (Manual Mason Count)",
+        as: "মিস্ত্ৰীসকলৰ সংখ্যা (Manual Mason Count)"
     }
 
 
