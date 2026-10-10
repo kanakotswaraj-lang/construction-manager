@@ -3335,6 +3335,25 @@ label_pass_text: {
         kn: "ಮೇಷ್ತ್ರಿಗಳ ಸಂಖ್ಯೆ (Manual Mason Count)",
         bn: "মিস্ত্রির সংখ্যা (Manual Mason Count)",
         as: "মিস্ত্ৰীসকলৰ সংখ্যা (Manual Mason Count)"
+    },
+    
+    placeholder_example: {
+        ml: "ഉദാ: 500",
+        en: "Ex: 500",
+        hi: "उदा: 500",
+        ta: "உதா: 500",
+        kn: "ಉದಾ: 500",
+        bn: "उदा: ৫০০",
+        as: "उदा: ৫০০"
+    },
+    mason_placeholder: {
+        ml: "ഉദാ: 3 (ഓപ്ഷണൽ)",
+        en: "Ex: 3 (Optional)",
+        hi: "उदा: 3 (वैकल्पिक)",
+        ta: "உதா: 3 (விருப்பமானது)",
+        kn: "ಉದಾ: 3 (ঐচ্ছিক)",
+        bn: "उदा: ৩ (ঐচ্ছিক)",
+        as: "उदा: ৩ (ঐচ্ছিক)"
     }
 
 
