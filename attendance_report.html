@@ -90,13 +90,19 @@
                 </div>
             </div>
 
-            <!-- ഡേറ്റ് ഫിൽട്ടർ കോഡ് -->
-            <div class="mt-2">
-                <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="date">തീയതി</label>
-                <input type="date" id="filterDate" onchange="loadAttendanceData()" class="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2.5 text-xs font-bold focus:outline-none focus:border-yellow-400">
+            <!-- ഡേറ്റ് റേഞ്ച് ഫിൽട്ടർ (ആരംഭ തീയതിയും അവസാന തീയതിയും) -->
+            <div class="grid grid-cols-2 gap-2 mt-2">
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1">ഏതു തീയതി മുതൽ (From)</label>
+                    <input type="date" id="filterFromDate" onchange="loadAttendanceData()" class="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:border-cyan-400">
+                </div>
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1">ഏതു തീയതി വരെ (To)</label>
+                    <input type="date" id="filterToDate" onchange="loadAttendanceData()" class="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:border-cyan-400">
+                </div>
             </div>
 
-            <!-- വാട്സാപ്പ് ഷെയർ ബട്ടൺ കണ്ടെയ്നർ (വ്യക്തിഗതവും ദിവസേനെയുള്ളതുമായ ഷെയറിനായി) -->
+            <!-- വാട്സാപ്പ് ഷെയർ ബട്ടൺ കണ്ടെയ്നർ -->
             <div id="waBtnContainer" class="hidden pt-1 space-y-2"></div>
         </div>
 
@@ -284,7 +290,8 @@
         function renderReportList() {
             const selectedWorker = document.getElementById('filterWorker').value;
             const selectedSite = document.getElementById('filterSite').value;
-            const selectedDate = document.getElementById('filterDate').value;
+            const fromDate = document.getElementById('filterFromDate').value;
+            const toDate = document.getElementById('filterToDate').value;
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
             const currentLang = localStorage.getItem('selectedLang') || 'ml';
             const getTxt = (key, defaultTxt) => (typeof words !== 'undefined' && words[key] && words[key][currentLang]) ? words[key][currentLang] : defaultTxt;
@@ -292,8 +299,15 @@
             const filtered = allLogs.filter(log => {
                 const matchWorker = !selectedWorker || log.workerName === selectedWorker;
                 const matchSite = !selectedSite || log.site === selectedSite;
-                const matchDate = !selectedDate || log.date === selectedDate;
                 const matchSearch = !searchVal || log.workerName.toLowerCase().includes(searchVal) || log.site.toLowerCase().includes(searchVal);
+                
+                // ഡേറ്റ് റേഞ്ച് പരിശോധന (From Date മുതൽ To Date വരെ)
+                let matchDate = true;
+                if (log.date) {
+                    if (fromDate && log.date < fromDate) matchDate = false;
+                    if (toDate && log.date > toDate) matchDate = false;
+                }
+
                 return matchWorker && matchSite && matchDate && matchSearch;
             });
 
@@ -331,28 +345,23 @@
                 hasBtn = true;
             }
 
-                        // 2. ഒരു പ്രത്യേക തീയതി (Date) മാത്രം തിരഞ്ഞെടുത്തിട്ടുണ്ടെങ്കിൽ അന്ന് ജോലി ചെയ്ത മുഴുവൻ പേരുടെയും റിപ്പോർട്ട് അയക്കാൻ
-            if (selectedDate) {
-                // തീയതി YYYY-MM-DD രീതിയിൽ നിന്നും DD-MM-YYYY രീതിയിലേക്ക് മാറ്റുന്നു
-                let parts = selectedDate.split('-');
-                let formattedDate = parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : selectedDate;
-
-                let dailyReportText = `🏗️ *മേസ്തിരി പ്രോ - ദിവസേനയുള്ള ഹാജർ റിപ്പോർട്ട്*%0A📅 തീയതി: ${formattedDate}%0A----------------------------------%0A`;
+            // 2. തീയതി റേഞ്ച് തിരഞ്ഞെടുത്തിട്ടുണ്ടെങ്കിൽ ആ റിപ്പോർട്ട് വാട്സാപ്പിൽ അയക്കാൻ
+            if (fromDate || toDate) {
+                let rangeText = `🏗️ *മേസ്തിരി പ്രോ - ഹാജർ & പണി റിപ്പോർട്ട്*%0A📅 തീയതി: ${fromDate || 'തുടക്കം'} മുതൽ ${toDate || 'ഇന്ന്'} വരെ%0A----------------------------------%0A`;
                 
                 filtered.forEach((item, index) => {
-                    dailyReportText += `${index + 1}. *${item.workerName}* - ${item.site} (${item.days} ദിവസം) - ₹${item.amount}%0A`;
+                    rangeText += `${index + 1}. *${item.workerName}* - ${item.site} (${item.days} ദിവസം) - ₹${item.amount}%0A`;
                 });
 
-                dailyReportText += `----------------------------------%0A💰 *ആകെ തൊഴിലാളികൾ:* ${filtered.length}%0A💸 *ആകെ കൂലി:* ₹${totalWage}`;
+                rangeText += `----------------------------------%0A💰 *ആകെ എണ്ണം:* ${filtered.length}%0A💸 *ആകെ കൂലി:* ₹${totalWage}`;
 
                 waContainer.innerHTML += `
-                    <a href="https://wa.me/?text=${dailyReportText}" target="_blank" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
-                        💬 ${formattedDate} ലെ മുഴുവൻ ഹാജർ റിപ്പോർട്ടും WhatsApp ചെയ്യുക
+                    <a href="https://wa.me/?text=${rangeText}" target="_blank" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
+                        💬 തിരഞ്ഞെടുത്ത തീയതികളിലെ മുഴുവൻ റിപ്പോർട്ടും WhatsApp ചെയ്യുക
                     </a>
                 `;
                 hasBtn = true;
             }
-
 
             if (hasBtn) {
                 waContainer.classList.remove('hidden');
