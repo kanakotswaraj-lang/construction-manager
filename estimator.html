@@ -97,7 +97,7 @@
             <h2 class="text-base font-black text-amber-400 mb-2 lang" data-key="work_details_title">📐 പണിയുടെ വിവരങ്ങൾ നൽകുക</h2>
             
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase lang" data-key="work_category_label">പണിയുടെ തരം (Work Category)</label>
+                <label class="lang block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="work_category_label">പണിയുടെ തരം (Work Category)</label>
                 <select id="workCategory" onchange="toggleCategory()" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
                     <option value="slab" class="lang" data-key="opt_slab">സ്ലാബ് വാർപ്പ് (RCC Slab)</option>
                     <option value="beam" class="lang" data-key="opt_beam">ബീം വാർപ്പ് (Roof Beam)</option>
@@ -109,25 +109,25 @@
 
             <!-- അളവ് നൽകാൻ -->
             <div>
-                <label id="inputLabel" class="block text-xs font-black text-slate-400 mb-1.5 uppercase lang" data-key="area_label">പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)</label>
+                <label id="inputLabel" class="lang block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="area_label">പണിയേണ്ട ഏരിയ (Square Feet - Sq.Ft)</label>
                 <input type="number" id="mainInput" class="lang-placeholder w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none text-white" data-key-placeholder="placeholder_example" placeholder="ഉദാ: 500">
             </div>
 
             <!-- ബീം/ലിന്റലിന് വീതിയും കനവും -->
             <div id="dimensionBox" class="hidden grid grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase lang" data-key="width_label">വീതി (Width - Inches)</label>
+                    <label class="lang block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="width_label">വീതി (Width - Inches)</label>
                     <input type="number" id="beamWidth" value="6" class="w-full p-3 bg-slate-800/80 rounded-xl border border-blue-500 text-sm font-bold focus:outline-none text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase lang" data-key="depth_label">കനം (Depth - Inches)</label>
+                    <label class="lang block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="depth_label">കനം (Depth - Inches)</label>
                     <input type="number" id="beamDepth" value="6" class="w-full p-3 bg-slate-800/80 rounded-xl border border-blue-500 text-sm font-bold focus:outline-none text-white">
                 </div>
             </div>
 
             <!-- സ്ലാബിന്റെ കനം -->
             <div id="slabThicknessBox" class="space-y-3">
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase lang" data-key="slab_thickness_label">വാർപ്പിന്റെ കനം (Slab Thickness)</label>
+                <label class="lang block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="slab_thickness_label">വാർപ്പിന്റെ കനം (Slab Thickness)</label>
                 <select id="slabThickness" class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold focus:outline-none">
                     <option value="4.5" class="lang" data-key="thickness_4_5">4.5 ഇഞ്ച്</option>
                     <option value="5" selected class="lang" data-key="thickness_5">5 ഇഞ്ച് - സ്റ്റാൻഡേർഡ്</option>
@@ -137,11 +137,11 @@
             
             <!-- ബീം കമ്പി കണക്കുകൾ -->
             <div id="steelSelectionBox" class="hidden space-y-3 bg-slate-800/40 p-4 rounded-2xl border border-slate-700">
-                <label class="block text-xs font-black text-amber-300 uppercase lang" data-key="beam_steel_title">🛠️ മേസ്തിരി നിർദ്ദേശിക്കുന്ന ബീം കമ്പി കണക്കുകൾ</label>
+                <label class="lang block text-xs font-black text-amber-300 uppercase" data-key="beam_steel_title">🛠️ മേസ്തിരി നിർദ്ദേശിക്കുന്ന ബീം കമ്പി കണക്കുകൾ</label>
                 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-400 mb-1 lang" data-key="main_bar_size">മെയിൻ കമ്പി സൈസ്</label>
+                        <label class="lang block text-[11px] font-bold text-slate-400 mb-1" data-key="main_bar_size">മെയിൻ കമ്പി സൈസ്</label>
                         <select id="mainBarSize" class="w-full p-3 bg-slate-800 rounded-xl border border-blue-500 text-xs font-bold focus:outline-none">
                             <option value="16">16 mm</option>
                             <option value="12" selected>12 mm</option>
@@ -150,13 +150,13 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-400 mb-1 lang" data-key="count_label">എണ്ണം (Nos)</label>
+                        <label class="lang block text-[11px] font-bold text-slate-400 mb-1" data-key="count_label">എണ്ണം (Nos)</label>
                         <input type="number" id="mainBarCount" value="4" class="w-full p-3 bg-slate-800 rounded-xl border border-blue-500 text-xs font-bold focus:outline-none text-white">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-400 mb-1 lang" data-key="ring_bar_label">റിങ് കമ്പി സൈസ് & അകലം (ഇഞ്ചിൽ ടൈപ്പ് ചെയ്യുക)</label>
+                    <label class="lang block text-[11px] font-bold text-slate-400 mb-1" data-key="ring_bar_label">റിങ് കമ്പി സൈസ് & അകലം (ഇഞ്ചിൽ ടൈപ്പ് ചെയ്യുക)</label>
                     <div class="grid grid-cols-2 gap-2">
                         <select id="ringBarSize" class="w-full p-3 bg-slate-800 rounded-xl border border-blue-500 text-xs font-bold focus:outline-none">
                             <option value="8" selected class="lang" data-key="ring_8mm">8 mm റിങ്</option>
@@ -169,18 +169,18 @@
 
             <!-- സ്ലാബ് കമ്പി കണക്കുകൾ -->
             <div id="slabSteelSelectionBox" class="space-y-3 bg-slate-800/40 p-4 rounded-2xl border border-slate-700">
-                <label class="block text-xs font-black text-amber-300 uppercase lang" data-key="slab_steel_title">🛠️ മേസ്തിരി നിർദ്ദേശിക്കുന്ന സ്ലാബ് കമ്പി കണക്കുകൾ</label>
+                <label class="lang block text-xs font-black text-amber-300 uppercase" data-key="slab_steel_title">🛠️ മേസ്തിരി നിർദ്ദേശിക്കുന്ന സ്ലാബ് കമ്പി കണക്കുകൾ</label>
                 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-400 mb-1 lang" data-key="main_bar_size">മെയിൻ കമ്പി സൈസ്</label>
+                        <label class="lang block text-[11px] font-bold text-slate-400 mb-1" data-key="main_bar_size">മെയിൻ കമ്പി സൈസ്</label>
                         <select id="slabMainBarSize" class="w-full p-3 bg-slate-800 rounded-xl border border-blue-500 text-xs font-bold focus:outline-none">
                             <option value="12" selected>12 mm</option>
                             <option value="10">10 mm</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-400 mb-1 lang" data-key="dist_bar_size">ഡിസ്ട്രിബ്യൂഷൻ കമ്പി</label>
+                        <label class="lang block text-[11px] font-bold text-slate-400 mb-1" data-key="dist_bar_size">ഡിസ്ട്രിബ്യൂഷൻ കമ്പി</label>
                         <select id="slabDistBarSize" class="w-full p-3 bg-slate-800 rounded-xl border border-blue-500 text-xs font-bold focus:outline-none">
                             <option value="10">10 mm</option>
                             <option value="8" selected>8 mm</option>
@@ -191,16 +191,16 @@
 
             <!-- മേസ്തിരിമാരുടെ എണ്ണം -->
             <div>
-                <label class="block text-xs font-black text-slate-400 mb-1.5 uppercase lang" data-key="mason_count_label">മേസ്തിരിമാരുടെ എണ്ണം (Manual Mason Count)</label>
+                <label class="lang block text-xs font-black text-slate-400 mb-1.5 uppercase" data-key="mason_count_label">മേസ്തിരിമാരുടെ എണ്ണം (Manual Mason Count)</label>
                 <input type="number" id="masonCountInput" class="lang-placeholder w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold placeholder-slate-500 focus:outline-none text-white" data-key-placeholder="mason_placeholder" placeholder="ഉദാ: 3 (ഓപ്ഷണൽ)">
             </div>
 
-            <button onclick="calculateEstimation()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition cursor-pointer lang" data-key="calculate_btn">കണക്കുകൂട്ടുക (Calculate)</button>
+            <button onclick="calculateEstimation()" class="lang w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl font-black text-sm shadow-lg shadow-amber-500/20 transition cursor-pointer" data-key="calculate_btn">കണക്കുകൂട്ടുക (Calculate)</button>
         </div>
 
         <!-- ഫലം കാണിക്കുന്ന ഭാഗം -->
         <div id="resultBox" class="hidden mx-4 bg-slate-900/90 text-white p-6 rounded-3xl shadow-xl border border-slate-800 backdrop-blur-sm space-y-4">
-            <h2 class="text-base font-black text-emerald-400 mb-2 border-b border-slate-800 pb-2 lang" data-key="result_title">📊 മേസ്തിരി അനുഭവക്കണക്ക് ഫലം</h2>
+            <h2 class="lang text-base font-black text-emerald-400 mb-2 border-b border-slate-800 pb-2" data-key="result_title">📊 മേസ്തിരി അനുഭവക്കണക്ക് ഫലം</h2>
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-slate-800/90 border border-blue-500/40 p-4 rounded-2xl text-center shadow-md">
@@ -226,7 +226,7 @@
             </div>
 
             <div class="bg-blue-950/40 border border-blue-500/40 p-4 rounded-2xl space-y-2">
-                <p class="text-xs font-black text-cyan-300 uppercase lang" data-key="site_info_title">👥 സൈറ്റ് വിവരങ്ങൾ & ടീം അളവ്</p>
+                <p class="lang text-xs font-black text-cyan-300 uppercase" data-key="site_info_title">👥 സൈറ്റ് വിവരങ്ങൾ & ടീം അളവ്</p>
                 <p id="resDetails" class="text-xs font-bold text-slate-200 leading-relaxed">-</p>
             </div>
         </div>
