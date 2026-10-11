@@ -309,10 +309,14 @@
                 const standardWage = workerInfo.wage || 1200;
                 const hourlyRate = standardWage / 8;
 
-                // ഡാറ്റാബേസിൽ സേവ് ചെയ്ത ദിവസത്തിന്റെ അളവ് (days) എടുക്കുന്നു, ഇല്ലെങ്കിൽ തുക വെച്ച് കണക്കാക്കുന്നു
-                let daysVal = item.days !== undefined ? parseFloat(item.days) : parseFloat((item.amount / standardWage).toFixed(2));
-                if (daysVal > 1) daysVal = 1;
-                if (daysVal < 0) daysVal = 0;
+                                // ഡാറ്റാബേസിൽ നിന്ന് എടുക്കുന്ന ദിവസങ്ങളുടെ അളവ് (Fractional Days / മണിക്കൂർ അടിസ്ഥാനത്തിൽ)
+                let standardWage = workerInfo.wage || 1200;
+                let hourlyRate = standardWage / 8;
+                let computedHours = Math.round(item.amount / hourlyRate);
+                if (computedHours > 8) computedHours = 8;
+                if (computedHours < 1 && item.amount > 0) computedHours = 1;
+
+                let daysVal = parseFloat((computedHours / 8).toFixed(2));
 
                 totalDaysSum += daysVal;
                 totalWage += item.amount;
@@ -332,7 +336,9 @@
                 return { ...item, daysVal, hoursText };
             });
 
-            let totalDaysFormatted = parseFloat(totalDaysSum.toFixed(1));
+                        // ആകെ ദിവസങ്ങളുടെ സം തുക കണ്ടുപിടിച്ച് 1 ഡെസിമൽ ആകുന്നു (ഉദാ: 4.6 ദിവസം)
+            let totalDaysFormatted = parseFloat((totalDaysSum).toFixed(1));
+            
             document.getElementById('statTotalDays').innerText = `${totalDaysFormatted} ദിവസം`;
             document.getElementById('statTotalWage').innerText = "₹" + totalWage;
 
