@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മേസ്തിരി പ്രോ - തൊഴിലാളികളുടെ കണക്കുകൾ</title>
+    <title class="lang" data-key="staff_accounts_title">മേസ്തിരി പ്രോ - തൊഴിലാളികളുടെ കണക്കുകൾ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="language.js"></script>
@@ -29,128 +29,128 @@
         
         <!-- ഹെഡറിന് താഴെയുള്ള ടോപ്പ് ബാർ -->
         <div class="bg-slate-900/90 border-2 border-indigo-500/50 p-4 rounded-2xl flex justify-between items-center shadow-xl backdrop-blur-sm mb-4">
-            <h1 data-key="staff_accounts" class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-300 to-purple-400 tracking-wide">തൊഴിലാളികളുടെ കണക്കുകൾ</h1>
+            <h1 data-key="staff_accounts" class="lang text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-300 to-purple-400 tracking-wide">തൊഴിലാളികളുടെ കണക്കുകൾ</h1>
             <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-black shadow-lg shadow-amber-900/40 transition flex items-center gap-2 border border-white/30">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                <span data-key="home">Home</span>
+                <span class="lang" data-key="home">Home</span>
             </a>
         </div>
 
 
         <div class="mb-4">
-            <input type="text" id="searchInput" data-key-placeholder="search_staff" placeholder="🔍 തൊഴിലാളിയെ തിരയുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold text-white placeholder-slate-500 focus:outline-none">
+            <input type="text" id="searchInput" data-key-placeholder="search_staff" placeholder="🔍 തൊഴിലാളിയെ തിരയുക..." class="w-full p-4 bg-slate-800/80 rounded-2xl border border-blue-500 text-sm font-bold text-white placeholder-slate-500 focus:outline-none lang-placeholder">
         </div>
 
-        <button onclick="document.getElementById('addStaffModal').classList.remove('hidden')" data-key="add_new_staff" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl text-sm font-black shadow-lg shadow-amber-500/20 transition mb-4">
+        <button onclick="document.getElementById('addStaffModal').classList.remove('hidden')" data-key="add_new_staff" class="lang w-full bg-amber-500 hover:bg-amber-400 text-slate-950 p-4 rounded-2xl text-sm font-black shadow-lg shadow-amber-500/20 transition mb-4">
             ➕ പുതിയ തൊഴിലാളിയെ ചേർക്കുക
         </button>
 
         <div id="staffList" class="space-y-4">
-            <p data-key="loading_accounts" class="text-center text-xs text-slate-400 font-bold py-4">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
+            <p data-key="loading_accounts" class="lang text-center text-xs text-slate-400 font-bold py-4">കണക്കുകൾ ലോഡ് ചെയ്യുന്നു...</p>
         </div>
     </div>
 
     <!-- മോഡലുകൾ (Modals) -->
     <div id="addStaffModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
-            <h3 data-key="new_staff_title" class="font-black text-amber-400 text-base mb-2">പുതിയ തൊഴിലാളി</h3>
-            <input type="text" id="staffName" data-key-placeholder="name_placeholder" placeholder="പേര്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="siteName" data-key-placeholder="site_name_placeholder" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="number" id="dailyWage" data-key-placeholder="daily_wage_placeholder" placeholder="ഒരു ദിവസത്തെ കൂലി (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="phoneNumber" data-key-placeholder="phone_placeholder" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="jobType" data-key-placeholder="job_type_placeholder" placeholder="ജോലി (ഉദാ: മേസ്തിരി, പണിക്കാരൻ)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="bankDetails" data-key-placeholder="bank_details_placeholder" placeholder="GPay / ബാങ്ക് വിവരങ്ങൾ" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <h3 data-key="new_staff_title" class="lang font-black text-amber-400 text-base mb-2">പുതിയ തൊഴിലാളി</h3>
+            <input type="text" id="staffName" data-key-placeholder="name_placeholder" placeholder="പേര്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            <input type="text" id="siteName" data-key-placeholder="site_name_placeholder" placeholder="സൈറ്റിന്റെ പേര്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            <input type="number" id="dailyWage" data-key-placeholder="daily_wage_placeholder" placeholder="ഒരു ദിവസത്തെ കൂലി (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            <input type="text" id="phoneNumber" data-key-placeholder="phone_placeholder" placeholder="ഫോൺ നമ്പർ" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            <input type="text" id="jobType" data-key-placeholder="job_type_placeholder" placeholder="ജോലി (ഉദാ: മേസ്തിരി, പണിക്കാരൻ)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            <input type="text" id="bankDetails" data-key-placeholder="bank_details_placeholder" placeholder="GPay / ബാങ്ക് വിവരങ്ങൾ" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
             <div class="flex gap-2 pt-2">
-                <button id="saveStaffBtn" data-key="save_btn" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
-                <button onclick="document.getElementById('addStaffModal').classList.add('hidden')" data-key="cancel_btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+                <button id="saveStaffBtn" data-key="save_btn" class="lang flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
+                <button onclick="document.getElementById('addStaffModal').classList.add('hidden')" data-key="cancel_btn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
 
     <div id="wageModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
-            <h3 id="modalWorkerTitle" data-key="add_today_wage" class="font-black text-amber-400 text-base">ഇന്നത്തെ കൂലി ചേർക്കുക</h3>
+            <h3 id="modalWorkerTitle" data-key="add_today_wage" class="lang font-black text-amber-400 text-base">ഇന്നത്തെ കൂലി ചേർക്കുക</h3>
             <input type="hidden" id="modalStaffId">
             <input type="hidden" id="modalStaffName">
             <input type="hidden" id="modalDefaultWage">
             <p id="displayTodayText" class="text-xs text-slate-400 font-bold"></p>
             <div>
-                <label data-key="site_name" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">സൈറ്റ് പേര്</label>
+                <label data-key="site_name" class="lang text-[10px] text-slate-400 font-bold uppercase mb-1 block">സൈറ്റ് പേര്</label>
                 <input type="text" id="modalSiteName" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label data-key="work_day_label" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">പണി ദിവസം</label>
+                    <label data-key="work_day_label" class="lang text-[10px] text-slate-400 font-bold uppercase mb-1 block">പണി ദിവസം</label>
                     <input type="number" id="modalDayAmount" step="0.5" value="1" oninput="updateModalWage()" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white text-center focus:outline-none">
                 </div>
                 <div>
-                    <label data-key="total_wage_label" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">ആകെ കൂലി (₹)</label>
+                    <label data-key="total_wage_label" class="lang text-[10px] text-slate-400 font-bold uppercase mb-1 block">ആകെ കൂലി (₹)</label>
                     <input type="number" id="modalWageAmount" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-black text-amber-400 text-center focus:outline-none">
                 </div>
             </div>
             <div class="flex gap-2 pt-2">
-                <button id="confirmWageBtn" data-key="add_today_wage" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black transition">കണക്ക് ചേർക്കുക</button>
-                <button onclick="closeWageModal()" data-key="cancel_btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+                <button id="confirmWageBtn" data-key="add_today_wage" class="lang flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3 rounded-2xl text-xs font-black transition">കണക്ക് ചേർക്കുക</button>
+                <button onclick="closeWageModal()" data-key="cancel_btn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
 
     <div id="advanceModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
-            <h3 id="advModalTitle" data-key="advance_given" class="font-black text-purple-300 text-base">അഡ്വാൻസ് നൽകിയത്</h3>
+            <h3 id="advModalTitle" data-key="advance_given" class="lang font-black text-purple-300 text-base">അഡ്വാൻസ് നൽകിയത്</h3>
             <input type="hidden" id="advModalStaffId">
             <div>
-                <label data-key="date" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
+                <label data-key="date" class="lang text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
                 <input type="date" id="advDate" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
-            <input type="number" id="advAmount" data-key-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="advNote" data-key-placeholder="note_placeholder" placeholder="കുറിപ്പ് (ഉദാ: Cash / GPay)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="number" id="advAmount" data-key-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            <input type="text" id="advNote" data-key-placeholder="note_placeholder" placeholder="കുറിപ്പ് (ഉദാ: Cash / GPay)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
             <div class="flex gap-2 pt-2">
-                <button id="confirmAdvBtn" data-key="save_btn" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
-                <button onclick="closeAdvModal()" data-key="cancel_btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+                <button id="confirmAdvBtn" data-key="save_btn" class="lang flex-1 bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
+                <button onclick="closeAdvModal()" data-key="cancel_btn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
 
     <div id="extraModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
-            <h3 id="extraModalTitle" data-key="extra_amount_title" class="font-black text-rose-300 text-base">അധികത്തുക ചേർക്കുക</h3>
+            <h3 id="extraModalTitle" data-key="extra_amount_title" class="lang font-black text-rose-300 text-base">അധികത്തുക ചേർക്കുക</h3>
             <input type="hidden" id="extraModalStaffId">
             <div>
-                <label data-key="date" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
+                <label data-key="date" class="lang text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
                 <input type="date" id="extraDate" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
-            <input type="number" id="extraAmount" data-key-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
-            <input type="text" id="extraNote" data-key-placeholder="note" placeholder="കുറിപ്പ്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            <input type="number" id="extraAmount" data-key-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            <input type="text" id="extraNote" data-key-placeholder="note" placeholder="കുറിപ്പ്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
             <div class="flex gap-2 pt-2">
-                <button id="confirmExtraBtn" data-key="save_btn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
-                <button onclick="closeExtraModal()" data-key="cancel_btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+                <button id="confirmExtraBtn" data-key="save_btn" class="lang flex-1 bg-rose-600 hover:bg-rose-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
+                <button onclick="closeExtraModal()" data-key="cancel_btn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
 
     <div id="editLogModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
-            <h3 id="editModalTitle" data-key="edit_log_title" class="font-black text-blue-400 text-base">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
+            <h3 id="editModalTitle" data-key="edit_log_title" class="lang font-black text-blue-400 text-base">കണക്ക് എഡിറ്റ് ചെയ്യുക</h3>
             <input type="hidden" id="editLogId">
             <div>
-                <label data-key="date" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
+                <label data-key="date" class="lang text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
                 <input type="date" id="editLogDate" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
             <div id="editSiteContainer">
-                <label data-key="site" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">സൈറ്റ് / കുറിപ്പ്</label>
+                <label data-key="site" class="lang text-[10px] text-slate-400 font-bold uppercase mb-1 block">സൈറ്റ് / കുറിപ്പ്</label>
                 <input type="text" id="editLogSite" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
             <div>
-                <label data-key="amount" class="text-[10px] text-slate-400 font-bold uppercase mb-1 block">തുക (₹)</label>
+                <label data-key="amount" class="lang text-[10px] text-slate-400 font-bold uppercase mb-1 block">തുക (₹)</label>
                 <input type="number" id="editLogAmount" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
             <div class="flex gap-2 pt-2">
-                <button id="saveEditLogBtn" data-key="update_btn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-2xl text-xs font-black transition">അപ്ഡേറ്റ് ചെയ്യുക</button>
-                <button onclick="closeEditLogModal()" data-key="cancel_btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+                <button id="saveEditLogBtn" data-key="update_btn" class="lang flex-1 bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-2xl text-xs font-black transition">അപ്ഡേറ്റ് ചെയ്യുക</button>
+                <button onclick="closeEditLogModal()" data-key="cancel_btn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
@@ -321,7 +321,7 @@
                     });
                     
                     let totalEarned = 0;
-                    let totalWorkedDays = 0;
+                    let totalWorkedHours = 0;
                     let totalAdvance = 0;
                     let totalExtra = 0;
                     let workedSitesSet = new Set();
@@ -329,15 +329,28 @@
                     let advLogsHtml = '';
                     let extraLogsHtml = '';
 
+                    const standardWage = s.wage || 1200;
+                    const hourlyRate = standardWage / 8;
+
                     staffLogs.forEach(log => {
                         const dayName = getMalayalamDay(log.date);
                         const displayDateStr = dayName ? `${log.date} (${dayName})` : log.date;
 
                         if (log.type === "wage") {
-                            totalEarned += parseFloat(log.amount) || 0;
-                            const wagePerDay = s.wage || 1200;
-                            let daysThisLog = parseFloat(log.days) || (parseFloat(log.amount) / wagePerDay);
-                            totalWorkedDays += daysThisLog;
+                            const logAmount = parseFloat(log.amount) || 0;
+                            totalEarned += logAmount;
+                            
+                            let computedHours = Math.round(logAmount / hourlyRate);
+                            if (computedHours > 8) computedHours = 8;
+                            if (computedHours < 1 && logAmount > 0) computedHours = 1;
+                            totalWorkedHours += computedHours;
+
+                            let hoursText = `${computedHours} ${getWord('hours_label', 'മണിക്കൂർ')}`;
+                            if (computedHours === 8) {
+                                hoursText = `8 ${getWord('hours_label', 'മണിക്കൂർ')} (${getWord('full_work', 'മുഴുവൻ പണി')})`;
+                            } else if (computedHours === 5) {
+                                hoursText = `5 ${getWord('hours_label', 'മണിക്കൂർ')} (${getWord('half_work', 'ഉച്ചപ്പണി')})`;
+                            }
 
                             if (log.site) {
                                 workedSitesSet.add(log.site);
@@ -345,7 +358,7 @@
 
                             logsHtml += `
                                 <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-blue-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || getWord('site', 'സൈറ്റ്')} | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
+                                    <span class="font-bold text-slate-200">📅 ${displayDateStr} | 📍 ${log.site || getWord('site', 'സൈറ്റ്')} | <span class="text-cyan-300 font-black">${hoursText}</span> | <span class="text-amber-400 font-black">₹${log.amount}</span></span>
                                     <div class="flex gap-1.5">
                                         <button onclick="openEditLog('${log.id}', 'wage', '${log.site || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">${getWord('edit_btn', 'Edit')}</button>
                                         <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">${getWord('del_btn', 'Del')}</button>
@@ -376,6 +389,9 @@
                             `;
                         }
                     });
+
+                    let totalWorkedDaysDecimal = parseFloat((totalWorkedHours / 8).toFixed(1));
+                    let displayDaysText = `${totalWorkedDaysDecimal} ${getWord('day_unit', 'ദിവസം')} (${totalWorkedHours} ${getWord('hours_label', 'മണിക്കൂർ')})`;
 
                     const workedSitesList = workedSitesSet.size > 0 ? Array.from(workedSitesSet).join(', ') : (s.site || getWord('main_site', 'പ്രധാന സൈറ്റ്'));
                     let rawBalance = (totalEarned + totalExtra) - totalAdvance;
@@ -430,8 +446,8 @@
                         <div class="p-4 bg-slate-800/60 rounded-2xl mb-3 space-y-3 border border-slate-700/60">
                             <div class="grid grid-cols-3 gap-2">
                                 <div>
-                                    <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">${getWord('work_day_label', 'പണി ദിവസം')}</label>
-                                    <input type="text" readonly value="${totalWorkedDays}" class="w-full p-2.5 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-cyan-300 text-center">
+                                    <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">${getWord('work_day_label', 'പണി സമയം')}</label>
+                                    <input type="text" readonly value="${displayDaysText}" class="w-full p-2.5 border border-slate-700 rounded-xl text-[11px] font-bold bg-slate-800 text-cyan-300 text-center">
                                 </div>
                                 <div>
                                     <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">${getWord('total_given', 'ആകെ കൊടുത്തത്')}</label>
@@ -461,7 +477,7 @@
                         </div>
 
                         <div class="flex flex-col gap-2">
-                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത ദിവസം: ${totalWorkedDays}%0A- ആകെ കൂലി: ₹${totalEarned + totalExtra}%0A- ആകെ നൽകിയത്: ₹${totalAdvance}%0A- നൽകാനുള്ള ബാക്കി തുക: ₹${finalBalanceForWa}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 text-center rounded-2xl text-xs font-black shadow-lg shadow-emerald-600/20 transition">${getWord('whatsapp_btn', 'WhatsApp അയക്കുക')}</a>
+                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത സമയം: ${displayDaysText}%0A- ആകെ കൂലി: ₹${totalEarned + totalExtra}%0A- ആകെ നൽകിയത്: ₹${totalAdvance}%0A- നൽകാനുള്ള ബാക്കി തുക: ₹${finalBalanceForWa}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 text-center rounded-2xl text-xs font-black shadow-lg shadow-emerald-600/20 transition">${getWord('whatsapp_btn', 'WhatsApp അയക്കുക')}</a>
                         </div>
                     `;
                     
