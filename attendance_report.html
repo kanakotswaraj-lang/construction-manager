@@ -64,7 +64,7 @@
             <div class="grid grid-cols-2 gap-3 text-center">
                 <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
                     <p class="text-[11px] text-slate-400 font-bold lang" data-key="total_days">ആകെ പണി ദിവസങ്ങൾ</p>
-                    <p id="statTotalDays" class="text-base font-black text-cyan-300">0</p>
+                    <p id="statTotalDays" class="text-base font-black text-cyan-300">0 ദിവസം</p>
                 </div>
                 <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
                     <p class="text-[11px] text-slate-400 font-bold lang" data-key="total_wage">ആകെ നൽകിയ കൂലി</p>
@@ -90,7 +90,7 @@
                 </div>
             </div>
 
-            <!-- ഡേറ്റ് റേഞ്ച് ഫിൽട്ടർ (ആരംഭ തീയതിയും അവസാന തീയതിയും) -->
+            <!-- ഡേറ്റ് റേഞ്ച് ഫിൽട്ടർ -->
             <div class="grid grid-cols-2 gap-2 mt-2">
                 <div>
                     <label class="text-[10px] text-slate-400 font-bold block mb-1">ഏതു തീയതി മുതൽ (From)</label>
@@ -186,15 +186,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        window.showToast = (message, isSuccess = true) => {
-            const toast = document.getElementById('customToast');
-            toast.innerText = message;
-            toast.className = `fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 text-center ${isSuccess ? 'bg-slate-900 border-2 border-cyan-400 text-cyan-200' : 'bg-red-950 border-2 border-red-500 text-red-200'} opacity-100 scale-105`;
-            setTimeout(() => {
-                toast.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-cyan-400 text-cyan-300 px-8 py-4 rounded-3xl shadow-2xl font-black text-base z-50 transition-all duration-300 opacity-0 pointer-events-none text-center scale-100";
-            }, 2500);
-        };
-
         let allLogs = [];
         let allWorkers = new Map();
         let allSites = new Set();
@@ -217,7 +208,7 @@
                         const s = docSnap.data();
                         if (s.name) {
                             const cleanPhone = s.phone ? s.phone.replace(/\D/g, '') : '';
-                            allWorkers.set(s.name.trim(), cleanPhone);
+                            allWorkers.set(s.name.trim(), { phone: cleanPhone, wage: s.wage || 1200 });
                         }
                     });
 
@@ -227,30 +218,25 @@
                     allLogs = [];
                     allSites.clear();
 
-                                       querySnapshot.forEach(docSnap => {
+                    querySnapshot.forEach(docSnap => {
                         const data = docSnap.data();
                         let workerName = data.name ? data.name.split('(')[0].trim() : "തൊഴിലാളി";
                         let siteName = data.site || "പ്രധാന സൈറ്റ്";
 
                         if (!allWorkers.has(workerName)) {
-                            allWorkers.set(workerName, '');
+                            allWorkers.set(workerName, { phone: '', wage: 1200 });
                         }
                         allSites.add(siteName);
-
-                        let amount = parseFloat(data.amount) || 0;
-                        // തുകയ്ക്ക് അനുസരിച്ച് ദിവസത്തിന്റെ കണക്ക് ഓട്ടോമാറ്റിക് ആയി വരാൻ (ഉദാഹരണത്തിന് മുഴുവൻ കൂലി 1200 ആണെങ്കിൽ 700 രൂപയ്ക്ക് 0.58 ദിവസമായി കണക്കാക്കും)
-                        let days = data.days !== undefined ? parseFloat(data.days) : 1;
 
                         allLogs.push({
                             id: docSnap.id,
                             workerName: workerName,
                             site: siteName,
-                            amount: amount,
+                            amount: parseFloat(data.amount) || 0,
                             date: data.date || "",
-                            days: days
+                            days: data.days !== undefined ? parseFloat(data.days) : 1
                         });
                     });
-
 
                     allLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
                     isDataLoaded = true;
@@ -280,7 +266,7 @@
             workerSelect.innerHTML = `<option value="">${allWorkersText}</option>`;
             siteSelect.innerHTML = `<option value="">${allSitesText}</option>`;
 
-            allWorkers.forEach((phone, worker) => {
+            allWorkers.forEach((val, worker) => {
                 workerSelect.innerHTML += `<option value="${worker}">${worker}</option>`;
             });
 
@@ -306,7 +292,6 @@
                 const matchSite = !selectedSite || log.site === selectedSite;
                 const matchSearch = !searchVal || log.workerName.toLowerCase().includes(searchVal) || log.site.toLowerCase().includes(searchVal);
                 
-                // ഡേറ്റ് റേഞ്ച് പരിശോധന (From Date മുതൽ To Date വരെ)
                 let matchDate = true;
                 if (log.date) {
                     if (fromDate && log.date < fromDate) matchDate = false;
@@ -316,31 +301,55 @@
                 return matchWorker && matchSite && matchDate && matchSearch;
             });
 
-            let totalDays = 0;
+            let totalDaysSum = 0;
             let totalWage = 0;
 
-            filtered.forEach(item => {
-                totalDays += parseFloat(item.days) || 1;
+            const processedFiltered = filtered.map(item => {
+                const workerInfo = allWorkers.get(item.workerName) || { wage: 1200 };
+                const standardWage = workerInfo.wage || 1200;
+                const hourlyRate = standardWage / 8;
+
+                // ഡാറ്റാബേസിൽ സേവ് ചെയ്ത ദിവസത്തിന്റെ അളവ് (days) എടുക്കുന്നു, ഇല്ലെങ്കിൽ തുക വെച്ച് കണക്കാക്കുന്നു
+                let daysVal = item.days !== undefined ? parseFloat(item.days) : parseFloat((item.amount / standardWage).toFixed(2));
+                if (daysVal > 1) daysVal = 1;
+                if (daysVal < 0) daysVal = 0;
+
+                totalDaysSum += daysVal;
                 totalWage += item.amount;
+
+                // മണിക്കൂർ കണക്കാക്കുന്നു (പ്രദർശനത്തിന് മാത്രം)
+                let computedHours = Math.round(item.amount / hourlyRate);
+                if (computedHours > 8) computedHours = 8;
+                if (computedHours < 1 && item.amount > 0) computedHours = 1;
+
+                let hoursText = `${computedHours} മണിക്കൂർ`;
+                if (computedHours === 8) {
+                    hoursText = "8 മണിക്കൂർ (മുഴുവൻ പണി)";
+                } else if (computedHours === 5) {
+                    hoursText = "5 മണിക്കൂർ (ഉച്ചപ്പണി)";
+                }
+
+                return { ...item, daysVal, hoursText };
             });
 
-            document.getElementById('statTotalDays').innerText = totalDays;
+            let totalDaysFormatted = parseFloat(totalDaysSum.toFixed(1));
+            document.getElementById('statTotalDays').innerText = `${totalDaysFormatted} ദിവസം`;
             document.getElementById('statTotalWage').innerText = "₹" + totalWage;
 
             const waContainer = document.getElementById('waBtnContainer');
             waContainer.innerHTML = '';
             let hasBtn = false;
 
-            // 1. ഒരു പ്രത്യേക തൊഴിലാളിയെ മാത്രം തിരഞ്ഞെടുത്തിട്ടുണ്ടെങ്കിൽ
             if (selectedWorker) {
-                const phone = allWorkers.get(selectedWorker) || '';
+                const workerInfo = allWorkers.get(selectedWorker) || { phone: '' };
+                const phone = workerInfo.phone || '';
                 const msgPrefix = getTxt('wa_msg_prefix', 'നമസ്കാരം');
                 const waAtt = getTxt('wa_attendance', 'ഹാജർ വിവരങ്ങൾ');
                 const waTDays = getTxt('wa_total_days', 'ആകെ പണി ദിവസം');
                 const waTWage = getTxt('wa_total_wage', 'ആകെ കൂലി');
                 const waBtnTitle = getTxt('wa_btn_text', 'WhatsApp മെസ്സേജ് അയക്കുക');
 
-                const msg = `${msgPrefix} ${selectedWorker},%0A${waAtt}:%0A- ${waTDays}: ${totalDays}%0A- ${waTWage}: ₹${totalWage}`;
+                const msg = `${msgPrefix} ${selectedWorker},%0A${waAtt}:%0A- ${waTDays}: ${totalDaysFormatted}%0A- ${waTWage}: ₹${totalWage}`;
                 
                 waContainer.innerHTML += `
                     <a href="https://wa.me/${phone}?text=${msg}" target="_blank" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
@@ -350,15 +359,14 @@
                 hasBtn = true;
             }
 
-            // 2. തീയതി റേഞ്ച് തിരഞ്ഞെടുത്തിട്ടുണ്ടെങ്കിൽ ആ റിപ്പോർട്ട് വാട്സാപ്പിൽ അയക്കാൻ
             if (fromDate || toDate) {
                 let rangeText = `🏗️ *മേസ്തിരി പ്രോ - ഹാജർ & പണി റിപ്പോർട്ട്*%0A📅 തീയതി: ${fromDate || 'തുടക്കം'} മുതൽ ${toDate || 'ഇന്ന്'} വരെ%0A----------------------------------%0A`;
                 
-                filtered.forEach((item, index) => {
-                    rangeText += `${index + 1}. *${item.workerName}* - ${item.site} (${item.days} ദിവസം) - ₹${item.amount}%0A`;
+                processedFiltered.forEach((item, index) => {
+                    rangeText += `${index + 1}. *${item.workerName}* - ${item.site} (${item.daysVal} ദിവസം / ${item.hoursText}) - ₹${item.amount}%0A`;
                 });
 
-                rangeText += `----------------------------------%0A💰 *ആകെ എണ്ണം:* ${filtered.length}%0A💸 *ആകെ കൂലി:* ₹${totalWage}`;
+                rangeText += `----------------------------------%0A💰 *ആകെ ദിവസം:* ${totalDaysFormatted}%0A💸 *ആകെ കൂലി:* ₹${totalWage}`;
 
                 waContainer.innerHTML += `
                     <a href="https://wa.me/?text=${rangeText}" target="_blank" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
@@ -377,15 +385,12 @@
             const list = document.getElementById('reportList');
             list.innerHTML = '';
 
-            if (filtered.length === 0) {
+            if (processedFiltered.length === 0) {
                 list.innerHTML = `<p class="text-center text-slate-400 font-bold text-xs py-8">${getTxt('no_data', 'വിവരങ്ങൾ ഒന്നും ലഭ്യമല്ല')}</p>`;
                 return;
             }
 
-            const daysLabel = getTxt('days_label', 'പണി:');
-            const dayUnit = getTxt('day_unit', 'ദിവസം');
-
-            filtered.forEach(item => {
+            processedFiltered.forEach(item => {
                 list.innerHTML += `
                     <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg backdrop-blur-sm">
                         <div class="space-y-1">
@@ -393,7 +398,7 @@
                             <p class="text-xs text-slate-400 font-bold">📅 ${item.date} | 📍 <span class="text-cyan-300">${item.site}</span></p>
                         </div>
                         <div class="text-right">
-                            <span class="px-2.5 py-1 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-xl text-xs font-black">${daysLabel} ${item.days} ${dayUnit}</span>
+                            <span class="px-2.5 py-1 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-xl text-xs font-black">${item.hoursText}</span>
                             <p class="font-black text-sm text-emerald-400 mt-1 shadow-sm">₹${item.amount}</p>
                         </div>
                     </div>
