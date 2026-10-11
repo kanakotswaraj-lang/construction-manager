@@ -93,11 +93,11 @@
             <!-- ഡേറ്റ് റേഞ്ച് ഫിൽട്ടർ -->
             <div class="grid grid-cols-2 gap-2 mt-2">
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold block mb-1">ഏതു തീയതി മുതൽ (From)</label>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="from_date">ഏതു തീയതി മുതൽ (From)</label>
                     <input type="date" id="filterFromDate" onchange="loadAttendanceData()" class="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:border-cyan-400">
                 </div>
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold block mb-1">ഏതു തീയതി വരെ (To)</label>
+                    <label class="text-[10px] text-slate-400 font-bold block mb-1 lang" data-key="to_date">ഏതു തീയതി വരെ (To)</label>
                     <input type="date" id="filterToDate" onchange="loadAttendanceData()" class="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:border-cyan-400">
                 </div>
             </div>
@@ -277,7 +277,7 @@
             siteSelect.value = selectedSiteVal;
         }
 
-        function renderReportList() {
+        window.renderReportList = function() {
             const selectedWorker = document.getElementById('filterWorker').value;
             const selectedSite = document.getElementById('filterSite').value;
             const fromDate = document.getElementById('filterFromDate').value;
@@ -318,18 +318,20 @@
                 totalDaysSum += daysVal;
                 totalWage += item.amount;
 
-                let hoursText = `${computedHours} മണിക്കൂർ`;
+                let daysText = getTxt('days_unit', 'ദിവസം');
+                let hoursText = `${computedHours} ${getTxt('hours_unit', 'മണിക്കൂർ')}`;
                 if (computedHours === 8) {
-                    hoursText = "8 മണിക്കൂർ (മുഴുവൻ പണി)";
+                    hoursText = `8 ${getTxt('hours_unit', 'മണിക്കൂർ')} (${getTxt('full_day', 'മുഴുവൻ പണി')})`;
                 } else if (computedHours === 5) {
-                    hoursText = "5 മണിക്കൂർ (ഉച്ചപ്പണി)";
+                    hoursText = `5 ${getTxt('hours_unit', 'മണിക്കൂർ')} (${getTxt('half_day', 'ഉച്ചപ്പണി')})`;
                 }
 
                 return { ...item, daysVal, hoursText };
             });
 
             let totalDaysFormatted = parseFloat(totalDaysSum.toFixed(1));
-            document.getElementById('statTotalDays').innerText = `${totalDaysFormatted} ദിവസം`;
+            let daysUnitText = getTxt('days_unit', 'ദിവസം');
+            document.getElementById('statTotalDays').innerText = `${totalDaysFormatted} ${daysUnitText}`;
             document.getElementById('statTotalWage').innerText = "₹" + totalWage;
 
             const waContainer = document.getElementById('waBtnContainer');
@@ -345,7 +347,7 @@
                 const waTWage = getTxt('wa_total_wage', 'ആകെ കൂലി');
                 const waBtnTitle = getTxt('wa_btn_text', 'WhatsApp മെസ്സേജ് അയക്കുക');
 
-                const msg = `${msgPrefix} ${selectedWorker},%0A${waAtt}:%0A- ${waTDays}: ${totalDaysFormatted} ദിവസം%0A- ${waTWage}: ₹${totalWage}`;
+                const msg = `${msgPrefix} ${selectedWorker},%0A${waAtt}:%0A- ${waTDays}: ${totalDaysFormatted} ${daysUnitText}%0A- ${waTWage}: ₹${totalWage}`;
                 
                 waContainer.innerHTML += `
                     <a href="https://wa.me/${phone}?text=${msg}" target="_blank" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
@@ -362,7 +364,7 @@
                     rangeText += `${index + 1}. *${item.workerName}* - ${item.site} (${item.hoursText}) - ₹${item.amount}%0A`;
                 });
 
-                rangeText += `----------------------------------%0A💰 *ആകെ ദിവസം:* ${totalDaysFormatted} ദിവസം%0A💸 *ആകെ കൂലി:* ₹${totalWage}`;
+                rangeText += `----------------------------------%0A💰 *ആകെ ദിവസം:* ${totalDaysFormatted} ${daysUnitText}%0A💸 *ആകെ കൂലി:* ₹${totalWage}`;
 
                 waContainer.innerHTML += `
                     <a href="https://wa.me/?text=${rangeText}" target="_blank" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
