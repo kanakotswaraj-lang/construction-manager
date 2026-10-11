@@ -233,8 +233,7 @@
                             workerName: workerName,
                             site: siteName,
                             amount: parseFloat(data.amount) || 0,
-                            date: data.date || "",
-                            days: data.days !== undefined ? parseFloat(data.days) : 1
+                            date: data.date || ""
                         });
                     });
 
@@ -309,22 +308,15 @@
                 const standardWage = workerInfo.wage || 1200;
                 const hourlyRate = standardWage / 8;
 
-                                // ഡാറ്റാബേസിൽ നിന്ന് എടുക്കുന്ന ദിവസങ്ങളുടെ അളവ് (Fractional Days / മണിക്കൂർ അടിസ്ഥാനത്തിൽ)
-                let standardWage = workerInfo.wage || 1200;
-                let hourlyRate = standardWage / 8;
                 let computedHours = Math.round(item.amount / hourlyRate);
                 if (computedHours > 8) computedHours = 8;
                 if (computedHours < 1 && item.amount > 0) computedHours = 1;
 
                 let daysVal = parseFloat((computedHours / 8).toFixed(2));
+                if (daysVal > 1) daysVal = 1;
 
                 totalDaysSum += daysVal;
                 totalWage += item.amount;
-
-                // മണിക്കൂർ കണക്കാക്കുന്നു (പ്രദർശനത്തിന് മാത്രം)
-                let computedHours = Math.round(item.amount / hourlyRate);
-                if (computedHours > 8) computedHours = 8;
-                if (computedHours < 1 && item.amount > 0) computedHours = 1;
 
                 let hoursText = `${computedHours} മണിക്കൂർ`;
                 if (computedHours === 8) {
@@ -336,13 +328,9 @@
                 return { ...item, daysVal, hoursText };
             });
 
-                        
-                        // ആകെ ദിവസങ്ങളുടെ തുക കണ്ടുപിടിച്ച് 1 ഡെസിമൽ ആക്കുന്നു (ഉദാ: 4.6 ദിവസം)
-            let totalDaysFormatted = parseFloat((totalDaysSum).toFixed(1));
-            
+            let totalDaysFormatted = parseFloat(totalDaysSum.toFixed(1));
             document.getElementById('statTotalDays').innerText = `${totalDaysFormatted} ദിവസം`;
             document.getElementById('statTotalWage').innerText = "₹" + totalWage;
-
 
             const waContainer = document.getElementById('waBtnContainer');
             waContainer.innerHTML = '';
@@ -357,7 +345,7 @@
                 const waTWage = getTxt('wa_total_wage', 'ആകെ കൂലി');
                 const waBtnTitle = getTxt('wa_btn_text', 'WhatsApp മെസ്സേജ് അയക്കുക');
 
-                const msg = `${msgPrefix} ${selectedWorker},%0A${waAtt}:%0A- ${waTDays}: ${totalDaysFormatted}%0A- ${waTWage}: ₹${totalWage}`;
+                const msg = `${msgPrefix} ${selectedWorker},%0A${waAtt}:%0A- ${waTDays}: ${totalDaysFormatted} ദിവസം%0A- ${waTWage}: ₹${totalWage}`;
                 
                 waContainer.innerHTML += `
                     <a href="https://wa.me/${phone}?text=${msg}" target="_blank" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
@@ -371,10 +359,10 @@
                 let rangeText = `🏗️ *മേസ്തിരി പ്രോ - ഹാജർ & പണി റിപ്പോർട്ട്*%0A📅 തീയതി: ${fromDate || 'തുടക്കം'} മുതൽ ${toDate || 'ഇന്ന്'} വരെ%0A----------------------------------%0A`;
                 
                 processedFiltered.forEach((item, index) => {
-                    rangeText += `${index + 1}. *${item.workerName}* - ${item.site} (${item.daysVal} ദിവസം / ${item.hoursText}) - ₹${item.amount}%0A`;
+                    rangeText += `${index + 1}. *${item.workerName}* - ${item.site} (${item.hoursText}) - ₹${item.amount}%0A`;
                 });
 
-                rangeText += `----------------------------------%0A💰 *ആകെ ദിവസം:* ${totalDaysFormatted}%0A💸 *ആകെ കൂലി:* ₹${totalWage}`;
+                rangeText += `----------------------------------%0A💰 *ആകെ ദിവസം:* ${totalDaysFormatted} ദിവസം%0A💸 *ആകെ കൂലി:* ₹${totalWage}`;
 
                 waContainer.innerHTML += `
                     <a href="https://wa.me/?text=${rangeText}" target="_blank" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white p-3 text-center rounded-2xl text-xs font-black shadow-lg transition flex items-center justify-center gap-2">
