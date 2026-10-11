@@ -227,7 +227,7 @@
                     allLogs = [];
                     allSites.clear();
 
-                    querySnapshot.forEach(docSnap => {
+                                       querySnapshot.forEach(docSnap => {
                         const data = docSnap.data();
                         let workerName = data.name ? data.name.split('(')[0].trim() : "തൊഴിലാളി";
                         let siteName = data.site || "പ്രധാന സൈറ്റ്";
@@ -237,15 +237,20 @@
                         }
                         allSites.add(siteName);
 
+                        let amount = parseFloat(data.amount) || 0;
+                        // തുകയ്ക്ക് അനുസരിച്ച് ദിവസത്തിന്റെ കണക്ക് ഓട്ടോമാറ്റിക് ആയി വരാൻ (ഉദാഹരണത്തിന് മുഴുവൻ കൂലി 1200 ആണെങ്കിൽ 700 രൂപയ്ക്ക് 0.58 ദിവസമായി കണക്കാക്കും)
+                        let days = data.days !== undefined ? parseFloat(data.days) : 1;
+
                         allLogs.push({
                             id: docSnap.id,
                             workerName: workerName,
                             site: siteName,
-                            amount: parseFloat(data.amount) || 0,
+                            amount: amount,
                             date: data.date || "",
-                            days: data.days || 1
+                            days: days
                         });
                     });
+
 
                     allLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
                     isDataLoaded = true;
