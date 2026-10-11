@@ -336,11 +336,13 @@
                 return { ...item, daysVal, hoursText };
             });
 
-                        // ആകെ ദിവസങ്ങളുടെ സം തുക കണ്ടുപിടിച്ച് 1 ഡെസിമൽ ആകുന്നു (ഉദാ: 4.6 ദിവസം)
+                        
+                        // ആകെ ദിവസങ്ങളുടെ തുക കണ്ടുപിടിച്ച് 1 ഡെസിമൽ ആക്കുന്നു (ഉദാ: 4.6 ദിവസം)
             let totalDaysFormatted = parseFloat((totalDaysSum).toFixed(1));
             
             document.getElementById('statTotalDays').innerText = `${totalDaysFormatted} ദിവസം`;
             document.getElementById('statTotalWage').innerText = "₹" + totalWage;
+
 
             const waContainer = document.getElementById('waBtnContainer');
             waContainer.innerHTML = '';
