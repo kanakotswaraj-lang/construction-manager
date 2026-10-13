@@ -446,38 +446,38 @@
                         <div class="p-4 bg-slate-800/60 rounded-2xl mb-3 space-y-3 border border-slate-700/60">
                             <div class="grid grid-cols-3 gap-2">
                                 <div>
-                                    <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">${getWord('work_day_label', 'പണി സമയം')}</label>
+                                    <label data-key="work_time" class="lang text-[9px] font-bold text-slate-400 block mb-1 uppercase">പണി സമയം</label>
                                     <input type="text" readonly value="${displayDaysText}" class="w-full p-2.5 border border-slate-700 rounded-xl text-[11px] font-bold bg-slate-800 text-cyan-300 text-center">
                                 </div>
                                 <div>
-                                    <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">${getWord('total_given', 'ആകെ കൊടുത്തത്')}</label>
+                                    <label data-key="total_given" class="lang text-[9px] font-bold text-slate-400 block mb-1 uppercase">ആകെ കൊടുത്തത്</label>
                                     <input type="text" readonly value="₹${totalAdvance}" class="w-full p-2.5 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-purple-300 text-center">
                                 </div>
                                 <div>
-                                    <label class="text-[9px] font-bold text-slate-400 block mb-1 uppercase">${getWord('extra_label', 'അധികത്തുക')}</label>
+                                    <label data-key="extra_label" class="lang text-[9px] font-bold text-slate-400 block mb-1 uppercase">അധികത്തുക</label>
                                     <input type="text" readonly value="₹${totalExtra}" class="w-full p-2.5 border border-slate-700 rounded-xl text-xs font-bold bg-slate-800 text-rose-300 text-center">
                                 </div>
                             </div>
                             
                             <div class="bg-gradient-to-r from-slate-950 via-blue-950/60 to-slate-950 border-2 border-amber-400/50 p-4 rounded-2xl flex justify-between items-center shadow-xl">
                                 <div class="text-white font-black text-xs">
-                                    <span>${getWord('total_wage_label', 'ആകെ കൂലി:')}</span><br>
+                                    <span data-key="total_wage_label" class="lang">ആകെ കൂലി:</span><br>
                                     <span class="text-amber-400 text-base">₹${totalEarned + totalExtra}</span>
                                 </div>
                                 <div class="h-10 w-[1px] bg-amber-400/30"></div>
                                 <div class="text-white font-black text-xs text-right">
-                                    <span>${getWord('balance_label', 'നൽകാനുള്ള ബാക്കി:')}</span><br>
+                                    <span data-key="balance_label" class="lang">നൽകാനുള്ള ബാക്കി:</span><br>
                                     <span class="text-emerald-400 text-lg font-black">₹${rawBalance}</span>
                                 </div>
                             </div>
          
-                            <button id="settleBtn-${staffId}" class="w-full bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-200 p-3 rounded-2xl text-xs font-black shadow-md transition">
-                                ${getWord('settle_btn_text', '💸 പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്ലിൽ തുടങ്ങുക)')}
+                            <button id="settleBtn-${staffId}" data-key="settle_btn_text" class="lang w-full bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-200 p-3 rounded-2xl text-xs font-black shadow-md transition">
+                                💸 പണം കൊടുത്തു തീർത്തു (Reset / പുതിയ സൈക്ലിൽ തുടങ്ങുക)
                             </button>
                         </div>
 
                         <div class="flex flex-col gap-2">
-                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത സമയം: ${displayDaysText}%0A- ആകെ കൂലി: ₹${totalEarned + totalExtra}%0A- ആകെ നൽകിയത്: ₹${totalAdvance}%0A- നൽകാനുള്ള ബാക്കി തുക: ₹${finalBalanceForWa}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 text-center rounded-2xl text-xs font-black shadow-lg shadow-emerald-600/20 transition">${getWord('whatsapp_btn', 'WhatsApp അയക്കുക')}</a>
+                            <a href="https://wa.me/${cleanPhone}?text=നമസ്കാരം ${s.name},%0Aകണക്ക് വിവരങ്ങൾ:%0A- പണിയെടുത്ത സമയം: ${displayDaysText}%0A- ആകെ കൂലി: ₹${totalEarned + totalExtra}%0A- ആകെ നൽകിയത്: ₹${totalAdvance}%0A- നൽകാനുള്ള ബാക്കി തുക: ₹${finalBalanceForWa}%0A- ജോലി ചെയ്ത സൈറ്റുകൾ: ${workedSitesList}" target="_blank" data-key="whatsapp_btn" class="lang w-full bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 text-center rounded-2xl text-xs font-black shadow-lg shadow-emerald-600/20 transition">WhatsApp അയക്കുക</a>
                         </div>
                     `;
                     
@@ -517,17 +517,7 @@
                         const currentLang = localStorage.getItem('selectedLang') || 'ml';
                         const confirmMsg = (typeof words !== 'undefined' && words.settlement_confirm && words.settlement_confirm[currentLang]) ? words.settlement_confirm[currentLang] : `തീർച്ചയായും ${s.name}-നുള്ള കണക്ക് തീർക്കണോ?\n(ഹാജർ കണക്കുകൾ റിപ്പോർട്ട് പേജിൽ നഷ്ടപ്പെടാതെ സേവ് ചെയ്യപ്പെടും)`;
                         if (confirm(confirmMsg)) {
-                            if (rawBalance > 0) {
-                                await addDoc(collection(db, "accounts"), {
-                                    meshtriOwner: currentMeshtri,
-                                    staffId: staffId,
-                                    type: "advance",
-                                    amount: rawBalance,
-                                    date: today,
-                                    note: "മുൻപത്തെ ബാക്കി ബാലൻസ്",
-                                    isSettled: false
-                                });
-                            }
+                            // സെറ്റിൽമെന്റ് ചെയ്യുമ്പോൾ ബാക്കി തുക പുതിയ അഡ്വാൻസ് ആയി ഓട്ടോമാറ്റിക് ആയി വരുന്നത് ഒഴിവാക്കിയിരിക്കുന്നു.
 
                             for (const log of staffLogs) {
                                 if (!log.isSettled) {
