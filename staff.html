@@ -115,7 +115,7 @@
         </div>
     </div>
 
-    <div id="extraModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
+        <div id="extraModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
             <h3 id="extraModalTitle" data-key="extra_amount_title" class="lang font-black text-rose-300 text-base">അധികത്തുക ചേർക്കുക</h3>
             <input type="hidden" id="extraModalStaffId">
@@ -124,13 +124,14 @@
                 <input type="date" id="extraDate" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
             <input type="number" id="extraAmount" data-key-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
-            <input type="text" id="extraNote" data-key-placeholder="note" placeholder="കുറിപ്പ്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            <input type="text" id="extraNote" data-key-placeholder="note_placeholder" placeholder="കുറിപ്പ്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
             <div class="flex gap-2 pt-2">
                 <button id="confirmExtraBtn" data-key="save_btn" class="lang flex-1 bg-rose-600 hover:bg-rose-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
                 <button onclick="closeExtraModal()" data-key="cancel_btn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
             </div>
         </div>
     </div>
+
 
     <div id="editLogModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
@@ -377,7 +378,7 @@
                                     </div>
                                 </div>
                             `;
-                        } else if (log.type === "extra") {
+                                                } else if (log.type === "extra") {
                             totalExtra += parseFloat(log.amount) || 0;
                             const extraNoteText = log.note === "കൂലി" ? getWord('wage_note', 'കൂലി') : (log.note || '');
                             extraLogsHtml += `
@@ -390,6 +391,7 @@
                                 </div>
                             `;
                         }
+
                     });
 
                     let totalWorkedDaysDecimal = parseFloat((totalWorkedHours / 8).toFixed(1));
