@@ -115,7 +115,24 @@
         </div>
     </div>
 
-        <div id="extraModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
+           <div id="advanceModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
+            <h3 id="advModalTitle" data-key="advance_given" class="lang font-black text-purple-300 text-base">അഡ്വാൻസ് നൽകിയത്</h3>
+            <input type="hidden" id="advModalStaffId">
+            <div>
+                <label data-key="date" class="lang text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
+                <input type="date" id="advDate" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
+            </div>
+            <input type="number" id="advAmount" data-key-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            <input type="text" id="advNote" data-key-placeholder="note_placeholder" placeholder="കുറിപ്പ് (ഉദാ: Cash / GPay)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            <div class="flex gap-2 pt-2">
+                <button id="confirmAdvBtn" data-key="save_btn" class="lang flex-1 bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
+                <button onclick="closeAdvModal()" data-key="cancel_btn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="extraModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
             <h3 id="extraModalTitle" data-key="extra_amount_title" class="lang font-black text-rose-300 text-base">അധികത്തുക ചേർക്കുക</h3>
             <input type="hidden" id="extraModalStaffId">
@@ -131,7 +148,6 @@
             </div>
         </div>
     </div>
-
 
     <div id="editLogModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-55">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm space-y-3.5 shadow-2xl">
@@ -155,6 +171,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- ഫയർബേസ് സ്ക്രിപ്റ്റുകൾ -->
     <script type="module">
