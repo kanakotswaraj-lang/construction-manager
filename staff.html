@@ -367,9 +367,10 @@
                             `;
                         } else if (log.type === "advance") {
                             totalAdvance += parseFloat(log.amount) || 0;
+                            const noteText = log.note === "മുൻപത്തെ ബാക്കി ബാലൻസ്" ? getWord('previous_balance_note', 'മുൻപത്തെ ബാക്കി ബാലൻസ്') : (log.note || '');
                             advLogsHtml += `
                                 <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-purple-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | ${getWord('advance', 'അഡ്വാൻസ്')}: <span class="text-purple-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
+                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | ${getWord('advance', 'അഡ്വാൻസ്')}: <span class="text-purple-300 font-black">₹${log.amount}</span> ${noteText ? '('+noteText+')' : ''}</span>
                                     <div class="flex gap-1.5">
                                         <button onclick="openEditLog('${log.id}', 'advance', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">${getWord('edit_btn', 'Edit')}</button>
                                         <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">${getWord('del_btn', 'Del')}</button>
@@ -378,9 +379,10 @@
                             `;
                         } else if (log.type === "extra") {
                             totalExtra += parseFloat(log.amount) || 0;
+                            const extraNoteText = log.note === "കൂലി" ? getWord('wage_note', 'കൂലി') : (log.note || '');
                             extraLogsHtml += `
                                 <div class="flex justify-between items-center text-xs bg-slate-800/80 p-3 rounded-2xl border border-rose-500/20 mb-1.5 shadow-sm">
-                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | ${getWord('extra', 'അധികത്തുക')}: <span class="text-rose-300 font-black">₹${log.amount}</span> ${log.note ? '('+log.note+')' : ''}</span>
+                                    <span class="font-bold text-slate-300">📅 ${displayDateStr} | ${getWord('extra', 'അധികത്തുക')}: <span class="text-rose-300 font-black">₹${log.amount}</span> ${extraNoteText ? '('+extraNoteText+')' : ''}</span>
                                     <div class="flex gap-1.5">
                                         <button onclick="openEditLog('${log.id}', 'extra', '${log.note || ''}', '${log.amount}', '${log.date || ''}')" class="text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-xl font-bold">${getWord('edit_btn', 'Edit')}</button>
                                         <button onclick="deleteLogEntry('${log.id}')" class="text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-1 rounded-xl font-bold">${getWord('del_btn', 'Del')}</button>
@@ -517,8 +519,6 @@
                         const currentLang = localStorage.getItem('selectedLang') || 'ml';
                         const confirmMsg = (typeof words !== 'undefined' && words.settlement_confirm && words.settlement_confirm[currentLang]) ? words.settlement_confirm[currentLang] : `തീർച്ചയായും ${s.name}-നുള്ള കണക്ക് തീർക്കണോ?\n(ഹാജർ കണക്കുകൾ റിപ്പോർട്ട് പേജിൽ നഷ്ടപ്പെടാതെ സേവ് ചെയ്യപ്പെടും)`;
                         if (confirm(confirmMsg)) {
-                            // സെറ്റിൽമെന്റ് ചെയ്യുമ്പോൾ ബാക്കി തുക പുതിയ അഡ്വാൻസ് ആയി ഓട്ടോമാറ്റിക് ആയി വരുന്നത് ഒഴിവാക്കിയിരിക്കുന്നു.
-
                             for (const log of staffLogs) {
                                 if (!log.isSettled) {
                                     await updateDoc(doc(db, 'accounts', log.id), { isSettled: true });
