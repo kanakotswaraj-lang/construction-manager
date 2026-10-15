@@ -126,8 +126,11 @@
                 <label data-key="date" class="lang text-[10px] text-slate-400 font-bold uppercase mb-1 block">തീയതി</label>
                 <input type="date" id="extraDate" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none">
             </div>
-            <input type="number" id="extraAmount" data-key-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
-            <input type="text" id="extraNote" data-key-placeholder="note_placeholder" placeholder="കുറിപ്പ്" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+            
+<input type="number" id="advAmount" data-key-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+
+<input type="number" id="extraAmount" data-key-placeholder="amount_placeholder" placeholder="തുക (₹)" class="w-full p-3.5 bg-slate-800 border border-blue-500/60 rounded-2xl text-xs font-bold text-white focus:outline-none lang-placeholder">
+
             <div class="flex gap-2 pt-2">
                 <button id="confirmExtraBtn" data-key="save_btn" class="lang flex-1 bg-rose-600 hover:bg-rose-500 text-white p-3 rounded-2xl text-xs font-black transition">സേവ് ചെയ്യുക</button>
                 <button onclick="closeExtraModal()" data-key="cancel_btn" class="lang flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-2xl text-xs font-bold transition">ക്യാൻസൽ</button>
