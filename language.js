@@ -3577,19 +3577,16 @@ cancel_btn: {
     as: "বাতিল কৰক"
 },
 
-// 3. തുക / Amount
-amount: {
-    ml: "തുക",
-    en: "Amount",
-    hi: "राशि",
-    ta: "தொகை",
-    kn: "ಮೊತ್ತ",
-    bn: "পরিমাণ",
-    as: "পৰিমাণ"
+amount_placeholder: {
+    ml: "തുക (₹)",
+    en: "Amount (₹)",
+    hi: "राशि (₹)",
+    ta: "தொகை (₹)",
+    kn: "ಮೊತ್ತ (₹)",
+    bn: "পরিমাণ (₹)",
+    as: "পৰিমাণ (₹)"
 },
-
-// 4. കുറിപ്പ് / Note
-note: {
+note_placeholder: {
     ml: "കുറിപ്പ്",
     en: "Note",
     hi: "नोट",
@@ -3598,6 +3595,8 @@ note: {
     bn: "নোট",
     as: "টোকা"
 },
+
+
 
 // 5. ഉദാ: / Ex: (Example)
 example_prefix: {
