@@ -3635,8 +3635,17 @@ extra_payment_label: {
     kn: "ಹೆಚ್ಚುವರಿ ಮೊತ್ತ",
     bn: "অতিরিক্ত পরিমাণ",
     as: "অতিৰিক্ত পৰিমাণ"
+},
+    
+note_example_placeholder: {
+    ml: "കുറിപ്പ് (ഉദാ: Cash / GPay)",
+    en: "Note (Ex: Cash / GPay)",
+    hi: "नोट (उदा: Cash / GPay)",
+    ta: "குறிப்பு (உதா: Cash / GPay)",
+    kn: "ಟಿಪ್ಪಣಿ (ಉದಾ: Cash / GPay)",
+    bn: "নোট (উদা: Cash / GPay)",
+    as: "টোকা (যেনে: Cash / GPay)"
 }
-
 
 
 
